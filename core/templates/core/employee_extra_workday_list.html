@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% block content %}
+<style>
+.page{padding:18px}.head{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.05);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h2{margin:0;color:#0f172a;font-size:24px;font-weight:900}.btn{background:#2563eb;color:white;text-decoration:none;border-radius:13px;padding:10px 13px;font-weight:900}
+.card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}.meta{margin-top:8px;color:#64748b;font-size:13px;font-weight:750;line-height:1.6}
+.badge{display:inline-flex;margin-top:8px;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}
+.pending{background:#fffbeb;color:#b45309;border:1px solid #fde68a}.green{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}.red{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.empty{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:24px;text-align:center;color:#64748b;font-weight:800}
+</style>
+
+<div class="page">
+    <div class="head">
+        <h2>My Extra Working Day Requests</h2>
+        <a href="{% url 'employee_extra_workday_create' %}" class="btn">New Request</a>
+    </div>
+
+    {% for r in requests_qs %}
+        <div class="card">
+            <h3>{{ r.work_date|date:"d M Y" }}</h3>
+            <div class="meta">
+                Reason: {{ r.reason }}<br>
+                Manager: {{ r.manager_approved_by.get_full_name|default:r.manager_approved_by.username|default:"-" }}<br>
+                HR: {{ r.hr_approved_by.get_full_name|default:r.hr_approved_by.username|default:"-" }}
+            </div>
+
+            {% if r.status == "HR_APPROVED" %}
+                <span class="badge green">HR Approved / Extra Leave Added</span>
+            {% elif r.status == "MANAGER_APPROVED_PENDING_HR" %}
+                <span class="badge blue">Manager Approved / HR Pending</span>
+            {% elif r.status == "REJECTED" %}
+                <span class="badge red">Rejected</span>
+            {% else %}
+                <span class="badge pending">Pending Manager</span>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div class="empty">No extra working day requests found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

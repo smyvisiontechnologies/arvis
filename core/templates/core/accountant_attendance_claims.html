@@ -1,0 +1,114 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding: 18px; }
+
+.head, .card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.head { margin-bottom: 14px; }
+
+.head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.btn {
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 9px 12px;
+    font-weight: 900;
+    display: inline-flex;
+}
+
+.empty {
+    color: #64748b;
+    font-weight: 800;
+}
+</style>
+
+<div class="page">
+    <div class="head">
+        <h2>TA/DA Fund Release</h2>
+    </div>
+
+    <div class="card">
+        {% if records %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>KM</th>
+                            <th>TA</th>
+                            <th>DA</th>
+                            <th>Total</th>
+                            <th>HR Approved By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in records %}
+                            <tr>
+                                <td>{{ record.employee.get_full_name|default:record.employee.username }}</td>
+                                <td>{{ record.attendance_date|date:"d M Y" }}</td>
+                                <td>{{ record.manager_approved_km }} KM</td>
+                                <td>₹{{ record.ta_amount }}</td>
+                                <td>₹{{ record.da_amount }}</td>
+                                <td>₹{{ record.total_claim_amount }}</td>
+                                <td>{{ record.hr_approved_by.get_full_name|default:record.hr_approved_by.username }}</td>
+                                <td>
+                                    <a href="{% url 'accountant_release_attendance_claim' record.id %}" class="btn">
+                                        Release
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty">No claims pending for fund release.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

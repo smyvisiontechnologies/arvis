@@ -1,0 +1,120 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:18px; }
+.card {
+    max-width:760px;
+    margin:0 auto;
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:24px;
+    padding:20px;
+    box-shadow:0 10px 26px rgba(15,23,42,.06);
+}
+h2 { margin:0;color:#0f172a;font-size:25px;font-weight:900; }
+.note {
+    margin:12px 0;
+    background:#eff6ff;
+    color:#1d4ed8;
+    border:1px solid #bfdbfe;
+    padding:12px;
+    border-radius:16px;
+    font-weight:800;
+    line-height:1.5;
+}
+.field { margin-top:14px; }
+.field label { display:block;font-weight:900;color:#334155;margin-bottom:7px;font-size:13px; }
+.form-control, input, select {
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid #cbd5e1;
+    font-weight:800;
+    background:#f8fafc;
+}
+.btn-row { display:flex;gap:10px;flex-wrap:wrap;margin-top:18px; }
+.btn {
+    border:none;
+    border-radius:14px;
+    padding:12px 16px;
+    color:white;
+    font-weight:900;
+    text-decoration:none;
+    cursor:pointer;
+}
+.btn.blue { background:#2563eb; }
+.btn.dark { background:#0f172a; }
+@media(max-width:650px){
+    .page{padding:12px;}
+    .btn-row{display:grid;grid-template-columns:1fr;}
+    .btn{text-align:center;}
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>{{ title }}</h2>
+
+        <div class="note">
+            Payslips will be generated as <b>Draft / Review Pending</b>. Accountant/Admin must review and release.
+            TA/DA amount is not included in payslip.
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Generate Type</label>
+                {{ form.generate_type }}
+                {{ form.generate_type.errors }}
+            </div>
+
+            <div class="field" id="employeeBox">
+                <label>Employee</label>
+                {{ form.employee }}
+                {{ form.employee.errors }}
+            </div>
+
+            <div class="field">
+                <label>Month</label>
+                {{ form.month }}
+                {{ form.month.errors }}
+            </div>
+
+            <div class="field">
+                <label>Year</label>
+                {{ form.year }}
+                {{ form.year.errors }}
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn blue">Generate Draft Payslip</button>
+                <a href="{% url 'payslip_list' %}" class="btn dark">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleEmployeeBox() {
+    const typeField = document.getElementById("id_generate_type");
+    const employeeBox = document.getElementById("employeeBox");
+
+    if (!typeField || !employeeBox) {
+        return;
+    }
+
+    employeeBox.style.display = typeField.value === "ALL" ? "none" : "block";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleEmployeeBox();
+
+    const typeField = document.getElementById("id_generate_type");
+    if (typeField) {
+        typeField.addEventListener("change", toggleEmployeeBox);
+    }
+});
+</script>
+{% endblock %}

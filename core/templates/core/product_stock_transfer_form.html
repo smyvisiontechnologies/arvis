@@ -1,0 +1,248 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.st-page{padding:16px;max-width:950px;margin:0 auto}
+.st-hero{background:linear-gradient(135deg,#07120d,#123020);color:#fff;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.st-hero h2{margin:0;font-size:28px;font-weight:900}
+.st-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.st-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.st-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.st-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.st-btn{border:0;text-decoration:none;background:#0f172a;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.st-btn.green{background:#16a34a}.st-btn.light{background:#f1f5f9;color:#0f172a}
+.st-preview{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:14px;margin-bottom:16px}
+.st-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.st-preview-box{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
+.st-preview-box span{display:block;font-size:12px;color:#64748b;font-weight:900;margin-bottom:5px}
+.st-preview-box strong{display:block;font-size:18px;color:#0f172a;font-weight:900}
+.st-preview-box.remaining strong{color:#16a34a}
+.errorlist{color:#dc2626;font-size:12px;font-weight:900;margin:6px 0 0;padding-left:18px}
+.search-select-wrap{position:relative;width:100%}
+.search-select-input{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 40px 11px 12px;font-weight:900;background:white;color:#0f172a}
+.search-select-input:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.search-select-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#64748b;font-weight:900;pointer-events:none}
+.search-select-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:white;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 18px 45px rgba(15,23,42,.18);max-height:260px;overflow:auto;z-index:9999;padding:6px}
+.search-select-list.show{display:block}
+.search-select-option{padding:11px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:900;color:#334155;line-height:1.35}
+.search-select-option:hover,.search-select-option.active{background:#ecfdf5;color:#047857}
+.search-select-empty{padding:12px;color:#64748b;font-size:13px;font-weight:900;text-align:center}
+.native-search-select{display:none!important}
+@media(max-width:750px){.st-grid,.st-preview-grid{grid-template-columns:1fr}.st-page{padding:10px}.st-hero{padding:18px;border-radius:20px}.st-actions{display:grid;grid-template-columns:1fr}.st-btn{justify-content:center}}
+</style>
+
+<div class="st-page">
+    <div class="st-hero">
+        <h2>Transfer Stock</h2>
+        <p>Select product from Main Warehouse, choose destination warehouse and enter transfer quantity.</p>
+    </div>
+
+    <form method="post" class="st-card">
+        {% csrf_token %}
+
+        <div class="st-grid">
+            <div class="st-field">
+                <label>Product From Main Warehouse</label>
+                {{ form.product_pack }}
+                {{ form.product_pack.errors }}
+            </div>
+
+            <div class="st-field">
+                <label>Transfer To Warehouse</label>
+                {{ form.to_warehouse }}
+                {{ form.to_warehouse.errors }}
+            </div>
+
+            <div class="st-field">
+                <label>Transfer Quantity</label>
+                {{ form.quantity_boxes }}
+                {{ form.quantity_boxes.errors }}
+            </div>
+
+            <div class="st-field" style="grid-column:1/-1;">
+                <label>Note</label>
+                {{ form.note }}
+                {{ form.note.errors }}
+            </div>
+        </div>
+
+        <div class="st-preview">
+            <div class="st-preview-grid">
+                <div class="st-preview-box">
+                    <span>Main Stock Available</span>
+                    <strong id="availableStock">0</strong>
+                </div>
+
+                <div class="st-preview-box">
+                    <span>Transfer Qty</span>
+                    <strong id="transferQty">0</strong>
+                </div>
+
+                <div class="st-preview-box remaining">
+                    <span>Main Stock Remaining</span>
+                    <strong id="remainingStock">0</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="st-actions">
+            <button type="submit" class="st-btn green">Transfer Stock</button>
+            <a href="{% url 'product_stock_transfer_list' %}" class="st-btn light">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function makeSearchableSelect(select) {
+    if (!select || select.dataset.searchReady === "1") return;
+
+    select.dataset.searchReady = "1";
+    select.classList.add("native-search-select");
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "search-select-wrap";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "search-select-input";
+    input.placeholder = "Search product / product id / pack id...";
+    input.autocomplete = "off";
+
+    const arrow = document.createElement("span");
+    arrow.className = "search-select-arrow";
+    arrow.innerHTML = "⌄";
+
+    const list = document.createElement("div");
+    list.className = "search-select-list";
+
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(input);
+    wrapper.appendChild(arrow);
+    wrapper.appendChild(list);
+    wrapper.appendChild(select);
+
+    function getOptions() {
+        return Array.from(select.options).filter(function(opt) {
+            return opt.value !== "";
+        });
+    }
+
+    function selectedText() {
+        const opt = select.options[select.selectedIndex];
+        return opt && opt.value ? opt.text.trim() : "";
+    }
+
+    function renderOptions(filterText) {
+        const text = (filterText || "").toLowerCase().trim();
+        const options = getOptions();
+
+        list.innerHTML = "";
+        let found = 0;
+
+        options.forEach(function(opt) {
+            const optionText = opt.text.trim();
+            const searchableText = (optionText + " " + opt.value).toLowerCase();
+
+            if (text && !searchableText.includes(text)) return;
+
+            found++;
+
+            const item = document.createElement("div");
+            item.className = "search-select-option";
+            item.textContent = optionText;
+            item.dataset.value = opt.value;
+
+            if (select.value === opt.value) item.classList.add("active");
+
+            item.addEventListener("click", function() {
+                select.value = opt.value;
+                input.value = optionText;
+                list.classList.remove("show");
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+
+            list.appendChild(item);
+        });
+
+        if (found === 0) {
+            const empty = document.createElement("div");
+            empty.className = "search-select-empty";
+            empty.textContent = "No result found";
+            list.appendChild(empty);
+        }
+    }
+
+    input.value = selectedText();
+
+    input.addEventListener("focus", function() {
+        renderOptions("");
+        list.classList.add("show");
+        input.select();
+    });
+
+    input.addEventListener("input", function() {
+        renderOptions(input.value);
+        list.classList.add("show");
+    });
+
+    document.addEventListener("click", function(e) {
+        if (!wrapper.contains(e.target)) {
+            list.classList.remove("show");
+            input.value = selectedText();
+        }
+    });
+}
+
+function extractMainStock(text) {
+    const match = String(text || "").match(/Main Stock\s*:\s*([\d.,]+)/i);
+
+    if (match && match[1]) {
+        return parseFloat(match[1].replace(/,/g, "")) || 0;
+    }
+
+    return 0;
+}
+
+function updateRemainingPreview() {
+    const packSelect = document.getElementById("id_product_pack");
+    const qtyInput = document.getElementById("id_quantity_boxes");
+
+    const selectedOption = packSelect ? packSelect.options[packSelect.selectedIndex] : null;
+    const available = selectedOption ? extractMainStock(selectedOption.text) : 0;
+    const qty = qtyInput ? (parseFloat(qtyInput.value) || 0) : 0;
+    const remaining = available - qty;
+
+    document.getElementById("availableStock").innerText = available.toFixed(3);
+    document.getElementById("transferQty").innerText = qty.toFixed(3);
+    document.getElementById("remainingStock").innerText = remaining.toFixed(3);
+
+    if (remaining < 0) {
+        document.getElementById("remainingStock").style.color = "#dc2626";
+    } else {
+        document.getElementById("remainingStock").style.color = "#16a34a";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const packSelect = document.getElementById("id_product_pack");
+    const qtyInput = document.getElementById("id_quantity_boxes");
+
+    makeSearchableSelect(packSelect);
+
+    if (packSelect) {
+        packSelect.addEventListener("change", updateRemainingPreview);
+    }
+
+    if (qtyInput) {
+        qtyInput.addEventListener("input", updateRemainingPreview);
+        qtyInput.addEventListener("keyup", updateRemainingPreview);
+    }
+
+    updateRemainingPreview();
+});
+</script>
+
+{% endblock %}

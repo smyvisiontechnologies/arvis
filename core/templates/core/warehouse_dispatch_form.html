@@ -1,0 +1,118 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:20px; }
+.card {
+    max-width:900px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:20px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+}
+label {
+    font-weight:900;
+    display:block;
+    margin-bottom:5px;
+}
+.btn {
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:13px 18px;
+    border-radius:15px;
+    font-weight:900;
+    cursor:pointer;
+    margin-top:18px;
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Dispatch Order #{{ order.id }}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="grid">
+                <div>
+                    <label>Transport Type</label>
+                    {{ form.transport_type }}
+                    {{ form.transport_type.errors }}
+                </div>
+
+                <div class="own-wrap">
+                    <label>Vehicle Name</label>
+                    {{ form.vehicle_name }}
+                </div>
+
+                <div class="own-wrap">
+                    <label>Vehicle Number</label>
+                    {{ form.vehicle_number }}
+                </div>
+
+                <div class="own-wrap">
+                    <label>Driver Name</label>
+                    {{ form.driver_name }}
+                </div>
+
+                <div class="own-wrap">
+                    <label>Driver Phone</label>
+                    {{ form.driver_phone }}
+                </div>
+
+                <div class="other-wrap">
+                    <label>Other Transport Tracking ID</label>
+                    {{ form.other_transport_tracking_id }}
+                </div>
+
+                <div>
+                    <label>Dispatch Date</label>
+                    {{ form.dispatch_date }}
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <label>Note</label>
+                {{ form.note }}
+            </div>
+
+            {{ form.non_field_errors }}
+
+            <button type="submit" class="btn">
+                Save Dispatch
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleTransportFields() {
+    const type = document.getElementById("id_transport_type").value;
+
+    document.querySelectorAll(".own-wrap").forEach(function(el) {
+        el.style.display = type === "OWN" ? "block" : "none";
+    });
+
+    document.querySelectorAll(".other-wrap").forEach(function(el) {
+        el.style.display = type === "OTHER" ? "block" : "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleTransportFields();
+
+    const typeInput = document.getElementById("id_transport_type");
+
+    if (typeInput) {
+        typeInput.addEventListener("change", toggleTransportFields);
+    }
+});
+</script>
+{% endblock %}

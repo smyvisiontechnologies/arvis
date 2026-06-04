@@ -1,0 +1,289 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.asset-page {
+    padding: 18px;
+}
+
+.asset-head {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.asset-head h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-light { background: white; color: #0f172a; }
+.btn-blue { background: #2563eb; color: white; }
+.btn-dark { background: #0f172a; color: white; }
+.btn-green { background: #059669; color: white; }
+.btn-orange { background: #d97706; color: white; }
+
+.filter-card {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 10px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 11px;
+    font-weight: 800;
+}
+
+.asset-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.asset-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 15px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.asset-code {
+    display: inline-flex;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.asset-name {
+    margin-top: 10px;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.asset-meta {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.history-box {
+    margin-top: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.status {
+    margin-top: 10px;
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.status.AVAILABLE {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.status.ASSIGNED {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.status.DAMAGED,
+.status.LOST,
+.status.RETIRED {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.card-actions {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+@media(max-width: 1100px) {
+    .asset-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media(max-width: 800px) {
+    .asset-page { padding: 10px; }
+    .asset-grid { grid-template-columns: repeat(2, 1fr); }
+    .filter-grid { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 520px) {
+    .asset-grid { grid-template-columns: 1fr; }
+    .asset-head { border-radius: 20px; }
+    .btn { width: 100%; }
+}
+</style>
+
+<div class="asset-page">
+    <div class="asset-head">
+        <div>
+            <h2>Asset Management</h2>
+            <div style="font-weight:800;color:#dbeafe;margin-top:5px;">
+                View current user, past users and return history of every asset.
+            </div>
+        </div>
+
+        <a href="{% url 'asset_create_bulk' %}" class="btn btn-light">Create Assets</a>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-grid">
+            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search asset code, name, brand, serial, employee">
+
+            <select name="status" class="form-control">
+                <option value="">All Status</option>
+                <option value="AVAILABLE" {% if status == "AVAILABLE" %}selected{% endif %}>Available</option>
+                <option value="ASSIGNED" {% if status == "ASSIGNED" %}selected{% endif %}>Assigned</option>
+                <option value="DAMAGED" {% if status == "DAMAGED" %}selected{% endif %}>Damaged</option>
+                <option value="LOST" {% if status == "LOST" %}selected{% endif %}>Lost</option>
+                <option value="RETIRED" {% if status == "RETIRED" %}selected{% endif %}>Retired</option>
+            </select>
+
+            <select name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category_id == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn btn-dark">Search</button>
+        </form>
+    </div>
+
+    <div class="asset-grid">
+        {% for row in asset_rows %}
+            {% with asset=row.asset %}
+                <div class="asset-card">
+                    <div class="asset-code">{{ asset.asset_code }}</div>
+
+                    <div class="asset-name">{{ asset.name }}</div>
+
+                    <div class="asset-meta">
+                        <strong>Category:</strong> {{ asset.category.name }}<br>
+                        {% if asset.brand %}<strong>Brand:</strong> {{ asset.brand }}<br>{% endif %}
+                        {% if asset.model_number %}<strong>Model:</strong> {{ asset.model_number }}<br>{% endif %}
+                        {% if asset.serial_number %}<strong>Serial:</strong> {{ asset.serial_number }}<br>{% endif %}
+                    </div>
+
+                    <div class="status {{ asset.status }}">
+                        {{ asset.get_status_display }}
+                    </div>
+
+                    <div class="history-box">
+                        {% if row.active_assignment %}
+                            <strong>Currently Used By:</strong><br>
+                            {{ row.active_assignment.employee.get_full_name|default:row.active_assignment.employee.username }}<br>
+                            Assigned: {{ row.active_assignment.assigned_at|date:"d M Y, h:i A" }}
+                        {% else %}
+                            <strong>Currently Used By:</strong> Available
+                        {% endif %}
+
+                        <br><br>
+
+                        <strong>Total Usage History:</strong> {{ row.history_count }}
+
+                        {% if row.last_returned_assignment %}
+                            <br>
+                            <strong>Last Returned By:</strong>
+                            {{ row.last_returned_assignment.returned_by.get_full_name|default:row.last_returned_assignment.returned_by.username|default:"-" }}<br>
+                            Returned: {{ row.last_returned_assignment.returned_at|date:"d M Y, h:i A" }}
+                        {% endif %}
+                    </div>
+
+                    <div class="card-actions">
+                        <a href="{% url 'asset_detail' asset.id %}" class="btn btn-dark">
+                            View Full History
+                        </a>
+
+                        {% if asset.status == "AVAILABLE" %}
+                            <a href="{% url 'asset_assign' asset.id %}" class="btn btn-blue">
+                                Assign to Employee
+                            </a>
+                        {% endif %}
+
+                        {% if row.active_assignment %}
+                            <a href="{% url 'asset_return' row.active_assignment.id %}" class="btn btn-orange">
+                                Return Asset
+                            </a>
+                        {% endif %}
+
+                        {% if asset.status == "ASSIGNED" and asset.current_employee %}
+                            <a href="{% url 'employee_assets_detail' asset.current_employee.id %}" class="btn btn-green">
+                                View Employee Assets
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endwith %}
+        {% empty %}
+            <div class="asset-card">
+                No assets found.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

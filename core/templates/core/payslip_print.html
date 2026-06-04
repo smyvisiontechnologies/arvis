@@ -1,0 +1,644 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Payslip {{ payslip.payslip_number }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #e5e7eb;
+            color: #111827;
+            font-size: 12.5px;
+        }
+
+        .print-actions {
+            max-width: 850px;
+            margin: 16px auto 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 10px;
+        }
+
+        .print-btn,
+        .back-btn {
+            border: none;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .print-btn {
+            background: #0f172a;
+        }
+
+        .back-btn {
+            background: #2563eb;
+        }
+
+        .salary-page {
+            width: 210mm;
+            min-height: 297mm;
+            max-width: 850px;
+            margin: 0 auto 24px;
+            background: white;
+            padding: 10mm;
+            border: 1px solid #111827;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .main-border {
+            border: 2px solid #111827;
+        }
+
+        .company-table td {
+            vertical-align: middle;
+            border-bottom: 2px solid #111827;
+            padding: 8px;
+        }
+
+        .logo-cell {
+            width: 105px;
+            text-align: center;
+            border-right: 1px solid #111827;
+        }
+
+        .logo {
+            width: 82px;
+            height: 68px;
+            object-fit: contain;
+        }
+
+        .company-name {
+            font-size: 21px;
+            font-weight: 900;
+            color: #0f172a;
+            text-align: center;
+            line-height: 1.18;
+        }
+
+        .company-details {
+            margin-top: 5px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .status-cell {
+            width: 118px;
+            border-left: 1px solid #111827;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .status-box {
+            display: inline-block;
+            border: 1px solid #111827;
+            padding: 5px 8px;
+            margin-top: 5px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .released {
+            color: #047857;
+            border-color: #047857;
+        }
+
+        .draft {
+            color: #b45309;
+            border-color: #b45309;
+        }
+
+        .title-row td {
+            border-bottom: 1px solid #111827;
+            padding: 8px;
+            text-align: center;
+            background: #f1f5f9;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+        }
+
+        .info-table td,
+        .bank-table td,
+        .pf-table td {
+            border: 1px solid #111827;
+            padding: 6px 7px;
+            vertical-align: top;
+            line-height: 1.38;
+        }
+
+        .info-title {
+            background: #f8fafc;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #0f172a;
+        }
+
+        .label {
+            font-weight: 900;
+            color: #334155;
+            width: 19%;
+        }
+
+        .value {
+            width: 31%;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .section-heading {
+            background: #0f172a;
+            color: white;
+            font-size: 12.5px;
+            font-weight: 900;
+            text-align: center;
+            padding: 7px;
+            text-transform: uppercase;
+            border-left: 1px solid #111827;
+            border-right: 1px solid #111827;
+        }
+
+        .salary-table th {
+            border: 1px solid #111827;
+            background: #f1f5f9;
+            padding: 7px;
+            font-size: 12px;
+            text-align: left;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .salary-table td {
+            border: 1px solid #111827;
+            padding: 7px 8px;
+            font-size: 12.5px;
+        }
+
+        .amount {
+            text-align: right;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .earning {
+            color: #047857;
+        }
+
+        .deduction {
+            color: #b91c1c;
+        }
+
+        .total-row td {
+            background: #f8fafc;
+            font-weight: 900;
+            font-size: 13px;
+        }
+
+        .net-row td {
+            background: #ecfdf5;
+            color: #064e3b;
+            font-size: 15px;
+            font-weight: 900;
+            border: 2px solid #047857;
+            padding: 9px;
+        }
+
+        .note-box {
+            border-left: 1px solid #111827;
+            border-right: 1px solid #111827;
+            border-bottom: 1px solid #111827;
+            padding: 8px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #374151;
+        }
+
+        .remarks-box {
+            margin-top: 8px;
+            border: 1px solid #111827;
+            padding: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .signature-table td {
+            border: 1px solid #111827;
+            padding: 28px 8px 8px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 12px;
+            width: 50%;
+        }
+
+        .footer-note {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 10.5px;
+            color: #475569;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .muted {
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .yes-chip,
+        .no-chip {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 10.5px;
+            font-weight: 900;
+            border: 1px solid;
+        }
+
+        .yes-chip {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #bbf7d0;
+        }
+
+        .no-chip {
+            background: #f8fafc;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                font-size: 12px;
+            }
+
+            .print-actions {
+                display: none;
+            }
+
+            .salary-page {
+                width: 100%;
+                min-height: auto;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+            }
+
+            .main-border {
+                border: 2px solid #111827;
+            }
+        }
+
+        @media(max-width: 760px) {
+            .salary-page {
+                width: 100%;
+                min-height: auto;
+                padding: 10px;
+            }
+
+            .company-name {
+                font-size: 17px;
+            }
+
+            .logo-cell {
+                width: 90px;
+            }
+
+            .logo {
+                width: 70px;
+                height: 58px;
+            }
+
+            .status-cell {
+                width: 90px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="print-actions">
+    <a href="javascript:history.back()" class="back-btn">Back</a>
+    <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="salary-page">
+
+    <div class="main-border">
+
+        <table class="company-table">
+            <tr>
+                <td class="logo-cell">
+                    <img src="{% static 'images/logo.png' %}" class="logo" alt="Company Logo">
+                </td>
+
+                <td>
+                    <div class="company-name">
+                        Arvis Fertilizers &amp; Chemicals Pvt. Ltd.
+                    </div>
+
+                    <div class="company-details">
+                        Employee Salary Payslip<br>
+                        Salary, PF, insurance and statutory deduction details are shown below.
+                    </div>
+                </td>
+
+                <td class="status-cell">
+                    Status<br>
+                    {% if payslip.status == "RELEASED" %}
+                        <span class="status-box released">Released</span>
+                    {% else %}
+                        <span class="status-box draft">Draft</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <table class="title-row">
+            <tr>
+                <td>
+                    Salary Payslip for {{ payslip.month_name }} {{ payslip.year }}
+                </td>
+            </tr>
+        </table>
+
+        <table class="info-table">
+            <tr>
+                <td colspan="2" class="info-title">Employee Details</td>
+                <td colspan="2" class="info-title">Payslip Details</td>
+            </tr>
+
+            <tr>
+                <td class="label">Employee Name</td>
+                <td class="value">{{ payslip.employee.get_full_name|default:payslip.employee.username }}</td>
+
+                <td class="label">Payslip No</td>
+                <td class="value">{{ payslip.payslip_number }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">Employee ID</td>
+                <td class="value">{{ payslip.employee.profile.employee_code|default:payslip.employee.id }}</td>
+
+                <td class="label">Month / Year</td>
+                <td class="value">{{ payslip.month_name }} {{ payslip.year }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">Role / Designation</td>
+                <td class="value">{{ payslip.employee.profile.get_role_display }}</td>
+
+                <td class="label">Generated Date</td>
+                <td class="value">{{ payslip.generated_at|date:"d M Y" }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">DOB</td>
+                <td class="value">
+                    {% if payslip.employee_dob %}
+                        {{ payslip.employee_dob|date:"d M Y" }}
+                    {% elif payslip.employee.profile.date_of_birth %}
+                        {{ payslip.employee.profile.date_of_birth|date:"d M Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td class="label">Released Date</td>
+                <td class="value">
+                    {% if payslip.released_at %}
+                        {{ payslip.released_at|date:"d M Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="label">PAN Number</td>
+                <td class="value">
+                    {{ payslip.employee_pan_number|default:payslip.employee.profile.pan_number|default:"-" }}
+                </td>
+
+                <td class="label">Generated By</td>
+                <td class="value">
+                    {% if payslip.generated_by %}
+                        {{ payslip.generated_by.get_full_name|default:payslip.generated_by.username }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="label">Email</td>
+                <td class="value">{{ payslip.employee.email|default:"-" }}</td>
+
+                <td class="label">Phone</td>
+                <td class="value">{{ payslip.employee.profile.phone|default:"-" }}</td>
+            </tr>
+        </table>
+
+        <div class="section-heading">
+            Bank Account Details
+        </div>
+
+        <table class="bank-table">
+            <tr>
+                <td class="label">Bank Name</td>
+                <td class="value">{{ payslip.employee_bank_name|default:payslip.employee.profile.bank_name|default:"-" }}</td>
+
+                <td class="label">Account Holder</td>
+                <td class="value">{{ payslip.employee_bank_account_holder_name|default:payslip.employee.profile.bank_account_holder_name|default:"-" }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">Account Number</td>
+                <td class="value">{{ payslip.employee_bank_account_number|default:payslip.employee.profile.bank_account_number|default:"-" }}</td>
+
+                <td class="label">IFSC Code</td>
+                <td class="value">{{ payslip.employee_bank_ifsc_code|default:payslip.employee.profile.bank_ifsc_code|default:"-" }}</td>
+            </tr>
+        </table>
+
+        <div class="section-heading">
+            PF and Insurance Details
+        </div>
+
+        <table class="pf-table">
+            <tr>
+                <td class="label">PF Status</td>
+                <td class="value">
+                    {% if payslip.employee_pf_uan_number or payslip.employee_pf_percentage or payslip.pf_deduction_amount %}
+                        <span class="yes-chip">Applicable</span>
+                    {% else %}
+                        <span class="no-chip">Not Applicable</span>
+                    {% endif %}
+                </td>
+
+                <td class="label">PF UAN</td>
+                <td class="value">{{ payslip.employee_pf_uan_number|default:payslip.employee.profile.pf_uan_number|default:"-" }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">PF Percentage</td>
+                <td class="value">{{ payslip.employee_pf_percentage|default:payslip.employee.profile.pf_deduction_percentage|default:"0.00" }}%</td>
+
+                <td class="label">PF Deduction</td>
+                <td class="value">₹{{ payslip.pf_deduction_amount|default:"0.00" }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">Insurance Status</td>
+                <td class="value">
+                    {% if payslip.employee_insurance_provider_name or payslip.employee_insurance_policy_number or payslip.insurance_deduction_amount %}
+                        <span class="yes-chip">Applicable</span>
+                    {% else %}
+                        <span class="no-chip">Not Applicable</span>
+                    {% endif %}
+                </td>
+
+                <td class="label">Insurance Provider</td>
+                <td class="value">{{ payslip.employee_insurance_provider_name|default:payslip.employee.profile.insurance_provider_name|default:"-" }}</td>
+            </tr>
+
+            <tr>
+                <td class="label">Policy Number</td>
+                <td class="value">{{ payslip.employee_insurance_policy_number|default:payslip.employee.profile.insurance_policy_number|default:"-" }}</td>
+
+                <td class="label">Insurance Deduction</td>
+                <td class="value">₹{{ payslip.insurance_deduction_amount|default:"0.00" }}</td>
+            </tr>
+        </table>
+
+        <div class="section-heading">
+            Salary Earnings and Deductions
+        </div>
+
+        <table class="salary-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Earnings</th>
+                    <th style="width: 15%; text-align:right;">Amount</th>
+                    <th style="width: 35%;">Deductions</th>
+                    <th style="width: 15%; text-align:right;">Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Basic Salary</td>
+                    <td class="amount earning">₹{{ payslip.basic_salary|floatformat:2 }}</td>
+
+                    <td>Leave Deduction</td>
+                    <td class="amount deduction">₹{{ payslip.leave_deduction_amount|floatformat:2 }}</td>
+                </tr>
+
+                <tr>
+                    <td>Allowance Amount</td>
+                    <td class="amount earning">₹{{ payslip.allowance_amount|floatformat:2 }}</td>
+
+                    <td>PF Deduction</td>
+                    <td class="amount deduction">₹{{ payslip.pf_deduction_amount|floatformat:2 }}</td>
+                </tr>
+
+                <tr>
+                    <td class="muted">-</td>
+                    <td class="amount muted">-</td>
+
+                    <td>Insurance Deduction</td>
+                    <td class="amount deduction">₹{{ payslip.insurance_deduction_amount|floatformat:2 }}</td>
+                </tr>
+
+                <tr>
+                    <td class="muted">-</td>
+                    <td class="amount muted">-</td>
+
+                    <td>Other Deduction</td>
+                    <td class="amount deduction">₹{{ payslip.other_deduction_amount|floatformat:2 }}</td>
+                </tr>
+
+                <tr class="total-row">
+                    <td>Gross Salary</td>
+                    <td class="amount">₹{{ payslip.gross_salary|floatformat:2 }}</td>
+
+                    <td>Total Deductions</td>
+                    <td class="amount">₹{{ payslip.total_deductions|floatformat:2 }}</td>
+                </tr>
+
+                <tr class="net-row">
+                    <td colspan="3">Net Salary Payable</td>
+                    <td class="amount">₹{{ payslip.net_salary|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-box">
+            <b>Note:</b>
+            This payslip includes salary, PF, insurance and other salary deductions only.
+            TA/DA, travel allowance, public vehicle bills, dealer visit claims and field reimbursements
+            are processed separately and are not included in this payslip.
+        </div>
+
+        {% if payslip.remarks %}
+            <div class="remarks-box">
+                <b>Remarks:</b><br>
+                {{ payslip.remarks }}
+            </div>
+        {% endif %}
+
+        <table class="signature-table">
+            <tr>
+                <td>
+                    Employee Signature
+                </td>
+
+                <td>
+                    Authorised Signature
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="footer-note">
+        This is a system-generated salary payslip from Arvis OMS Payroll System.<br>
+        © {% now "Y" %} Arvis Fertilizers &amp; Chemicals Pvt. Ltd.
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <div style="background:white;border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <h2>Farmer Meeting Requests</h2>
+
+        <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:12px;text-align:left;">Title</th>
+                        <th style="padding:12px;text-align:left;">Location</th>
+                        <th style="padding:12px;text-align:left;">Date</th>
+                        <th style="padding:12px;text-align:left;">Farmers</th>
+                        <th style="padding:12px;text-align:left;">Status</th>
+                        <th style="padding:12px;text-align:left;">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for meet in farmer_meets %}
+                        <tr style="border-bottom:1px solid #e5e7eb;">
+                            <td style="padding:12px;">{{ meet.title }}</td>
+                            <td style="padding:12px;">{{ meet.location }}</td>
+                            <td style="padding:12px;">{{ meet.meeting_date }}</td>
+                            <td style="padding:12px;">{{ meet.expected_farmer_count }}</td>
+                            <td style="padding:12px;">{{ meet.get_approval_status_display }}</td>
+                            <td style="padding:12px;">
+                                <a href="{% url 'farmer_meet_detail' meet.id %}" style="background:#2563eb;color:white;padding:8px 12px;border-radius:10px;text-decoration:none;">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding:12px;">No farmer meeting requests found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

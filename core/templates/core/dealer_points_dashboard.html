@@ -1,0 +1,629 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.rewards-page {
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(245, 158, 11, 0.08), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.06), transparent 30%);
+}
+
+.rewards-wrap {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+.reward-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    padding: 22px;
+    color: #fff7d6;
+    background:
+        radial-gradient(circle at 86% 12%, rgba(255, 226, 126, 0.34), transparent 23%),
+        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.26), transparent 30%),
+        linear-gradient(135deg, #1f1300 0%, #4a2f00 42%, #a16207 100%);
+    box-shadow: 0 24px 55px rgba(120, 72, 0, 0.24);
+    margin-bottom: 16px;
+}
+
+.reward-hero::before {
+    content: "";
+    position: absolute;
+    inset: -80%;
+    background: linear-gradient(120deg, transparent 42%, rgba(255,255,255,0.22) 50%, transparent 58%);
+    transform: rotate(16deg);
+    animation: rewardShine 4s infinite;
+}
+
+.reward-hero-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 18px;
+    align-items: stretch;
+}
+
+.reward-title-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    color: #fff4c2;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reward-hero h2 {
+    margin: 13px 0 8px;
+    font-size: clamp(27px, 4vw, 46px);
+    line-height: 1.04;
+    font-weight: 1000;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.reward-hero p {
+    margin: 0;
+    color: rgba(255, 247, 214, 0.84);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.55;
+    max-width: 680px;
+}
+
+.reward-points-wallet {
+    border-radius: 26px;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 190px;
+}
+
+.wallet-label {
+    color: rgba(255, 247, 214, 0.78);
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+}
+
+.wallet-points {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.wallet-points strong {
+    font-size: clamp(44px, 7vw, 72px);
+    line-height: 0.92;
+    font-weight: 1000;
+    color: #fff8d7;
+    text-shadow: 0 8px 26px rgba(0,0,0,0.22);
+}
+
+.wallet-points span {
+    padding-bottom: 8px;
+    color: rgba(255, 247, 214, 0.82);
+    font-size: 15px;
+    font-weight: 1000;
+}
+
+.wallet-value {
+    margin-top: 12px;
+    display: inline-flex;
+    width: fit-content;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 1000;
+}
+
+.reward-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reward-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 1000;
+    transition: 0.22s ease;
+}
+
+.reward-btn.primary {
+    background: #fff7d6;
+    color: #4a2f00;
+    box-shadow: 0 14px 28px rgba(255, 247, 214, 0.17);
+}
+
+.reward-btn.secondary {
+    background: rgba(255,255,255,0.12);
+    color: #fff7d6;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+.reward-btn:hover {
+    transform: translateY(-2px);
+}
+
+.reward-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.reward-stat-card {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #f3e2b5;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 14px 32px rgba(120, 72, 0, 0.08);
+}
+
+.reward-stat-card::after {
+    content: "";
+    position: absolute;
+    right: -28px;
+    top: -28px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.10);
+}
+
+.reward-stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff7d6, #facc15);
+    color: #5c3d00;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.reward-stat-card span {
+    display: block;
+    color: #7c5d00;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+}
+
+.reward-stat-card strong {
+    display: block;
+    margin-top: 5px;
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: 1000;
+    word-break: break-word;
+}
+
+.reward-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 26px;
+    padding: 18px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+    margin-bottom: 16px;
+}
+
+.reward-section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.reward-section-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 1000;
+}
+
+.reward-section-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.reward-mini-pill {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 999px;
+    padding: 8px 11px;
+    font-size: 12px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.product-reward-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.product-reward-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 15px;
+    background:
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.11), transparent 30%),
+        #ffffff;
+    transition: 0.2s ease;
+}
+
+.product-reward-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 28px rgba(15, 23, 42, 0.10);
+    border-color: #facc15;
+}
+
+.product-reward-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.product-reward-name {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 1000;
+    line-height: 1.35;
+}
+
+.product-reward-badge {
+    background: #111827;
+    color: #fff7d6;
+    border-radius: 999px;
+    padding: 6px 9px;
+    font-size: 11px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.product-reward-meta {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.claim-status {
+    margin-top: 12px;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 1000;
+}
+
+.claim-status.ready {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.claim-status.locked {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.redeem-table-wrap {
+    overflow: auto;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+}
+
+.redeem-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+}
+
+.redeem-table th {
+    background: #f8fafc;
+    color: #475569;
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+}
+
+.redeem-table td {
+    padding: 12px;
+    border-top: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.status-chip {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 6px 9px;
+    font-size: 11px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.status-chip.approved {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.status-chip.rejected {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.status-chip.pending {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.empty-reward {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    border-radius: 18px;
+    padding: 18px;
+    text-align: center;
+    font-weight: 900;
+}
+
+@keyframes rewardShine {
+    0% { transform: translateX(-42%) rotate(16deg); }
+    48% { transform: translateX(42%) rotate(16deg); }
+    100% { transform: translateX(42%) rotate(16deg); }
+}
+
+@media(max-width: 980px) {
+    .reward-hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .reward-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product-reward-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 620px) {
+    .rewards-page {
+        padding: 10px;
+    }
+
+    .reward-hero,
+    .reward-section {
+        border-radius: 22px;
+        padding: 15px;
+    }
+
+    .reward-stats-grid,
+    .product-reward-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reward-section-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .reward-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .reward-btn {
+        width: 100%;
+    }
+
+    .wallet-points strong {
+        font-size: 46px;
+    }
+}
+</style>
+
+<div class="rewards-page">
+    <div class="rewards-wrap">
+
+        <div class="reward-hero">
+            <div class="reward-hero-content">
+                <div>
+                    <div class="reward-title-chip">🏆 Dealer Rewards Wallet</div>
+
+                    <h2>Grow your points. Unlock more rewards.</h2>
+
+                    <p>
+                        Every unique farmer data upload adds <strong>{{ setting.farmer_points }} points</strong> to your wallet.
+                        Keep adding genuine farmer contacts and redeem your points as money or free products.
+                    </p>
+
+                    <div class="reward-actions">
+                        <a href="{% url 'dealer_farmer_data' %}" class="reward-btn primary">+ Upload Farmer Data</a>
+                        <a href="{% url 'dealer_redemption_create' %}" class="reward-btn secondary">Redeem Rewards</a>
+                    </div>
+                </div>
+
+                <div class="reward-points-wallet">
+                    <div class="wallet-label">Available Reward Balance</div>
+                    <div class="wallet-points">
+                        <strong>{{ balance_points }}</strong>
+                        <span>points</span>
+                    </div>
+                    <div class="wallet-value">Worth ₹{{ point_value|floatformat:2 }} right now</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reward-stats-grid">
+            <div class="reward-stat-card">
+                <div class="reward-stat-icon">👨‍🌾</div>
+                <span>Farmers Uploaded</span>
+                <strong>{{ farmers_count }}</strong>
+            </div>
+
+            <div class="reward-stat-card">
+                <div class="reward-stat-icon">⭐</div>
+                <span>Points Per Farmer</span>
+                <strong>{{ setting.farmer_points }}</strong>
+            </div>
+
+            <div class="reward-stat-card">
+                <div class="reward-stat-icon">₹</div>
+                <span>One Point Value</span>
+                <strong>₹{{ setting.rupees_per_point }}</strong>
+            </div>
+
+            <div class="reward-stat-card">
+                <div class="reward-stat-icon">🎁</div>
+                <span>Min. Money Redeem</span>
+                <strong>{{ setting.minimum_money_redemption_points }}</strong>
+            </div>
+        </div>
+
+        <div class="reward-section">
+            <div class="reward-section-head">
+                <div>
+                    <h3>Reward Store</h3>
+                    <p>Choose free product rewards based on your available points.</p>
+                </div>
+                <span class="reward-mini-pill">Product minimum: {{ setting.minimum_product_redemption_points }} points</span>
+            </div>
+
+            <div class="product-reward-grid">
+                {% for rule in product_rules %}
+                    <div class="product-reward-card">
+                        <div class="product-reward-top">
+                            <div class="product-reward-name">
+                                {{ rule.product.name }}
+                                {% if rule.pack_size %}
+                                    <br><span style="color:#64748b;font-size:12px;">{{ rule.pack_size.display_pack }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="product-reward-badge">
+                                {{ rule.points_required }} pts
+                            </div>
+                        </div>
+
+                        <div class="product-reward-meta">
+                            Get <strong>{{ rule.free_quantity }}</strong> free quantity for this reward.
+                        </div>
+
+                        {% if balance_points >= rule.points_required %}
+                            <div class="claim-status ready">Ready to redeem ✨</div>
+                        {% else %}
+                            <div class="claim-status locked">Keep uploading farmers to unlock 🔒</div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="empty-reward">
+                        No product reward rules added yet. Please check again later.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="reward-section">
+            <div class="reward-section-head">
+                <div>
+                    <h3>My Redemption Requests</h3>
+                    <p>Track money and product redemption status here.</p>
+                </div>
+                <span class="reward-mini-pill">Approval: Sales Officer → ASM → Accountant</span>
+            </div>
+
+            <div class="redeem-table-wrap">
+                <table class="redeem-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Points</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for req in redemptions %}
+                            <tr>
+                                <td>{{ req.get_redemption_type_display }}</td>
+                                <td>{{ req.points_requested }}</td>
+                                <td>
+                                    {% if req.redemption_type == "MONEY" %}
+                                        ₹{{ req.money_amount|floatformat:2 }}
+                                    {% else %}
+                                        {{ req.product_rule.product.name }} - Free Qty: {{ req.requested_free_quantity }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if req.status == "APPROVED" %}
+                                        <span class="status-chip approved">Approved</span>
+                                    {% elif req.status == "REJECTED" %}
+                                        <span class="status-chip rejected">Rejected</span>
+                                    {% else %}
+                                        <span class="status-chip pending">{{ req.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ req.created_at|date:"d M Y" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align:center;padding:22px;color:#64748b;font-weight:1000;">
+                                    No redemption requests yet. Build points and claim your first reward.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

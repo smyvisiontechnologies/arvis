@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ credit_note.credit_note_number }}</title>
+    <style>
+        @page { size:A4 portrait; margin:12mm; }
+
+        body {
+            font-family: Arial, sans-serif;
+            color:#111827;
+            margin:0;
+            background:#f8fafc;
+        }
+
+        .page {
+            background:white;
+            padding:18px;
+            min-height:100vh;
+        }
+
+        .header {
+            border:2px solid #b91c1c;
+            border-radius:14px;
+            padding:14px;
+            display:grid;
+            grid-template-columns:80px 1fr;
+            gap:14px;
+            align-items:center;
+        }
+
+        .logo {
+            width:76px;
+            height:76px;
+            object-fit:contain;
+        }
+
+        .company h1 {
+            margin:0;
+            font-size:24px;
+            color:#991b1b;
+        }
+
+        .company p {
+            margin:4px 0 0;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .title {
+            text-align:center;
+            margin:14px 0;
+            background:#fef2f2;
+            color:#991b1b;
+            border:1px solid #fecaca;
+            padding:10px;
+            border-radius:12px;
+            font-weight:900;
+            font-size:20px;
+        }
+
+        .info-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+            margin-bottom:12px;
+        }
+
+        .box {
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            padding:10px;
+        }
+
+        .box h3 {
+            margin:0 0 8px;
+            font-size:14px;
+            color:#991b1b;
+        }
+
+        .line {
+            font-size:12px;
+            margin:4px 0;
+            font-weight:700;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:12px;
+        }
+
+        th,td {
+            border:1px solid #d1d5db;
+            padding:7px;
+            font-size:12px;
+            text-align:left;
+        }
+
+        th {
+            background:#fef2f2;
+            color:#991b1b;
+            font-weight:900;
+        }
+
+        .right { text-align:right; }
+
+        .total-box {
+            width:320px;
+            margin-left:auto;
+            margin-top:12px;
+            border:1px solid #fecaca;
+            border-radius:12px;
+            overflow:hidden;
+        }
+
+        .total-row {
+            display:flex;
+            justify-content:space-between;
+            padding:9px 10px;
+            border-bottom:1px solid #fecaca;
+            font-size:13px;
+            font-weight:900;
+        }
+
+        .total-row.final {
+            background:#fef2f2;
+            color:#991b1b;
+            font-size:15px;
+        }
+
+        .words {
+            margin-top:12px;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            padding:10px;
+            font-size:13px;
+            font-weight:900;
+        }
+
+        .reason {
+            margin-top:12px;
+            border:1px solid #fed7aa;
+            background:#fff7ed;
+            border-radius:12px;
+            padding:10px;
+            font-size:13px;
+            font-weight:800;
+        }
+
+        .sign-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:40px;
+            margin-top:55px;
+        }
+
+        .sign-box {
+            text-align:center;
+            border-top:1px solid #111827;
+            padding-top:8px;
+            font-size:13px;
+            font-weight:900;
+        }
+
+        .print-btn {
+            position:fixed;
+            right:20px;
+            bottom:20px;
+            border:none;
+            background:#991b1b;
+            color:white;
+            padding:12px 18px;
+            border-radius:12px;
+            font-weight:900;
+            cursor:pointer;
+        }
+
+        @media print {
+            body { background:white; }
+            .print-btn { display:none; }
+            .page { padding:0; }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print()" class="print-btn">Print Credit Note</button>
+
+    <div class="page">
+        <div class="header">
+            <img src="{% static 'images/logo.png' %}" class="logo">
+
+            <div class="company">
+                <h1>Arvis Fertilizers & Chemicals Pvt. Ltd.</h1>
+                <p>S.No. 282/A6, Near Port Road, Kakinada, Kakinada District</p>
+                <p>Phone: 7893423282 | Email: arvisfertilizer@gmail.com | GSTIN: 37AAZCA7327G1Z4</p>
+            </div>
+        </div>
+
+        <div class="title">
+            SALES RETURN / CREDIT NOTE
+        </div>
+
+        <div class="info-grid">
+            <div class="box">
+                <h3>Dealer Details</h3>
+                <div class="line">Dealer ID: {{ dealer.dealer_code }}</div>
+                <div class="line">Firm: {{ dealer.firm_name }}</div>
+                <div class="line">Owner: {{ dealer.owner_name }}</div>
+                <div class="line">Phone: {{ dealer.phone }}</div>
+                <div class="line">GST: {{ dealer.gst_number|default:"-" }}</div>
+                <div class="line">Address: {{ dealer.firm_address|default:"-" }}</div>
+            </div>
+
+            <div class="box">
+                <h3>Credit Note Details</h3>
+                <div class="line">Credit Note No: {{ credit_note.credit_note_number }}</div>
+                <div class="line">Credit Note Date: {{ credit_note.return_date|date:"d M Y" }}</div>
+                <div class="line">Against Invoice: {{ invoice.invoice_number }}</div>
+                <div class="line">Order: #{{ order.id }}</div>
+                <div class="line">Invoice Date: {{ invoice.invoice_date|date:"d M Y" }}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th>Product</th>
+                    <th>Pack</th>
+                    <th>HSN</th>
+                    <th>Batch</th>
+                    <th>MFG</th>
+                    <th>EXP</th>
+                    <th class="right">Sold Boxes</th>
+                    <th class="right">Return Boxes</th>
+                    <th class="right">Price/Box</th>
+                    <th class="right">GST</th>
+                    <th class="right">Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.product_name_snapshot }}</td>
+                        <td>{{ item.pack_label_snapshot }}</td>
+                        <td>{{ item.hsn_code|default:"-" }}</td>
+                        <td>{{ item.batch_no|default:"-" }}</td>
+                        <td>{{ item.mfg_date|default:"-" }}</td>
+                        <td>{{ item.expiry_date|default:"-" }}</td>
+                        <td class="right">{{ item.sold_quantity_boxes }}</td>
+                        <td class="right">{{ item.return_quantity_boxes }}</td>
+                        <td class="right">₹{{ item.price_per_box }}</td>
+                        <td class="right">₹{{ item.gst_amount }}</td>
+                        <td class="right">₹{{ item.total_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total-box">
+            <div class="total-row">
+                <span>Taxable Amount</span>
+                <span>₹{{ credit_note.subtotal_amount }}</span>
+            </div>
+
+            <div class="total-row">
+                <span>GST Amount</span>
+                <span>₹{{ credit_note.gst_amount }}</span>
+            </div>
+
+            <div class="total-row final">
+                <span>Total Credit</span>
+                <span>₹{{ credit_note.grand_total }}</span>
+            </div>
+        </div>
+
+        <div class="words">
+            Amount in Words: {{ amount_words }}
+        </div>
+
+        <div class="reason">
+            <b>Reason for Return:</b><br>
+            {{ credit_note.reason }}
+        </div>
+
+        <div class="sign-grid">
+            <div class="sign-box">
+                Dealer Signature / Stamp
+            </div>
+
+            <div class="sign-box">
+                Authorised Signature / Company Stamp
+            </div>
+        </div>
+    </div>
+</body>
+</html>

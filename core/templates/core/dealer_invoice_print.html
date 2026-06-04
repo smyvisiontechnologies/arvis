@@ -1,0 +1,1032 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #303443;
+            background: #f1f5f9;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .print-actions {
+            padding: 14px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .print-actions button {
+            background: #07120d;
+            color: white;
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .print-actions .back-btn {
+            background: #334155;
+        }
+
+        .page,
+        .ack-page {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            margin: 0 auto 16px;
+            padding: 7mm;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #1f2937;
+        }
+
+        .page-count {
+            position: absolute;
+            left: 7mm;
+            bottom: 4mm;
+            font-size: 10px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .title-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .invoice-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .copy-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           COMPANY HEADER - BIG NAME FULL WIDTH
+        ========================= */
+        .company-box {
+            border: 1px solid #374151;
+            padding: 3px 6px;
+            display: grid;
+            grid-template-columns: 114px minmax(0, 1fr);
+            gap: 0;
+            align-items: center;
+            min-height: 84px;
+            overflow: hidden;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .logo {
+            width: 110px;
+            height: 74px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .company-details {
+            min-width: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            padding-left: 2px;
+        }
+
+        .company-name {
+            font-size: 30px;
+            font-weight: 1000;
+            line-height: 0.98;
+            color: #303443;
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            letter-spacing: -1.35px;
+            width: 100%;
+        }
+
+        .company-small {
+            font-size: 15px;
+            line-height: 1.22;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.18px;
+        }
+
+        .bill-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-left: 1px solid #374151;
+            border-right: 1px solid #374151;
+            border-bottom: 1px solid #374151;
+        }
+
+        .bill-cell {
+            padding: 5px 6px;
+            border-right: 1px solid #374151;
+            min-height: 78px;
+        }
+
+        .bill-cell:last-child {
+            border-right: none;
+        }
+
+        .section-head {
+            font-weight: 900;
+            background: #f3f4f6;
+            border-bottom: 1px solid #374151;
+            margin: -5px -6px 5px;
+            padding: 4px 6px;
+            font-size: 11px;
+        }
+
+        .bold {
+            font-weight: 900;
+        }
+
+        .small {
+            font-size: 10.8px;
+            line-height: 1.35;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* =========================
+           ITEM TABLE - SINGLE LINE HEADER
+        ========================= */
+        .item-table {
+            margin-top: 6px;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .item-table th,
+        .item-table td {
+            border: 1px solid #374151;
+            padding: 3px 2px;
+            vertical-align: middle;
+            overflow: hidden;
+        }
+
+        .item-table th {
+            background: #f3f4f6;
+            font-weight: 900;
+            font-size: 7.1px;
+            line-height: 1;
+            white-space: nowrap;
+            text-align: center;
+            letter-spacing: -0.55px;
+        }
+
+        .item-table td {
+            font-size: 8.3px;
+            line-height: 1.15;
+            word-break: break-word;
+        }
+
+        .col-sl { width: 3.5%; }
+        .col-item { width: 18%; }
+        .col-hsn { width: 8%; }
+        .col-batch { width: 8%; }
+        .col-exp { width: 8%; }
+        .col-mfg { width: 8%; }
+        .col-qty { width: 6.5%; }
+        .col-unit { width: 6%; }
+        .col-price { width: 11%; }
+        .col-gst { width: 10.5%; }
+        .col-amount { width: 12.5%; }
+
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .summary-grid {
+            margin-top: 6px;
+            display: grid;
+            grid-template-columns: 1.38fr 1fr;
+            border: 1px solid #374151;
+            overflow: hidden;
+        }
+
+        .tax-table {
+            table-layout: fixed;
+        }
+
+        .tax-table th,
+        .tax-table td {
+            border: 1px solid #374151;
+            padding: 4px 3px;
+            font-size: 8.4px;
+            line-height: 1.12;
+            overflow: hidden;
+        }
+
+        .tax-table th {
+            background: #f3f4f6;
+            font-weight: 900;
+            white-space: nowrap;
+            letter-spacing: -0.45px;
+            text-align: center;
+        }
+
+        .amount-box {
+            border-left: 1px solid #374151;
+            overflow: hidden;
+        }
+
+        .amount-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            border-bottom: 1px solid #374151;
+            padding: 4px 5px;
+            font-size: 10.6px;
+            gap: 6px;
+        }
+
+        .amount-row span,
+        .amount-row b {
+            white-space: nowrap;
+        }
+
+        .words {
+            padding: 5px;
+            min-height: 38px;
+            font-size: 10.6px;
+            border-bottom: 1px solid #374151;
+            line-height: 1.3;
+        }
+
+        .terms {
+            border: 1px solid #374151;
+            border-top: none;
+            padding: 5px;
+            font-size: 10.8px;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            border: 1px solid #374151;
+            border-top: none;
+            min-height: 108px;
+        }
+
+        .bottom-cell {
+            padding: 5px;
+            border-right: 1px solid #374151;
+            font-size: 10.8px;
+        }
+
+        .bottom-cell:last-child {
+            border-right: none;
+        }
+
+        .qr-bank-row {
+            display: grid;
+            grid-template-columns: 104px 1fr;
+            gap: 8px;
+            align-items: start;
+        }
+
+        .qr-box {
+            text-align: center;
+            border: 1px solid #d1d5db;
+            padding: 5px;
+            border-radius: 6px;
+        }
+
+        .qr-box img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .upi-text {
+            font-size: 8.5px;
+            line-height: 1.2;
+            font-weight: 900;
+            margin-top: 2px;
+        }
+
+        .bank-details {
+            font-size: 10.5px;
+            line-height: 1.36;
+        }
+
+        .signature-cell {
+            padding: 5px;
+            text-align: center;
+            position: relative;
+        }
+
+        .signature-company {
+            font-size: 10.8px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.25;
+            margin-bottom: 1px;
+            white-space: nowrap;
+        }
+
+        .stamp-wrap {
+            height: 71px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px 0 2px;
+        }
+
+        .stamp-img {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+            display: block;
+            opacity: 0.95;
+        }
+
+        .signature-line {
+            width: 78%;
+            border-top: 1px solid #4b5563;
+            margin: 2px auto 3px;
+        }
+
+        .signature-label {
+            font-size: 10.3px;
+            font-weight: 900;
+            color: #374151;
+        }
+
+        .signature-note {
+            font-size: 8.3px;
+            color: #6b7280;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        /* =========================
+           ACKNOWLEDGEMENT
+        ========================= */
+        .ack-page {
+            page-break-before: always;
+            padding: 9mm;
+        }
+
+        .ack-title {
+            text-align: center;
+            font-size: 25px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .ack-company-box {
+            border: 1px solid #374151;
+            padding: 4px 8px;
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr);
+            gap: 0;
+            align-items: center;
+            min-height: 78px;
+            overflow: hidden;
+        }
+
+        .ack-logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .ack-logo {
+            width: 88px;
+            height: 62px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .ack-company-name {
+            font-size: 28px;
+            font-weight: 1000;
+            line-height: 0.98;
+            white-space: nowrap;
+            color: #303443;
+            overflow: hidden;
+            letter-spacing: -1.35px;
+            margin: 0 0 4px 0;
+            width: 100%;
+        }
+
+        .ack-company-small {
+            font-size: 14px;
+            font-weight: 800;
+            margin-top: 0;
+            line-height: 1.24;
+            letter-spacing: -0.18px;
+        }
+
+        .ack-points {
+            border-left: 1px solid #374151;
+            border-right: 1px solid #374151;
+            padding: 7px 11px;
+            font-size: 11.8px;
+            font-weight: 800;
+            line-height: 1.42;
+        }
+
+        .ack-points ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .ack-grid {
+            display: grid;
+            grid-template-columns: 1fr 0.95fr 1fr;
+            border: 1px solid #374151;
+        }
+
+        .ack-cell {
+            min-height: 92px;
+            border-right: 1px solid #374151;
+            padding: 8px;
+            font-size: 11.2px;
+            line-height: 1.35;
+        }
+
+        .ack-cell:last-child {
+            border-right: none;
+        }
+
+        .ack-party-name {
+            font-size: 16px;
+            font-weight: 900;
+            color: #111827;
+            margin-top: 8px;
+            line-height: 1.2;
+        }
+
+        .ack-invoice-words {
+            margin-top: 5px;
+            font-size: 10.8px;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+
+        @media print {
+            html,
+            body {
+                background: white;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 210mm;
+            }
+
+            .print-actions {
+                display: none !important;
+            }
+
+            .page,
+            .ack-page {
+                margin: 0 !important;
+                border: none;
+                box-shadow: none;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+
+            .ack-page {
+                page-break-before: always;
+            }
+
+            .stamp-img {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="print-actions">
+    <button type="button" class="back-btn" onclick="goBackToPreviousPage()">← Back</button>
+    <button type="button" onclick="cleanPrint()">Print Invoice</button>
+</div>
+
+<div class="page">
+    <div class="page-count">
+        {% if copy_type == "COMPANY" %}
+            1 of 2
+        {% else %}
+            1 of 1
+        {% endif %}
+    </div>
+
+    <div class="title-row">
+        <div class="invoice-title">Tax Invoice</div>
+        <div class="copy-label">
+            {% if request.user.profile.role == "DEALER" %}
+                ORIGINAL
+            {% else %}
+                {{ copy_type }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="company-box">
+        <div class="logo-wrap">
+            <img src="{% static 'images/logo.png' %}" class="logo" alt="Logo">
+        </div>
+
+        <div class="company-details">
+            <div class="company-name">
+                Arvis Fertilizers &amp;Chemicals Pvt.Ltd.
+            </div>
+
+            <div class="company-small">
+                S.No. 282/A6, Near Port Road, Kakinada, Kakinada District<br>
+                Phone: <b>7893423282</b> &nbsp;&nbsp;
+                Email: <b>arvisfertilizer@gmail.com</b><br>
+                GSTIN: <b>37AAZCA7327G1Z4</b> &nbsp;&nbsp;
+                State: <b>Andhra Pradesh</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="bill-grid">
+        <div class="bill-cell">
+            <div class="section-head">Bill To:</div>
+
+            <div class="small">
+                <div class="bold">{{ dealer.firm_name }}</div>
+                {{ dealer.firm_address|default:dealer.owner_address }}<br>
+                Contact No: <b>{{ dealer.owner_phone|default:dealer.phone }}</b>
+                GSTIN: <b>{{ dealer.gst_number|default:"-" }}</b><br>
+                State: <b>{{ dealer.state }}</b>
+            </div>
+        </div>
+
+        <div class="bill-cell">
+            <div class="section-head">Invoice Details:</div>
+
+            <div class="small">
+                No: <b>{{ invoice.invoice_number }}</b><br>
+                Date: <b>{{ invoice.invoice_date|date:"d/m/Y" }}</b><br>
+                Place Of Supply:
+                <b>{{ invoice.place_of_supply|default:dealer.state }}</b>
+            </div>
+        </div>
+    </div>
+
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th class="col-sl">#</th>
+                <th class="col-item">Item Name</th>
+                <th class="col-hsn">HSN/SAC</th>
+                <th class="col-batch">Batch No.</th>
+                <th class="col-exp">Exp. Date</th>
+                <th class="col-mfg">Mfg. Date</th>
+                <th class="col-qty">Qty</th>
+                <th class="col-unit">Unit</th>
+                <th class="col-price">Price/Unit (₹)</th>
+                <th class="col-gst">GST (₹)</th>
+                <th class="col-amount">Amount (₹)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td class="center">{{ forloop.counter }}</td>
+                    <td><b>{{ item.product_name }}</b></td>
+                    <td>{{ item.hsn_code|default:"-" }}</td>
+                    <td>{{ item.batch_no|default:"-" }}</td>
+
+                    <td>
+                        <span class="js-month-year" data-date="{{ item.expiry_date|default:'' }}">
+                            {{ item.expiry_date|default:"-" }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="js-month-year" data-date="{{ item.mfg_date|default:'' }}">
+                            {{ item.mfg_date|default:"-" }}
+                        </span>
+                    </td>
+
+                    <td class="right">{{ item.total_units }}</td>
+                    <td>{{ item.unit_name }}</td>
+                    <td class="right">₹ {{ item.price_per_unit|floatformat:1 }}</td>
+                    <td class="right">
+                        ₹ {{ item.gst_amount|floatformat:1 }}
+                        ({{ item.gst_percent|floatformat:0 }}%)
+                    </td>
+                    <td class="right">₹ {{ item.total_amount|floatformat:1 }}</td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <td></td>
+                <td><b>Total</b></td>
+                <td colspan="4"></td>
+                <td class="right"><b>{{ order.items.count }}</b></td>
+                <td colspan="2"></td>
+                <td class="right"><b>₹ {{ invoice.gst_amount|floatformat:1 }}</b></td>
+                <td class="right"><b>₹ {{ invoice_display_amount|floatformat:1 }}</b></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="summary-grid">
+        <div>
+            <table class="tax-table">
+                <thead>
+                    <tr>
+                        <th>HSN/SAC</th>
+                        <th>Taxable Amt (₹)</th>
+                        <th>IGST Rate %</th>
+                        <th>IGST Amt (₹)</th>
+                        <th>Total Tax (₹)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for hsn, data in tax_summary.items %}
+                        <tr>
+                            <td>{{ hsn }}</td>
+                            <td class="right">{{ data.taxable|floatformat:1 }}</td>
+                            <td class="right">{{ data.gst_rate|floatformat:0 }}</td>
+                            <td class="right">{{ data.gst|floatformat:1 }}</td>
+                            <td class="right">{{ data.total_tax|floatformat:1 }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td><b>TOTAL</b></td>
+                        <td class="right"><b>{{ invoice.subtotal_amount|floatformat:1 }}</b></td>
+                        <td></td>
+                        <td class="right"><b>{{ invoice.gst_amount|floatformat:1 }}</b></td>
+                        <td class="right"><b>{{ invoice.gst_amount|floatformat:1 }}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="amount-box">
+            <div class="amount-row">
+                <span>Invoice Amount :</span>
+                <b>₹ {{ invoice.total_amount|floatformat:1 }}</b>
+            </div>
+
+            {% if invoice.discount_amount and invoice.discount_amount > 0 %}
+                <div class="amount-row">
+                    <span>Discount :</span>
+                    <b>- ₹ {{ invoice.discount_amount|floatformat:1 }}</b>
+                </div>
+
+                <div class="amount-row">
+                    <span>Final Payable :</span>
+                    <b>₹ {{ invoice_display_amount|floatformat:1 }}</b>
+                </div>
+            {% else %}
+                <div class="amount-row">
+                    <span>Total :</span>
+                    <b>₹ {{ invoice_display_amount|floatformat:1 }}</b>
+                </div>
+            {% endif %}
+
+            {% if invoice.paid_amount and invoice.paid_amount > 0 %}
+                <div class="amount-row">
+                    <span>Received :</span>
+                    <b>₹ {{ invoice.paid_amount|floatformat:1 }}</b>
+                </div>
+
+                <div class="amount-row">
+                    <span>Balance :</span>
+                    <b>₹ {{ invoice.balance_amount|floatformat:1 }}</b>
+                </div>
+            {% endif %}
+
+            <div class="words">
+                <b>Invoice Amount in Words:</b><br>
+                Rupees {{ invoice_amount_words }} only
+            </div>
+        </div>
+    </div>
+
+    <div class="terms">
+        <b>Terms & Conditions:</b><br>
+        Thanks for doing business with us!
+    </div>
+
+    <div class="bottom-grid">
+        <div class="bottom-cell bank-cell">
+            <div class="qr-bank-row">
+                <div class="qr-box">
+                    <img src="{{ upi_qr_data_uri }}" alt="UPI QR">
+
+                    <div class="upi-text">
+                        Scan & Pay
+                    </div>
+                </div>
+
+                <div class="bank-details">
+                    <b>Bank Details:</b><br>
+                    Name : <b>AXIS BANK, KAKINADA</b><br>
+                    Account No. : <b>923020068119432</b><br>
+                    IFSC code : <b>UTIB0004088</b><br>
+                    Account holder's name : <b>Arvis Fertilizers &amp; Chemicals Pvt. Ltd.</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-cell signature-cell">
+            <div class="signature-company">
+                For Arvis Fertilizers &amp;Chemicals Pvt.Ltd.
+            </div>
+
+            <div class="stamp-wrap">
+                <img src="{% static 'images/stamp.png' %}" class="stamp-img" alt="Company Stamp">
+            </div>
+
+            <div class="signature-line"></div>
+
+            <div class="signature-label">
+                Authorized Signatory
+            </div>
+
+            <div class="signature-note">
+                Company Seal
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if copy_type == "COMPANY" %}
+    <div class="ack-page">
+        <div class="page-count">2 of 2</div>
+
+        <div class="ack-title">Acknowledgement</div>
+
+        <div class="ack-company-box">
+            <div class="ack-logo-wrap">
+                <img src="{% static 'images/logo.png' %}" class="ack-logo" alt="Arvis Logo">
+            </div>
+
+            <div>
+                <div class="ack-company-name">
+                    Arvis Fertilizers &amp;Chemicals Pvt.Ltd.
+                </div>
+
+                <div class="ack-company-small">
+                    S.No. 282/A6, Near Port Road, Kakinada, Kakinada District<br>
+                    Phone: <b>7893423282</b>
+                    &nbsp;&nbsp;&nbsp;
+                    Email: <b>arvisfertilizer@gmail.com</b><br>
+                    GSTIN: <b>37AAZCA7327G1Z4</b>
+                    &nbsp;&nbsp;&nbsp;
+                    State: <b>Andhra Pradesh</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="ack-points">
+            <ul>
+                <li>Goods received in good condition as per the invoice details.</li>
+                <li>Quantity, product details, and packaging have been checked and accepted.</li>
+                <li>No damage or shortage was reported at the time of receiving.</li>
+            </ul>
+        </div>
+
+        <div class="ack-grid">
+            <div class="ack-cell">
+                <b>Invoice Details:</b><br>
+                Invoice No. : <b>{{ invoice.invoice_number }}</b><br>
+                Invoice Date : <b>{{ invoice.invoice_date|date:"d-m-Y" }}</b><br>
+                Invoice Amount : <b>₹ {{ invoice_display_amount|floatformat:1 }}</b>
+
+                <div class="ack-invoice-words">
+                    Rupees {{ invoice_amount_words }} only
+                </div>
+            </div>
+
+            <div class="ack-cell">
+                <b>Party Details:</b>
+
+                <div class="ack-party-name">
+                    {{ dealer.firm_name }}
+                </div>
+            </div>
+
+            <div class="ack-cell">
+                <b>Receiver’s Seal &amp; Sign:</b>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+function formatMonthYear(rawValue) {
+    if (!rawValue) {
+        return "-";
+    }
+
+    let value = String(rawValue).trim();
+
+    if (
+        !value ||
+        value === "-" ||
+        value.toLowerCase() === "none" ||
+        value.toLowerCase() === "null"
+    ) {
+        return "-";
+    }
+
+    let match;
+
+    // Already MM/YYYY
+    match = value.match(/^(0[1-9]|1[0-2])\/(\d{4})$/);
+    if (match) {
+        return match[1] + "/" + match[2];
+    }
+
+    // 2026-05 or 2026-05-01 => 05/2026
+    match = value.match(/^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?$/);
+    if (match) {
+        const year = match[1];
+        const month = String(parseInt(match[2], 10)).padStart(2, "0");
+
+        if (parseInt(month, 10) >= 1 && parseInt(month, 10) <= 12) {
+            return month + "/" + year;
+        }
+    }
+
+    // 05/2026 or 05-2026 => 05/2026
+    match = value.match(/^(\d{1,2})[\/\-](\d{4})$/);
+    if (match) {
+        const month = String(parseInt(match[1], 10)).padStart(2, "0");
+        const year = match[2];
+
+        if (parseInt(month, 10) >= 1 && parseInt(month, 10) <= 12) {
+            return month + "/" + year;
+        }
+    }
+
+    // 01/05/2026 or 01-05-2026 => 05/2026
+    match = value.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if (match) {
+        const month = String(parseInt(match[2], 10)).padStart(2, "0");
+        const year = match[3];
+
+        if (parseInt(month, 10) >= 1 && parseInt(month, 10) <= 12) {
+            return month + "/" + year;
+        }
+    }
+
+    // 19.NOV.2025 / 19-NOV-2025 / 19 NOV 2025 => 11/2025
+    const shortMonths = {
+        JAN: "01",
+        FEB: "02",
+        MAR: "03",
+        APR: "04",
+        MAY: "05",
+        JUN: "06",
+        JUL: "07",
+        AUG: "08",
+        SEP: "09",
+        OCT: "10",
+        NOV: "11",
+        DEC: "12"
+    };
+
+    match = value.toUpperCase().match(/^(\d{1,2})[-\.\/\s]([A-Z]{3})[-\.\/\s](\d{4})$/);
+    if (match && shortMonths[match[2]]) {
+        return shortMonths[match[2]] + "/" + match[3];
+    }
+
+    // NOV 2025 / February 2026 => 11/2025 / 02/2026
+    const longMonths = {
+        JANUARY: "01",
+        FEBRUARY: "02",
+        MARCH: "03",
+        APRIL: "04",
+        MAY: "05",
+        JUNE: "06",
+        JULY: "07",
+        AUGUST: "08",
+        SEPTEMBER: "09",
+        OCTOBER: "10",
+        NOVEMBER: "11",
+        DECEMBER: "12"
+    };
+
+    match = value.toUpperCase().match(/^([A-Z]+)\s+(\d{4})$/);
+    if (match) {
+        const monthKey = match[1];
+
+        if (shortMonths[monthKey]) {
+            return shortMonths[monthKey] + "/" + match[2];
+        }
+
+        if (longMonths[monthKey]) {
+            return longMonths[monthKey] + "/" + match[2];
+        }
+    }
+
+    return value;
+}
+
+function applyMonthYearFormatting() {
+    document.querySelectorAll(".js-month-year").forEach(function(element) {
+        const rawValue = element.getAttribute("data-date") || element.textContent;
+        element.textContent = formatMonthYear(rawValue);
+    });
+}
+
+function cleanPrint() {
+    applyMonthYearFormatting();
+
+    const oldTitle = document.title;
+    document.title = "Invoice";
+
+    setTimeout(function() {
+        window.print();
+
+        setTimeout(function() {
+            document.title = oldTitle;
+        }, 700);
+    }, 100);
+}
+
+function goBackToPreviousPage() {
+    const fallbackUrl = "{% url 'dealer_invoice_list' %}";
+
+    if (document.referrer && document.referrer !== window.location.href) {
+        window.location.href = document.referrer;
+        return;
+    }
+
+    if (window.history.length > 1) {
+        window.history.back();
+        return;
+    }
+
+    window.location.href = fallbackUrl;
+}
+
+document.addEventListener("DOMContentLoaded", applyMonthYearFormatting);
+</script>
+
+</body>
+</html>

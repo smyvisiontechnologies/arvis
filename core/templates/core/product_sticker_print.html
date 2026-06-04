@@ -1,0 +1,800 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+.thermal-page-wrap {
+    padding: 18px;
+}
+
+.sticker-settings {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    margin-bottom: 16px;
+}
+
+.settings-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.settings-head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.settings-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.back-btn,
+.print-btn,
+.apply-btn {
+    border: none;
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.back-btn {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+.print-btn {
+    background: #0f172a;
+    color: white;
+}
+
+.apply-btn {
+    background: #2563eb;
+    color: white;
+    margin-top: 14px;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 12px;
+}
+
+.form-group label {
+    display: block;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 13px;
+    padding: 10px 11px;
+    color: #0f172a;
+    outline: none;
+    font-weight: 800;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.checkbox-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 10px 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.checkbox-card input {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563eb;
+}
+
+.help-note {
+    margin-top: 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 15px;
+    padding: 11px 13px;
+    font-size: 12.5px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.qr-link-note {
+    margin-top: 10px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #047857;
+    border-radius: 15px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    word-break: break-all;
+}
+
+.qr-link-note a {
+    color: #047857;
+    font-weight: 900;
+}
+
+.preview-title {
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+    margin: 0 0 10px;
+}
+
+.preview-area {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    overflow-x: auto;
+}
+
+.thermal-pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.thermal-label-page {
+    width: {{ width_mm|default:"100" }}mm;
+    height: {{ height_mm|default:"75" }}mm;
+    background: white;
+    color: #000;
+    border: 1px dashed #94a3b8;
+    padding: 0;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* PRINT LABEL DESIGN LIKE SAMPLE PHOTO */
+.sticker {
+    width: 100%;
+    height: 100%;
+    border: 0.35mm solid #000;
+    border-radius: 1.6mm;
+    padding: 2.2mm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    color: #000;
+}
+
+.company-area {
+    border-bottom: 0.28mm solid #000;
+    padding-bottom: 0.9mm;
+    margin-bottom: 1mm;
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.company-name {
+    color: #000;
+    font-size: 3.2mm;
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: 0.14mm;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.company-address {
+    margin-top: 0.45mm;
+    color: #000;
+    font-size: 1.55mm;
+    font-weight: 800;
+    line-height: 1.08;
+    max-height: 3.4mm;
+    overflow: hidden;
+}
+
+.product-type {
+    margin-top: 0.55mm;
+    color: #000;
+    font-size: 2mm;
+    font-weight: 900;
+    line-height: 1.08;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    flex: 1 1 auto;
+}
+
+.info-table td {
+    vertical-align: top;
+    padding: 0.37mm 0;
+    line-height: 1.04;
+}
+
+.info-table .key {
+    width: 39%;
+    color: #000;
+    font-size: {{ body_font_mm|default:"2.65" }}mm;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06mm;
+}
+
+.info-table .colon {
+    width: 4%;
+    color: #000;
+    font-size: {{ body_font_mm|default:"2.65" }}mm;
+    font-weight: 900;
+    text-align: center;
+}
+
+.info-table .value {
+    color: #000;
+    font-size: {{ body_font_mm|default:"2.65" }}mm;
+    font-weight: 900;
+    word-break: break-word;
+    text-transform: uppercase;
+}
+
+.info-table .price-key {
+    font-size: 2.45mm;
+    line-height: 1;
+}
+
+.info-table .price-value {
+    font-size: 3.2mm;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.code-row {
+    margin-top: 0.75mm;
+    padding-top: 0.65mm;
+    border-top: 0.2mm dashed #000;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14mm;
+    gap: 1.2mm;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.barcode-area {
+    text-align: center;
+    min-width: 0;
+}
+
+.barcode-svg {
+    display: block;
+    width: 100%;
+    height: 8mm;
+    margin: 0 auto;
+}
+
+.barcode-text {
+    margin-top: 0.25mm;
+    color: #000;
+    font-size: 1.65mm;
+    font-weight: 900;
+    letter-spacing: 0.16mm;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qr-area {
+    width: 14mm;
+    text-align: center;
+}
+
+.qr-area img {
+    width: 12.5mm;
+    height: 12.5mm;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.qr-text {
+    margin-top: 0.2mm;
+    color: #000;
+    font-size: 1.25mm;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.symbol-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5mm;
+    margin-top: 0.75mm;
+    padding-top: 0.6mm;
+    border-top: 0.2mm dashed #000;
+    flex: 0 0 auto;
+}
+
+.symbol-box {
+    border: 0.22mm solid #000;
+    height: 5mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5mm;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.footer-company {
+    margin-top: 0.65mm;
+    padding-top: 0.55mm;
+    border-top: 0.22mm solid #000;
+    color: #000;
+    font-size: 2.05mm;
+    line-height: 1.05;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 0 auto;
+}
+
+.footer-details {
+    margin-top: 0.45mm;
+    color: #000;
+    font-size: 1.45mm;
+    line-height: 1.08;
+    font-weight: 800;
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.footer-details div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.footer-note {
+    margin-top: 0.35mm;
+    color: #000;
+    font-size: 1.35mm;
+    line-height: 1.05;
+    font-weight: 800;
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+@media print {
+    html,
+    body {
+        width: {{ width_mm|default:"100" }}mm !important;
+        min-width: {{ width_mm|default:"100" }}mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .topbar,
+    .footer,
+    .messages-wrap,
+    .sticker-settings,
+    .preview-title {
+        display: none !important;
+    }
+
+    .page-content {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .thermal-page-wrap {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .preview-area {
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+
+    .thermal-pages {
+        display: block !important;
+        gap: 0 !important;
+    }
+
+    .thermal-label-page {
+        width: {{ width_mm|default:"100" }}mm !important;
+        height: {{ height_mm|default:"75" }}mm !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        page-break-after: always !important;
+        break-after: page !important;
+    }
+
+    .thermal-label-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    @page {
+        size: {{ width_mm|default:"100" }}mm {{ height_mm|default:"75" }}mm;
+        margin: 0;
+    }
+}
+
+@media(max-width: 800px) {
+    .thermal-page-wrap {
+        padding: 10px;
+    }
+
+    .settings-head h2 {
+        font-size: 21px;
+    }
+
+    .action-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .back-btn,
+    .print-btn {
+        text-align: center;
+    }
+}
+</style>
+
+<div class="thermal-page-wrap">
+    <div class="sticker-settings">
+        <div class="settings-head">
+            <div>
+                <h2>TSC TE244 Sticker Print</h2>
+                <p>Sample-style product sticker with saved settings, barcode and QR product details page.</p>
+            </div>
+
+            <div class="action-row">
+                <a href="{% url 'product_list' %}" class="back-btn">Back</a>
+                <button type="button" onclick="window.print()" class="print-btn">Print Stickers</button>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label>Pack Size</label>
+                    <select name="pack_id" id="packSelect" class="form-control">
+                        {% for pack in pack_sizes %}
+                            <option
+                                value="{{ pack.id }}"
+                                data-qty="{{ pack.units_per_box }} X {{ pack.display_pack }}"
+                                data-unit-mrp="{{ pack.mrp_per_unit }}"
+                                data-case-mrp="{{ pack.box_sale_price }}"
+                                {% if selected_pack and selected_pack.id == pack.id %}selected{% endif %}
+                            >
+                                {{ pack.display_pack }} - {{ pack.warehouse.name }} - ₹{{ pack.sale_price_per_unit }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sticker Width mm</label>
+                    <input type="number" step="0.1" min="25" max="108" name="width_mm" value="{{ width_mm|default:'100' }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Sticker Height mm</label>
+                    <input type="number" step="0.1" min="20" max="200" name="height_mm" value="{{ height_mm|default:'75' }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>No. of Copies</label>
+                    <input type="number" min="1" max="500" name="copies" value="{{ copies|default:'1' }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company_name" value="{{ company_name }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Company Address</label>
+                    <input type="text" name="company_address" value="{{ company_address }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Product / Subtitle</label>
+                    <input type="text" name="company_subtitle" value="{{ company_subtitle }}" class="form-control" placeholder="Example: CHLOROPYRIPHOS 20% EC">
+                </div>
+
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" name="product_name" value="{{ product_name }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>HSN Code</label>
+                    <input type="text" name="hsn_code" value="{{ hsn_code }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Qty Per Case</label>
+                    <input type="text" name="qty_per_case" id="qtyInput" value="{{ qty_per_case }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Batch No</label>
+                    <input type="text" name="batch_no" value="{{ batch_no }}" class="form-control" placeholder="Example: 1007">
+                </div>
+
+                <div class="form-group">
+                    <label>MFG Date</label>
+                    <input type="text" name="mfg_date" value="{{ mfg_date }}" class="form-control" placeholder="Example: 19.NOV.2025">
+                </div>
+
+                <div class="form-group">
+                    <label>EXP Date</label>
+                    <input type="text" name="exp_date" value="{{ exp_date }}" class="form-control" placeholder="Example: 18.NOV.2027">
+                </div>
+
+                <div class="form-group">
+                    <label>USP / Ltr / KG</label>
+                    <input type="text" name="usp_text" value="{{ usp_text }}" class="form-control" placeholder="Example: 1,10/-">
+                </div>
+
+                <div class="form-group">
+                    <label>Per Unit MRP</label>
+                    <input type="text" name="unit_mrp" id="unitMrpInput" value="{{ unit_mrp }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Per Case MRP</label>
+                    <input type="text" name="case_mrp" id="caseMrpInput" value="{{ case_mrp }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Barcode Value</label>
+                    <input type="text" name="barcode_value" value="{{ barcode_value }}" class="form-control" placeholder="Example: PRD0001">
+                </div>
+
+                <div class="form-group">
+                    <label>Company Email</label>
+                    <input type="text" name="company_email" value="{{ company_email }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Company Website</label>
+                    <input type="text" name="company_website" value="{{ company_website }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Customer Care Number</label>
+                    <input type="text" name="customer_care" value="{{ customer_care }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Footer Note</label>
+                    <input type="text" name="footer_text" value="{{ footer_text }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Body Font mm</label>
+                    <input type="number" step="0.1" min="2" max="6" name="body_font_mm" value="{{ body_font_mm|default:'2.65' }}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>QR Code</label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" name="show_qr" {% if show_qr %}checked{% endif %}>
+                        Show QR Code
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="apply-btn">Save & Apply Settings</button>
+        </form>
+
+        <div class="help-note">
+            Default print copies is <b>1</b>. For TSC TE244, set same label size in printer driver.
+            Use 100mm × 75mm for QR + barcode clarity. Choose Scale 100% and disable Fit to page.
+        </div>
+
+        {% if product_detail_url %}
+            <div class="qr-link-note">
+                QR opens this public product page:<br>
+                <a href="{{ product_detail_url }}" target="_blank">{{ product_detail_url }}</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <h3 class="preview-title">Sticker Preview</h3>
+
+    <div class="preview-area">
+        <div class="thermal-pages">
+            {% for i in copies_range %}
+                <div class="thermal-label-page">
+                    <div class="sticker">
+                        <div class="company-area">
+                            <div class="company-name">{{ company_name }}</div>
+                            <div class="company-address">{{ company_address }}</div>
+                            <div class="product-type">{{ company_subtitle }}</div>
+                        </div>
+
+                        <table class="info-table">
+                            <tr>
+                                <td class="key">HSN Code</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ hsn_code|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key">Product Name</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ product_name|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key">Qty Per Case</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ qty_per_case|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key">Batch No</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ batch_no|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key">MFG Date</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ mfg_date|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key">EXP Date</td>
+                                <td class="colon">:</td>
+                                <td class="value">{{ exp_date|default:"-" }}</td>
+                            </tr>
+                            {% if usp_text %}
+                                <tr>
+                                    <td class="key">USP/LTR KG'S</td>
+                                    <td class="colon">:</td>
+                                    <td class="value">{{ usp_text }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="key price-key">Per Unit M.R.P</td>
+                                <td class="colon">:</td>
+                                <td class="value price-value">₹ {{ unit_mrp|default:"-" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="key price-key">Per Case M.R.P</td>
+                                <td class="colon">:</td>
+                                <td class="value price-value">₹ {{ case_mrp|default:"-" }}</td>
+                            </tr>
+                        </table>
+
+                        <div class="code-row">
+                            <div class="barcode-area">
+                                {{ barcode_svg|safe }}
+                                <div class="barcode-text">
+                                    {{ barcode_value }}
+                                </div>
+                            </div>
+
+                            {% if show_qr %}
+                                <div class="qr-area">
+                                    <img src="{{ qr_code_data_uri }}" alt="QR Code">
+                                    <div class="qr-text">Scan QR</div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="symbol-row">
+                            <div class="symbol-box">☂</div>
+                            <div class="symbol-box">♻</div>
+                            <div class="symbol-box">⚠</div>
+                            <div class="symbol-box">↑↑</div>
+                        </div>
+
+                        <div class="footer-company">
+                            Manufactured / Marketed by <br>{{ company_name }}
+                        </div>
+
+                        <div class="footer-details">
+                            <div>{{ company_address }}</div>
+                            <div>Email: {{ company_email }} | Web: {{ company_website }}</div>
+                            <div>Customer Care: {{ customer_care }}</div>
+                        </div>
+
+                        <div class="footer-note">
+                            {{ footer_text }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const packSelect = document.getElementById("packSelect");
+    const qtyInput = document.getElementById("qtyInput");
+    const unitMrpInput = document.getElementById("unitMrpInput");
+    const caseMrpInput = document.getElementById("caseMrpInput");
+
+    if (packSelect) {
+        packSelect.addEventListener("change", function () {
+            const selected = packSelect.options[packSelect.selectedIndex];
+
+            if (qtyInput && selected.dataset.qty) {
+                qtyInput.value = selected.dataset.qty;
+            }
+
+            if (unitMrpInput && selected.dataset.unitMrp) {
+                unitMrpInput.value = selected.dataset.unitMrp;
+            }
+
+            if (caseMrpInput && selected.dataset.caseMrp) {
+                caseMrpInput.value = selected.dataset.caseMrp;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

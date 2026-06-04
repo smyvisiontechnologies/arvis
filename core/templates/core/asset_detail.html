@@ -1,0 +1,280 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.page {
+    padding: 18px;
+}
+
+.wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.head {
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.head h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+    margin-bottom: 16px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px;
+    font-weight: 850;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+th,
+td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 10px;
+    text-align: left;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+th {
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.badge {
+    display: inline-flex;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.active {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.returned {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-weight: 900;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-dark {
+    background: #0f172a;
+    color: white;
+}
+
+.btn-orange {
+    background: #d97706;
+    color: white;
+}
+
+.asset-img {
+    width: 80px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+@media(max-width: 800px) {
+    .page {
+        padding: 10px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="wrap">
+        <div class="head">
+            <h2>{{ asset.asset_code }} - {{ asset.name }}</h2>
+            <div style="font-weight:800;color:#dbeafe;margin-top:5px;">
+                Complete asset usage, past users and return history.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="info-grid">
+                <div class="info-box">
+                    <strong>Asset Details</strong><br>
+                    Category: {{ asset.category.name }}<br>
+                    Brand: {{ asset.brand|default:"-" }}<br>
+                    Model: {{ asset.model_number|default:"-" }}<br>
+                    Serial: {{ asset.serial_number|default:"-" }}
+                </div>
+
+                <div class="info-box">
+                    <strong>Current Status</strong><br>
+                    Status: {{ asset.get_status_display }}<br>
+                    Current Employee:
+                    {% if asset.current_employee %}
+                        {{ asset.current_employee.get_full_name|default:asset.current_employee.username }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+
+                <div class="info-box">
+                    <strong>Purchase</strong><br>
+                    Date: {{ asset.purchase_date|date:"d M Y"|default:"-" }}<br>
+                    Value: ₹{{ asset.purchase_value|default:"0.00" }}<br>
+                    Created By:
+                    {{ asset.created_by.get_full_name|default:asset.created_by.username|default:"-" }}
+                </div>
+            </div>
+        </div>
+
+        {% if active_assignment %}
+            <div class="card">
+                <h3 style="margin-top:0;">Currently Using</h3>
+
+                <div class="info-box">
+                    Employee:
+                    <strong>{{ active_assignment.employee.get_full_name|default:active_assignment.employee.username }}</strong><br>
+                    Assigned By:
+                    {{ active_assignment.assigned_by.get_full_name|default:active_assignment.assigned_by.username|default:"-" }}<br>
+                    Assigned At:
+                    {{ active_assignment.assigned_at|date:"d M Y, h:i A" }}<br>
+                    Note:
+                    {{ active_assignment.handover_note|default:"-" }}<br><br>
+
+                    <a href="{% url 'asset_return' active_assignment.id %}" class="btn btn-orange">
+                        Return Asset
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <h3 style="margin-top:0;">Full Usage History</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Used By</th>
+                            <th>Assigned By</th>
+                            <th>Assigned Date</th>
+                            <th>Returned By</th>
+                            <th>Returned Date</th>
+                            <th>Handover Photo</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for assignment in assignments %}
+                            <tr>
+                                <td>
+                                    {% if assignment.is_active %}
+                                        <span class="badge active">Currently Using</span>
+                                    {% else %}
+                                        <span class="badge returned">Returned</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ assignment.employee.get_full_name|default:assignment.employee.username }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.assigned_by.get_full_name|default:assignment.assigned_by.username|default:"-" }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.assigned_at|date:"d M Y, h:i A" }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.returned_by.get_full_name|default:assignment.returned_by.username|default:"-" }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.returned_at|date:"d M Y, h:i A"|default:"-" }}
+                                </td>
+
+                                <td>
+                                    {% if assignment.handover_image %}
+                                        <a href="{{ assignment.handover_image.url }}" target="_blank">
+                                            <img src="{{ assignment.handover_image.url }}" class="asset-img">
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <strong>Given:</strong>
+                                    {{ assignment.handover_note|default:"-" }}<br>
+                                    <strong>Return:</strong>
+                                    {{ assignment.return_note|default:"-" }}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8">No usage history found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <a href="{% url 'asset_list' %}" class="btn btn-dark">Back to Assets</a>
+    </div>
+</div>
+
+{% endblock %}

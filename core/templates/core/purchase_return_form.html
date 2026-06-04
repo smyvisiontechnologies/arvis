@@ -1,0 +1,448 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pm-page{padding:16px;max-width:1250px;margin:0 auto}
+.pm-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.pm-hero h2{margin:0;font-size:28px;font-weight:900}
+.pm-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.pm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.pm-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}
+.pm-card p{margin:7px 0 0;color:#64748b;font-size:13px;font-weight:800;line-height:1.45}
+.pm-card .num{font-size:24px;font-weight:900;margin-top:10px;color:#16a34a}
+.pm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pm-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.pm-btn.green{background:#16a34a}.pm-btn.blue{background:#2563eb}.pm-btn.orange{background:#d97706}.pm-btn.light{background:#f1f5f9;color:#0f172a}
+.pm-form-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-section-title{margin:0 0 12px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+.pm-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.pm-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.pm-table-wrap{overflow:auto;background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-table{width:100%;border-collapse:collapse;min-width:900px}
+.pm-table th,.pm-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.pm-table th{background:#f8fafc;font-weight:900;color:#334155}
+.pm-table td{font-weight:800;color:#0f172a}
+.pm-row-card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:12px;margin-bottom:10px}
+.pm-row-grid{display:grid;grid-template-columns:1.2fr 1.2fr .8fr .7fr .8fr .7fr .3fr;gap:10px;align-items:end}
+.pm-empty{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:24px;text-align:center;color:#64748b;font-weight:900}
+.pm-badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900}
+.pm-badge.paid{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.pm-badge.unpaid{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.pm-badge.partial{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.errorlist{color:#dc2626;font-size:12px;font-weight:900;margin:6px 0 0;padding-left:18px}
+/* SEARCHABLE RETURN ITEM DROPDOWN */
+.search-select-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.search-select-input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 11px 40px 11px 12px;
+    font-weight: 900;
+    background: white;
+    color: #0f172a;
+}
+
+.search-select-input:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+}
+
+.search-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-weight: 900;
+    pointer-events: none;
+}
+
+.search-select-list {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(15,23,42,.18);
+    max-height: 260px;
+    overflow: auto;
+    z-index: 9999;
+    padding: 6px;
+}
+
+.search-select-list.show {
+    display: block;
+}
+
+.search-select-option {
+    padding: 11px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 900;
+    color: #334155;
+}
+
+.search-select-option:hover,
+.search-select-option.active {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.search-select-empty {
+    padding: 12px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.native-search-select {
+    display: none !important;
+}
+@media(max-width:900px){.pm-grid{grid-template-columns:repeat(2,1fr)}.pm-form-grid{grid-template-columns:1fr}.pm-row-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.pm-page{padding:10px}.pm-grid{grid-template-columns:1fr}.pm-hero{padding:18px;border-radius:20px}.pm-actions{display:grid;grid-template-columns:1fr}.pm-btn{justify-content:center}}
+</style>
+
+<div class="pm-page">
+    <div class="pm-hero">
+        <h2>{{ title }}</h2>
+        <p>Return damaged/extra stock to supplier. Stock and payable amount reduce automatically.</p>
+    </div>
+
+    <form method="post" class="pm-form-card">
+        {% csrf_token %}
+
+        <h3 class="pm-section-title">Debit Note Details</h3>
+        <div class="pm-form-grid">
+            <div class="pm-field">
+                <label>Purchase Bill</label>
+                {{ form.bill }}
+                {{ form.bill.errors }}
+            </div>
+
+            <div class="pm-field">
+                <label>Return Date</label>
+                {{ form.return_date }}
+                {{ form.return_date.errors }}
+            </div>
+
+            <div class="pm-field" style="grid-column:1/-1;">
+                <label>Reason</label>
+                {{ form.reason }}
+                {{ form.reason.errors }}
+            </div>
+        </div>
+
+        <h3 class="pm-section-title">Returned Items</h3>
+
+        {{ formset.management_form }}
+
+        <div id="itemRows">
+            {% for item_form in formset %}
+                <div class="pm-row-card item-row">
+                    <div class="pm-row-grid" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .3fr;">
+                        <div class="pm-field"><label>Item</label>{{ item_form.inventory_item }}{{ item_form.inventory_item.errors }}</div>
+                        <div class="pm-field"><label>Qty</label>{{ item_form.quantity }}{{ item_form.quantity.errors }}</div>
+                        <div class="pm-field"><label>Unit</label>{{ item_form.unit }}</div>
+                        <div class="pm-field"><label>Return Price</label>{{ item_form.return_price }}{{ item_form.return_price.errors }}</div>
+                        <div class="pm-field"><label>GST%</label>{{ item_form.gst_percent }}</div>
+                    </div>
+                    <div style="display:none;">{{ item_form.DELETE }}</div>
+                    <button type="button" class="pm-btn light" style="margin-top:10px;" onclick="removeRow(this)">Remove Row</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="emptyFormTemplate" style="display:none;">
+            <div class="pm-row-card item-row">
+                <div class="pm-row-grid" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .3fr;">
+                    <div class="pm-field"><label>Item</label>{{ formset.empty_form.inventory_item }}</div>
+                    <div class="pm-field"><label>Qty</label>{{ formset.empty_form.quantity }}</div>
+                    <div class="pm-field"><label>Unit</label>{{ formset.empty_form.unit }}</div>
+                    <div class="pm-field"><label>Return Price</label>{{ formset.empty_form.return_price }}</div>
+                    <div class="pm-field"><label>GST%</label>{{ formset.empty_form.gst_percent }}</div>
+                </div>
+                <div style="display:none;">{{ formset.empty_form.DELETE }}</div>
+                <button type="button" class="pm-btn light" style="margin-top:10px;" onclick="removeRow(this)">Remove Row</button>
+            </div>
+        </div>
+
+        <div class="pm-actions">
+            <button type="button" class="pm-btn blue" onclick="addRow()">+ Add Return Item</button>
+            <button type="submit" class="pm-btn orange">Create Debit Note & Reduce Stock</button>
+            <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">Back</a>
+        </div>
+    </form>
+</div>
+<script>
+function makeSearchableSelect(select) {
+    if (!select || select.dataset.searchReady === "1") return;
+
+    select.dataset.searchReady = "1";
+    select.classList.add("native-search-select");
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "search-select-wrap";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "search-select-input";
+    input.placeholder = "Search and select...";
+    input.autocomplete = "off";
+
+    const arrow = document.createElement("span");
+    arrow.className = "search-select-arrow";
+    arrow.innerHTML = "⌄";
+
+    const list = document.createElement("div");
+    list.className = "search-select-list";
+
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(input);
+    wrapper.appendChild(arrow);
+    wrapper.appendChild(list);
+    wrapper.appendChild(select);
+
+    function getOptions() {
+        return Array.from(select.options).filter(function(opt) {
+            return opt.value !== "";
+        });
+    }
+
+    function selectedText() {
+        const opt = select.options[select.selectedIndex];
+        return opt && opt.value ? opt.text.trim() : "";
+    }
+
+    function renderOptions(filterText) {
+        const text = (filterText || "").toLowerCase().trim();
+        const options = getOptions();
+
+        list.innerHTML = "";
+        let found = 0;
+
+        options.forEach(function(opt) {
+            const optionText = opt.text.trim();
+            const searchableText = (optionText + " " + opt.value).toLowerCase();
+
+            if (text && !searchableText.includes(text)) return;
+
+            found++;
+
+            const item = document.createElement("div");
+            item.className = "search-select-option";
+            item.textContent = optionText;
+            item.dataset.value = opt.value;
+
+            if (select.value === opt.value) {
+                item.classList.add("active");
+            }
+
+            item.addEventListener("click", function() {
+                select.value = opt.value;
+                input.value = optionText;
+                list.classList.remove("show");
+
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+
+            list.appendChild(item);
+        });
+
+        if (found === 0) {
+            const empty = document.createElement("div");
+            empty.className = "search-select-empty";
+            empty.textContent = "No result found";
+            list.appendChild(empty);
+        }
+    }
+
+    input.value = selectedText();
+
+    input.addEventListener("focus", function() {
+        renderOptions("");
+        list.classList.add("show");
+        input.select();
+    });
+
+    input.addEventListener("input", function() {
+        renderOptions(input.value);
+        list.classList.add("show");
+    });
+
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            list.classList.remove("show");
+        }
+    });
+
+    document.addEventListener("click", function(e) {
+        if (!wrapper.contains(e.target)) {
+            list.classList.remove("show");
+
+            if (!select.value) {
+                input.value = "";
+            } else {
+                input.value = selectedText();
+            }
+        }
+    });
+}
+
+function normalizeUnit(value) {
+    return String(value || "")
+        .toUpperCase()
+        .replace(/\s+/g, "")
+        .replace("KGS", "KG")
+        .replace("KILOGRAM", "KG")
+        .replace("KILOGRAMS", "KG")
+        .replace("LITER", "LITRE")
+        .replace("LITERS", "LITRE")
+        .replace("LITRES", "LITRE")
+        .replace("LTR", "LITRE")
+        .replace("ML", "ML")
+        .replace("PCS", "PIECE")
+        .replace("PIECES", "PIECE")
+        .replace("GRAMS", "GRAM");
+}
+
+function setUnitSelect(unitSelect, requiredUnit) {
+    if (!unitSelect || !requiredUnit) return;
+
+    const target = normalizeUnit(requiredUnit);
+
+    Array.from(unitSelect.options).forEach(function(opt) {
+        const optValue = normalizeUnit(opt.value);
+        const optText = normalizeUnit(opt.text);
+
+        if (optValue === target || optText === target) {
+            unitSelect.value = opt.value;
+        }
+    });
+}
+
+function extractInventoryUnit(optionText) {
+    const text = optionText || "";
+
+    // Example: CALCIUM OXIDE | Stock: 0.000 KG
+    const match = text.match(/Stock\s*:\s*[\d.,]+\s*([A-Za-z]+)/i);
+
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    const parts = text.trim().split(/\s+/);
+    return parts.length ? parts[parts.length - 1] : "";
+}
+
+function handleReturnItemChange(select) {
+    const row = select.closest(".item-row");
+    if (!row) return;
+
+    const unitSelect = row.querySelector("select[name$='-unit']");
+    const selectedOption = select.options[select.selectedIndex];
+
+    if (!selectedOption || !selectedOption.value) return;
+
+    const unit = extractInventoryUnit(selectedOption.text);
+    setUnitSelect(unitSelect, unit);
+}
+
+function initReturnItemDropdowns(scope) {
+    const root = scope || document;
+
+    root.querySelectorAll("select").forEach(function(select) {
+        const name = select.getAttribute("name") || "";
+        const id = select.getAttribute("id") || "";
+
+        if (name.includes("inventory_item") || id.includes("inventory_item")) {
+            makeSearchableSelect(select);
+
+            if (select.dataset.autoUnitReady !== "1") {
+                select.dataset.autoUnitReady = "1";
+
+                select.addEventListener("change", function() {
+                    handleReturnItemChange(select);
+                });
+            }
+
+            if (select.value) {
+                handleReturnItemChange(select);
+            }
+        }
+    });
+}
+
+function cleanTemplateHtml(html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    temp.querySelectorAll(".search-select-wrap").forEach(function(wrapper) {
+        const select = wrapper.querySelector("select");
+
+        if (select) {
+            select.classList.remove("native-search-select");
+            select.removeAttribute("data-search-ready");
+            select.removeAttribute("data-auto-unit-ready");
+            wrapper.parentNode.insertBefore(select, wrapper);
+        }
+
+        wrapper.remove();
+    });
+
+    temp.querySelectorAll("select").forEach(function(select) {
+        select.classList.remove("native-search-select");
+        select.removeAttribute("data-search-ready");
+        select.removeAttribute("data-auto-unit-ready");
+        select.value = "";
+    });
+
+    return temp.innerHTML;
+}
+
+function addRow() {
+    const totalInput = document.getElementById("id_items-TOTAL_FORMS");
+    const index = parseInt(totalInput.value);
+
+    let template = document.getElementById("emptyFormTemplate").innerHTML;
+    template = cleanTemplateHtml(template);
+    template = template.replaceAll("__prefix__", index);
+
+    document.getElementById("itemRows").insertAdjacentHTML("beforeend", template);
+    totalInput.value = index + 1;
+
+    const rows = document.querySelectorAll("#itemRows .item-row");
+    const newRow = rows[rows.length - 1];
+
+    initReturnItemDropdowns(newRow);
+}
+
+function removeRow(button) {
+    const row = button.closest(".item-row");
+    const deleteInput = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+
+    if (deleteInput) {
+        deleteInput.checked = true;
+        row.style.display = "none";
+    } else {
+        row.remove();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    initReturnItemDropdowns(document.getElementById("itemRows"));
+});
+</script>
+{% endblock %}

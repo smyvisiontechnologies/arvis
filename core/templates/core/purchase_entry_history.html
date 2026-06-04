@@ -1,0 +1,104 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.ph-page{max-width:1050px;margin:20px auto;padding:0 14px}
+.ph-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:20px;box-shadow:0 12px 30px rgba(15,23,42,.08);margin-bottom:14px}
+.ph-title{margin:0;color:#0f172a;font-size:24px;font-weight:900}
+.ph-sub{margin:6px 0 0;color:#64748b;font-weight:800}
+.ph-section{margin-top:18px}
+.ph-section h3{font-size:17px;margin:0 0 10px;font-weight:900;color:#0f172a}
+.ph-table{width:100%;border-collapse:collapse;min-width:720px}
+.ph-table th,.ph-table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;font-weight:800}
+.ph-table th{background:#f8fafc;font-weight:900;color:#334155}
+.ph-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:16px}
+.ph-btn{display:inline-flex;text-decoration:none;background:#0f172a;color:white;border-radius:12px;padding:10px 14px;font-weight:900;margin-top:12px}
+</style>
+
+<div class="ph-page">
+    <div class="ph-card">
+        <h2 class="ph-title">Purchase Bill History</h2>
+        <p class="ph-sub">{{ bill.bill_number }} • {{ bill.party.party_name }}</p>
+        <a href="{% url 'purchase_dashboard' %}" class="ph-btn">Back</a>
+    </div>
+
+    <div class="ph-card ph-section">
+        <h3>Bill Summary</h3>
+        <div class="ph-wrap">
+            <table class="ph-table">
+                <tr><th>Created By</th><td>{{ bill.created_by|default:"-" }}</td></tr>
+                <tr><th>Bill Date</th><td>{{ bill.bill_date|date:"d/m/Y" }}</td></tr>
+                <tr><th>Total Amount</th><td>₹ {{ bill.total_amount }}</td></tr>
+                <tr><th>Paid Amount</th><td>₹ {{ bill.paid_amount }}</td></tr>
+                <tr><th>Balance Amount</th><td>₹ {{ bill.balance_amount }}</td></tr>
+                <tr><th>Status</th><td>{{ bill.get_payment_status_display }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="ph-card ph-section">
+        <h3>Payments</h3>
+        {% if payments %}
+            <div class="ph-wrap">
+                <table class="ph-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mode</th>
+                            <th>Reference</th>
+                            <th>Amount</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.payment_date|date:"d/m/Y" }}</td>
+                                <td>{{ payment.get_payment_mode_display }}</td>
+                                <td>{{ payment.reference_number|default:payment.cheque_number|default:"-" }}</td>
+                                <td>₹ {{ payment.amount }}</td>
+                                <td>{{ payment.note|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="ph-sub">No payments added.</p>
+        {% endif %}
+    </div>
+
+    <div class="ph-card ph-section">
+        <h3>Returns / Debit Notes</h3>
+        {% if returns %}
+            <div class="ph-wrap">
+                <table class="ph-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Debit Note</th>
+                            <th>Total</th>
+                            <th>Reason</th>
+                            <th>Created By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ret in returns %}
+                            <tr>
+                                <td>{{ ret.return_date|date:"d/m/Y" }}</td>
+                                <td>{{ ret.debit_note_number }}</td>
+                                <td>₹ {{ ret.total_amount }}</td>
+                                <td>{{ ret.reason }}</td>
+                                <td>{{ ret.created_by|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="ph-sub">No purchase return/debit note created.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

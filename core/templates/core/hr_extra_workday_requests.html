@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% block content %}
+<style>
+.page{padding:18px}.head{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+h2{margin:0;color:#0f172a;font-size:24px;font-weight:900}.card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}.meta{margin-top:8px;color:#64748b;font-size:13px;font-weight:750;line-height:1.6}
+.btn{display:inline-flex;margin-top:12px;background:#16a34a;color:white;text-decoration:none;border-radius:13px;padding:10px 13px;font-weight:900}
+.empty{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:24px;text-align:center;color:#64748b;font-weight:800}
+</style>
+
+<div class="page">
+    <div class="head"><h2>HR Extra Leave Approval</h2></div>
+
+    {% for r in requests_qs %}
+        <div class="card">
+            <h3>{{ r.employee.get_full_name|default:r.employee.username }}</h3>
+            <div class="meta">
+                Work Date: {{ r.work_date|date:"d M Y" }}<br>
+                Reason: {{ r.reason }}<br>
+                Manager Approved By: {{ r.manager_approved_by.get_full_name|default:r.manager_approved_by.username }}
+            </div>
+
+            <a href="{% url 'hr_approve_extra_workday' r.id %}" class="btn">
+                Approve Extra Leave
+            </a>
+        </div>
+    {% empty %}
+        <div class="empty">No extra workday requests pending HR approval.</div>
+    {% endfor %}
+</div>
+{% endblock %}

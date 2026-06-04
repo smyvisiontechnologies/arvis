@@ -1,0 +1,781 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.hr-dashboard-page {
+    padding: 18px;
+}
+
+.hr-hero {
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.14), transparent 34%),
+        #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 26px;
+    padding: 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.hr-hero h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.hr-hero p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.filter-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 12px;
+}
+
+.filter-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-form select,
+.filter-form input {
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 9px 10px;
+    font-weight: 800;
+    background: white;
+}
+
+.filter-form button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 13px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card.blue {
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 34%),
+        #ffffff;
+}
+
+.stat-card.green {
+    background:
+        radial-gradient(circle at top right, rgba(5, 150, 105, 0.12), transparent 34%),
+        #ffffff;
+}
+
+.stat-card.orange {
+    background:
+        radial-gradient(circle at top right, rgba(217, 119, 6, 0.14), transparent 34%),
+        #ffffff;
+}
+
+.stat-card.red {
+    background:
+        radial-gradient(circle at top right, rgba(220, 38, 38, 0.13), transparent 34%),
+        #ffffff;
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .2px;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.stat-card p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.best-card {
+    background:
+        radial-gradient(circle at top right, rgba(250, 204, 21, 0.18), transparent 35%),
+        linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+    margin-bottom: 16px;
+}
+
+.best-card span {
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.best-card h3 {
+    margin: 8px 0 4px;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.best-card p {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.chart-card,
+.table-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 16px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.chart-card h3,
+.table-card h3 {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.chart-box {
+    height: 310px;
+    position: relative;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.hr-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+}
+
+.hr-table th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hr-table td {
+    padding: 12px;
+    border-bottom: 1px solid #edf2f7;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.badge.green {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.badge.orange {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge.red {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.empty-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 18px;
+    color: #64748b;
+    font-weight: 800;
+    text-align: center;
+}
+
+@media(max-width: 1000px) {
+    .chart-grid,
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 700px) {
+    .hr-dashboard-page {
+        padding: 12px;
+    }
+
+    .hr-hero,
+    .chart-card,
+    .table-card {
+        border-radius: 20px;
+        padding: 14px;
+    }
+
+    .hr-hero h2 {
+        font-size: 22px;
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .chart-box {
+        height: 260px;
+    }
+}
+</style>
+
+<div class="hr-dashboard-page">
+
+    <div class="hr-hero">
+        <div>
+            <h2>HR Management Dashboard</h2>
+            <p>
+                Employee attendance, clock-in performance, TA/DA claims,
+                travel KM, dealer visits and leave overview.
+            </p>
+        </div>
+
+        <div class="filter-card">
+            <form method="get" class="filter-form">
+                <select name="filter" onchange="toggleCustomDates(this.value)">
+                    <option value="today" {% if selected_filter == "today" %}selected{% endif %}>Today</option>
+                    <option value="this_month" {% if selected_filter == "this_month" %}selected{% endif %}>This Month</option>
+                    <option value="last_month" {% if selected_filter == "last_month" %}selected{% endif %}>Last Month</option>
+                    <option value="custom" {% if selected_filter == "custom" %}selected{% endif %}>Custom</option>
+                </select>
+
+                <input type="date"
+                       name="start_date"
+                       id="startDate"
+                       value="{{ start_date|date:'Y-m-d' }}">
+
+                <input type="date"
+                       name="end_date"
+                       id="endDate"
+                       value="{{ end_date|date:'Y-m-d' }}">
+
+                <button type="submit">Apply</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card blue">
+            <span>Total Employees</span>
+            <strong>{{ total_employees }}</strong>
+        </div>
+
+        <div class="stat-card green">
+            <span>Clocked In Today</span>
+            <strong>{{ clocked_in_today_count }}</strong>
+            <p>{{ active_clockin_count }} currently active</p>
+        </div>
+
+        <div class="stat-card green">
+            <span>On Time</span>
+            <strong>{{ on_time_count }}</strong>
+            <p>Clocked in before duty time</p>
+        </div>
+
+        <div class="stat-card red">
+            <span>Late Clock-In</span>
+            <strong>{{ late_count }}</strong>
+            <p>Clocked in after duty time</p>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Not Clocked In</span>
+            <strong>{{ not_clocked_in_count }}</strong>
+            <p>Employees without today attendance</p>
+        </div>
+
+        <div class="stat-card blue">
+            <span>Approved KM</span>
+            <strong>{{ total_km|floatformat:2 }}</strong>
+            <p>Manager-approved travel KM</p>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Dealer Visits</span>
+            <strong>{{ total_dealer_visits }}</strong>
+            <p>Total dealer connections</p>
+        </div>
+
+        <div class="stat-card green">
+            <span>Total TA/DA</span>
+            <strong>₹{{ total_claim|floatformat:2 }}</strong>
+            <p>TA ₹{{ total_ta|floatformat:2 }} + DA ₹{{ total_da|floatformat:2 }}</p>
+        </div>
+    </div>
+
+    {% if best_field_officer %}
+        <div class="best-card">
+            <span>Best Field Officer</span>
+
+            <h3>
+                {% if best_field_officer.employee__first_name or best_field_officer.employee__last_name %}
+                    {{ best_field_officer.employee__first_name }} {{ best_field_officer.employee__last_name }}
+                {% else %}
+                    {{ best_field_officer.employee__username }}
+                {% endif %}
+            </h3>
+
+            <p>
+                {{ best_field_officer.dealer_visits|default:0 }} dealer visit(s),
+                {{ best_field_officer.total_km|floatformat:2 }} KM,
+                ₹{{ best_field_officer.total_claim|floatformat:2 }} TA/DA claim.
+            </p>
+        </div>
+    {% endif %}
+
+    <div class="stat-grid">
+        <div class="stat-card red">
+            <span>Manager Approval Pending</span>
+            <strong>{{ pending_manager_claims }}</strong>
+            <p>TA/DA claims waiting for manager</p>
+        </div>
+
+        <div class="stat-card orange">
+            <span>HR Approval Pending</span>
+            <strong>{{ pending_hr_claims }}</strong>
+            <p>Manager-approved claims waiting for HR</p>
+        </div>
+
+        <div class="stat-card blue">
+            <span>Fund Release Pending</span>
+            <strong>{{ pending_accountant_release }}</strong>
+            <p>HR-approved claims waiting for accountant</p>
+        </div>
+
+        <div class="stat-card green">
+            <span>Released Claims</span>
+            <strong>{{ released_claims }}</strong>
+            <p>Released during selected period</p>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Leave Pending</span>
+            <strong>{{ leave_pending_count }}</strong>
+            <p>Waiting for manager approval</p>
+        </div>
+
+        <div class="stat-card red">
+            <span>Salary Deduction Leaves</span>
+            <strong>{{ unpaid_leave_count }}</strong>
+            <p>Approved deduction marked leaves</p>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>Today Attendance Status</h3>
+            <div class="chart-box">
+                <canvas id="attendancePieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>TA/DA Claim Status</h3>
+            <div class="chart-box">
+                <canvas id="claimPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Daily Clock-In Trend</h3>
+            <div class="chart-box">
+                <canvas id="dailyClockInChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Top Officers: KM vs Dealer Visits</h3>
+            <div class="chart-box">
+                <canvas id="topKmChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Vehicle-wise Claim Amount</h3>
+            <div class="chart-box">
+                <canvas id="vehicleChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <h3>Top Field Performers</h3>
+
+        {% if top_performers %}
+            <div class="table-wrap">
+                <table class="hr-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Role</th>
+                            <th>Working Days</th>
+                            <th>Dealer Visits</th>
+                            <th>System KM</th>
+                            <th>Approved KM</th>
+                            <th>TA</th>
+                            <th>DA</th>
+                            <th>Total Claim</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in top_performers %}
+                            <tr>
+                                <td>
+                                    {% if row.employee__first_name or row.employee__last_name %}
+                                        {{ row.employee__first_name }} {{ row.employee__last_name }}
+                                    {% else %}
+                                        {{ row.employee__username }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.employee__profile__role }}</td>
+                                <td>{{ row.working_days }}</td>
+                                <td>{{ row.dealer_visits|default:0 }}</td>
+                                <td>{{ row.system_km|floatformat:2 }} KM</td>
+                                <td>{{ row.total_km|floatformat:2 }} KM</td>
+                                <td>₹{{ row.total_ta|floatformat:2 }}</td>
+                                <td>₹{{ row.total_da|floatformat:2 }}</td>
+                                <td>₹{{ row.total_claim|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-box">
+                No field attendance records found for selected period.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="two-column">
+        <div class="table-card">
+            <h3>Late Clock-In Today</h3>
+
+            {% if late_employees %}
+                <div class="table-wrap">
+                    <table class="hr-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Role</th>
+                                <th>Duty Time</th>
+                                <th>Clock-In</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in late_employees %}
+                                <tr>
+                                    <td>{{ item.employee.get_full_name|default:item.employee.username }}</td>
+                                    <td>{{ item.role }}</td>
+                                    <td>{{ item.duty_start }}</td>
+                                    <td>{{ item.clock_in|date:"h:i A" }}</td>
+                                    <td><span class="badge red">Late</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-box">
+                    No late clock-ins today.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="table-card">
+            <h3>Not Clocked-In Today</h3>
+
+            {% if not_clocked_employees %}
+                <div class="table-wrap">
+                    <table class="hr-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Role</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for emp in not_clocked_employees %}
+                                <tr>
+                                    <td>{{ emp.user.get_full_name|default:emp.user.username }}</td>
+                                    <td>{{ emp.get_role_display }}</td>
+                                    <td>{{ emp.phone|default:"-" }}</td>
+                                    <td><span class="badge orange">Not Clocked-In</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-box">
+                    Everyone has clocked in today.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{{ daily_labels|json_script:"dailyLabels" }}
+{{ daily_clockins|json_script:"dailyClockins" }}
+{{ daily_late|json_script:"dailyLate" }}
+{{ attendance_pie_data|json_script:"attendancePieData" }}
+{{ claim_pie_data|json_script:"claimPieData" }}
+{{ top_km_labels|json_script:"topKmLabels" }}
+{{ top_km_values|json_script:"topKmValues" }}
+{{ top_visit_values|json_script:"topVisitValues" }}
+{{ vehicle_labels|json_script:"vehicleLabels" }}
+{{ vehicle_values|json_script:"vehicleValues" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function toggleCustomDates(value) {
+    const startDate = document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+
+    if (!startDate || !endDate) {
+        return;
+    }
+
+    if (value === "custom") {
+        startDate.style.display = "";
+        endDate.style.display = "";
+    } else {
+        startDate.style.display = "none";
+        endDate.style.display = "none";
+    }
+}
+
+function getJsonData(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        return [];
+    }
+
+    return JSON.parse(element.textContent);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const selectedFilter = "{{ selected_filter }}";
+    toggleCustomDates(selectedFilter);
+
+    const dailyLabels = getJsonData("dailyLabels");
+    const dailyClockins = getJsonData("dailyClockins");
+    const dailyLate = getJsonData("dailyLate");
+
+    const attendancePieData = getJsonData("attendancePieData");
+    const claimPieData = getJsonData("claimPieData");
+
+    const topKmLabels = getJsonData("topKmLabels");
+    const topKmValues = getJsonData("topKmValues");
+    const topVisitValues = getJsonData("topVisitValues");
+
+    const vehicleLabels = getJsonData("vehicleLabels");
+    const vehicleValues = getJsonData("vehicleValues");
+
+    new Chart(document.getElementById("attendancePieChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["On Time", "Late", "Not Clocked-In"],
+            datasets: [{
+                data: attendancePieData,
+                backgroundColor: ["#16a34a", "#dc2626", "#d97706"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("claimPieChart"), {
+        type: "pie",
+        data: {
+            labels: ["Manager Pending", "HR Pending", "Release Pending", "Released"],
+            datasets: [{
+                data: claimPieData,
+                backgroundColor: ["#dc2626", "#d97706", "#2563eb", "#16a34a"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("dailyClockInChart"), {
+        type: "line",
+        data: {
+            labels: dailyLabels,
+            datasets: [
+                {
+                    label: "Clocked-In",
+                    data: dailyClockins,
+                    borderColor: "#2563eb",
+                    backgroundColor: "rgba(37,99,235,0.12)",
+                    tension: 0.35,
+                    fill: true
+                },
+                {
+                    label: "Late",
+                    data: dailyLate,
+                    borderColor: "#dc2626",
+                    backgroundColor: "rgba(220,38,38,0.10)",
+                    tension: 0.35,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("topKmChart"), {
+        type: "bar",
+        data: {
+            labels: topKmLabels,
+            datasets: [
+                {
+                    label: "Approved KM",
+                    data: topKmValues,
+                    backgroundColor: "#2563eb"
+                },
+                {
+                    label: "Dealer Visits",
+                    data: topVisitValues,
+                    backgroundColor: "#16a34a"
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("vehicleChart"), {
+        type: "doughnut",
+        data: {
+            labels: vehicleLabels,
+            datasets: [{
+                data: vehicleValues,
+                backgroundColor: ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#dc2626"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

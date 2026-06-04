@@ -1,0 +1,987 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pm-page{
+    max-width:1200px;
+    margin:0 auto;
+    padding:16px;
+    background:#f8fafc;
+}
+
+.pm-header{
+    background:#07120d;
+    color:#fff;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:14px;
+}
+
+.pm-header h2{
+    margin:0;
+    font-size:24px;
+    font-weight:900;
+}
+
+.pm-header p{
+    margin:6px 0 0;
+    color:#dcfce7;
+    font-size:13px;
+    font-weight:700;
+}
+
+.pm-card{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:14px;
+}
+
+.pm-title{
+    margin:0 0 14px;
+    padding-bottom:10px;
+    border-bottom:1px solid #e2e8f0;
+    color:#0f172a;
+    font-size:17px;
+    font-weight:900;
+}
+
+.pm-mini-title{
+    margin:12px 0 8px;
+    color:#334155;
+    font-size:13px;
+    font-weight:900;
+}
+
+.pm-tabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+}
+
+.pm-tab{
+    border:1px solid #cbd5e1;
+    background:#fff;
+    color:#334155;
+    border-radius:10px;
+    padding:9px 13px;
+    font-weight:900;
+    cursor:pointer;
+    font-family:inherit;
+}
+
+.pm-tab.active{
+    background:#16a34a;
+    border-color:#16a34a;
+    color:#fff;
+}
+
+.pm-tab.blue.active{
+    background:#2563eb;
+    border-color:#2563eb;
+}
+
+.pm-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.pm-field label{
+    display:block;
+    margin-bottom:6px;
+    color:#334155;
+    font-size:12px;
+    font-weight:900;
+}
+
+.pm-field input,
+.pm-field select,
+.pm-field textarea,
+.form-control{
+    width:100%;
+    min-height:42px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    padding:9px 11px;
+    background:#fff;
+    color:#0f172a;
+    font-weight:700;
+    font-family:inherit;
+}
+
+.pm-field textarea{
+    min-height:80px;
+    resize:vertical;
+}
+
+.pm-field input:focus,
+.pm-field select:focus,
+.pm-field textarea:focus,
+.form-control:focus{
+    outline:none;
+    border-color:#16a34a;
+}
+
+.pm-help{
+    margin-top:5px;
+    color:#64748b;
+    font-size:12px;
+    font-weight:700;
+}
+
+.pm-hidden{
+    display:none!important;
+}
+
+.pm-row{
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    background:#f8fafc;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+.pm-row-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+
+.pm-row-title{
+    background:#ecfdf5;
+    color:#166534;
+    border:1px solid #bbf7d0;
+    border-radius:999px;
+    padding:7px 11px;
+    font-size:12px;
+    font-weight:900;
+}
+
+.pm-row-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr .8fr .7fr .8fr .7fr;
+    gap:10px;
+    align-items:end;
+}
+
+.pm-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:12px;
+}
+
+.pm-btn{
+    border:none;
+    text-decoration:none;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:900;
+    cursor:pointer;
+    font-family:inherit;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+}
+
+.pm-btn.green{
+    background:#16a34a;
+    color:#fff;
+}
+
+.pm-btn.blue{
+    background:#2563eb;
+    color:#fff;
+}
+
+.pm-btn.light{
+    background:#f1f5f9;
+    color:#0f172a;
+    border:1px solid #e2e8f0;
+}
+
+.pm-btn.danger{
+    background:#fee2e2;
+    color:#b91c1c;
+    border:1px solid #fecaca;
+}
+
+.errorlist{
+    margin:5px 0 0;
+    padding-left:17px;
+    color:#dc2626;
+    font-size:12px;
+    font-weight:900;
+}
+
+#emptyFormTemplate{
+    display:none;
+}
+.asset-mode-hide {
+    display: none !important;
+}
+
+.asset-mode-note {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 12px;
+}
+
+@media(max-width:900px){
+    .pm-grid,
+    .pm-row-grid{
+        grid-template-columns:1fr;
+    }
+
+    .pm-page{
+        padding:10px;
+    }
+
+    .pm-header{
+        padding:16px;
+        border-radius:14px;
+    }
+
+    .pm-actions{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .pm-btn{
+        width:100%;
+    }
+}
+</style>
+
+<div class="pm-page">
+
+    <div class="pm-header">
+        <h2>{{ title }}</h2>
+        <p>Fast purchase entry. Select existing details or add new details directly.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="pm-card">
+            <h3 class="pm-title">Party & Bill Details</h3>
+
+            <div class="pm-mini-title">Party</div>
+
+            <div class="pm-tabs">
+                <button type="button" class="pm-tab party-mode-btn" data-mode="existing" onclick="setPartyMode('existing')">
+                    Existing Party
+                </button>
+                <button type="button" class="pm-tab blue party-mode-btn" data-mode="new" onclick="setPartyMode('new')">
+                    + New Party
+                </button>
+            </div>
+
+            <div id="partyExistingBox" class="pm-grid">
+                <div class="pm-field">
+                    <label>Existing Party</label>
+                    {{ form.party }}
+                    {{ form.party.errors }}
+                    <div class="pm-help">Select already saved supplier or party.</div>
+                </div>
+            </div>
+
+            <div id="partyNewBox" class="pm-grid pm-hidden">
+                <div class="pm-field">
+                    <label>New Party Name</label>
+                    {{ form.new_party_name }}
+                    {{ form.new_party_name.errors }}
+                </div>
+
+                <div class="pm-field">
+                    <label>Party Phone</label>
+                    {{ form.party_phone }}
+                </div>
+
+                <div class="pm-field">
+                    <label>Party GST</label>
+                    {{ form.party_gst }}
+                </div>
+            </div>
+
+            <div class="pm-mini-title">Purchase Type</div>
+
+            <div class="pm-tabs">
+                <button type="button" class="pm-tab purchase-type-mode-btn" data-mode="existing" onclick="setPurchaseTypeMode('existing')">
+                    Existing Type
+                </button>
+                <button type="button" class="pm-tab blue purchase-type-mode-btn" data-mode="new" onclick="setPurchaseTypeMode('new')">
+                    + New Type
+                </button>
+            </div>
+
+            <div id="purchaseTypeExistingBox" class="pm-grid">
+                <div class="pm-field">
+                    <label>Existing Purchase Type</label>
+                    {{ form.purchase_type }}
+                    {{ form.purchase_type.errors }}
+                    <div class="pm-help">Example: Raw Material, Packing Material, Finished Goods.</div>
+                </div>
+            </div>
+
+            <div id="purchaseTypeNewBox" class="pm-grid pm-hidden">
+                <div class="pm-field">
+                    <label>New Purchase Type</label>
+                    {{ form.new_purchase_type }}
+                    {{ form.new_purchase_type.errors }}
+                </div>
+            </div>
+
+            <div class="pm-mini-title">Bill Details</div>
+
+            <div class="pm-grid">
+                <div class="pm-field">
+                    <label>Bill Number</label>
+                    {{ form.bill_number }}
+                    {{ form.bill_number.errors }}
+                </div>
+
+                <div class="pm-field">
+                    <label>Bill Date</label>
+                    {{ form.bill_date }}
+                    {{ form.bill_date.errors }}
+                </div>
+
+                <div class="pm-field" style="grid-column:1/-1;">
+                    <label>Note</label>
+                    {{ form.note }}
+                </div>
+            </div>
+        </div>
+
+        <div class="pm-card">
+            <h3 class="pm-title">Purchase Items</h3>
+
+            {{ formset.management_form }}
+
+            <div id="itemRows">
+                {% for item_form in formset %}
+                    <div class="pm-row item-row">
+                        {{ item_form.id }}
+
+                        <div class="pm-row-head">
+                            <div class="pm-row-title">
+                                Item Row <span class="pm-row-number">{{ forloop.counter }}</span>
+                            </div>
+
+                            <div class="pm-tabs" style="margin-bottom:0;">
+                                <button type="button" class="pm-tab item-mode-btn" data-mode="existing" onclick="setItemRowMode(this.closest('.item-row'), 'existing')">
+                                    Existing Item
+                                </button>
+                                <button type="button" class="pm-tab blue item-mode-btn" data-mode="new" onclick="setItemRowMode(this.closest('.item-row'), 'new')">
+                                    + New Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pm-row-grid">
+                            <div class="pm-field item-existing-box">
+                                <label>Existing Item</label>
+                                {{ item_form.item }}
+                                {{ item_form.item.errors }}
+                                <div class="pm-help">Select saved item.</div>
+                            </div>
+
+                            <div class="pm-field item-new-box pm-hidden">
+                                <label>New Item Name</label>
+                                {{ item_form.new_item_name }}
+                                {{ item_form.new_item_name.errors }}
+                            </div>
+
+                            <div class="pm-field item-new-box pm-hidden">
+                                <label>SKU Code</label>
+                                {{ item_form.sku_code }}
+                            </div>
+
+                            <div class="pm-field item-new-box pm-hidden">
+                                <label>Item Type</label>
+                                {{ item_form.item_type }}
+                            </div>
+
+                            <div class="pm-field">
+                                <label>Unit</label>
+                                {{ item_form.unit }}
+                                <div class="pm-help">Keep same stock unit for existing item.</div>
+                            </div>
+
+                            <div class="pm-field">
+                                <label>Qty</label>
+                                {{ item_form.quantity }}
+                                {{ item_form.quantity.errors }}
+                            </div>
+
+                            <div class="pm-field">
+                                <label>Rate</label>
+                                {{ item_form.purchase_price }}
+                                {{ item_form.purchase_price.errors }}
+                            </div>
+
+                            <div class="pm-field">
+                                <label>GST%</label>
+                                {{ item_form.gst_percent }}
+                            </div>
+                        </div>
+
+                        {% if item_form.DELETE %}
+                            <div style="display:none;">
+                                {{ item_form.DELETE }}
+                            </div>
+                        {% endif %}
+
+                        <button type="button" class="pm-btn danger" style="margin-top:10px;" onclick="removeRow(this)">
+                            Remove Row
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="emptyFormTemplate">
+                <div class="pm-row item-row">
+                    <div class="pm-row-head">
+                        <div class="pm-row-title">
+                            Item Row <span class="pm-row-number"></span>
+                        </div>
+
+                        <div class="pm-tabs" style="margin-bottom:0;">
+                            <button type="button" class="pm-tab item-mode-btn" data-mode="existing" onclick="setItemRowMode(this.closest('.item-row'), 'existing')">
+                                Existing Item
+                            </button>
+                            <button type="button" class="pm-tab blue item-mode-btn" data-mode="new" onclick="setItemRowMode(this.closest('.item-row'), 'new')">
+                                + New Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pm-row-grid">
+                        <div class="pm-field item-existing-box">
+                            <label>Existing Item</label>
+                            {{ formset.empty_form.item }}
+                            <div class="pm-help">Select saved item.</div>
+                        </div>
+
+                        <div class="pm-field item-new-box pm-hidden">
+                            <label>New Item Name</label>
+                            {{ formset.empty_form.new_item_name }}
+                        </div>
+
+                        <div class="pm-field item-new-box pm-hidden">
+                            <label>SKU Code</label>
+                            {{ formset.empty_form.sku_code }}
+                        </div>
+
+                        <div class="pm-field item-new-box pm-hidden">
+                            <label>Item Type</label>
+                            {{ formset.empty_form.item_type }}
+                        </div>
+
+                        <div class="pm-field">
+                            <label>Unit</label>
+                            {{ formset.empty_form.unit }}
+                            <div class="pm-help">Keep same stock unit for existing item.</div>
+                        </div>
+
+                        <div class="pm-field">
+                            <label>Qty</label>
+                            {{ formset.empty_form.quantity }}
+                        </div>
+
+                        <div class="pm-field">
+                            <label>Rate</label>
+                            {{ formset.empty_form.purchase_price }}
+                        </div>
+
+                        <div class="pm-field">
+                            <label>GST%</label>
+                            {{ formset.empty_form.gst_percent }}
+                        </div>
+                    </div>
+
+                    <div style="display:none;">
+                        {{ formset.empty_form.DELETE }}
+                    </div>
+
+                    <button type="button" class="pm-btn danger" style="margin-top:10px;" onclick="removeRow(this)">
+                        Remove Row
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pm-actions">
+            <button type="button" class="pm-btn blue" onclick="addRow()">+ Add Item</button>
+            <button type="submit" class="pm-btn green">Save Purchase & Add Stock</button>
+            <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function setActiveButton(buttons, mode) {
+    buttons.forEach(function(btn) {
+        if (btn.dataset.mode === mode) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+}
+
+function setPartyMode(mode) {
+    const existingBox = document.getElementById("partyExistingBox");
+    const newBox = document.getElementById("partyNewBox");
+    const partySelect = document.getElementById("id_party");
+    const newName = document.getElementById("id_new_party_name");
+    const phone = document.getElementById("id_party_phone");
+    const gst = document.getElementById("id_party_gst");
+
+    setActiveButton(document.querySelectorAll(".party-mode-btn"), mode);
+
+    if (mode === "existing") {
+        existingBox.classList.remove("pm-hidden");
+        newBox.classList.add("pm-hidden");
+
+        if (newName) newName.value = "";
+        if (phone) phone.value = "";
+        if (gst) gst.value = "";
+    } else {
+        existingBox.classList.add("pm-hidden");
+        newBox.classList.remove("pm-hidden");
+
+        if (partySelect) partySelect.value = "";
+    }
+}
+
+function setPurchaseTypeMode(mode) {
+    const existingBox = document.getElementById("purchaseTypeExistingBox");
+    const newBox = document.getElementById("purchaseTypeNewBox");
+    const typeSelect = document.getElementById("id_purchase_type");
+    const newType = document.getElementById("id_new_purchase_type");
+
+    setActiveButton(document.querySelectorAll(".purchase-type-mode-btn"), mode);
+
+    if (mode === "existing") {
+        existingBox.classList.remove("pm-hidden");
+        newBox.classList.add("pm-hidden");
+
+        if (newType) newType.value = "";
+    } else {
+        existingBox.classList.add("pm-hidden");
+        newBox.classList.remove("pm-hidden");
+
+        if (typeSelect) typeSelect.value = "";
+    }
+}
+
+function setItemRowMode(row, mode) {
+    const existingBox = row.querySelector(".item-existing-box");
+    const newBoxes = row.querySelectorAll(".item-new-box");
+    const itemSelect = row.querySelector("select[name$='-item']");
+    const newItemName = row.querySelector("input[name$='-new_item_name']");
+    const skuCode = row.querySelector("input[name$='-sku_code']");
+
+    setActiveButton(row.querySelectorAll(".item-mode-btn"), mode);
+
+    if (mode === "existing") {
+        if (existingBox) existingBox.classList.remove("pm-hidden");
+
+        newBoxes.forEach(function(box) {
+            box.classList.add("pm-hidden");
+        });
+
+        if (newItemName) newItemName.value = "";
+        if (skuCode) skuCode.value = "";
+    } else {
+        if (existingBox) existingBox.classList.add("pm-hidden");
+
+        newBoxes.forEach(function(box) {
+            box.classList.remove("pm-hidden");
+        });
+
+        if (itemSelect) itemSelect.value = "";
+    }
+}
+
+function initPartyTypeModes() {
+    const partySelect = document.getElementById("id_party");
+    const newPartyName = document.getElementById("id_new_party_name");
+
+    if (newPartyName && newPartyName.value.trim()) {
+        setPartyMode("new");
+    } else {
+        setPartyMode("existing");
+    }
+
+    if (partySelect) {
+        partySelect.addEventListener("change", function() {
+            if (partySelect.value) {
+                setPartyMode("existing");
+            }
+        });
+    }
+
+    const typeSelect = document.getElementById("id_purchase_type");
+    const newType = document.getElementById("id_new_purchase_type");
+
+    if (newType && newType.value.trim()) {
+        setPurchaseTypeMode("new");
+    } else {
+        setPurchaseTypeMode("existing");
+    }
+
+    if (typeSelect) {
+        typeSelect.addEventListener("change", function() {
+            if (typeSelect.value) {
+                setPurchaseTypeMode("existing");
+            }
+        });
+    }
+}
+
+function initItemRow(row) {
+    const itemSelect = row.querySelector("select[name$='-item']");
+    const newItemName = row.querySelector("input[name$='-new_item_name']");
+
+    if (newItemName && newItemName.value.trim()) {
+        setItemRowMode(row, "new");
+    } else {
+        setItemRowMode(row, "existing");
+    }
+
+    if (itemSelect) {
+        itemSelect.addEventListener("change", function() {
+            if (itemSelect.value) {
+                setItemRowMode(row, "existing");
+            }
+        });
+    }
+}
+
+function updateRowNumbers() {
+    let count = 0;
+
+    document.querySelectorAll(".item-row").forEach(function(row) {
+        if (row.style.display !== "none") {
+            count++;
+            const number = row.querySelector(".pm-row-number");
+            if (number) number.textContent = count;
+        }
+    });
+}
+
+function initAllItemRows() {
+    document.querySelectorAll(".item-row").forEach(function(row) {
+        initItemRow(row);
+    });
+
+    updateRowNumbers();
+}
+
+function getTotalFormsInput() {
+    return document.getElementById("id_items-TOTAL_FORMS") || document.querySelector("input[name$='-TOTAL_FORMS']");
+}
+
+function addRow() {
+    const totalInput = getTotalFormsInput();
+
+    if (!totalInput) {
+        alert("Formset TOTAL_FORMS input not found.");
+        return;
+    }
+
+    const index = parseInt(totalInput.value);
+    const template = document.getElementById("emptyFormTemplate").innerHTML.replaceAll("__prefix__", index);
+
+    document.getElementById("itemRows").insertAdjacentHTML("beforeend", template);
+    totalInput.value = index + 1;
+
+    const rows = document.querySelectorAll(".item-row");
+    const newRow = rows[rows.length - 1];
+
+    initItemRow(newRow);
+    updateRowNumbers();
+}
+
+function removeRow(button) {
+    const row = button.closest(".item-row");
+    const deleteInput = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+
+    if (deleteInput) {
+        deleteInput.checked = true;
+        row.style.display = "none";
+    } else {
+        row.remove();
+    }
+
+    updateRowNumbers();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    initPartyTypeModes();
+    initAllItemRows();
+});
+</script>
+<script>
+function isAssetPurchaseSelected() {
+    const purchaseTypeSelect = document.getElementById("id_purchase_type");
+    const newPurchaseTypeInput = document.getElementById("id_new_purchase_type");
+
+    let text = "";
+
+    if (purchaseTypeSelect) {
+        const selectedOption = purchaseTypeSelect.options[purchaseTypeSelect.selectedIndex];
+        text += " " + (purchaseTypeSelect.value || "");
+        text += " " + (selectedOption ? selectedOption.text : "");
+    }
+
+    if (newPurchaseTypeInput) {
+        text += " " + (newPurchaseTypeInput.value || "");
+    }
+
+    text = text.toLowerCase();
+
+    return (
+        text.includes("asset") ||
+        text.includes("assets") ||
+        text.includes("fixed asset") ||
+        text.includes("company asset")
+    );
+}
+
+function getFieldWrapper(input) {
+    if (!input) return null;
+
+    return (
+        input.closest(".pm-field") ||
+        input.closest(".form-group") ||
+        input.closest(".field") ||
+        input.parentElement
+    );
+}
+
+function setSelectValueIfExists(select, values) {
+    if (!select) return;
+
+    const wanted = values.map(v => String(v).toUpperCase());
+
+    Array.from(select.options).forEach(function(opt) {
+        const optValue = String(opt.value || "").toUpperCase();
+        const optText = String(opt.text || "").toUpperCase();
+
+        if (wanted.includes(optValue) || wanted.includes(optText)) {
+            select.value = opt.value;
+        }
+    });
+}
+function getSelectedAssetName(existingItem) {
+    if (!existingItem) return "";
+
+    const selectedOption = existingItem.options[existingItem.selectedIndex];
+
+    if (!selectedOption || !selectedOption.text) return "";
+
+    let text = selectedOption.text.trim();
+
+    // If dropdown text is like: Laptop | SKU: LAP001 | Stock...
+    if (text.includes("|")) {
+        text = text.split("|")[0].trim();
+    }
+
+    return text;
+}
+
+function setAssetModeForRow(row, assetMode) {
+    if (!row) return;
+
+    const existingItem = row.querySelector("select[name$='-item']");
+    const assetName = row.querySelector("input[name$='-new_item_name']");
+    const sku = row.querySelector("input[name$='-sku_code']");
+    const itemType = row.querySelector("select[name$='-item_type'], input[name$='-item_type']");
+    const unit = row.querySelector("select[name$='-unit'], input[name$='-unit']");
+    const quantity = row.querySelector("input[name$='-quantity']");
+    const purchasePrice = row.querySelector("input[name$='-purchase_price']");
+    const gst = row.querySelector("input[name$='-gst_percent']");
+
+    const existingItemWrap = getFieldWrapper(existingItem);
+    const assetNameWrap = getFieldWrapper(assetName);
+    const skuWrap = getFieldWrapper(sku);
+    const itemTypeWrap = getFieldWrapper(itemType);
+    const unitWrap = getFieldWrapper(unit);
+    const rowModeTabs = row.querySelector(".pm-row-head .pm-tabs");
+
+    if (assetMode) {
+        if (rowModeTabs) rowModeTabs.classList.add("asset-mode-hide");
+
+        if (existingItemWrap) existingItemWrap.classList.add("asset-mode-hide");
+        if (skuWrap) skuWrap.classList.add("asset-mode-hide");
+        if (itemTypeWrap) itemTypeWrap.classList.add("asset-mode-hide");
+        if (unitWrap) unitWrap.classList.add("asset-mode-hide");
+
+        if (assetNameWrap) {
+            assetNameWrap.classList.remove("pm-hidden");
+            assetNameWrap.classList.remove("asset-mode-hide");
+
+            const label = assetNameWrap.querySelector("label");
+            if (label) label.innerText = "Asset Name";
+        }
+
+        let selectedAssetName = getSelectedAssetName(existingItem);
+
+        if (assetName && !assetName.value.trim() && selectedAssetName) {
+            assetName.value = selectedAssetName;
+        }
+
+        if (existingItem) existingItem.value = "";
+        if (sku) sku.value = "";
+
+        if (assetName) {
+            assetName.placeholder = "Example: Laptop / Bike / Uniform / Stickers";
+            assetName.required = true;
+        }
+
+        if (quantity) {
+            quantity.placeholder = "Qty";
+            quantity.step = "1";
+            quantity.min = "1";
+        }
+
+        if (purchasePrice) {
+            purchasePrice.placeholder = "Purchase rate";
+        }
+
+        if (gst) {
+            gst.placeholder = "GST %";
+        }
+
+        if (unit) {
+            if (unit.tagName === "SELECT") {
+                setSelectValueIfExists(unit, ["PIECE", "PCS", "NOS", "NO"]);
+            } else {
+                unit.value = "PIECE";
+            }
+        }
+
+        if (itemType) {
+            if (itemType.tagName === "SELECT") {
+                setSelectValueIfExists(itemType, ["ASSET", "OTHER"]);
+            } else {
+                itemType.value = "ASSET";
+            }
+        }
+
+    } else {
+        if (rowModeTabs) rowModeTabs.classList.remove("asset-mode-hide");
+
+        if (existingItemWrap) existingItemWrap.classList.remove("asset-mode-hide");
+        if (skuWrap) skuWrap.classList.remove("asset-mode-hide");
+        if (itemTypeWrap) itemTypeWrap.classList.remove("asset-mode-hide");
+        if (unitWrap) unitWrap.classList.remove("asset-mode-hide");
+
+        if (assetNameWrap) {
+            const label = assetNameWrap.querySelector("label");
+            if (label) label.innerText = "New Item Name";
+        }
+
+        if (assetName) {
+            assetName.placeholder = "";
+            assetName.required = false;
+        }
+
+        if (quantity) {
+            quantity.step = "0.001";
+            quantity.min = "";
+        }
+
+        if (typeof initItemRow === "function") {
+            initItemRow(row);
+        }
+    }
+}
+
+function toggleAssetPurchaseMode() {
+    const assetMode = isAssetPurchaseSelected();
+    const itemRows = document.querySelectorAll("#itemRows .item-row");
+
+    itemRows.forEach(function(row) {
+        setAssetModeForRow(row, assetMode);
+    });
+
+    let note = document.getElementById("assetModeNote");
+    const itemRowsContainer = document.getElementById("itemRows");
+
+    if (assetMode && itemRowsContainer) {
+        if (!note) {
+            note = document.createElement("div");
+            note.id = "assetModeNote";
+            note.className = "asset-mode-note";
+            note.innerText = "Asset purchase mode: enter Asset Name, Qty, Purchase Rate and GST only. Stock in KG/Litre will not be added. Assets will be created in Asset Management.";
+            itemRowsContainer.parentNode.insertBefore(note, itemRowsContainer);
+        }
+    } else {
+        if (note) note.remove();
+    }
+
+    const submitBtn = document.querySelector(".pm-actions button[type='submit']");
+
+    if (submitBtn) {
+        submitBtn.innerText = assetMode ? "Save Asset Purchase" : "Save Purchase & Add Stock";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const purchaseTypeSelect = document.getElementById("id_purchase_type");
+    const newPurchaseTypeInput = document.getElementById("id_new_purchase_type");
+    const itemRowsContainer = document.getElementById("itemRows");
+
+    if (purchaseTypeSelect) {
+        purchaseTypeSelect.addEventListener("change", toggleAssetPurchaseMode);
+    }
+
+    if (newPurchaseTypeInput) {
+        newPurchaseTypeInput.addEventListener("input", toggleAssetPurchaseMode);
+        newPurchaseTypeInput.addEventListener("keyup", toggleAssetPurchaseMode);
+    }
+
+    document.querySelectorAll(".purchase-type-mode-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            setTimeout(toggleAssetPurchaseMode, 80);
+        });
+    });
+
+    if (itemRowsContainer) {
+        const observer = new MutationObserver(function() {
+            setTimeout(toggleAssetPurchaseMode, 100);
+        });
+
+        observer.observe(itemRowsContainer, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
+    toggleAssetPurchaseMode();
+});
+</script>
+
+{% endblock %}

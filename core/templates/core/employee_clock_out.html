@@ -1,0 +1,255 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.card p {
+    color: #64748b;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.form-grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.field label {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 7px;
+}
+
+.form-control,
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    font-weight: 800;
+    background: #f8fafc;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+}
+
+.help-box {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 12px;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn {
+    border: none;
+    border-radius: 15px;
+    padding: 12px 16px;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn.green { background: #16a34a; }
+.btn.dark { background: #0f172a; }
+
+.hidden {
+    display: none;
+}
+
+@media(max-width: 650px) {
+    .page {
+        padding: 12px;
+    }
+
+    .btn-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        text-align: center;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Clock Out</h2>
+        <p>
+            Your clock-out location will be saved. Travel KM will be calculated from odometer reading.
+        </p>
+
+        <div class="help-box">
+            Clock In: {{ attendance.clock_in_at|date:"d M Y, h:i A" }}<br>
+            Clock In Location: {{ attendance.clock_in_latitude }}, {{ attendance.clock_in_longitude }}<br>
+            Starting Odometer: <b>{{ attendance.clock_in_odometer_reading|default:"0.00" }}</b>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" id="clockOutForm">
+            {% csrf_token %}
+
+            <input type="hidden" name="latitude" id="clockOutLatitude">
+            <input type="hidden" name="longitude" id="clockOutLongitude">
+
+            <div class="form-grid">
+                <div class="field">
+                    <label>Vehicle Type</label>
+                    {{ form.vehicle_type }}
+                    {{ form.vehicle_type.errors }}
+                </div>
+
+                <div class="field" id="odometerBox">
+                    <label>Ending Odometer Reading</label>
+                    {{ form.clock_out_odometer_reading }}
+                    {{ form.clock_out_odometer_reading.errors }}
+
+                    <div class="help-box" style="margin-top:10px;">
+                        Starting Odometer:
+                        <b>{{ attendance.clock_in_odometer_reading|default:"0.00" }}</b><br>
+                        Travel KM will be:
+                        <b>Ending Odometer - Starting Odometer</b>
+                    </div>
+                </div>
+
+                <div id="publicVehicleBox">
+                    <div class="field">
+                        <label>Public Vehicle Amount</label>
+                        {{ form.public_vehicle_amount }}
+                        {{ form.public_vehicle_amount.errors }}
+                    </div>
+
+                    <div class="field">
+                        <label>Public Vehicle Bill</label>
+                        {{ form.public_vehicle_bill }}
+                        {{ form.public_vehicle_bill.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button type="button" class="btn green" onclick="submitClockOut()">
+                    Save Clock Out
+                </button>
+
+                <a href="{% url 'employee_attendance_dashboard' %}" class="btn dark">
+                    Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateClockOutFields() {
+    const vehicle = document.getElementById("id_vehicle_type");
+    const publicVehicleBox = document.getElementById("publicVehicleBox");
+    const odometerBox = document.getElementById("odometerBox");
+    const odoInput = document.getElementById("id_clock_out_odometer_reading");
+
+    const vehicleValue = vehicle ? vehicle.value : "";
+
+    if (publicVehicleBox) {
+        publicVehicleBox.classList.toggle("hidden", vehicleValue !== "PUBLIC");
+    }
+
+    if (odometerBox) {
+        odometerBox.classList.toggle("hidden", vehicleValue === "PUBLIC");
+    }
+
+    if (odoInput) {
+        if (vehicleValue === "PUBLIC") {
+            odoInput.removeAttribute("required");
+        } else {
+            odoInput.setAttribute("required", "required");
+        }
+    }
+}
+
+function submitClockOut() {
+    const vehicle = document.getElementById("id_vehicle_type");
+    const odoInput = document.getElementById("id_clock_out_odometer_reading");
+
+    if (vehicle && vehicle.value !== "PUBLIC") {
+        if (!odoInput || !odoInput.value || parseFloat(odoInput.value) < 0) {
+            alert("Please enter valid ending odometer reading.");
+            return;
+        }
+    }
+
+    if (!navigator.geolocation) {
+        alert("Location is not supported in this browser.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById("clockOutLatitude").value = position.coords.latitude;
+        document.getElementById("clockOutLongitude").value = position.coords.longitude;
+        document.getElementById("clockOutForm").submit();
+    }, function() {
+        alert("Please allow location permission for clock-out.");
+    }, {
+        enableHighAccuracy: true,
+        timeout: 12000,
+        maximumAge: 0
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    updateClockOutFields();
+
+    const vehicle = document.getElementById("id_vehicle_type");
+
+    if (vehicle) {
+        vehicle.addEventListener("change", updateClockOutFields);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pm-page{padding:16px;max-width:1250px;margin:0 auto}
+.pm-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.pm-hero h2{margin:0;font-size:28px;font-weight:900}
+.pm-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.pm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.pm-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}
+.pm-card p{margin:7px 0 0;color:#64748b;font-size:13px;font-weight:800;line-height:1.45}
+.pm-card .num{font-size:24px;font-weight:900;margin-top:10px;color:#16a34a}
+.pm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pm-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.pm-btn.green{background:#16a34a}.pm-btn.blue{background:#2563eb}.pm-btn.orange{background:#d97706}.pm-btn.light{background:#f1f5f9;color:#0f172a}
+.pm-form-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-section-title{margin:0 0 12px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+.pm-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.pm-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.pm-table-wrap{overflow:auto;background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-table{width:100%;border-collapse:collapse;min-width:900px}
+.pm-table th,.pm-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.pm-table th{background:#f8fafc;font-weight:900;color:#334155}
+.pm-table td{font-weight:800;color:#0f172a}
+.pm-row-card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:12px;margin-bottom:10px}
+.pm-row-grid{display:grid;grid-template-columns:1.2fr 1.2fr .8fr .7fr .8fr .7fr .3fr;gap:10px;align-items:end}
+.pm-empty{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:24px;text-align:center;color:#64748b;font-weight:900}
+.pm-badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900}
+.pm-badge.paid{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.pm-badge.unpaid{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.pm-badge.partial{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.errorlist{color:#dc2626;font-size:12px;font-weight:900;margin:6px 0 0;padding-left:18px}
+.pm-hidden {
+    display: none !important;
+}
+
+.payment-help {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 800;
+    margin-top: 6px;
+}
+@media(max-width:900px){.pm-grid{grid-template-columns:repeat(2,1fr)}.pm-form-grid{grid-template-columns:1fr}.pm-row-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.pm-page{padding:10px}.pm-grid{grid-template-columns:1fr}.pm-hero{padding:18px;border-radius:20px}.pm-actions{display:grid;grid-template-columns:1fr}.pm-btn{justify-content:center}}
+</style>
+
+<div class="pm-page">
+    <div class="pm-hero">
+        <h2>{{ title }}</h2>
+        <p>Select unpaid bill and enter payment. Bill becomes Paid / Partial automatically.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="pm-form-card">
+        {% csrf_token %}
+        <h3 class="pm-section-title">Payment Details</h3>
+
+        <div class="pm-form-grid">
+    {% for field in form %}
+        <div class="pm-field 
+            {% if field.name == 'reference_number' %}js-reference-field{% endif %}
+            {% if field.name == 'cheque_number' %}js-cheque-field{% endif %}
+            {% if field.name == 'payment_screenshot' %}js-screenshot-field{% endif %}
+            {% if field.name == 'note' %}full{% endif %}
+        ">
+            <label class="js-label-{{ field.name }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+
+            {% if field.name == 'reference_number' %}
+                <div class="payment-help js-reference-help">Enter UPI reference / bank transaction number.</div>
+            {% endif %}
+
+            {% if field.name == 'cheque_number' %}
+                <div class="payment-help">Enter cheque number only for cheque payment.</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+        <div class="pm-actions">
+            <button type="submit" class="pm-btn green">Save Payment</button>
+            <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">Back</a>
+        </div>
+    </form>
+
+    <div class="pm-form-card" style="margin-top:16px;">
+        <h3 class="pm-section-title">Recent Payments</h3>
+        {% if recent_payments %}
+            <div class="pm-table-wrap">
+                <table class="pm-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Party</th>
+                            <th>Bill</th>
+                            <th>Mode</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in recent_payments %}
+                            <tr>
+                                <td>{{ payment.payment_date }}</td>
+                                <td>{{ payment.party.party_name }}</td>
+                                <td>{{ payment.bill.bill_number|default:"-" }}</td>
+                                <td>{{ payment.get_payment_mode_display }}</td>
+                                <td>₹{{ payment.amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="pm-empty">No payments yet.</div>
+        {% endif %}
+    </div>
+</div>
+<script>
+function normalizePaymentMode(value) {
+    return String(value || "").toUpperCase().replace(/\s+/g, "_");
+}
+
+function togglePaymentFields() {
+    const modeSelect = document.getElementById("id_payment_mode");
+
+    if (!modeSelect) return;
+
+    const selectedValue = normalizePaymentMode(modeSelect.value);
+    const selectedText = normalizePaymentMode(modeSelect.options[modeSelect.selectedIndex]?.text || "");
+    const mode = selectedValue + " " + selectedText;
+
+    const referenceField = document.querySelector(".js-reference-field");
+    const chequeField = document.querySelector(".js-cheque-field");
+    const screenshotField = document.querySelector(".js-screenshot-field");
+
+    const referenceInput = document.getElementById("id_reference_number");
+    const chequeInput = document.getElementById("id_cheque_number");
+    const screenshotInput = document.getElementById("id_payment_screenshot");
+
+    const referenceLabel = document.querySelector(".js-label-reference_number");
+    const referenceHelp = document.querySelector(".js-reference-help");
+
+    // Hide all first
+    if (referenceField) referenceField.classList.add("pm-hidden");
+    if (chequeField) chequeField.classList.add("pm-hidden");
+    if (screenshotField) screenshotField.classList.add("pm-hidden");
+
+    if (referenceInput) {
+        referenceInput.required = false;
+        referenceInput.placeholder = "";
+    }
+
+    if (chequeInput) {
+        chequeInput.required = false;
+        chequeInput.placeholder = "";
+    }
+
+    // UPI selected
+    if (mode.includes("UPI")) {
+        if (referenceField) referenceField.classList.remove("pm-hidden");
+        if (screenshotField) screenshotField.classList.remove("pm-hidden");
+
+        if (referenceLabel) referenceLabel.innerText = "UPI Reference Number";
+        if (referenceHelp) referenceHelp.innerText = "Enter UPI transaction / reference number.";
+
+        if (referenceInput) {
+            referenceInput.required = true;
+            referenceInput.placeholder = "Enter UPI reference number";
+        }
+
+        if (chequeInput) chequeInput.value = "";
+        return;
+    }
+
+    // Bank selected
+    if (mode.includes("BANK") || mode.includes("TRANSFER") || mode.includes("NEFT") || mode.includes("IMPS") || mode.includes("RTGS")) {
+        if (referenceField) referenceField.classList.remove("pm-hidden");
+
+        if (referenceLabel) referenceLabel.innerText = "Bank Reference Number";
+        if (referenceHelp) referenceHelp.innerText = "Enter bank transaction / UTR reference number.";
+
+        if (referenceInput) {
+            referenceInput.required = true;
+            referenceInput.placeholder = "Enter bank transaction number";
+        }
+
+        if (chequeInput) chequeInput.value = "";
+        if (screenshotInput) screenshotInput.value = "";
+        return;
+    }
+
+    // Cheque selected
+    if (mode.includes("CHEQUE") || mode.includes("CHECK")) {
+        if (chequeField) chequeField.classList.remove("pm-hidden");
+
+        if (chequeInput) {
+            chequeInput.required = true;
+            chequeInput.placeholder = "Enter cheque number";
+        }
+
+        if (referenceInput) referenceInput.value = "";
+        if (screenshotInput) screenshotInput.value = "";
+        return;
+    }
+
+    // Cash / other selected
+    if (referenceInput) referenceInput.value = "";
+    if (chequeInput) chequeInput.value = "";
+    if (screenshotInput) screenshotInput.value = "";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const modeSelect = document.getElementById("id_payment_mode");
+
+    togglePaymentFields();
+
+    if (modeSelect) {
+        modeSelect.addEventListener("change", togglePaymentFields);
+    }
+});
+</script>
+{% endblock %}

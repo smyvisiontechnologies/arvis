@@ -1,0 +1,570 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.hr-page {
+    padding: 18px;
+}
+
+.hr-hero {
+    background:
+        radial-gradient(circle at top right, rgba(37,99,235,.16), transparent 30%),
+        linear-gradient(135deg, #ffffff, #f8fafc);
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+}
+
+.hr-hero h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.hr-hero p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.action-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+    margin-bottom: 16px;
+}
+
+.action-card h3 {
+    margin: 0 0 8px;
+    color: #0f172a;
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.action-card p {
+    margin: 0 0 14px;
+    color: #64748b;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    font-weight: 800;
+    background: #f8fafc;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    text-decoration: none;
+    border-radius: 15px;
+    padding: 12px 16px;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.btn.green { background: #16a34a; }
+.btn.blue { background: #2563eb; }
+.btn.dark { background: #0f172a; }
+.btn.orange { background: #d97706; }
+
+.gps-active-box {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #047857;
+    border-radius: 18px;
+    padding: 13px;
+    font-weight: 900;
+    line-height: 1.5;
+    margin-top: 12px;
+}
+
+.warning-box {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #c2410c;
+    border-radius: 18px;
+    padding: 13px;
+    font-weight: 850;
+    line-height: 1.5;
+    margin-top: 12px;
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.link-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 15px;
+    text-decoration: none;
+    color: #0f172a;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.link-card span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+/* Popup */
+.popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+}
+
+.popup-backdrop.show {
+    display: flex;
+}
+
+.popup-card {
+    width: 100%;
+    max-width: 430px;
+    background: white;
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: 0 24px 70px rgba(15,23,42,.28);
+    border: 1px solid #e2e8f0;
+    animation: popupIn .18s ease;
+}
+
+@keyframes popupIn {
+    from {
+        transform: translateY(12px) scale(.96);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.popup-icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.popup-icon svg {
+    width: 34px;
+    height: 34px;
+}
+
+.popup-card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 1000;
+}
+
+.popup-card p {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin: 8px 0 14px;
+}
+
+.popup-field label {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 7px;
+}
+
+.popup-actions {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.popup-note {
+    margin-top: 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 15px;
+    padding: 11px;
+    font-size: 12px;
+    font-weight: 850;
+    line-height: 1.45;
+}
+
+@media(max-width: 650px) {
+    .hr-page {
+        padding: 12px;
+    }
+
+    .btn-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .popup-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="hr-page">
+
+    <div class="hr-hero">
+        <h2>Employee Attendance</h2>
+        <p>
+            Clock-in and clock-out locations will be saved for proof.
+            Travel KM and TA will be calculated from odometer reading.
+        </p>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <span>This Month KM</span>
+            <strong>{{ monthly_km|floatformat:2 }} KM</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>This Month TA</span>
+            <strong>₹{{ monthly_ta|floatformat:2 }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>This Month DA</span>
+            <strong>₹{{ monthly_da|floatformat:2 }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Today Status</span>
+            <strong>
+                {% if my_open_attendance %}
+                    Clocked In
+                {% elif my_today_attendance %}
+                    Completed
+                {% else %}
+                    Not Started
+                {% endif %}
+            </strong>
+        </div>
+    </div>
+
+    <div class="action-card">
+        {% if my_open_attendance %}
+            <h3>You are clocked in</h3>
+            <p>
+                Location proof is active. When your work is completed, clock-out and enter ending odometer reading.
+            </p>
+
+            <div class="warning-box">
+                Starting Odometer:
+                <b>{{ my_open_attendance.clock_in_odometer_reading|default:"0.00"|floatformat:2 }}</b><br>
+                Clock-in Location:
+                {{ my_open_attendance.clock_in_latitude }},
+                {{ my_open_attendance.clock_in_longitude }}
+            </div>
+
+            <div class="btn-row" style="margin-top:14px;">
+                <a href="{% url 'employee_clock_out' %}" class="btn orange">
+                    Check Out
+                </a>
+            </div>
+
+            <div class="gps-active-box">
+                GPS/location is used for proof only. KM will be calculated from odometer reading.
+            </div>
+
+        {% elif my_today_attendance %}
+            <h3>Attendance completed for today</h3>
+            <p>
+                Your clock-in and clock-out are completed. Claim has been submitted for approval.
+            </p>
+
+            <div class="warning-box">
+                Status: {{ my_today_attendance.get_status_display }}<br>
+                Starting Odometer: {{ my_today_attendance.clock_in_odometer_reading|default:"0.00"|floatformat:2 }}<br>
+                Ending Odometer: {{ my_today_attendance.clock_out_odometer_reading|default:"0.00"|floatformat:2 }}<br>
+                Travel KM: {{ my_today_attendance.system_distance_km|floatformat:2 }} KM<br>
+                Claim Amount: ₹{{ my_today_attendance.total_claim_amount|floatformat:2 }}
+            </div>
+
+        {% else %}
+            <h3>Start today’s work</h3>
+            <p>
+                Click Check In. Then enter starting odometer reading in popup.
+                Your clock-in location will also be saved.
+            </p>
+
+            <form method="post" action="{% url 'employee_clock_in' %}" id="clockInForm">
+                {% csrf_token %}
+
+                <input type="hidden" name="latitude" id="clockInLatitude">
+                <input type="hidden" name="longitude" id="clockInLongitude">
+                <input type="hidden" name="clock_in_odometer_reading" id="clockInOdometerHidden">
+
+                <button type="button" class="btn green" onclick="openOdometerPopup()">
+                    Check In
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="quick-links">
+        <a href="{% url 'employee_leave_list' %}" class="link-card">
+            <strong>My Leaves</strong>
+            <span>Apply and track leave requests</span>
+        </a>
+
+        <a href="{% url 'employee_leave_request_create' %}" class="link-card">
+            <strong>Apply Leave</strong>
+            <span>Full day or half day leave</span>
+        </a>
+
+        {% if pending_manager_count %}
+            <a href="{% url 'manager_attendance_approvals' %}" class="link-card">
+                <strong>Manager Approvals</strong>
+                <span>{{ pending_manager_count }} attendance claims pending</span>
+            </a>
+        {% endif %}
+
+        {% if pending_hr_count %}
+            <a href="{% url 'hr_attendance_claims' %}" class="link-card">
+                <strong>HR Claims</strong>
+                <span>{{ pending_hr_count }} claims pending HR approval</span>
+            </a>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="popup-backdrop" id="odometerPopup">
+    <div class="popup-card">
+        <div class="popup-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M4 14a8 8 0 0116 0"/>
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M7 14h10"/>
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 14l4-5"/>
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 18h14"/>
+            </svg>
+        </div>
+
+        <h3>Starting Odometer</h3>
+        <p>
+            Enter your vehicle starting odometer reading before clock-in.
+            Your current GPS location will be saved after this.
+        </p>
+
+        <div class="popup-field">
+            <label>Odometer Reading</label>
+            <input type="number"
+                   id="clockInOdometerPopup"
+                   class="form-control"
+                   step="0.01"
+                   min="0"
+                   placeholder="Example: 24560">
+        </div>
+
+        <div class="popup-note">
+            This reading will be used with clock-out odometer to calculate total travel KM.
+        </div>
+
+        <div class="popup-actions">
+            <button type="button" class="btn dark" onclick="closeOdometerPopup()">
+                Cancel
+            </button>
+
+            <button type="button" class="btn green" onclick="submitClockIn()">
+                Continue Check In
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openOdometerPopup() {
+    const popup = document.getElementById("odometerPopup");
+    const input = document.getElementById("clockInOdometerPopup");
+
+    if (popup) {
+        popup.classList.add("show");
+    }
+
+    setTimeout(function() {
+        if (input) {
+            input.focus();
+        }
+    }, 150);
+}
+
+function closeOdometerPopup() {
+    const popup = document.getElementById("odometerPopup");
+
+    if (popup) {
+        popup.classList.remove("show");
+    }
+}
+
+function submitClockIn() {
+    const odoPopup = document.getElementById("clockInOdometerPopup");
+    const odoHidden = document.getElementById("clockInOdometerHidden");
+
+    if (!odoPopup || !odoPopup.value || parseFloat(odoPopup.value) < 0) {
+        alert("Please enter valid starting odometer reading.");
+        return;
+    }
+
+    odoHidden.value = odoPopup.value;
+
+    if (!navigator.geolocation) {
+        alert("Location is not supported in this browser.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById("clockInLatitude").value = position.coords.latitude;
+        document.getElementById("clockInLongitude").value = position.coords.longitude;
+        document.getElementById("clockInForm").submit();
+    }, function() {
+        alert("Please allow location permission for clock-in.");
+    }, {
+        enableHighAccuracy: true,
+        timeout: 12000,
+        maximumAge: 0
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+function sendGpsPing() {
+    if (!navigator.geolocation) {
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+        const formData = new FormData();
+        formData.append("latitude", position.coords.latitude);
+        formData.append("longitude", position.coords.longitude);
+
+        fetch("{% url 'employee_gps_ping' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: formData
+        });
+    });
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closeOdometerPopup();
+    }
+
+    if (e.key === "Enter") {
+        const popup = document.getElementById("odometerPopup");
+
+        if (popup && popup.classList.contains("show")) {
+            e.preventDefault();
+            submitClockIn();
+        }
+    }
+});
+
+{% if my_open_attendance %}
+    setInterval(sendGpsPing, 60000);
+{% endif %}
+</script>
+{% endblock %}

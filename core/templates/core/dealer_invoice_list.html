@@ -1,0 +1,1244 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.page-head {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.page-head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.page-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.search-box {
+    min-width: 280px;
+    max-width: 420px;
+    flex: 1;
+}
+
+.search-input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-weight: 800;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+.filter-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.filter-btn {
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #334155;
+    border-radius: 999px;
+    padding: 9px 13px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.04);
+}
+
+.filter-btn.active {
+    background: #0f172a;
+    color: white;
+    border-color: #0f172a;
+}
+
+.filter-btn.pending {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+}
+
+.filter-btn.pending.active {
+    background: #d97706;
+    color: white;
+    border-color: #d97706;
+}
+
+.filter-btn.green {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #bbf7d0;
+}
+
+.filter-btn.green.active {
+    background: #059669;
+    color: white;
+    border-color: #059669;
+}
+
+.quick-count-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.quick-count-card span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.quick-count-card strong {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+}
+/* DESKTOP TABLE */
+.desktop-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1120px;
+}
+
+.invoice-table th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: left;
+    padding: 13px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.invoice-table td {
+    padding: 12px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+    font-size: 13px;
+    color: #0f172a;
+    font-weight: 750;
+}
+
+.invoice-table tr:last-child td {
+    border-bottom: none;
+}
+
+.invoice-table tr:hover {
+    background: #f8fafc;
+}
+
+.invoice-no {
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.sub-text {
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+.amount-main {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.amount-green {
+    color: #047857;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.amount-orange {
+    color: #b45309;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 5px 8px;
+    font-size: 10.5px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge.green {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.badge.orange {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge.blue {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+/* ACTION BUTTONS */
+.action-cell {
+    min-width: 220px;
+}
+
+.action-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: nowrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 11px;
+    padding: 8px 10px;
+    color: white;
+    font-size: 11.5px;
+    font-weight: 900;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.btn svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
+
+.btn.print { background: #0f172a; }
+.btn.share { background: #16a34a; }
+.btn.dealer { background: #2563eb; }
+.btn.company { background: #059669; }
+.btn.transporter { background: #d97706; }
+.btn.purple { background: #6366f1; }
+.btn.dark { background: #0f172a; }
+
+.dots-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+.dots-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 11px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.dots-btn:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+/* POPUP MODAL */
+.action-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    z-index: 99999;
+    padding: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-popup-overlay.show {
+    display: flex;
+}
+
+.action-popup-card {
+    width: min(430px, 100%);
+    background: #ffffff;
+    border-radius: 22px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.action-popup-head {
+    padding: 16px;
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.action-popup-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.action-popup-head p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+.popup-close {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.popup-close:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.action-popup-body {
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.popup-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #0f172a;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.popup-link:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.popup-link svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+}
+
+.popup-link.blue { color: #2563eb; }
+.popup-link.green { color: #059669; }
+.popup-link.orange { color: #d97706; }
+.popup-link.purple { color: #6366f1; }
+.popup-link.dark { color: #0f172a; }
+
+.popup-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 4px 0;
+}
+
+/* MOBILE CARDS */
+.mobile-list {
+    display: none;
+}
+
+.invoice-mobile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 13px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+    margin-bottom: 10px;
+}
+
+.mobile-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.mobile-top h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.3;
+}
+
+.mobile-meta {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.mobile-amount {
+    text-align: right;
+    min-width: 100px;
+}
+
+.mobile-amount span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.mobile-amount strong {
+    display: block;
+    margin-top: 3px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.mobile-money-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-top: 11px;
+}
+
+.mobile-money {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    padding: 8px;
+}
+
+.mobile-money span {
+    display: block;
+    color: #64748b;
+    font-size: 9.5px;
+    font-weight: 900;
+}
+
+.mobile-money strong {
+    display: block;
+    margin-top: 3px;
+    color: #0f172a;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.mobile-money.paid {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.mobile-money.paid strong {
+    color: #047857;
+}
+
+.mobile-money.balance {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.mobile-money.balance strong {
+    color: #b45309;
+}
+
+.mobile-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.mobile-actions-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 44px;
+    gap: 7px;
+    margin-top: 11px;
+    padding-top: 11px;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.mobile-actions-main.dealer-only-actions {
+    grid-template-columns: 1fr 1fr;
+}
+
+.mobile-actions-main .btn {
+    width: 100%;
+    padding: 10px 8px;
+}
+
+.mobile-actions-main .dots-btn {
+    width: 44px;
+    height: 38px;
+}
+
+.empty-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 28px;
+    color: #64748b;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    font-weight: 800;
+    text-align: center;
+}
+
+.no-results {
+    display: none;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 800;
+}
+
+@media(max-width: 900px) {
+    .summary-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 760px) {
+    .page {
+        padding: 12px;
+    }
+
+    .page-head {
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .page-head h2 {
+        font-size: 21px;
+    }
+
+    .search-box {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .summary-strip {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .summary-card {
+        padding: 11px;
+        border-radius: 15px;
+    }
+
+    .summary-card strong {
+        font-size: 14px;
+    }
+
+    .desktop-table-card {
+        display: none;
+    }
+
+    .mobile-list {
+        display: block;
+    }
+
+    .action-popup-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .action-popup-card {
+        width: 100%;
+        border-radius: 24px 24px 0 0;
+        max-height: 82vh;
+        overflow-y: auto;
+    }
+
+    .action-popup-body {
+        padding-bottom: 18px;
+    }
+}
+
+@media(max-width: 430px) {
+    .summary-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .mobile-money-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mobile-actions-main {
+        grid-template-columns: 1fr 1fr 42px;
+    }
+
+    .mobile-actions-main.dealer-only-actions {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .mobile-top {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-amount {
+        text-align: left;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="page-head">
+        <div>
+            <h2>Invoices</h2>
+            <p>
+                {% if role == "DEALER" %}
+                    Dealer invoice copies and pending balance
+                {% elif role == "WAREHOUSE_MANAGER" %}
+                    Company and transporter copies for dispatch
+                {% elif role == "ACCOUNTANT" %}
+                    Released invoices, payments, Convert to Sales and pending balances
+                {% else %}
+                    Invoice records
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="search-box">
+            <input type="text"
+                   class="search-input"
+                   id="invoiceSearch"
+                   placeholder="Search invoice, dealer, date, amount..."
+                   onkeyup="filterInvoices()">
+        </div>
+    </div>
+
+    <div class="quick-count-card">
+    <span>Total Invoices: <strong>{{ invoices|length }}</strong></span>
+</div>
+
+<div class="filter-strip">
+    <button type="button" class="filter-btn pending active" data-filter="pending" onclick="setInvoiceFilter('pending', this)">
+        Pending
+    </button>
+
+    <button type="button" class="filter-btn" data-filter="all" onclick="setInvoiceFilter('all', this)">
+        All
+    </button>
+
+    <button type="button" class="filter-btn green" data-filter="paid" onclick="setInvoiceFilter('paid', this)">
+        Paid / No Balance
+    </button>
+
+    {% if role == "ACCOUNTANT" or role == "ADMIN" %}
+        <button type="button" class="filter-btn" data-filter="pending-conversion" onclick="setInvoiceFilter('pending-conversion', this)">
+            Pending Conversion
+        </button>
+
+        <button type="button" class="filter-btn green" data-filter="converted" onclick="setInvoiceFilter('converted', this)">
+            Converted to Sales
+        </button>
+    {% endif %}
+</div>
+
+    {% if invoices %}
+
+        <!-- DESKTOP / LAPTOP TABLE -->
+        <div class="desktop-table-card">
+            <div class="table-wrap">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Dealer</th>
+                            <th>Date / Status</th>
+                            <th>Invoice Amount</th>
+                            <th>Received</th>
+                            <th>Pending</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for invoice in invoices %}
+                            <tr class="invoice-row"
+                                data-search="{{ invoice.invoice_number }} {{ invoice.order.dealer.firm_name }} {{ invoice.invoice_date|date:'d M Y' }} {{ invoice.total_amount }} {{ invoice.balance_amount }} {{ invoice.order.get_status_display }}"
+                                data-pending="{% if invoice.balance_amount > 0 %}yes{% else %}no{% endif %}"
+                                data-paid="{% if invoice.balance_amount > 0 %}no{% else %}yes{% endif %}"
+                                data-converted="{% if invoice.is_converted_to_sales %}yes{% else %}no{% endif %}">
+                                <td>
+                                    <div class="invoice-no">{{ invoice.invoice_number }}</div>
+                                    <div class="sub-text">Order #{{ invoice.order.id }}</div>
+                                </td>
+
+                                <td>
+                                    <b>{{ invoice.order.dealer.firm_name }}</b>
+                                    <div class="sub-text">
+                                        {{ invoice.order.dealer.phone|default:"" }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ invoice.invoice_date|date:"d M Y" }}
+                                    <div class="sub-text">
+                                        {% if invoice.order.status %}
+                                            {{ invoice.order.get_status_display }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+
+                                    {% if invoice.last_payment_date %}
+                                        <div class="sub-text">
+                                            Last Payment: {{ invoice.last_payment_date|date:"d M Y" }}
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="amount-main">
+                                        {% if invoice.final_payable_amount %}
+                                            ₹{{ invoice.final_payable_amount }}
+                                        {% else %}
+                                            ₹{{ invoice.total_amount }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="sub-text">
+                                        Original: ₹{{ invoice.total_amount }}
+                                    </div>
+
+                                    {% if invoice.discount_amount %}
+                                        <div class="sub-text">
+                                            Discount: ₹{{ invoice.discount_amount }}
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <span class="amount-green">₹{{ invoice.paid_amount }}</span>
+                                </td>
+
+                                <td>
+                                    {% if invoice.balance_amount > 0 %}
+                                        <span class="amount-orange">₹{{ invoice.balance_amount }}</span>
+                                        <div class="badge orange" style="margin-top:5px;">Pending</div>
+                                    {% else %}
+                                        <span class="badge green">Paid / No Balance</span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="action-cell">
+                                    <div class="action-row">
+                                        {% if role == "DEALER" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn dealer">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-width="2" d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z"/>
+                                                </svg>
+                                                View
+                                            </a>
+
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
+                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
+                                                </svg>
+                                                Print
+                                            </a>
+                                        {% else %}
+                                        {% if role == "WAREHOUSE_MANAGER" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="btn print">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
+                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
+                                                </svg>
+                                                Print
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
+                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
+                                                </svg>
+                                                Print
+                                            </a>
+                                        {% endif %}
+
+                                        <a href="https://wa.me/91{{ invoice.order.dealer.phone }}?text=Invoice%20Copy%20-%20{{ invoice.invoice_number }}%0ADealer:%20{{ invoice.order.dealer.firm_name|urlencode }}%0AAmount:%20{% if invoice.final_payable_amount %}₹{{ invoice.final_payable_amount }}{% else %}₹{{ invoice.total_amount }}{% endif %}%0AOpen:%20{{ request.scheme }}://{{ request.get_host }}{% url 'dealer_invoice_print' invoice.id 'DEALER' %}"
+                                           target="_blank"
+                                           class="btn share">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
+                                                <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2"/>
+                                            </svg>
+                                            Share
+                                        </a>
+
+                                        <div class="dots-wrap">
+                                            <button type="button"
+                                                    class="dots-btn"
+                                                    onclick="openActionPopup('popup-desktop-{{ invoice.id }}')">
+                                                ⋮
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if role == "ACCOUNTANT" or role == "ADMIN" %}
+                                        {% if invoice.is_converted_to_sales %}
+                                            <div class="badge green" style="margin-top:7px;">Converted to Sales</div>
+                                        {% else %}
+                                            <div class="badge orange" style="margin-top:7px;">Pending Conversion</div>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                            {% if role != "DEALER" %}
+                            <!-- DESKTOP POPUP -->
+                            <div class="action-popup-overlay" id="popup-desktop-{{ invoice.id }}">
+                                <div class="action-popup-card">
+                                    <div class="action-popup-head">
+                                        <div>
+                                            <h3>{{ invoice.invoice_number }}</h3>
+                                            <p>{{ invoice.order.dealer.firm_name }} | Order #{{ invoice.order.id }}</p>
+                                        </div>
+
+                                        <button type="button"
+                                                class="popup-close"
+                                                onclick="closeActionPopup('popup-desktop-{{ invoice.id }}')">
+                                            ×
+                                        </button>
+                                    </div>
+
+                                    <div class="action-popup-body">
+                                        {% if role == "DEALER" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                                Dealer Copy
+                                            </a>
+
+                                        {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                                Dealer Copy
+                                            </a>
+
+                                        {% elif role == "WAREHOUSE_MANAGER" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
+                                                Company Copy
+                                            </a>
+
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
+                                                Transport Copy
+                                            </a>
+
+                                        {% elif role == "ACCOUNTANT" or role == "ADMIN" %}
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                                Dealer Copy
+                                            </a>
+
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
+                                                Company Copy
+                                            </a>
+
+                                            <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
+                                                Transport Copy
+                                            </a>
+
+                                            <div class="popup-divider"></div>
+
+                                            <a href="{% url 'convert_invoice_to_sales' invoice.id %}" class="popup-link purple">
+                                                Convert to Sales
+                                            </a>
+
+                                            <a href="{% url 'invoice_edit_history' invoice.id %}" class="popup-link dark">
+                                                Invoice Edit History
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="mobile-list">
+            {% for invoice in invoices %}
+                <div class="invoice-mobile-card invoice-row"
+                    data-search="{{ invoice.invoice_number }} {{ invoice.order.dealer.firm_name }} {{ invoice.invoice_date|date:'d M Y' }} {{ invoice.total_amount }} {{ invoice.balance_amount }} {{ invoice.order.get_status_display }}"
+                    data-pending="{% if invoice.balance_amount > 0 %}yes{% else %}no{% endif %}"
+                    data-paid="{% if invoice.balance_amount > 0 %}no{% else %}yes{% endif %}"
+                    data-converted="{% if invoice.is_converted_to_sales %}yes{% else %}no{% endif %}">
+
+                    <div class="mobile-top">
+                        <div>
+                            <h3>{{ invoice.invoice_number }}</h3>
+
+                            <div class="mobile-meta">
+                                Dealer: <b>{{ invoice.order.dealer.firm_name }}</b><br>
+                                Date: {{ invoice.invoice_date|date:"d M Y" }}<br>
+                                Order #{{ invoice.order.id }}
+                                {% if invoice.order.status %}
+                                    · {{ invoice.order.get_status_display }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mobile-amount">
+                            <span>Payable</span>
+                            <strong>
+                                {% if invoice.final_payable_amount %}
+                                    ₹{{ invoice.final_payable_amount }}
+                                {% else %}
+                                    ₹{{ invoice.total_amount }}
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="mobile-money-grid">
+                        <div class="mobile-money">
+                            <span>Original</span>
+                            <strong>₹{{ invoice.total_amount }}</strong>
+                        </div>
+
+                        <div class="mobile-money paid">
+                            <span>Received</span>
+                            <strong>₹{{ invoice.paid_amount }}</strong>
+                        </div>
+
+                        <div class="mobile-money balance">
+                            <span>Pending</span>
+                            <strong>₹{{ invoice.balance_amount }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mobile-badges">
+                        {% if invoice.balance_amount > 0 %}
+                            <span class="badge orange">Balance Pending</span>
+                        {% else %}
+                            <span class="badge green">Paid / No Balance</span>
+                        {% endif %}
+
+                        {% if invoice.is_converted_to_sales %}
+                            <span class="badge green">Converted to Sales</span>
+                        {% else %}
+                            {% if role == "ACCOUNTANT" or role == "ADMIN" %}
+                                <span class="badge orange">Pending Conversion</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mobile-actions-main {% if role == 'DEALER' %}dealer-only-actions{% endif %}">
+                        {% if role == "DEALER" %}
+                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn dealer">
+                                View
+                            </a>
+
+                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
+                                Print
+                            </a>
+                        {% else %}
+                            {% if role == "WAREHOUSE_MANAGER" %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="btn print">
+                                    Print
+                                </a>
+                            {% else %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
+                                    Print
+                                </a>
+                            {% endif %}
+
+                            <a href="https://wa.me/91{{ invoice.order.dealer.phone }}?text=Invoice%20Copy%20-%20{{ invoice.invoice_number }}%0ADealer:%20{{ invoice.order.dealer.firm_name|urlencode }}%0AAmount:%20{% if invoice.final_payable_amount %}₹{{ invoice.final_payable_amount }}{% else %}₹{{ invoice.total_amount }}{% endif %}%0AOpen:%20{{ request.scheme }}://{{ request.get_host }}{% url 'dealer_invoice_print' invoice.id 'DEALER' %}"
+                               target="_blank"
+                               class="btn share">
+                                Share
+                            </a>
+
+                            <div class="dots-wrap">
+                                <button type="button"
+                                        class="dots-btn"
+                                        onclick="openActionPopup('popup-mobile-{{ invoice.id }}')">
+                                    ⋮
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if role != "DEALER" %}
+                <!-- MOBILE POPUP -->
+                <div class="action-popup-overlay" id="popup-mobile-{{ invoice.id }}">
+                    <div class="action-popup-card">
+                        <div class="action-popup-head">
+                            <div>
+                                <h3>{{ invoice.invoice_number }}</h3>
+                                <p>{{ invoice.order.dealer.firm_name }} | Order #{{ invoice.order.id }}</p>
+                            </div>
+
+                            <button type="button"
+                                    class="popup-close"
+                                    onclick="closeActionPopup('popup-mobile-{{ invoice.id }}')">
+                                ×
+                            </button>
+                        </div>
+
+                        <div class="action-popup-body">
+                            {% if role == "DEALER" %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                    Dealer Copy
+                                </a>
+
+                            {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                    Dealer Copy
+                                </a>
+
+                            {% elif role == "WAREHOUSE_MANAGER" %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
+                                    Company Copy
+                                </a>
+
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
+                                    Transport Copy
+                                </a>
+
+                            {% elif role == "ACCOUNTANT" or role == "ADMIN" %}
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
+                                    Dealer Copy
+                                </a>
+
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
+                                    Company Copy
+                                </a>
+
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
+                                    Transport Copy
+                                </a>
+
+                                <div class="popup-divider"></div>
+
+                                <a href="{% url 'convert_invoice_to_sales' invoice.id %}" class="popup-link purple">
+                                    Convert to Sales
+                                </a>
+
+                                <a href="{% url 'invoice_edit_history' invoice.id %}" class="popup-link dark">
+                                    Invoice Edit History
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="no-results" id="noResults">
+            No invoices matched your search.
+        </div>
+
+    {% else %}
+        <div class="empty-card">
+            No invoices found.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+let currentInvoiceFilter = "pending";
+
+function rowMatchesFilter(row) {
+    const pending = row.getAttribute("data-pending") === "yes";
+    const paid = row.getAttribute("data-paid") === "yes";
+    const converted = row.getAttribute("data-converted") === "yes";
+
+    if (currentInvoiceFilter === "all") {
+        return true;
+    }
+
+    if (currentInvoiceFilter === "pending") {
+        return pending;
+    }
+
+    if (currentInvoiceFilter === "paid") {
+        return paid;
+    }
+
+    if (currentInvoiceFilter === "pending-conversion") {
+        return !converted;
+    }
+
+    if (currentInvoiceFilter === "converted") {
+        return converted;
+    }
+
+    return true;
+}
+
+function filterInvoices() {
+    const input = document.getElementById("invoiceSearch");
+    const keyword = (input.value || "").toLowerCase().trim();
+    const rows = document.querySelectorAll(".invoice-row");
+    const noResults = document.getElementById("noResults");
+
+    let visibleCount = 0;
+
+    rows.forEach(function(row) {
+        const text = (row.getAttribute("data-search") || "").toLowerCase();
+        const searchMatch = !keyword || text.includes(keyword);
+        const filterMatch = rowMatchesFilter(row);
+
+        if (searchMatch && filterMatch) {
+            row.style.display = "";
+            visibleCount += 1;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    if (noResults) {
+        noResults.style.display = visibleCount === 0 ? "block" : "none";
+    }
+}
+
+function setInvoiceFilter(filterValue, button) {
+    currentInvoiceFilter = filterValue;
+
+    document.querySelectorAll(".filter-btn").forEach(function(btn) {
+        btn.classList.remove("active");
+    });
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    filterInvoices();
+}
+
+function openActionPopup(popupId) {
+    document.querySelectorAll(".action-popup-overlay").forEach(function(popup) {
+        popup.classList.remove("show");
+    });
+
+    const popup = document.getElementById(popupId);
+
+    if (popup) {
+        popup.classList.add("show");
+        document.body.style.overflow = "hidden";
+    }
+}
+
+function closeActionPopup(popupId) {
+    const popup = document.getElementById(popupId);
+
+    if (popup) {
+        popup.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+}
+
+document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("action-popup-overlay")) {
+        event.target.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        document.querySelectorAll(".action-popup-overlay").forEach(function(popup) {
+            popup.classList.remove("show");
+        });
+
+        document.body.style.overflow = "";
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    filterInvoices();
+});
+</script>
+{% endblock %}

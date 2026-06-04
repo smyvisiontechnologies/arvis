@@ -1,0 +1,123 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <div style="background:white;border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <h2>Dealer Approval Detail</h2>
+
+        <div style="display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:start;margin-bottom:22px;">
+
+    <div>
+        {% if dealer.dealer_image %}
+            <img src="{{ dealer.dealer_image.url }}" style="width:130px;height:130px;border-radius:22px;object-fit:cover;border:1px solid #e5e7eb;">
+        {% else %}
+            <div style="width:130px;height:130px;border-radius:22px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;color:#64748b;">
+                D
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+        <div><strong>Owner Name:</strong><br>{{ dealer.owner_name }}</div>
+        <div><strong>Owner Email:</strong><br>{{ dealer.email|default:"-" }}</div>
+        <div><strong>Phone:</strong><br>{{ dealer.phone }}</div>
+        <div><strong>Firm Name:</strong><br>{{ dealer.firm_name }}</div>
+        <div><strong>GST Number:</strong><br>{{ dealer.gst_number|default:"-" }}</div>
+        <div><strong>License Number:</strong><br>{{ dealer.license_number|default:"-" }}</div>
+        <div><strong>Firm Type:</strong><br>{{ dealer.get_firm_type_display }}</div>
+        <div><strong>State:</strong><br>{{ dealer.state|default:"-" }}</div>
+        <div><strong>District:</strong><br>{{ dealer.district|default:"-" }}</div>
+        <div><strong>Dealer Flag:</strong><br>{{ dealer.get_flag_display }}</div>
+        <div><strong>Yearly Target:</strong><br>₹{{ dealer.yearly_target_amount }}</div>
+        <div><strong>Achieved:</strong><br>₹{{ dealer.achieved_amount }}</div>
+        <div><strong>Status:</strong><br>{{ dealer.get_approval_status_display }}</div>
+        <div><strong>Concerned ASM:</strong><br>{{ dealer.concerned_asm|default:"Auto not assigned" }}</div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:22px;">
+    <div style="background:#f8fafc;padding:14px;border-radius:16px;">
+        <strong>Owner Address</strong>
+        <p style="margin-bottom:0;">{{ dealer.owner_address|default:"-" }}</p>
+    </div>
+
+    <div style="background:#f8fafc;padding:14px;border-radius:16px;">
+        <strong>Firm Address</strong>
+        <p style="margin-bottom:0;">{{ dealer.firm_address|default:"-" }}</p>
+    </div>
+</div>
+
+<div style="background:#fffbeb;border:1px solid #fde68a;padding:16px;border-radius:18px;margin-bottom:22px;">
+    <h3 style="margin-top:0;">Deposit / Cheque Details</h3>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+        <div><strong>Deposit Amount:</strong><br>₹{{ dealer.deposit_amount }}</div>
+        <div><strong>Deposit Mode:</strong><br>{{ dealer.get_deposit_mode_display }}</div>
+        <div><strong>Cheque Number:</strong><br>{{ dealer.cheque_number|default:"-" }}</div>
+    </div>
+</div>
+
+        <hr style="margin:24px 0;">
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <form method="post" action="{% url 'dealer_approve' dealer.id %}">
+                {% csrf_token %}
+                <a href="{% url 'dealer_edit' dealer.id %}" style="background:#f1f5f9;color:#0f172a;padding:11px 16px;border-radius:12px;text-decoration:none;font-weight:700;">
+                    Edit Dealer
+                </a>
+                <button style="background:#16a34a;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                    Approve
+                </button>
+            </form>
+
+            {% if role == "ASM" and dealer.approval_status == "PENDING_ASM" %}
+                <form method="post" action="{% url 'dealer_forward_to_rm' dealer.id %}" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    {% csrf_token %}
+                    {{ forward_rm_form.regional_manager }}
+                    <button style="background:#f59e0b;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                        Forward to RM
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if role == "REGIONAL_MANAGER" and dealer.approval_status == "FORWARDED_RM" %}
+                <form method="post" action="{% url 'dealer_forward_to_state_head' dealer.id %}" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    {% csrf_token %}
+                    {{ forward_state_head_form.state_head }}
+                    <button style="background:#f59e0b;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                        Forward to State Head
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+        <hr style="margin:24px 0;">
+
+        <form method="post" action="{% url 'dealer_reject' dealer.id %}">
+            {% csrf_token %}
+            <label style="font-weight:700;">Rejection Reason</label>
+            {{ reject_form.rejection_reason }}
+
+            <button style="margin-top:12px;background:#dc2626;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                Reject Dealer
+            </button>
+        </form>
+
+        <hr style="margin:24px 0;">
+
+        <h3>Approval History</h3>
+
+        {% for item in dealer.approval_history.all %}
+            <div style="background:#f8fafc;padding:12px;border-radius:12px;margin-bottom:10px;">
+                <strong>{{ item.get_action_display }}</strong><br>
+                <small>{{ item.performed_by|default:"System" }} | {{ item.created_at }}</small>
+                {% if item.remarks %}
+                    <p>{{ item.remarks }}</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No history found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

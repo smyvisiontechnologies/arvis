@@ -1,0 +1,500 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.farmer-upload-page {
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(245, 158, 11, 0.10), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.08), transparent 30%);
+}
+
+.farmer-upload-wrap {
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.farmer-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    padding: 22px;
+    margin-bottom: 16px;
+    color: #fff7d6;
+    background:
+        radial-gradient(circle at top right, rgba(255, 232, 138, 0.35), transparent 25%),
+        radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.28), transparent 32%),
+        linear-gradient(135deg, #1f1300 0%, #5c3600 48%, #b7791f 100%);
+    box-shadow: 0 24px 55px rgba(120, 72, 0, 0.24);
+}
+
+.farmer-hero::before {
+    content: "";
+    position: absolute;
+    inset: -70%;
+    background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.22) 50%, transparent 60%);
+    transform: rotate(18deg);
+    animation: shineMove 4s infinite;
+}
+
+.farmer-hero-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: 18px;
+    align-items: center;
+}
+
+.reward-chip {
+    display: inline-flex;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.22);
+    color: #fff7d6;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.farmer-hero h2 {
+    margin: 13px 0 8px;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.05;
+    font-weight: 1000;
+    color: white;
+}
+
+.farmer-hero p {
+    margin: 0;
+    color: rgba(255,247,214,0.86);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.55;
+}
+
+.points-wallet {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 26px;
+    padding: 18px;
+    backdrop-filter: blur(12px);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wallet-label {
+    color: rgba(255,247,214,0.78);
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+}
+
+.wallet-points {
+    margin-top: 8px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.wallet-points strong {
+    font-size: clamp(46px, 7vw, 70px);
+    line-height: 0.9;
+    font-weight: 1000;
+    color: #fff8d7;
+    text-shadow: 0 8px 26px rgba(0,0,0,0.22);
+}
+
+.wallet-points span {
+    padding-bottom: 8px;
+    font-size: 15px;
+    font-weight: 1000;
+    color: rgba(255,247,214,0.82);
+}
+
+.wallet-value {
+    margin-top: 12px;
+    width: fit-content;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 13px;
+    font-weight: 1000;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #f3e2b5;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 14px 32px rgba(120, 72, 0, 0.08);
+}
+
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff7d6, #facc15);
+    color: #5c3d00;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.stat-card span {
+    display: block;
+    color: #7c5d00;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 1000;
+}
+
+.upload-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+}
+
+.upload-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.upload-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 1000;
+}
+
+.upload-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.unique-badge {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    padding: 8px 11px;
+    font-size: 12px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.upload-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.input-box label {
+    display: block;
+    margin-bottom: 6px;
+    color: #0f172a;
+    font-size: 12px;
+    font-weight: 1000;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 13px 14px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 850;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #f59e0b;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+}
+
+.upload-btn {
+    border: none;
+    border-radius: 16px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #5c3d00, #b7791f);
+    color: #fff7d6;
+    font-size: 14px;
+    font-weight: 1000;
+    cursor: pointer;
+    box-shadow: 0 14px 26px rgba(146, 94, 8, 0.20);
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px rgba(146, 94, 8, 0.28);
+}
+
+.helper-row {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.helper-note {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 18px;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.45;
+}
+
+.points-link {
+    text-decoration: none;
+    background: #0f172a;
+    color: white;
+    border-radius: 999px;
+    padding: 12px 15px;
+    font-size: 13px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.success-idea {
+    margin-top: 16px;
+    background:
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 30%),
+        #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 22px;
+    padding: 16px;
+    text-align: center;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+@keyframes shineMove {
+    0% { transform: translateX(-45%) rotate(18deg); }
+    48% { transform: translateX(45%) rotate(18deg); }
+    100% { transform: translateX(45%) rotate(18deg); }
+}
+
+@media(max-width: 980px) {
+    .farmer-hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-btn {
+        width: 100%;
+    }
+
+    .helper-row {
+        grid-template-columns: 1fr;
+    }
+
+    .points-link {
+        text-align: center;
+    }
+}
+
+@media(max-width: 620px) {
+    .farmer-upload-page {
+        padding: 10px;
+    }
+
+    .farmer-hero,
+    .upload-card,
+    .stat-card {
+        border-radius: 22px;
+        padding: 15px;
+    }
+
+    .upload-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .unique-badge {
+        width: fit-content;
+    }
+
+    .wallet-points strong {
+        font-size: 46px;
+    }
+}
+</style>
+
+<div class="farmer-upload-page">
+    <div class="farmer-upload-wrap">
+
+        <div class="farmer-hero">
+            <div class="farmer-hero-content">
+                <div>
+                    <div class="reward-chip">🌾 Farmer Upload Rewards</div>
+
+                    <h2>Upload genuine farmers. Earn more points.</h2>
+
+                    <p>
+                        Every unique farmer mobile number gives
+                        <strong>{{ setting.farmer_points }} reward points</strong>.
+                        Duplicate mobile numbers are not allowed.
+                    </p>
+                </div>
+
+                <div class="points-wallet">
+                    <div class="wallet-label">Current Reward Balance</div>
+
+                    <div class="wallet-points">
+                        <strong>{{ balance_points }}</strong>
+                        <span>points</span>
+                    </div>
+
+                    <div class="wallet-value">
+                        Worth ₹{{ point_value|floatformat:2 }} now
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <span>Points Per Farmer</span>
+                <strong>{{ setting.farmer_points }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">₹</div>
+                <span>1 Point Value</span>
+                <strong>₹{{ setting.rupees_per_point }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🎁</div>
+                <span>Total Value</span>
+                <strong>₹{{ point_value|floatformat:2 }}</strong>
+            </div>
+        </div>
+
+        <div class="upload-card">
+            <div class="upload-head">
+                <div>
+                    <h3>Add New Farmer</h3>
+                    <p>Enter farmer name, unique mobile number and village/place.</p>
+                </div>
+
+                <div class="unique-badge">
+                    Unique Mobile Required
+                </div>
+            </div>
+
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+
+                <div class="upload-form-grid">
+                    <div class="input-box">
+                        <label>Farmer Name</label>
+                        <input type="text"
+                               name="farmer_name"
+                               class="form-control"
+                               placeholder="Example: Sri Ram"
+                               maxlength="150"
+                               required>
+                    </div>
+
+                    <div class="input-box">
+                        <label>Indian Mobile Number</label>
+                        <input type="tel"
+                               name="mobile_number"
+                               class="form-control"
+                               placeholder="8500352005"
+                               pattern="[6-9][0-9]{9}"
+                               maxlength="10"
+                               minlength="10"
+                               inputmode="numeric"
+                               required
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10);">
+                    </div>
+
+                    <div class="input-box">
+                        <label>Village / Place</label>
+                        <input type="text"
+                               name="place"
+                               class="form-control"
+                               placeholder="Example: Guntur"
+                               maxlength="255"
+                               required>
+                    </div>
+
+                    <button type="submit" class="upload-btn">
+                        Upload & Earn
+                    </button>
+                </div>
+            </form>
+
+            <div class="helper-row">
+                <div class="helper-note">
+                    After successful upload, points will be added instantly. If the mobile number already exists, it should not be accepted.
+                </div>
+
+                <a href="{% url 'dealer_points_dashboard' %}" class="points-link">
+                    View Points Dashboard →
+                </a>
+            </div>
+
+            <div class="success-idea">
+                Keep uploading real farmer data to increase your reward wallet and unlock money/product redemption.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

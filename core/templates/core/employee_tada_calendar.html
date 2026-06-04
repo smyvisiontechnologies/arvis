@@ -1,0 +1,1010 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.tada-page {
+    padding: 18px;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.tada-shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tada-head {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+}
+
+.tada-head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.tada-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.nav-btn {
+    text-decoration: none;
+    background: #0f172a;
+    color: white;
+    border-radius: 13px;
+    padding: 10px 13px;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.month-pill {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 999px;
+    padding: 10px 15px;
+    font-size: 13px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.filter-row {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-row select,
+.filter-row input {
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 9px 11px;
+    font-size: 13px;
+    font-weight: 800;
+    outline: none;
+}
+
+.filter-row button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.tada-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 16px;
+    align-items: start;
+}
+
+.main-column,
+.summary-column {
+    min-width: 0;
+}
+
+.calendar-card,
+.summary-card,
+.records-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    width: 100%;
+    max-width: 100%;
+}
+
+.calendar-card {
+    padding: 16px;
+    overflow: hidden;
+}
+
+.calendar-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.calendar-title-row h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.calendar-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+
+.dot.green {
+    background: #16a34a;
+}
+
+.dot.orange {
+    background: #f97316;
+}
+
+.mini-calendar {
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+.week-header {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    background: #0f172a;
+}
+
+.week-header div {
+    color: white;
+    text-align: center;
+    padding: 10px 6px;
+    font-size: 11px;
+    font-weight: 900;
+    border-right: 1px solid rgba(255,255,255,.15);
+    min-width: 0;
+}
+
+.week-header div:last-child {
+    border-right: none;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    background: #e2e8f0;
+    gap: 1px;
+    width: 100%;
+}
+
+.day-box {
+    min-width: 0;
+    min-height: 96px;
+    background: #ffffff;
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-box.out-month {
+    background: #f8fafc;
+}
+
+.day-number {
+    font-size: 12px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.out-month .day-number {
+    color: #94a3b8;
+}
+
+.today-tag {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: #2563eb;
+    color: white;
+    font-size: 8.5px;
+    font-weight: 900;
+    border-radius: 999px;
+    padding: 3px 6px;
+}
+
+.claim-chip {
+    margin-top: 9px;
+    border-radius: 13px;
+    padding: 8px;
+    border: 1px solid transparent;
+    min-height: 58px;
+    overflow: hidden;
+}
+
+.claim-chip.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.claim-chip.orange {
+    background: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.claim-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.claim-status {
+    color: #334155;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.claim-amount {
+    color: #047857;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.claim-chip.orange .claim-amount {
+    color: #c2410c;
+}
+
+.claim-meta {
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 9.5px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.summary-card {
+    padding: 16px;
+}
+
+.summary-card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.summary-card p {
+    margin: 5px 0 14px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.total-box {
+    background: linear-gradient(135deg, #ecfdf5, #ffffff);
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.total-box span {
+    display: block;
+    color: #047857;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.total-box strong {
+    display: block;
+    margin-top: 6px;
+    color: #065f46;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.summary-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.summary-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.summary-item span {
+    display: block;
+    color: #64748b;
+    font-size: 10.5px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.summary-item strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.summary-item.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.summary-item.green strong {
+    color: #047857;
+}
+
+.summary-item.orange {
+    background: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.summary-item.orange strong {
+    color: #c2410c;
+}
+
+.status-note {
+    margin-top: 12px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 16px;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 850;
+    line-height: 1.45;
+}
+
+.records-card {
+    margin-top: 16px;
+    padding: 16px;
+}
+
+.records-card h3 {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+.records-table th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.records-table td {
+    padding: 12px;
+    border-bottom: 1px solid #edf2f7;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.badge.green {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.badge.orange {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+.badge.blue {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.empty-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 20px;
+    color: #64748b;
+    font-weight: 800;
+    text-align: center;
+}
+
+/* =========================
+   TABLET
+========================= */
+@media(max-width: 1100px) {
+    .tada-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-column {
+        order: -1;
+    }
+}
+
+/* =========================
+   MOBILE REAL MINI CALENDAR
+   Calendar fits screen, no horizontal scroll
+========================= */
+@media(max-width: 760px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .tada-page {
+        padding: 8px;
+        overflow-x: hidden;
+    }
+
+    .tada-shell {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .tada-head {
+        grid-template-columns: 1fr;
+        border-radius: 18px;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .tada-head h2 {
+        font-size: 20px;
+    }
+
+    .tada-head p {
+        font-size: 12px;
+    }
+
+    .month-nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    .nav-btn,
+    .month-pill {
+        width: 100%;
+        text-align: center;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 1fr 82px;
+        width: 100%;
+        gap: 7px;
+    }
+
+    .filter-row select,
+    .filter-row input {
+        width: 100%;
+        padding: 8px;
+        font-size: 12px;
+        min-width: 0;
+    }
+
+    .filter-row button {
+        grid-column: 1 / -1;
+        width: 100%;
+        padding: 9px;
+    }
+
+    .tada-layout {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .summary-column {
+        order: -1;
+    }
+
+    .calendar-card,
+    .summary-card,
+    .records-card {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 18px;
+        padding: 10px;
+        overflow-x: hidden;
+    }
+
+    .calendar-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .calendar-title-row h3 {
+        font-size: 15px;
+    }
+
+    .calendar-legend {
+        gap: 7px;
+    }
+
+    .legend-item {
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .dot {
+        width: 7px;
+        height: 7px;
+    }
+
+    .mini-calendar {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    .week-header {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .week-header div {
+        padding: 6px 1px;
+        font-size: 8px;
+        min-width: 0;
+    }
+
+    .days-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 1px;
+        background: #e2e8f0;
+    }
+
+    .day-box {
+        min-width: 0;
+        min-height: 48px;
+        padding: 3px;
+        overflow: hidden;
+    }
+
+    .day-number {
+        font-size: 9px;
+        line-height: 1;
+    }
+
+    .today-tag {
+        display: none;
+    }
+
+    .claim-chip {
+        margin-top: 3px;
+        padding: 2px;
+        min-height: 24px;
+        border-radius: 7px;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .claim-top {
+        justify-content: center;
+        margin-bottom: 1px;
+        gap: 2px;
+    }
+
+    .claim-status {
+        display: none;
+    }
+
+    .claim-amount {
+        font-size: 8px;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .claim-meta {
+        display: none;
+    }
+
+    .total-box {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .total-box strong {
+        font-size: 22px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .summary-item {
+        padding: 9px;
+        border-radius: 13px;
+        min-width: 0;
+    }
+
+    .summary-item span {
+        font-size: 8.5px;
+    }
+
+    .summary-item strong {
+        font-size: 12.5px;
+        word-break: break-word;
+    }
+
+    .status-note {
+        font-size: 11px;
+        padding: 10px;
+        border-radius: 14px;
+    }
+
+    .records-card {
+        padding: 10px;
+    }
+
+    .records-card h3 {
+        font-size: 16px;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    .records-table {
+        min-width: 720px;
+    }
+}
+
+/* VERY SMALL PHONES */
+@media(max-width: 390px) {
+    .tada-page {
+        padding: 6px;
+    }
+
+    .calendar-card {
+        padding: 7px;
+    }
+
+    .week-header div {
+        font-size: 7px;
+        padding: 5px 0;
+    }
+
+    .day-box {
+        min-height: 43px;
+        padding: 2px;
+    }
+
+    .day-number {
+        font-size: 8px;
+    }
+
+    .claim-chip {
+        min-height: 22px;
+        padding: 1px;
+    }
+
+    .claim-amount {
+        font-size: 7px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="tada-page">
+    <div class="tada-shell">
+
+        <div class="tada-head">
+            <div>
+                <h2>My TA/DA Calendar</h2>
+                <p>
+                    Green shows manager-approved claim as tracked.
+                    Orange shows manager-modified KM or amount.
+                </p>
+
+                <form method="get" class="filter-row">
+                    <select name="month">
+                        <option value="1" {% if selected_month == 1 %}selected{% endif %}>January</option>
+                        <option value="2" {% if selected_month == 2 %}selected{% endif %}>February</option>
+                        <option value="3" {% if selected_month == 3 %}selected{% endif %}>March</option>
+                        <option value="4" {% if selected_month == 4 %}selected{% endif %}>April</option>
+                        <option value="5" {% if selected_month == 5 %}selected{% endif %}>May</option>
+                        <option value="6" {% if selected_month == 6 %}selected{% endif %}>June</option>
+                        <option value="7" {% if selected_month == 7 %}selected{% endif %}>July</option>
+                        <option value="8" {% if selected_month == 8 %}selected{% endif %}>August</option>
+                        <option value="9" {% if selected_month == 9 %}selected{% endif %}>September</option>
+                        <option value="10" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                        <option value="11" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                        <option value="12" {% if selected_month == 12 %}selected{% endif %}>December</option>
+                    </select>
+
+                    <input type="number" name="year" value="{{ selected_year }}" min="2024" max="2100">
+
+                    <button type="submit">Apply</button>
+                </form>
+            </div>
+
+            <div class="month-nav">
+                <a href="?month={{ previous_month }}&year={{ previous_year }}" class="nav-btn">
+                    ← Previous
+                </a>
+
+                <div class="month-pill">
+                    {{ month_name }} {{ selected_year }}
+                </div>
+
+                <a href="?month={{ next_month }}&year={{ next_year }}" class="nav-btn">
+                    Next →
+                </a>
+            </div>
+        </div>
+
+        <div class="tada-layout">
+
+            <div class="main-column">
+                <div class="calendar-card">
+                    <div class="calendar-title-row">
+                        <h3>Monthly Calendar</h3>
+
+                        <div class="calendar-legend">
+                            <span class="legend-item">
+                                <span class="dot green"></span>
+                                Approved
+                            </span>
+
+                            <span class="legend-item">
+                                <span class="dot orange"></span>
+                                Modified
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mini-calendar">
+                        <div class="week-header">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+
+                        <div class="days-grid">
+                            {% for week in calendar_weeks %}
+                                {% for day in week %}
+                                    <div class="day-box {% if not day.is_current_month %}out-month{% endif %}">
+                                        <div class="day-number">{{ day.day }}</div>
+
+                                        {% if day.date == today %}
+                                            <div class="today-tag">Today</div>
+                                        {% endif %}
+
+                                        {% if day.has_record and day.is_current_month %}
+                                            <div class="claim-chip {{ day.dot_class }}">
+                                                <div class="claim-top">
+                                                    <span class="dot {{ day.dot_class }}"></span>
+                                                    <span class="claim-status">{{ day.status_text }}</span>
+                                                </div>
+
+                                                <div class="claim-amount">
+                                                    ₹{{ day.record.total_claim_amount|floatformat:0 }}
+                                                </div>
+
+                                                <div class="claim-meta">
+                                                    TA ₹{{ day.record.ta_amount|floatformat:0 }}
+                                                    + DA ₹{{ day.record.da_amount|floatformat:0 }}<br>
+                                                    {{ day.record.manager_approved_km|floatformat:1 }} KM
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="records-card">
+                    <h3>TA/DA Records</h3>
+
+                    {% if records %}
+                        <div class="table-wrap">
+                            <table class="records-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Vehicle</th>
+                                        <th>System KM</th>
+                                        <th>Approved KM</th>
+                                        <th>TA</th>
+                                        <th>DA</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Manager Remark</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for record in records %}
+                                        <tr>
+                                            <td>{{ record.attendance_date|date:"d M Y" }}</td>
+                                            <td>{{ record.get_vehicle_type_display }}</td>
+                                            <td>{{ record.system_distance_km }} KM</td>
+                                            <td>{{ record.manager_approved_km }} KM</td>
+                                            <td>₹{{ record.ta_amount }}</td>
+                                            <td>₹{{ record.da_amount }}</td>
+                                            <td><b>₹{{ record.total_claim_amount }}</b></td>
+                                            <td>
+                                                {% if record.status == "RELEASED" %}
+                                                    <span class="badge green">Released</span>
+                                                {% elif record.status == "HR_APPROVED" %}
+                                                    <span class="badge blue">Release Pending</span>
+                                                {% elif record.status == "MANAGER_APPROVED" %}
+                                                    <span class="badge orange">HR Pending</span>
+                                                {% else %}
+                                                    <span class="badge blue">{{ record.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ record.manager_remarks|default:"-" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-box">
+                            No manager-approved TA/DA records found for this month.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="summary-column">
+                <div class="summary-card">
+                    <h3>Month Summary</h3>
+                    <p>Based on manager-approved TA/DA claims for selected month.</p>
+
+                    <div class="total-box">
+                        <span>Total TA/DA Payable</span>
+                        <strong>₹{{ total_claim|floatformat:2 }}</strong>
+                    </div>
+
+                    <div class="summary-grid">
+                        <div class="summary-item green">
+                            <span>Total TA</span>
+                            <strong>₹{{ total_ta|floatformat:2 }}</strong>
+                        </div>
+
+                        <div class="summary-item green">
+                            <span>Total DA</span>
+                            <strong>₹{{ total_da|floatformat:2 }}</strong>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Approved KM</span>
+                            <strong>{{ total_approved_km|floatformat:2 }} KM</strong>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>System KM</span>
+                            <strong>{{ total_system_km|floatformat:2 }} KM</strong>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Dealer Visits</span>
+                            <strong>{{ total_dealer_visits }}</strong>
+                        </div>
+
+                        <div class="summary-item green">
+                            <span>Released</span>
+                            <strong>₹{{ released_amount|floatformat:2 }}</strong>
+                        </div>
+
+                        <div class="summary-item orange">
+                            <span>Pending Release</span>
+                            <strong>₹{{ pending_release_amount|floatformat:2 }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="status-note">
+                        Pending claims are visible here only after manager approval.<br><br>
+                        Manager Pending: {{ pending_manager_count }}<br>
+                        HR Pending: {{ pending_hr_count }}<br>
+                        Accountant Release Pending: {{ pending_accountant_count }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

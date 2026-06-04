@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <div style="background:white;border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <h2>{{ farmer_meet.title }}</h2>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+            <div><strong>Location:</strong><br>{{ farmer_meet.location }}</div>
+            <div><strong>Date:</strong><br>{{ farmer_meet.meeting_date }}</div>
+            <div><strong>Farmers:</strong><br>{{ farmer_meet.expected_farmer_count }}</div>
+            <div><strong>Status:</strong><br>{{ farmer_meet.get_approval_status_display }}</div>
+            <div><strong>Sales Officer:</strong><br>{{ farmer_meet.sales_officer|default:"-" }}</div>
+            <div><strong>ASM:</strong><br>{{ farmer_meet.asm|default:"-" }}</div>
+            <div><strong>Regional Manager:</strong><br>{{ farmer_meet.regional_manager|default:"-" }}</div>
+            <div><strong>State Head:</strong><br>{{ farmer_meet.state_head|default:"-" }}</div>
+        </div>
+
+        <p style="margin-top:20px;"><strong>Description:</strong><br>{{ farmer_meet.description|default:"-" }}</p>
+
+        {% if farmer_meet.approval_status != "APPROVED" and farmer_meet.approval_status != "REJECTED" %}
+            <hr style="margin:24px 0;">
+
+            <form method="post" action="{% url 'farmer_meet_approve' farmer_meet.id %}" style="display:inline-block;">
+                {% csrf_token %}
+                <button style="background:#16a34a;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                    Approve
+                </button>
+            </form>
+
+            <form method="post" action="{% url 'farmer_meet_reject' farmer_meet.id %}" style="margin-top:16px;">
+                {% csrf_token %}
+                <label style="font-weight:700;">Rejection Reason</label>
+                {{ reject_form.rejection_reason }}
+
+                <button style="margin-top:12px;background:#dc2626;color:white;border:0;padding:11px 16px;border-radius:12px;font-weight:700;">
+                    Reject
+                </button>
+            </form>
+        {% endif %}
+
+        <hr style="margin:24px 0;">
+
+        <h3>Approval History</h3>
+
+        {% for item in farmer_meet.approval_history.all %}
+            <div style="background:#f8fafc;padding:12px;border-radius:12px;margin-bottom:10px;">
+                <strong>{{ item.action }}</strong><br>
+                <small>{{ item.performed_by|default:"System" }} | {{ item.created_at }}</small>
+                {% if item.remarks %}
+                    <p>{{ item.remarks }}</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No history found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

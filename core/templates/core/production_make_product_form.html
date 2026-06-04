@@ -1,0 +1,542 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pm-page{padding:16px;max-width:1250px;margin:0 auto}
+.pm-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.pm-hero h2{margin:0;font-size:28px;font-weight:900}
+.pm-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.pm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pm-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.pm-btn.green{background:#16a34a}.pm-btn.blue{background:#2563eb}.pm-btn.orange{background:#d97706}.pm-btn.light{background:#f1f5f9;color:#0f172a}
+.pm-form-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.pm-section-title{margin:0 0 12px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+.pm-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.pm-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.pm-row-card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:12px;margin-bottom:10px}
+.pm-row-grid{display:grid;grid-template-columns:1.5fr .8fr .8fr .3fr;gap:10px;align-items:end}
+.errorlist{color:#dc2626;font-size:12px;font-weight:900;margin:6px 0 0;padding-left:18px}
+
+/* SEARCHABLE SELECT */
+.search-select-wrap{position:relative;width:100%}
+.search-select-input{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:14px;
+    padding:11px 40px 11px 12px;
+    font-weight:900;
+    background:#fff;
+    color:#0f172a;
+}
+.search-select-input:focus{
+    outline:none;
+    border-color:#16a34a;
+    box-shadow:0 0 0 4px rgba(22,163,74,.12);
+}
+.search-select-arrow{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#64748b;
+    font-weight:900;
+    pointer-events:none;
+}
+.search-select-list{
+    display:none;
+    position:absolute;
+    left:0;
+    right:0;
+    top:calc(100% + 6px);
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    box-shadow:0 18px 45px rgba(15,23,42,.18);
+    max-height:260px;
+    overflow:auto;
+    z-index:9999;
+    padding:6px;
+}
+.search-select-list.show{display:block}
+.search-select-option{
+    padding:11px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:900;
+    color:#334155;
+    line-height:1.35;
+}
+.search-select-option:hover,
+.search-select-option.active{
+    background:#ecfdf5;
+    color:#047857;
+}
+.search-select-empty{
+    padding:12px;
+    color:#64748b;
+    font-size:13px;
+    font-weight:900;
+    text-align:center;
+}
+.native-search-select{
+    display:none!important;
+}
+.pm-help{
+    font-size:12px;
+    color:#64748b;
+    font-weight:800;
+    margin-top:6px;
+}
+
+@media(max-width:900px){
+    .pm-form-grid{grid-template-columns:1fr}
+    .pm-row-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+    .pm-page{padding:10px}
+    .pm-hero{padding:18px;border-radius:20px}
+    .pm-actions{display:grid;grid-template-columns:1fr}
+    .pm-btn{justify-content:center}
+}
+</style>
+
+<div class="pm-page">
+    <div class="pm-hero">
+        <h2>{{ title }}</h2>
+        <p>Use raw material / packing material and increase final product stock. This also works for repacking.</p>
+    </div>
+
+    <form method="post" class="pm-form-card">
+        {% csrf_token %}
+
+        <h3 class="pm-section-title">Final Product Output</h3>
+
+        <div class="pm-form-grid">
+            <div class="pm-field">
+                <label>Production / Repacking Name</label>
+                {{ form.production_name }}
+                {{ form.production_name.errors }}
+            </div>
+
+            <div class="pm-field">
+                <label>Final Product Pack</label>
+                {{ form.output_product_pack }}
+                {{ form.output_product_pack.errors }}
+                <div class="pm-help">Search by product name, product id, pack id or stock text.</div>
+            </div>
+
+            <div class="pm-field">
+                <label>Output Boxes / Pieces</label>
+                {{ form.output_boxes }}
+                {{ form.output_boxes.errors }}
+            </div>
+
+            <div class="pm-field" style="grid-column:1/-1;">
+                <label>Note</label>
+                {{ form.note }}
+            </div>
+        </div>
+
+        <h3 class="pm-section-title">Used Raw / Packing Items</h3>
+
+        {{ formset.management_form }}
+
+        <div id="itemRows">
+            {% for item_form in formset %}
+                <div class="pm-row-card item-row">
+                    <div class="pm-row-grid">
+                        <div class="pm-field">
+                            <label>Inventory Item Used</label>
+                            {{ item_form.inventory_item }}
+                            {{ item_form.inventory_item.errors }}
+                            <div class="pm-help">Search by item name, SKU or item id.</div>
+                        </div>
+
+                        <div class="pm-field">
+                            <label>Used Qty</label>
+                            {{ item_form.quantity }}
+                            {{ item_form.quantity.errors }}
+                        </div>
+
+                        <div class="pm-field">
+                            <label>Unit</label>
+                            {{ item_form.unit }}
+                        </div>
+                    </div>
+
+                    <div style="display:none;">{{ item_form.DELETE }}</div>
+
+                    <button type="button" class="pm-btn light" style="margin-top:10px;" onclick="removeRow(this)">
+                        Remove Row
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="emptyFormTemplate" style="display:none;">
+            <div class="pm-row-card item-row">
+                <div class="pm-row-grid">
+                    <div class="pm-field">
+                        <label>Inventory Item Used</label>
+                        {{ formset.empty_form.inventory_item }}
+                        <div class="pm-help">Search by item name, SKU or item id.</div>
+                    </div>
+
+                    <div class="pm-field">
+                        <label>Used Qty</label>
+                        {{ formset.empty_form.quantity }}
+                    </div>
+
+                    <div class="pm-field">
+                        <label>Unit</label>
+                        {{ formset.empty_form.unit }}
+                    </div>
+                </div>
+
+                <div style="display:none;">{{ formset.empty_form.DELETE }}</div>
+
+                <button type="button" class="pm-btn light" style="margin-top:10px;" onclick="removeRow(this)">
+                    Remove Row
+                </button>
+            </div>
+        </div>
+
+        <div class="pm-actions">
+            <button type="button" class="pm-btn blue" onclick="addRow()">+ Add Used Item</button>
+            <button type="submit" class="pm-btn green">Complete Production / Repacking</button>
+            <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function makeSearchableSelect(select) {
+    if (!select || select.dataset.searchReady === "1") return;
+
+    select.dataset.searchReady = "1";
+    select.classList.add("native-search-select");
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "search-select-wrap";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "search-select-input";
+    input.placeholder = "Search and select...";
+    input.autocomplete = "off";
+
+    const arrow = document.createElement("span");
+    arrow.className = "search-select-arrow";
+    arrow.innerHTML = "⌄";
+
+    const list = document.createElement("div");
+    list.className = "search-select-list";
+
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(input);
+    wrapper.appendChild(arrow);
+    wrapper.appendChild(list);
+    wrapper.appendChild(select);
+
+    function getOptions() {
+        return Array.from(select.options).filter(function(opt) {
+            return opt.value !== "";
+        });
+    }
+
+    function selectedText() {
+        const opt = select.options[select.selectedIndex];
+        return opt && opt.value ? opt.text.trim() : "";
+    }
+
+    function renderOptions(filterText) {
+        const text = (filterText || "").toLowerCase().trim();
+        const options = getOptions();
+
+        list.innerHTML = "";
+
+        let found = 0;
+
+        options.forEach(function(opt) {
+            const optionText = opt.text.trim();
+            const searchableText = (optionText + " " + opt.value).toLowerCase();
+
+            if (text && !searchableText.includes(text)) {
+                return;
+            }
+
+            found++;
+
+            const item = document.createElement("div");
+            item.className = "search-select-option";
+            item.textContent = optionText;
+            item.dataset.value = opt.value;
+
+            if (select.value === opt.value) {
+                item.classList.add("active");
+            }
+
+            item.addEventListener("click", function() {
+                select.value = opt.value;
+                input.value = optionText;
+                list.classList.remove("show");
+
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+
+            list.appendChild(item);
+        });
+
+        if (found === 0) {
+            const empty = document.createElement("div");
+            empty.className = "search-select-empty";
+            empty.textContent = "No result found";
+            list.appendChild(empty);
+        }
+    }
+
+    input.value = selectedText();
+
+    input.addEventListener("focus", function() {
+        renderOptions("");
+        list.classList.add("show");
+        input.select();
+    });
+
+    input.addEventListener("input", function() {
+        renderOptions(input.value);
+        list.classList.add("show");
+    });
+
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            list.classList.remove("show");
+        }
+    });
+
+    document.addEventListener("click", function(e) {
+        if (!wrapper.contains(e.target)) {
+            list.classList.remove("show");
+
+            if (!select.value) {
+                input.value = "";
+            } else {
+                input.value = selectedText();
+            }
+        }
+    });
+}
+
+function normalizeUnit(value) {
+    return String(value || "")
+        .toUpperCase()
+        .replace(/\s+/g, "")
+        .replace("KGS", "KG")
+        .replace("KILOGRAM", "KG")
+        .replace("KILOGRAMS", "KG")
+        .replace("LITER", "LITRE")
+        .replace("LITERS", "LITRE")
+        .replace("LITRES", "LITRE")
+        .replace("PCS", "PIECE")
+        .replace("PIECES", "PIECE")
+        .replace("GRAMS", "GRAM");
+}
+
+function setUnitSelect(unitSelect, requiredUnit) {
+    if (!unitSelect || !requiredUnit) return;
+
+    const target = normalizeUnit(requiredUnit);
+
+    Array.from(unitSelect.options).forEach(function(opt) {
+        const optValue = normalizeUnit(opt.value);
+        const optText = normalizeUnit(opt.text);
+
+        if (optValue === target || optText === target) {
+            unitSelect.value = opt.value;
+        }
+    });
+}
+
+function extractInventoryUnit(optionText) {
+    const text = optionText || "";
+
+    const match = text.match(/Stock\s*:\s*[\d.,]+\s*([A-Za-z]+)/i);
+
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    const parts = text.trim().split(/\s+/);
+    return parts.length ? parts[parts.length - 1] : "";
+}
+
+function handleInventoryItemChange(select) {
+    const row = select.closest(".item-row");
+    if (!row) return;
+
+    const unitSelect = row.querySelector("select[name$='-unit']");
+    const selectedOption = select.options[select.selectedIndex];
+
+    if (!selectedOption || !selectedOption.value) return;
+
+    const unit = extractInventoryUnit(selectedOption.text);
+    setUnitSelect(unitSelect, unit);
+}
+
+function extractProductName(optionText) {
+    let text = optionText || "";
+
+    if (text.includes("|")) {
+        return text.split("|")[0].trim();
+    }
+
+    if (text.includes(" - ")) {
+        return text.split(" - ")[0].trim();
+    }
+
+    return text.trim();
+}
+
+function handleFinalProductChange(select) {
+    const selectedOption = select.options[select.selectedIndex];
+
+    if (!selectedOption || !selectedOption.value) return;
+
+    const productName = extractProductName(selectedOption.text);
+    const productionNameInput = document.getElementById("id_production_name");
+
+    if (productionNameInput && productName) {
+        productionNameInput.value = productName;
+    }
+}
+
+function initProductionAutoFill(scope) {
+    const root = scope || document;
+
+    root.querySelectorAll("select").forEach(function(select) {
+        const name = select.getAttribute("name") || "";
+        const id = select.getAttribute("id") || "";
+
+        if (name.includes("inventory_item") || id.includes("inventory_item")) {
+            if (select.dataset.autoUnitReady !== "1") {
+                select.dataset.autoUnitReady = "1";
+
+                select.addEventListener("change", function() {
+                    handleInventoryItemChange(select);
+                });
+            }
+
+            if (select.value) {
+                handleInventoryItemChange(select);
+            }
+        }
+
+        if (name.includes("output_product_pack") || id.includes("output_product_pack")) {
+            if (select.dataset.autoNameReady !== "1") {
+                select.dataset.autoNameReady = "1";
+
+                select.addEventListener("change", function() {
+                    handleFinalProductChange(select);
+                });
+            }
+
+            if (select.value) {
+                handleFinalProductChange(select);
+            }
+        }
+    });
+}
+
+function initSearchableDropdowns(scope) {
+    const root = scope || document;
+
+    root.querySelectorAll("select").forEach(function(select) {
+        const name = select.getAttribute("name") || "";
+        const id = select.getAttribute("id") || "";
+
+        if (
+            name.includes("output_product_pack") ||
+            name.includes("inventory_item") ||
+            id.includes("output_product_pack") ||
+            id.includes("inventory_item")
+        ) {
+            makeSearchableSelect(select);
+        }
+    });
+
+    initProductionAutoFill(root);
+}
+
+function cleanTemplateHtml(html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    temp.querySelectorAll(".search-select-wrap").forEach(function(wrapper) {
+        const select = wrapper.querySelector("select");
+
+        if (select) {
+            select.classList.remove("native-search-select");
+            select.removeAttribute("data-search-ready");
+            select.removeAttribute("data-auto-unit-ready");
+            select.removeAttribute("data-auto-name-ready");
+
+            wrapper.parentNode.insertBefore(select, wrapper);
+        }
+
+        wrapper.remove();
+    });
+
+    temp.querySelectorAll("select").forEach(function(select) {
+        select.classList.remove("native-search-select");
+        select.removeAttribute("data-search-ready");
+        select.removeAttribute("data-auto-unit-ready");
+        select.removeAttribute("data-auto-name-ready");
+        select.value = "";
+    });
+
+    return temp.innerHTML;
+}
+
+function addRow() {
+    const totalInput = document.getElementById("id_items-TOTAL_FORMS");
+    const index = parseInt(totalInput.value);
+
+    let template = document.getElementById("emptyFormTemplate").innerHTML;
+    template = cleanTemplateHtml(template);
+    template = template.replaceAll("__prefix__", index);
+
+    document.getElementById("itemRows").insertAdjacentHTML("beforeend", template);
+    totalInput.value = index + 1;
+
+    const rows = document.querySelectorAll("#itemRows .item-row");
+    const newRow = rows[rows.length - 1];
+
+    initSearchableDropdowns(newRow);
+}
+
+function removeRow(button) {
+    const row = button.closest(".item-row");
+    const deleteInput = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+
+    if (deleteInput) {
+        deleteInput.checked = true;
+        row.style.display = "none";
+    } else {
+        row.remove();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    initSearchableDropdowns(document.getElementById("itemRows"));
+
+    const finalProductSelect = document.getElementById("id_output_product_pack");
+    if (finalProductSelect) {
+        makeSearchableSelect(finalProductSelect);
+        initProductionAutoFill(finalProductSelect.parentElement);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    margin-bottom: 16px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: #16a34a;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 13px;
+    font-weight: 900;
+    font-size: 13px;
+    border: none;
+}
+
+.btn.edit {
+    background: #07120d;
+}
+
+.category-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.category-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.category-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.category-name {
+    margin: 0;
+    color: #0f172a;
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.rules-title {
+    margin: 10px 0 8px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rules-table th,
+.rules-table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px;
+    font-size: 13px;
+    text-align: left;
+}
+
+.rules-table th {
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 900;
+}
+
+.rule-name {
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.rule-badge {
+    display: inline-flex;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 5px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.rule-badge.interest {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+.percent-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-weight: 900;
+}
+
+.days-box {
+    color: #475569;
+    font-weight: 800;
+}
+
+.status {
+    display: inline-flex;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.status.active {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.status.inactive {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.empty-box {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 28px;
+    color: #64748b;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .category-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .top-row h2 {
+        font-size: 21px;
+    }
+
+    .rules-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .category-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Product Categories</h2>
+                <p>View and edit categories with payment discount rules.</p>
+            </div>
+
+            <a href="{% url 'product_category_create' %}" class="btn">
+                + Create Category
+            </a>
+        </div>
+    </div>
+
+    <div class="category-grid">
+        {% for row in category_rows %}
+            <div class="category-card">
+                <div class="category-head">
+                    <h3 class="category-name">
+                        {{ row.category.name }}
+                    </h3>
+
+                    <a href="{% url 'product_category_edit' row.category.id %}" class="btn edit">
+                        Edit Category
+                    </a>
+                </div>
+
+                <div class="rules-title">
+                    Payment Rules
+                </div>
+
+                <table class="rules-table">
+                    <thead>
+                        <tr>
+                            <th>Rule Name</th>
+                            <th>Rule Type</th>
+                            <th>Percentage</th>
+                            <th>Days / Validity</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for rule in row.rules %}
+                            <tr>
+                                <td>
+                                    <span class="rule-name">
+                                        {{ rule.rule_name }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if rule.is_interest %}
+                                        <span class="rule-badge interest">
+                                            {{ rule.rule_type }}
+                                        </span>
+                                    {% else %}
+                                        <span class="rule-badge">
+                                            {{ rule.rule_type }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if rule.percentage == "-" %}
+                                        -
+                                    {% else %}
+                                        <span class="percent-box">
+                                            {{ rule.percentage }}%
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <span class="days-box">
+                                        {{ rule.days }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if rule.is_active %}
+                                        <span class="status active">Active</span>
+                                    {% else %}
+                                        <span class="status inactive">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5">
+                                    No payment rules added for this category.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% empty %}
+            <div class="empty-box">
+                No categories found. Create your first product category.
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

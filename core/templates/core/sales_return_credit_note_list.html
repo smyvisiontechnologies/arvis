@@ -1,0 +1,371 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:18px; }
+
+.top-card,.filter-card {
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:18px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+    margin-bottom:14px;
+}
+
+.top-row {
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.top-row h2 {
+    margin:0;
+    color:#0f172a;
+    font-size:25px;
+    font-weight:900;
+}
+
+.top-row p {
+    margin:6px 0 0;
+    color:#64748b;
+    font-weight:700;
+    font-size:13px;
+}
+
+.btn {
+    text-decoration:none;
+    border:none;
+    background:#07120d;
+    color:white;
+    padding:10px 13px;
+    border-radius:13px;
+    font-weight:900;
+    font-size:13px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    cursor:pointer;
+}
+
+.btn.green { background:#16a34a; }
+.btn.blue { background:#00a8e8; }
+.btn.orange { background:#b9792c; }
+.btn.red { background:#dc2626; }
+.btn.gray { background:#475569; }
+
+.filter-form {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr 120px;
+    gap:10px;
+}
+
+.form-control {
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:13px;
+    padding:11px 12px;
+    font-weight:800;
+}
+
+.summary {
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    color:#c2410c;
+    padding:10px 13px;
+    border-radius:999px;
+    font-weight:900;
+    display:inline-flex;
+}
+
+.note-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:14px;
+}
+
+.note-card {
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+
+.note-head {
+    background:linear-gradient(135deg,#fff7ed,#fef2f2);
+    padding:15px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.note-no {
+    margin:0;
+    color:#9a3412;
+    font-size:18px;
+    font-weight:900;
+}
+
+.note-meta {
+    margin-top:6px;
+    color:#64748b;
+    font-size:13px;
+    font-weight:800;
+    line-height:1.5;
+}
+
+.badge-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+}
+
+.badge {
+    display:inline-flex;
+    border-radius:999px;
+    padding:5px 9px;
+    font-size:11px;
+    font-weight:900;
+}
+
+.badge.visible {
+    background:#ecfdf5;
+    color:#047857;
+    border:1px solid #bbf7d0;
+}
+
+.badge.hidden {
+    background:#fef2f2;
+    color:#b91c1c;
+    border:1px solid #fecaca;
+}
+
+.badge.status {
+    background:#eff6ff;
+    color:#1d4ed8;
+    border:1px solid #bfdbfe;
+}
+
+.note-body { padding:14px; }
+
+.info-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+}
+
+.info-box {
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:10px;
+}
+
+.info-box span {
+    display:block;
+    color:#64748b;
+    font-size:11px;
+    font-weight:900;
+}
+
+.info-box strong {
+    display:block;
+    margin-top:4px;
+    color:#0f172a;
+    font-size:13px;
+    font-weight:900;
+}
+
+.info-box.money {
+    background:#fff7ed;
+    border-color:#fed7aa;
+}
+
+.info-box.money strong { color:#c2410c; }
+
+.actions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    border-top:1px dashed #cbd5e1;
+    padding-top:12px;
+    margin-top:12px;
+}
+
+.delete-form {
+    display:inline-flex;
+}
+
+.empty-card {
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:28px;
+    text-align:center;
+    font-weight:800;
+    color:#64748b;
+}
+
+@media(max-width:800px) {
+    .page { padding:12px; }
+    .filter-form { grid-template-columns:1fr; }
+    .note-grid { grid-template-columns:1fr; }
+    .actions { display:grid; grid-template-columns:1fr; }
+    .btn, .delete-form { width:100%; }
+}
+</style>
+
+<div class="page">
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Sales Return / Credit Notes</h2>
+                <p>
+                    {% if can_manage %}
+                        Manage returned products, dealer visibility, print and delete credit notes.
+                    {% else %}
+                        View credit notes shared by company.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div>
+                <div class="summary">Total Credit: ₹{{ total_credit }}</div>
+
+                {% if can_manage %}
+                    <br><br>
+                    <a href="{% url 'sales_return_credit_note_create' %}" class="btn green">
+                        + Create Credit Note
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            {% if can_manage %}
+                <select name="dealer" class="form-control">
+                    <option value="">All Dealers</option>
+                    {% for dealer in dealers %}
+                        <option value="{{ dealer.id }}" {% if selected_dealer|stringformat:"s" == dealer.id|stringformat:"s" %}selected{% endif %}>
+                            {{ dealer.dealer_code }} | {{ dealer.firm_name }} | {{ dealer.phone }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   class="form-control"
+                   placeholder="Credit note / invoice / order / dealer">
+
+            <input type="date"
+                   name="from_date"
+                   value="{{ from_date }}"
+                   class="form-control">
+
+            <input type="date"
+                   name="to_date"
+                   value="{{ to_date }}"
+                   class="form-control">
+
+            <button class="btn" type="submit">Filter</button>
+        </form>
+    </div>
+
+    <div class="note-grid">
+        {% for note in credit_notes %}
+            <div class="note-card">
+                <div class="note-head">
+                    <h3 class="note-no">{{ note.credit_note_number }}</h3>
+
+                    <div class="note-meta">
+                        Dealer: {{ note.dealer.firm_name }}<br>
+                        Invoice: {{ note.invoice.invoice_number }}<br>
+                        Date: {{ note.return_date|date:"d M Y" }}
+                    </div>
+
+                    <div class="badge-row">
+                        <span class="badge status">{{ note.get_status_display }}</span>
+
+                        {% if note.show_to_dealer %}
+                            <span class="badge visible">Visible to Dealer</span>
+                        {% else %}
+                            <span class="badge hidden">Hidden from Dealer</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="note-body">
+                    <div class="info-grid">
+                        <div class="info-box money">
+                            <span>Credit Amount</span>
+                            <strong>₹{{ note.grand_total }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Order</span>
+                            <strong>#{{ note.order.id }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Items</span>
+                            <strong>{{ note.items.count }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Dealer View</span>
+                            <strong>
+                                {% if note.show_to_dealer %}
+                                    Allowed
+                                {% else %}
+                                    Not Allowed
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <a href="{% url 'sales_return_credit_note_print' note.id %}" target="_blank" class="btn blue">
+                            View / Print
+                        </a>
+
+                        {% if can_manage %}
+                            <a href="{% url 'sales_return_credit_note_edit' note.id %}" class="btn orange">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'sales_return_credit_note_toggle_dealer_visibility' note.id %}"
+                               class="btn {% if note.show_to_dealer %}gray{% else %}green{% endif %}">
+                                {% if note.show_to_dealer %}
+                                    Hide from Dealer
+                                {% else %}
+                                    Show to Dealer
+                                {% endif %}
+                            </a>
+
+                            <form method="post"
+                                  action="{% url 'sales_return_credit_note_delete' note.id %}"
+                                  class="delete-form"
+                                  onsubmit="return confirm('Are you sure? This credit note will be deleted and target/invoice balance will be restored.');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn red">
+                                    Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-card">
+                No credit notes found.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

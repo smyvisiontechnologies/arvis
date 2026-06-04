@@ -1,0 +1,617 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+html {
+    scroll-behavior: smooth;
+}
+
+.credit-page {
+    padding: 18px;
+}
+
+.credit-card {
+    max-width: 760px;
+    margin: 0 auto;
+    background:
+        radial-gradient(circle at top right, rgba(34,197,94,.14), transparent 32%),
+        linear-gradient(135deg, #f8fafc, #eef7f3);
+    border-radius: 30px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 18px 45px rgba(15,23,42,.10);
+    animation: pageEnter .45s ease both;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.credit-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.credit-top h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 1000;
+}
+
+.help-text {
+    color: #2563eb;
+    font-weight: 900;
+}
+
+.dealer-name {
+    margin-top: 6px;
+    color: #64748b;
+    font-weight: 850;
+}
+
+.gauge-wrap {
+    margin: 22px auto 8px;
+    max-width: 560px;
+    text-align: center;
+}
+
+.gauge {
+    width: 100%;
+    max-width: 520px;
+    height: 260px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.gauge-arc {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 260px;
+    border-radius: 520px 520px 0 0;
+    background: conic-gradient(
+        from 270deg at 50% 100%,
+        #ef4444 0deg,
+        #fb923c 50deg,
+        #fde047 100deg,
+        #86efac 140deg,
+        #22c55e 180deg,
+        transparent 180deg
+    );
+    overflow: hidden;
+    animation: arcGlow 1.4s ease both;
+}
+
+@keyframes arcGlow {
+    from {
+        filter: saturate(.6);
+        opacity: .6;
+    }
+    to {
+        filter: saturate(1.15);
+        opacity: 1;
+    }
+}
+
+.gauge-arc::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 340px;
+    height: 170px;
+    transform: translateX(-50%);
+    background: #eef7f3;
+    border-radius: 340px 340px 0 0;
+}
+
+.gauge-needle {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 7px;
+    height: 145px;
+    background: #1f2937;
+    border-radius: 999px;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate({{ credit_summary.needle_deg }}deg);
+    z-index: 5;
+    animation: needleMove 1.1s cubic-bezier(.2,.9,.2,1) both;
+}
+
+@keyframes needleMove {
+    from {
+        transform: translateX(-50%) rotate(-90deg);
+    }
+    to {
+        transform: translateX(-50%) rotate({{ credit_summary.needle_deg }}deg);
+    }
+}
+
+.gauge-center {
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 22px;
+    height: 22px;
+    background: #111827;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+}
+
+.score-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 18px;
+    z-index: 8;
+    text-align: center;
+}
+
+.score-change {
+    display: inline-flex;
+    color: {% if credit_summary.change_points >= 0 %}#16a34a{% else %}#dc2626{% endif %};
+    font-weight: 1000;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.score-number {
+    font-size: 70px;
+    font-weight: 1000;
+    color: #020617;
+    line-height: 1;
+}
+
+.score-label {
+    margin-top: 8px;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.gauge-minmax {
+    max-width: 520px;
+    margin: -22px auto 0;
+    display: flex;
+    justify-content: space-between;
+    color: #94a3b8;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.summary-card {
+    margin-top: 18px;
+    background: white;
+    border-radius: 22px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 26px rgba(15,23,42,.05);
+}
+
+.summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 1000;
+}
+
+.view-details-link {
+    color: #0ea5e9;
+    font-weight: 1000;
+    text-decoration: none;
+}
+
+.summary-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.summary-item {
+    padding: 4px 16px;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 18px;
+    transition: .22s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-item:first-child {
+    border-right: 1px solid #e2e8f0;
+}
+
+.summary-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(34,197,94,.10));
+    opacity: 0;
+    transition: .22s ease;
+}
+
+.summary-item:hover {
+    transform: translateY(-3px);
+    background: #f8fafc;
+    box-shadow: 0 14px 30px rgba(15,23,42,.09);
+}
+
+.summary-item:hover::after {
+    opacity: 1;
+}
+
+.summary-item strong,
+.summary-item span {
+    position: relative;
+    z-index: 2;
+}
+
+.summary-item strong {
+    display: block;
+    color: #0f172a;
+    font-size: 19px;
+    font-weight: 1000;
+}
+
+.summary-item span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.summary-item svg {
+    width: 17px;
+    height: 17px;
+    color: #2563eb;
+}
+
+.note-box {
+    margin-top: 14px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 16px;
+    padding: 12px;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.last-refresh {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+/* Smooth redirect animation */
+.page-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .72);
+    backdrop-filter: blur(10px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.page-loader.show {
+    display: flex;
+}
+
+.loader-card {
+    width: 100%;
+    max-width: 380px;
+    background: white;
+    border-radius: 28px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,.30);
+    animation: loaderIn .28s ease both;
+}
+
+@keyframes loaderIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.loader-icon {
+    width: 78px;
+    height: 78px;
+    border-radius: 26px;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, #2563eb, #16a34a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulseIcon 1s ease infinite;
+}
+
+@keyframes pulseIcon {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 14px 34px rgba(37,99,235,.24);
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 18px 44px rgba(22,163,74,.32);
+    }
+}
+
+.loader-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.loader-card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 21px;
+    font-weight: 1000;
+}
+
+.loader-card p {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 850;
+}
+
+.loader-line {
+    margin-top: 16px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.loader-line span {
+    display: block;
+    height: 100%;
+    width: 40%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #16a34a);
+    animation: lineMove .85s ease infinite;
+}
+
+@keyframes lineMove {
+    0% {
+        transform: translateX(-110%);
+    }
+    100% {
+        transform: translateX(260%);
+    }
+}
+
+@media(max-width: 650px) {
+    .credit-page {
+        padding: 10px;
+    }
+
+    .credit-card {
+        border-radius: 24px;
+        padding: 16px;
+    }
+
+    .gauge {
+        height: 210px;
+    }
+
+    .gauge-arc {
+        height: 210px;
+    }
+
+    .gauge-arc::after {
+        width: 250px;
+        height: 125px;
+    }
+
+    .gauge-needle {
+        height: 115px;
+    }
+
+    .score-number {
+        font-size: 54px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .summary-item:first-child {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 14px;
+        margin-bottom: 4px;
+    }
+
+    .last-refresh {
+        display: block;
+        line-height: 1.7;
+    }
+}
+</style>
+
+<div class="credit-page">
+    <div class="credit-card">
+        <div class="credit-top">
+            <div>
+                <h2>Your Credit Score</h2>
+                <div class="dealer-name">{{ dealer.firm_name }}</div>
+            </div>
+
+            <div class="help-text">Arvis Score</div>
+        </div>
+
+        <div class="gauge-wrap">
+            <div class="gauge">
+                <div class="gauge-arc"></div>
+                <div class="gauge-needle"></div>
+                <div class="gauge-center"></div>
+
+                <div class="score-content">
+                    <div class="score-change">
+                        {% if credit_summary.change_points >= 0 %}
+                            ↑ {{ credit_summary.change_points }} points
+                        {% else %}
+                            ↓ {{ credit_summary.change_points }} points
+                        {% endif %}
+                    </div>
+
+                    <div class="score-number">
+                        {{ credit_summary.score }}
+                    </div>
+
+                    <div class="score-label">
+                        Your credit score is {{ credit_summary.label }} ›
+                    </div>
+                </div>
+            </div>
+
+            <div class="gauge-minmax">
+                <span>300</span>
+                <span>900</span>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-head">
+                <h3>Credit Report Summary</h3>
+
+                <a href="{% url 'dealer_invoice_list' %}?pending=1"
+                   class="view-details-link"
+                   onclick="smoothGoToInvoices(event)">
+                    View details
+                </a>
+            </div>
+
+            <div class="summary-grid">
+                <a href="{% url 'dealer_invoice_list' %}?pending=1"
+                   class="summary-item"
+                   onclick="smoothGoToInvoices(event)">
+                    {% if credit_summary.due_amount > 0 %}
+                        <strong>₹{{ credit_summary.due_amount|floatformat:2 }}</strong>
+                        <span>
+                            Dues Pending
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    {% else %}
+                        <strong>No Dues</strong>
+                        <span>
+                            0 Overdue Payments
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'dealer_invoice_list' %}?pending=1"
+                   class="summary-item"
+                   onclick="smoothGoToInvoices(event)">
+                    <strong>{{ credit_summary.pending_invoice_count }}</strong>
+                    <span>
+                        Pending Invoices
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        {% if credit_summary.note %}
+            <div class="note-box">
+                <strong>Score Note:</strong> {{ credit_summary.note }}
+            </div>
+        {% endif %}
+
+        <div class="last-refresh">
+            <span>
+                Last refreshed on
+                {% if credit_summary.updated_at %}
+                    {{ credit_summary.updated_at|date:"d M Y" }}
+                {% else %}
+                    -
+                {% endif %}
+            </span>
+            <span>Powered by Arvis</span>
+        </div>
+    </div>
+</div>
+
+<div class="page-loader" id="invoiceLoader">
+    <div class="loader-card">
+        <div class="loader-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M7 3h10v18H7z"/>
+                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4"/>
+                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M17 8l3 3-3 3"/>
+            </svg>
+        </div>
+
+        <h3>Opening Pending Invoices</h3>
+        <p>Please wait. We are taking you to your pending invoice dues.</p>
+
+        <div class="loader-line">
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<script>
+function smoothGoToInvoices(event) {
+    event.preventDefault();
+
+    const url = event.currentTarget.getAttribute("href");
+    const loader = document.getElementById("invoiceLoader");
+
+    if (loader) {
+        loader.classList.add("show");
+    }
+
+    setTimeout(function() {
+        window.location.href = url;
+    }, 350);
+}
+</script>
+
+{% endblock %}

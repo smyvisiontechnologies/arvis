@@ -1,0 +1,316 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.page-head {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.page-head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.page-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.btn-light {
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    padding: 11px 15px;
+    border-radius: 14px;
+    font-weight: 900;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+th {
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 13px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+td {
+    padding: 13px;
+    border-bottom: 1px solid #edf2f7;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 750;
+    vertical-align: middle;
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    object-fit: cover;
+    background: #e2e8f0;
+}
+
+.product-letter {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #2563eb, #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.sub-text {
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+    margin-top: 4px;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 6px 9px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.badge.green {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.badge.red {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.empty {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 800;
+}
+
+@media(max-width: 760px) {
+    .page {
+        padding: 12px;
+    }
+
+    .page-head {
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .page-head h2 {
+        font-size: 21px;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="page-head">
+        <div>
+            <h2>My Warehouse Products</h2>
+            <p>Products and pack-wise stock assigned to your warehouse.</p>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="btn-light">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <span>Assigned Warehouses</span>
+            <strong>{{ warehouses|length }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Products</span>
+            <strong>{{ total_products }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Pack Sizes</span>
+            <strong>{{ total_pack_sizes }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Stock Boxes</span>
+            <strong>{{ total_stock_boxes }}</strong>
+        </div>
+    </div>
+
+    {% if pack_sizes %}
+        <div class="table-card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Warehouse</th>
+                            <th>Pack Size</th>
+                            <th>Box Details</th>
+                            <th>Sale Price</th>
+                            <th>MRP</th>
+                            <th>Stock Boxes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for pack in pack_sizes %}
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        {% if pack.product.image %}
+                                            <img src="{{ pack.product.image.url }}" class="product-img" alt="{{ pack.product.name }}">
+                                        {% else %}
+                                            <div class="product-letter">
+                                                {{ pack.product.name|first|upper }}
+                                            </div>
+                                        {% endif %}
+
+                                        <div>
+                                            <b>{{ pack.product.name }}</b>
+                                            <div class="sub-text">
+                                                HSN: {{ pack.product.hsn_number|default:"-" }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {% if pack.product.category %}
+                                        {{ pack.product.category.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ pack.warehouse.name }}</td>
+
+                                <td>
+                                    <b>{{ pack.display_pack }}</b>
+                                    <div class="sub-text">{{ pack.total_quantity_label }}</div>
+                                </td>
+
+                                <td>
+                                    {{ pack.units_per_box }} {{ pack.get_packing_type_display }}s
+                                    <div class="sub-text">
+                                        Box Price: ₹{{ pack.box_sale_price }}
+                                    </div>
+                                </td>
+
+                                <td>₹{{ pack.sale_price_per_unit }}</td>
+
+                                <td>₹{{ pack.mrp_per_unit }}</td>
+
+                                <td>
+                                    <b>{{ pack.stock_boxes }}</b>
+                                </td>
+
+                                <td>
+                                    {% if pack.stock_boxes > 0 and pack.is_active %}
+                                        <span class="badge green">In Stock</span>
+                                    {% else %}
+                                        <span class="badge red">Out of Stock</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty">
+            No products assigned to your warehouse yet.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

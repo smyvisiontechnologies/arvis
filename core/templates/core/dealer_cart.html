@@ -1,0 +1,537 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.cart-page {
+    padding: 16px;
+}
+
+.cart-top {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cart-top h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.cart-top p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.back-btn {
+    text-decoration: none;
+    background: #0f172a;
+    color: white;
+    padding: 10px 13px;
+    border-radius: 13px;
+    font-size: 13px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.back-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 14px;
+    align-items: start;
+}
+
+.cart-list {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.cart-row {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr) 122px;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+}
+
+.cart-row:last-child {
+    border-bottom: none;
+}
+
+.cart-img {
+    width: 82px;
+    height: 82px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.cart-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #eff6ff, #ecfdf5);
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-fallback svg {
+    width: 34px;
+    height: 34px;
+}
+
+.item-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.3;
+}
+
+.item-desc {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.item-price {
+    margin-top: 7px;
+    color: #047857;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.qty-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.qty-box {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    overflow: hidden;
+    background: white;
+}
+
+.qty-box form {
+    margin: 0;
+}
+
+.qty-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: #f8fafc;
+    color: #0f172a;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.qty-btn:hover {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.qty-number {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+    border-left: 1px solid #cbd5e1;
+    border-right: 1px solid #cbd5e1;
+}
+
+.row-total {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.remove-link {
+    color: #dc2626;
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.remove-link svg {
+    width: 13px;
+    height: 13px;
+}
+
+.price-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    position: sticky;
+    top: 88px;
+}
+
+.price-card h3 {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #cbd5e1;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.summary-row strong {
+    color: #0f172a;
+    font-weight: 900;
+    text-align: right;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 15px 0 8px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.summary-total strong {
+    color: #047857;
+}
+
+.place-btn {
+    width: 100%;
+    margin-top: 12px;
+    border: none;
+    background: #16a34a;
+    color: white;
+    padding: 14px 16px;
+    border-radius: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 10px 22px rgba(22, 163, 74, 0.20);
+}
+
+.note {
+    margin-top: 11px;
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 11.5px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.empty-cart {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 34px 18px;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.empty-cart h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.empty-cart p {
+    margin: 8px auto 18px;
+    max-width: 420px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+@media(max-width: 950px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .price-card {
+        position: static;
+    }
+}
+
+@media(max-width: 650px) {
+    .cart-page {
+        padding: 12px;
+    }
+
+    .cart-top {
+        border-radius: 18px;
+        padding: 13px;
+    }
+
+    .cart-top h2 {
+        font-size: 20px;
+    }
+
+    .back-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cart-row {
+        grid-template-columns: 70px minmax(0, 1fr) 96px;
+        gap: 9px;
+        padding: 10px;
+    }
+
+    .cart-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 13px;
+    }
+
+    .item-title {
+        font-size: 12.5px;
+    }
+
+    .item-desc {
+        font-size: 10.5px;
+        line-height: 1.35;
+    }
+
+    .item-price {
+        font-size: 11px;
+    }
+
+    .qty-btn {
+        width: 28px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .qty-number {
+        min-width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .row-total {
+        font-size: 13px;
+    }
+
+    .remove-link {
+        font-size: 10.5px;
+    }
+
+    .price-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+}
+
+@media(max-width: 420px) {
+    .cart-row {
+        grid-template-columns: 64px minmax(0, 1fr) 88px;
+    }
+
+    .cart-img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .qty-side {
+        gap: 6px;
+    }
+}
+</style>
+
+<div class="cart-page">
+
+    <div class="cart-top">
+        <div>
+            <h2>My Cart</h2>
+            <p>Small product list. Change quantity and place order easily.</p>
+        </div>
+
+        <a href="{% url 'dealer_products' %}" class="back-btn">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" d="M15 18l-6-6 6-6"/>
+            </svg>
+            Continue Shopping
+        </a>
+    </div>
+
+    {% if cart_items %}
+        <div class="cart-layout">
+
+            <div class="cart-list">
+                {% for item in cart_items %}
+                    <div class="cart-row">
+
+                        <div class="cart-img">
+                            {% if item.product_pack.product.image %}
+                                <img src="{{ item.product_pack.product.image.url }}" alt="{{ item.product_pack.product.name }}">
+                            {% else %}
+                                <div class="img-fallback">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <h3 class="item-title">
+                                {{ item.product_pack.product.name }}
+                            </h3>
+
+                            <div class="item-desc">
+                                {{ item.product_pack.display_pack }} |
+                                {{ item.product_pack.units_per_box }}
+                                {{ item.product_pack.get_packing_type_display }}{% if item.product_pack.units_per_box != 1 %}s{% endif %}
+                                in 1 box
+                                <br>
+                                Warehouse: {{ item.product_pack.warehouse.name }}
+                            </div>
+
+                            <div class="item-price">
+                                ₹{{ item.product_pack.box_sale_price }} per box
+                            </div>
+                        </div>
+
+                        <div class="qty-side">
+                            <div class="qty-box">
+                                <form method="post" action="{% url 'dealer_decrease_cart_item' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="qty-btn">−</button>
+                                </form>
+
+                                <span class="qty-number">{{ item.quantity_boxes }}</span>
+
+                                <form method="post" action="{% url 'dealer_increase_cart_item' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="qty-btn">+</button>
+                                </form>
+                            </div>
+
+                            <div class="row-total">
+                                ₹{{ item.total_amount }}
+                            </div>
+
+                            <a href="{% url 'dealer_remove_cart_item' item.id %}" class="remove-link">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M3 6h18"/>
+                                    <path stroke-width="2" d="M8 6V4h8v2"/>
+                                    <path stroke-width="2" d="M6 6l1 15h10l1-15"/>
+                                </svg>
+                                Remove
+                            </a>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="price-card">
+                <h3>Price Details</h3>
+
+                <div class="summary-row">
+                    <span>Total Items</span>
+                    <strong>{{ cart_items|length }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Product Amount</span>
+                    <strong>₹{{ cart.total_amount }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Transport</span>
+                    <strong>As per company</strong>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong>₹{{ cart.total_amount }}</strong>
+                </div>
+
+                <form method="post" action="{% url 'dealer_place_order' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="place-btn">
+                        Place Order
+                    </button>
+                </form>
+
+                <div class="note">
+                    Please check pack size, warehouse and quantity before placing the order.
+                </div>
+            </div>
+
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <h3>Your cart is empty</h3>
+            <p>Add products from catalogue. Selected products will appear here.</p>
+
+            <a href="{% url 'dealer_products' %}" class="back-btn">
+                Browse Products
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

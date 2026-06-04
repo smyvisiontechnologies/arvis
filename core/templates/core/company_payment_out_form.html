@@ -1,0 +1,235 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    max-width: 950px;
+    margin: auto;
+}
+
+h2 {
+    margin: 0 0 5px;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.subtitle {
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 900;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 11px 12px;
+    outline: none;
+    font-weight: 700;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn {
+    border: none;
+    text-decoration: none;
+    border-radius: 13px;
+    padding: 12px 16px;
+    font-weight: 900;
+    color: white;
+    background: #b9792c;
+    cursor: pointer;
+}
+
+.btn.back {
+    background: #07120d;
+}
+
+.error-box {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 13px;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.error {
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+@media(max-width:650px) {
+    .page {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        text-align: center;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>{{ title }}</h2>
+        <div class="subtitle">Record company expenses and outgoing payments.</div>
+
+        {% if form.non_field_errors %}
+            <div class="error-box">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="grid">
+                <div class="field">
+                    <label>Paid From Account</label>
+                    {{ form.account }}
+                    <div class="error">{{ form.account.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Expense Type</label>
+                    {{ form.expense_type }}
+                    <div class="error">{{ form.expense_type.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payee Name</label>
+                    {{ form.payee_name }}
+                    <div class="error">{{ form.payee_name.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Amount</label>
+                    {{ form.amount }}
+                    <div class="error">{{ form.amount.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payment Mode</label>
+                    {{ form.payment_mode }}
+                    <div class="error">{{ form.payment_mode.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payment Date</label>
+                    {{ form.payment_date }}
+                    <div class="error">{{ form.payment_date.errors }}</div>
+                </div>
+
+                <div class="field reference-field">
+                    <label>Reference / Transaction Number</label>
+                    {{ form.reference_number }}
+                    <div class="error">{{ form.reference_number.errors }}</div>
+                </div>
+
+                <div class="field cheque-field">
+                    <label>Cheque Number</label>
+                    {{ form.cheque_number }}
+                    <div class="error">{{ form.cheque_number.errors }}</div>
+                </div>
+
+                <div class="field screenshot-field">
+                    <label>Payment Screenshot</label>
+                    {{ form.payment_screenshot }}
+                    <div class="error">{{ form.payment_screenshot.errors }}</div>
+                </div>
+
+                <div class="field full">
+                    <label>Reason / Note</label>
+                    {{ form.reason }}
+                    <div class="error">{{ form.reason.errors }}</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">{{ button_text }}</button>
+                <a href="{% url 'accounts_dashboard' %}" class="btn back">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function togglePaymentOutFields() {
+    const paymentMode = document.getElementById("id_payment_mode").value;
+
+    document.querySelectorAll(".reference-field").forEach(function(el) {
+        el.style.display = paymentMode === "UPI" || paymentMode === "BANK" ? "block" : "none";
+    });
+
+    document.querySelectorAll(".cheque-field").forEach(function(el) {
+        el.style.display = paymentMode === "CHEQUE" ? "block" : "none";
+    });
+
+    document.querySelectorAll(".screenshot-field").forEach(function(el) {
+        el.style.display = paymentMode === "UPI" || paymentMode === "BANK" ? "block" : "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    togglePaymentOutFields();
+
+    document.getElementById("id_payment_mode").addEventListener("change", togglePaymentOutFields);
+});
+</script>
+{% endblock %}

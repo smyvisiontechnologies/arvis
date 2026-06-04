@@ -1,0 +1,517 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+}
+
+.item-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+label {
+    font-weight: 900;
+    display: block;
+    margin-bottom: 5px;
+    color: #0f172a;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 12px 13px;
+    font-weight: 800;
+    outline: none;
+    background: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.btn {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 13px 18px;
+    border-radius: 15px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #15803d;
+}
+
+/* MONTH YEAR PICKER */
+.month-picker {
+    position: relative;
+}
+
+.month-picker input {
+    padding-right: 48px;
+    cursor: pointer;
+    background: #ffffff;
+}
+
+.calendar-btn {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 11px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.calendar-btn:hover {
+    background: #dbeafe;
+}
+
+.calendar-btn svg {
+    width: 19px;
+    height: 19px;
+}
+
+.month-panel {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    width: 280px;
+    max-width: calc(100vw - 40px);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 18px;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.20);
+    padding: 12px;
+    z-index: 9999;
+}
+
+.month-picker.open .month-panel {
+    display: block;
+}
+
+.picker-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.picker-head button {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 11px;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.picker-head button:hover {
+    background: #e2e8f0;
+}
+
+.picker-year {
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.month-grid-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.month-option {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 10px 6px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.month-option:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.month-option.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 800;
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .item-box {
+        padding: 12px;
+        border-radius: 15px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .month-panel {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Warehouse Review - Order #{{ order.id }}</h2>
+        <p style="color:#64748b;font-weight:700;">
+            Enter or check HSN, Batch No, MFG Month/Year and EXP Month/Year.
+        </p>
+
+        <form method="post" id="warehouseReviewForm">
+            {% csrf_token %}
+            {{ formset.management_form }}
+
+            {% for form in formset %}
+                <div class="item-box">
+                    {{ form.id }}
+
+                    <h3 style="margin-top:0;">
+                        {{ form.instance.product_name }} - {{ form.instance.pack_label }}
+                    </h3>
+
+                    <div class="grid">
+                        <div>
+                            <label>HSN/SAC</label>
+                            {{ form.hsn_code }}
+                            {{ form.hsn_code.errors }}
+                        </div>
+
+                        <div>
+                            <label>Batch No</label>
+                            {{ form.batch_no }}
+                            {{ form.batch_no.errors }}
+                        </div>
+
+                        <div>
+                            <label>MFG Month / Year</label>
+
+                            <div class="month-picker" data-date-type="mfg">
+                                {{ form.mfg_date }}
+
+                                <button type="button" class="calendar-btn" onclick="openCustomMonthPicker(this)">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
+                                        <path stroke-width="2" d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+                                    </svg>
+                                </button>
+
+                                <div class="month-panel">
+                                    <div class="picker-head">
+                                        <button type="button" onclick="changePickerYear(this, -1)">‹</button>
+                                        <div class="picker-year"></div>
+                                        <button type="button" onclick="changePickerYear(this, 1)">›</button>
+                                    </div>
+
+                                    <div class="month-grid-picker"></div>
+                                </div>
+                            </div>
+
+                            {{ form.mfg_date.errors }}
+                        </div>
+
+                        <div>
+                            <label>EXP Month / Year</label>
+
+                            <div class="month-picker" data-date-type="expiry">
+                                {{ form.expiry_date }}
+
+                                <button type="button" class="calendar-btn" onclick="openCustomMonthPicker(this)">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
+                                        <path stroke-width="2" d="M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+                                    </svg>
+                                </button>
+
+                                <div class="month-panel">
+                                    <div class="picker-head">
+                                        <button type="button" onclick="changePickerYear(this, -1)">‹</button>
+                                        <div class="picker-year"></div>
+                                        <button type="button" onclick="changePickerYear(this, 1)">›</button>
+                                    </div>
+
+                                    <div class="month-grid-picker"></div>
+                                </div>
+                            </div>
+
+                            {{ form.expiry_date.errors }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn">
+                Send to Accountant
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+const monthNames = [
+    "Jan", "Feb", "Mar", "Apr",
+    "May", "Jun", "Jul", "Aug",
+    "Sep", "Oct", "Nov", "Dec"
+];
+
+function pad2(value) {
+    return String(value).padStart(2, "0");
+}
+
+function getCurrentYear() {
+    return new Date().getFullYear();
+}
+
+function lastDateOfMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+}
+
+function parseAnyDateValue(value) {
+    if (!value) {
+        return null;
+    }
+
+    value = value.trim();
+
+    // YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return {
+            year: parseInt(value.substring(0, 4), 10),
+            month: parseInt(value.substring(5, 7), 10)
+        };
+    }
+
+    // YYYY-MM
+    if (/^\d{4}-\d{2}$/.test(value)) {
+        return {
+            year: parseInt(value.substring(0, 4), 10),
+            month: parseInt(value.substring(5, 7), 10)
+        };
+    }
+
+    // MM/YYYY
+    if (/^\d{2}\/\d{4}$/.test(value)) {
+        return {
+            month: parseInt(value.substring(0, 2), 10),
+            year: parseInt(value.substring(3, 7), 10)
+        };
+    }
+
+    return null;
+}
+
+function formatDisplayMonthYear(year, month) {
+    return pad2(month) + "/" + year;
+}
+
+function setPanelYear(wrapper, year) {
+    wrapper.dataset.pickerYear = year;
+    const yearBox = wrapper.querySelector(".picker-year");
+    if (yearBox) {
+        yearBox.textContent = year;
+    }
+    renderMonthButtons(wrapper);
+}
+
+function renderMonthButtons(wrapper) {
+    const grid = wrapper.querySelector(".month-grid-picker");
+    const input = wrapper.querySelector("input");
+    const year = parseInt(wrapper.dataset.pickerYear || getCurrentYear(), 10);
+    const selected = parseAnyDateValue(input.value);
+
+    grid.innerHTML = "";
+
+    monthNames.forEach(function(monthName, index) {
+        const month = index + 1;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "month-option";
+        btn.textContent = monthName;
+
+        if (selected && selected.year === year && selected.month === month) {
+            btn.classList.add("active");
+        }
+
+        btn.onclick = function() {
+            input.value = formatDisplayMonthYear(year, month);
+            wrapper.classList.remove("open");
+        };
+
+        grid.appendChild(btn);
+    });
+}
+
+function initMonthPicker(wrapper) {
+    const input = wrapper.querySelector("input");
+
+    if (!input) {
+        return;
+    }
+
+    input.setAttribute("readonly", "readonly");
+    input.setAttribute("placeholder", "MM/YYYY");
+
+    const parsed = parseAnyDateValue(input.value);
+
+    if (parsed) {
+        input.value = formatDisplayMonthYear(parsed.year, parsed.month);
+        setPanelYear(wrapper, parsed.year);
+    } else {
+        setPanelYear(wrapper, getCurrentYear());
+    }
+
+    input.addEventListener("click", function() {
+        openPickerWrapper(wrapper);
+    });
+}
+
+function openPickerWrapper(wrapper) {
+    document.querySelectorAll(".month-picker").forEach(function(item) {
+        if (item !== wrapper) {
+            item.classList.remove("open");
+        }
+    });
+
+    const input = wrapper.querySelector("input");
+    const parsed = parseAnyDateValue(input.value);
+
+    if (parsed) {
+        setPanelYear(wrapper, parsed.year);
+    } else {
+        setPanelYear(wrapper, getCurrentYear());
+    }
+
+    wrapper.classList.toggle("open");
+}
+
+function openCustomMonthPicker(button) {
+    const wrapper = button.closest(".month-picker");
+
+    if (wrapper) {
+        openPickerWrapper(wrapper);
+    }
+}
+
+function changePickerYear(button, direction) {
+    const wrapper = button.closest(".month-picker");
+    const currentYear = parseInt(wrapper.dataset.pickerYear || getCurrentYear(), 10);
+    setPanelYear(wrapper, currentYear + direction);
+}
+
+function convertDisplayToSubmitValue(input, dateType) {
+    const parsed = parseAnyDateValue(input.value);
+
+    if (!parsed) {
+        return;
+    }
+
+    let day = "01";
+
+    if (dateType === "expiry") {
+        day = pad2(lastDateOfMonth(parsed.year, parsed.month));
+    }
+
+    input.value = parsed.year + "-" + pad2(parsed.month) + "-" + day;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".month-picker").forEach(function(wrapper) {
+        initMonthPicker(wrapper);
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest(".month-picker")) {
+            document.querySelectorAll(".month-picker").forEach(function(wrapper) {
+                wrapper.classList.remove("open");
+            });
+        }
+    });
+
+    const form = document.getElementById("warehouseReviewForm");
+
+    if (form) {
+        form.addEventListener("submit", function() {
+            document.querySelectorAll(".month-picker").forEach(function(wrapper) {
+                const input = wrapper.querySelector("input");
+                const dateType = wrapper.dataset.dateType;
+
+                if (input) {
+                    convertDisplayToSubmitValue(input, dateType);
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

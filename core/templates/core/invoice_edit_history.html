@@ -1,0 +1,413 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.top-card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.meta {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: #0f172a;
+    color: white;
+    padding: 10px 13px;
+    border-radius: 13px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.history-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+
+.history-head {
+    padding: 15px;
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.history-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.action-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 900;
+    height: fit-content;
+}
+
+.history-body {
+    padding: 14px;
+}
+
+.note-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    border-radius: 15px;
+    padding: 11px 12px;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.change-table-wrap {
+    overflow-x: auto;
+}
+
+.change-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+}
+
+.change-table th {
+    background: #f8fafc;
+    color: #334155;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 11px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.change-table td {
+    padding: 11px;
+    border-bottom: 1px solid #edf2f7;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+.change-table tr:last-child td {
+    border-bottom: none;
+}
+
+.change-table tr.changed-row {
+    background: #fcfffd;
+}
+
+.field-name {
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.old-value {
+    color: #b45309;
+    font-weight: 900;
+}
+
+.new-value {
+    color: #047857;
+    font-weight: 900;
+}
+
+.changed-badge {
+    display: inline-flex;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.same-badge {
+    display: inline-flex;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.mobile-change-list {
+    display: none;
+}
+
+.mobile-change-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 11px;
+    margin-bottom: 9px;
+}
+
+.mobile-change-box.changed-box {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.mobile-change-box h4 {
+    margin: 0 0 8px;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.mobile-values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.mobile-value {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 9px;
+}
+
+.mobile-value span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.mobile-value strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 900;
+    word-break: break-word;
+}
+
+.mobile-value.old strong {
+    color: #b45309;
+}
+
+.mobile-value.new strong {
+    color: #047857;
+}
+
+.empty-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+@media(max-width: 760px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card {
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .top-card h2 {
+        font-size: 21px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .history-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .action-badge {
+        width: fit-content;
+    }
+
+    .change-table-wrap {
+        display: none;
+    }
+
+    .mobile-change-list {
+        display: block;
+    }
+
+    .mobile-values {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div>
+            <h2>Invoice Edit History</h2>
+
+            <div class="meta">
+                Invoice: <b>{{ invoice.invoice_number }}</b><br>
+                Dealer: <b>{{ invoice.order.dealer.firm_name }}</b>
+            </div>
+        </div>
+
+        <a href="{% url 'dealer_invoice_list' %}" class="btn">
+            Back to Invoices
+        </a>
+    </div>
+
+    {% for h in history %}
+        <div class="history-card">
+            <div class="history-head">
+                <div>
+                    <h3>{{ h.action }}</h3>
+
+                    <div class="meta">
+                        Edited By:
+                        <b>{{ h.edited_by.get_full_name|default:h.edited_by.username }}</b><br>
+                        Date: {{ h.created_at|date:"d M Y, h:i A" }}
+                    </div>
+                </div>
+
+                <span class="action-badge">
+                    {% if h.changed_count %}
+                        {{ h.changed_count }} Changed
+                    {% else %}
+                        {{ h.formatted_changes|length }} Field{% if h.formatted_changes|length != 1 %}s{% endif %}
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="history-body">
+                {% if h.note %}
+                    <div class="note-box">
+                        {{ h.note }}
+                    </div>
+                {% endif %}
+
+                <div class="change-table-wrap">
+                    <table class="change-table">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Before</th>
+                                <th>After</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for c in h.formatted_changes %}
+                                <tr class="{% if c.changed %}changed-row{% endif %}">
+                                    <td class="field-name">{{ c.label }}</td>
+                                    <td class="old-value">{{ c.old }}</td>
+                                    <td class="new-value">{{ c.new }}</td>
+                                    <td>
+                                        {% if c.changed %}
+                                            <span class="changed-badge">Changed</span>
+                                        {% else %}
+                                            <span class="same-badge">Same</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">No field changes available.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mobile-change-list">
+                    {% for c in h.formatted_changes %}
+                        <div class="mobile-change-box {% if c.changed %}changed-box{% endif %}">
+                            <h4>{{ c.label }}</h4>
+
+                            <div class="mobile-values">
+                                <div class="mobile-value old">
+                                    <span>Before</span>
+                                    <strong>{{ c.old }}</strong>
+                                </div>
+
+                                <div class="mobile-value new">
+                                    <span>After</span>
+                                    <strong>{{ c.new }}</strong>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:8px;">
+                                {% if c.changed %}
+                                    <span class="changed-badge">Changed</span>
+                                {% else %}
+                                    <span class="same-badge">Same</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="mobile-change-box">
+                            No field changes available.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-card">
+            No history available.
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

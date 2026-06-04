@@ -1,0 +1,240 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.asset-page {
+    padding: 18px;
+}
+
+.asset-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.asset-head {
+    background: linear-gradient(135deg, #0f172a, #059669);
+    color: white;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.asset-head h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.asset-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.asset-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 15px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.asset-code {
+    display: inline-flex;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.asset-name {
+    margin-top: 10px;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.asset-meta {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-blue {
+    background: #2563eb;
+    color: white;
+}
+
+.card-actions {
+    margin-top: 12px;
+    display: grid;
+}
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.78);
+    padding: 18px;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal.open {
+    display: flex;
+}
+
+.modal-box {
+    width: min(95vw, 780px);
+    background: white;
+    border-radius: 24px;
+    padding: 14px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+}
+
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.modal-head strong {
+    font-size: 16px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.close-btn {
+    border: none;
+    background: #dc2626;
+    color: white;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.modal-img {
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 18px;
+    background: #0f172a;
+}
+
+@media(max-width: 900px) {
+    .asset-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 560px) {
+    .asset-page {
+        padding: 10px;
+    }
+
+    .asset-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="asset-page">
+    <div class="asset-wrap">
+        <div class="asset-head">
+            <h2>My Assigned Assets</h2>
+            <div style="font-weight:800;color:#d1fae5;margin-top:5px;">
+                Assets currently issued to you.
+            </div>
+        </div>
+
+        <div class="asset-grid">
+            {% for assignment in assignments %}
+                <div class="asset-card">
+                    <div class="asset-code">{{ assignment.asset.asset_code }}</div>
+
+                    <div class="asset-name">{{ assignment.asset.name }}</div>
+
+                    <div class="asset-meta">
+                        <strong>Category:</strong> {{ assignment.asset.category.name }}<br>
+                        {% if assignment.asset.brand %}
+                            <strong>Brand:</strong> {{ assignment.asset.brand }}<br>
+                        {% endif %}
+                        {% if assignment.asset.model_number %}
+                            <strong>Model:</strong> {{ assignment.asset.model_number }}<br>
+                        {% endif %}
+                        {% if assignment.asset.serial_number %}
+                            <strong>Serial:</strong> {{ assignment.asset.serial_number }}<br>
+                        {% endif %}
+                        <strong>Assigned On:</strong> {{ assignment.assigned_at|date:"d M Y, h:i A" }}<br>
+                        <strong>Given By:</strong> {{ assignment.assigned_by.get_full_name|default:assignment.assigned_by.username }}
+                    </div>
+
+                    <div class="card-actions">
+                        {% if assignment.handover_image %}
+                            <button type="button"
+                                    class="btn btn-blue"
+                                    onclick="openImageModal('{{ assignment.handover_image.url }}', '{{ assignment.asset.asset_code }}')">
+                                View Image
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="asset-card">
+                    No assets assigned to you.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="image-modal" id="imageModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <strong id="modalTitle">Asset Image</strong>
+            <button type="button" class="close-btn" onclick="closeImageModal()">Close</button>
+        </div>
+
+        <img src="" id="modalImage" class="modal-img" alt="Asset Image">
+    </div>
+</div>
+
+<script>
+function openImageModal(imageUrl, title) {
+    document.getElementById("modalImage").src = imageUrl;
+    document.getElementById("modalTitle").innerText = title + " - Handover Image";
+    document.getElementById("imageModal").classList.add("open");
+}
+
+function closeImageModal() {
+    document.getElementById("imageModal").classList.remove("open");
+    document.getElementById("modalImage").src = "";
+}
+</script>
+
+{% endblock %}

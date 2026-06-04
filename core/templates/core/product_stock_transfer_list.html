@@ -1,0 +1,109 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.st-page{padding:16px;max-width:1250px;margin:0 auto}
+.st-hero{background:linear-gradient(135deg,#07120d,#123020);color:#fff;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.st-hero h2{margin:0;font-size:28px;font-weight:900}
+.st-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.st-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.st-btn{border:0;text-decoration:none;background:#0f172a;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.st-btn.green{background:#16a34a}.st-btn.light{background:#f1f5f9;color:#0f172a}
+.st-card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.st-title{font-size:18px;font-weight:900;margin:0 0 12px;border-bottom:1px solid #e5e7eb;padding-bottom:10px;color:#0f172a}
+.st-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:18px}
+.st-table{width:100%;border-collapse:collapse;min-width:900px}
+.st-table th,.st-table td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.st-table th{background:#f8fafc;color:#334155;font-weight:900}
+.st-table td{font-weight:800;color:#0f172a}
+.st-stock{font-weight:900;color:#16a34a}
+.st-empty{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:18px;padding:24px;text-align:center;color:#64748b;font-weight:900}
+@media(max-width:650px){.st-page{padding:10px}.st-hero{padding:18px;border-radius:20px}.st-actions{display:grid;grid-template-columns:1fr}.st-btn{justify-content:center}}
+</style>
+
+<div class="st-page">
+    <div class="st-hero">
+        <h2>Stock Transfer</h2>
+        <p>Main Warehouse stock can be transferred to any other warehouse.</p>
+        <div class="st-actions">
+            <a href="{% url 'product_stock_transfer_create' %}" class="st-btn green">+ Transfer Stock</a>
+            <a href="{% url 'product_list' %}" class="st-btn light">Products</a>
+        </div>
+    </div>
+
+    <div class="st-card">
+        <h3 class="st-title">Main Warehouse Current Stock</h3>
+
+        {% if main %}
+            {% if main_packs %}
+                <div class="st-table-wrap">
+                    <table class="st-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Pack</th>
+                                <th>Packing</th>
+                                <th>Main Warehouse Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pack in main_packs %}
+                                <tr>
+                                    <td>{{ pack.product.name }}</td>
+                                    <td>{{ pack.pack_size }} {{ pack.unit }}</td>
+                                    <td>{{ pack.units_per_box }} in 1 {{ pack.packing_type }}</td>
+                                    <td class="st-stock">{{ pack.stock_boxes }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="st-empty">No stock available in Main Warehouse.</div>
+            {% endif %}
+        {% else %}
+            <div class="st-empty">Please create one warehouse first. Name it Main Warehouse.</div>
+        {% endif %}
+    </div>
+
+    <div class="st-card">
+        <h3 class="st-title">Recent Stock Transfers</h3>
+
+        {% if transfers %}
+            <div class="st-table-wrap">
+                <table class="st-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Transferred Qty</th>
+                            <th>Main Before</th>
+                            <th>Main After</th>
+                            <th>By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transfer in transfers %}
+                            <tr>
+                                <td>{{ transfer.created_at|date:"d/m/Y h:i A" }}</td>
+                                <td>{{ transfer.product.name }}</td>
+                                <td>{{ transfer.from_warehouse.name }}</td>
+                                <td>{{ transfer.to_warehouse.name }}</td>
+                                <td>{{ transfer.quantity_boxes }}</td>
+                                <td>{{ transfer.before_main_stock }}</td>
+                                <td class="st-stock">{{ transfer.after_main_stock }}</td>
+                                <td>{{ transfer.created_by|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="st-empty">No transfer history yet.</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

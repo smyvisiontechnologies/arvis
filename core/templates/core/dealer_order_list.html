@@ -1,0 +1,727 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 20px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.top h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.top p {
+    color: #64748b;
+    margin: 5px 0 0;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.order-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+.order-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+}
+
+.order-card-head {
+    background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.order-no {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1f2937;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.order-no span {
+    color: #6366f1;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.status-pill.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-pill.blue {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-pill.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.status-pill.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status-pill.gray {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.status-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.order-body {
+    padding: 20px;
+}
+
+.meta {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.tracker-box {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 18px;
+}
+
+.tracker-step {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    position: relative;
+    padding-bottom: 16px;
+}
+
+.tracker-step:last-child {
+    padding-bottom: 0;
+}
+
+.tracker-step::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 34px;
+    bottom: 0;
+    width: 2px;
+    background: #cbd5e1;
+}
+
+.tracker-step:last-child::before {
+    display: none;
+}
+
+.tracker-step.done::before {
+    background: #16a34a;
+}
+
+.step-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 900;
+    z-index: 2;
+}
+
+.tracker-step.done .step-icon {
+    background: #16a34a;
+}
+
+.tracker-step.active .step-icon {
+    background: #2563eb;
+}
+
+.tracker-step.rejected .step-icon {
+    background: #dc2626;
+}
+
+.step-title {
+    color: #1f2937;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.step-text {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 3px;
+    line-height: 1.35;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.summary-box {
+    background: #f8fafc;
+    border-radius: 15px;
+    padding: 14px;
+    text-align: center;
+}
+
+.summary-box span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.summary-box strong {
+    display: block;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+.reject-box {
+    margin-top: 14px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 10px 13px;
+    border-radius: 13px;
+    font-weight: 900;
+    background: #07120d;
+    color: white;
+    font-size: 13px;
+}
+
+.btn.green {
+    background: #16a34a;
+}
+
+.btn.red {
+    background: #dc2626;
+}
+
+.btn.blue {
+    background: #00a8e8;
+}
+
+.empty {
+    background: white;
+    padding: 28px;
+    border-radius: 20px;
+    color: #64748b;
+    border: 1px solid #e5e7eb;
+    font-weight: 700;
+}
+
+@media(max-width: 800px) {
+    .page {
+        padding: 12px;
+    }
+
+    .order-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .order-card-head {
+        padding: 15px;
+    }
+
+    .order-no {
+        font-size: 16px;
+    }
+
+    .order-no span {
+        font-size: 22px;
+    }
+
+    .order-body {
+        padding: 15px;
+    }
+
+    .tracker-box {
+        padding: 15px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        text-align: center;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="top">
+        <div>
+            <h2>Orders</h2>
+            <p>
+                {% if role == "DEALER" %}
+                    Track your order with simple status: Pending, In Transit and Delivered.
+                {% else %}
+                    Track order status, invoice, dispatch and delivery.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="order-grid">
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-card-head">
+                    <h3 class="order-no">
+                        <span>#</span>
+                        ORD-{{ order.placed_at|date:"Ymd" }}{{ order.id }}
+                    </h3>
+
+                    {% if role == "DEALER" %}
+                        {% if order.status == "DELIVERED" %}
+                            <div class="status-pill green">
+                                <span class="status-dot">✓</span>
+                                DELIVERED
+                            </div>
+                        {% elif order.status == "REJECTED" %}
+                            <div class="status-pill red">
+                                <span class="status-dot">×</span>
+                                REJECTED
+                            </div>
+                        {% elif order.status == "DISPATCHED" %}
+                            <div class="status-pill orange">
+                                <span class="status-dot">✓</span>
+                                IN TRANSIT
+                            </div>
+                        {% else %}
+                            <div class="status-pill gray">
+                                <span class="status-dot">•</span>
+                                PENDING
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        {% if order.status == "DELIVERED" %}
+                            <div class="status-pill green">
+                                <span class="status-dot">✓</span>
+                                DELIVERED
+                            </div>
+                        {% elif order.status == "REJECTED" %}
+                            <div class="status-pill red">
+                                <span class="status-dot">×</span>
+                                REJECTED
+                            </div>
+                        {% elif order.status == "DISPATCHED" %}
+                            <div class="status-pill orange">
+                                <span class="status-dot">✓</span>
+                                DISPATCHED
+                            </div>
+                        {% elif order.status == "DISPATCH_PENDING" %}
+                            <div class="status-pill orange">
+                                <span class="status-dot">•</span>
+                                DISPATCH PENDING
+                            </div>
+                        {% elif order.status == "ACCOUNTANT_INVOICE_REVIEW" %}
+                            <div class="status-pill blue">
+                                <span class="status-dot">•</span>
+                                INVOICE REVIEW
+                            </div>
+                        {% elif order.status == "WAREHOUSE_REVIEW" %}
+                            <div class="status-pill blue">
+                                <span class="status-dot">•</span>
+                                WAREHOUSE REVIEW
+                            </div>
+                        {% elif order.status == "ASM_APPROVAL" %}
+                            <div class="status-pill blue">
+                                <span class="status-dot">•</span>
+                                ASM APPROVAL
+                            </div>
+                        {% elif order.status == "SALES_APPROVAL" %}
+                            <div class="status-pill blue">
+                                <span class="status-dot">•</span>
+                                SALES APPROVAL
+                            </div>
+                        {% elif order.status == "ACCOUNTANT_ORDER_APPROVAL" %}
+                            <div class="status-pill blue">
+                                <span class="status-dot">•</span>
+                                ACCOUNTANT APPROVAL
+                            </div>
+                        {% else %}
+                            <div class="status-pill gray">
+                                <span class="status-dot">•</span>
+                                PROCESSING
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="order-body">
+                    <div class="meta">
+                        Dealer: <b>{{ order.dealer.firm_name }}</b><br>
+                        Placed: {{ order.placed_at|date:"d M Y, h:i A" }}
+
+                        {% if role != "DEALER" %}
+                            <br>Flag: {{ order.get_dealer_flag_display }}
+
+                            {% if order.invoice %}
+                                <br>Invoice: <b>{{ order.invoice.invoice_number }}</b>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% if role == "DEALER" %}
+                        <div class="tracker-box">
+                            <div class="tracker-step done">
+                                <div class="step-icon">✓</div>
+                                <div>
+                                    <div class="step-title">Order Placed</div>
+                                    <div class="step-text">Your order has been placed successfully.</div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.status == 'REJECTED' %}rejected{% elif order.status == 'DISPATCHED' or order.status == 'DELIVERED' or order.dispatched_at or order.delivered_at %}done{% else %}active{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.status == "REJECTED" %}
+                                        ×
+                                    {% elif order.status == "DISPATCHED" or order.status == "DELIVERED" or order.dispatched_at or order.delivered_at %}
+                                        ✓
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">
+                                        {% if order.status == "REJECTED" %}
+                                            Rejected
+                                        {% else %}
+                                            Pending
+                                        {% endif %}
+                                    </div>
+                                    <div class="step-text">
+                                        {% if order.status == "REJECTED" %}
+                                            Your order has been rejected.
+                                        {% elif order.status == "DISPATCHED" or order.status == "DELIVERED" or order.dispatched_at or order.delivered_at %}
+                                            Your order is ready and moved to transport.
+                                        {% else %}
+                                            Your order is under company process.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.status == 'DELIVERED' or order.delivered_at %}done{% elif order.status == 'DISPATCHED' or order.dispatched_at %}active{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.status == "DELIVERED" or order.delivered_at %}
+                                        ✓
+                                    {% elif order.status == "DISPATCHED" or order.dispatched_at %}
+                                        •
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">In Transit</div>
+                                    <div class="step-text">
+                                        {% if order.status == "DELIVERED" or order.delivered_at %}
+                                            Transport completed.
+                                        {% elif order.status == "DISPATCHED" or order.dispatched_at %}
+                                            Your order is on the way.
+                                        {% else %}
+                                            Starts after dispatch.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.status == 'DELIVERED' or order.delivered_at %}done{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.status == "DELIVERED" or order.delivered_at %}
+                                        ✓
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">Delivered</div>
+                                    <div class="step-text">
+                                        {% if order.status == "DELIVERED" or order.delivered_at %}
+                                            Order delivered successfully.
+                                        {% else %}
+                                            Delivery pending.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="tracker-box">
+                            <div class="tracker-step done">
+                                <div class="step-icon">✓</div>
+                                <div>
+                                    <div class="step-title">Order Placed</div>
+                                    <div class="step-text">Order has been placed successfully.</div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.status == 'REJECTED' %}rejected{% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}done{% else %}active{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.status == "REJECTED" %}
+                                        ×
+                                    {% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}
+                                        ✓
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">Processing</div>
+                                    <div class="step-text">
+                                        {% if order.status == "REJECTED" %}
+                                            Order has been rejected.
+                                        {% elif order.invoice_released_at or order.dispatched_at or order.delivered_at %}
+                                            Order processing completed.
+                                        {% else %}
+                                            Order is being processed.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.dispatched_at or order.delivered_at %}done{% elif order.status == 'DISPATCH_PENDING' %}active{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.dispatched_at or order.delivered_at %}
+                                        ✓
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">Dispatched</div>
+                                    <div class="step-text">
+                                        {% if order.dispatched_at %}
+                                            Order has been dispatched.
+                                        {% elif order.status == "DISPATCH_PENDING" %}
+                                            Dispatch is pending from warehouse.
+                                        {% else %}
+                                            Waiting for dispatch.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step {% if order.delivered_at %}done{% elif order.status == 'DISPATCHED' %}active{% endif %}">
+                                <div class="step-icon">
+                                    {% if order.delivered_at %}
+                                        ✓
+                                    {% else %}
+                                        •
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="step-title">Delivered</div>
+                                    <div class="step-text">
+                                        {% if order.delivered_at %}
+                                            Order delivered successfully.
+                                        {% elif order.status == "DISPATCHED" %}
+                                            Waiting for dealer delivery acceptance.
+                                        {% else %}
+                                            Delivery pending.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if order.status == "REJECTED" %}
+                        <div class="reject-box">
+                            Rejected Reason:
+                            {{ order.rejection_reason|default:"No reason added." }}
+                        </div>
+                    {% endif %}
+
+                    <div class="summary-grid">
+                        <div class="summary-box">
+                            <span>Total Amount</span>
+                            <strong>₹{{ order.total_amount }}</strong>
+                        </div>
+
+                        <div class="summary-box">
+                            <span>Current Status</span>
+                            <strong>
+                                {% if role == "DEALER" %}
+                                    {% if order.status == "DELIVERED" %}
+                                        Delivered
+                                    {% elif order.status == "REJECTED" %}
+                                        Rejected
+                                    {% elif order.status == "DISPATCHED" %}
+                                        In Transit
+                                    {% else %}
+                                        Pending
+                                    {% endif %}
+                                {% else %}
+                                    {{ order.get_status_display }}
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <a href="{% url 'dealer_order_detail' order.id %}" class="btn blue">
+                            View Full Details
+                        </a>
+
+                        {% if role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
+                            {% if order.status == "SALES_APPROVAL" and order.concerned_sales_officer == request.user %}
+                                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">Approve</a>
+                                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">Reject</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "ASM" %}
+                            {% if order.status == "ASM_APPROVAL" and order.concerned_asm == request.user %}
+                                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">Approve</a>
+                                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">Reject</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "REGIONAL_MANAGER" %}
+                            {% if order.status == "RSM_APPROVAL" and order.concerned_rsm == request.user %}
+                                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">Approve</a>
+                                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">Reject</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "ACCOUNTANT" %}
+                            {% if order.status == "ACCOUNTANT_ORDER_APPROVAL" %}
+                                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">Approve</a>
+                                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">Reject</a>
+                            {% endif %}
+
+                            {% if order.status == "ACCOUNTANT_INVOICE_REVIEW" %}
+                                <a href="{% url 'accountant_invoice_review' order.id %}" class="btn green">Invoice Review</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "WAREHOUSE_MANAGER" %}
+                            {% if order.status == "WAREHOUSE_REVIEW" %}
+                                <a href="{% url 'warehouse_order_review' order.id %}" class="btn green">Warehouse Review</a>
+                            {% endif %}
+
+                            {% if order.status == "DISPATCH_PENDING" %}
+                                <a href="{% url 'warehouse_dispatch_order' order.id %}" class="btn green">Dispatch</a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "DEALER" %}
+                            {% if order.status == "DISPATCHED" %}
+                                <a href="{% url 'dealer_accept_delivery' order.id %}" class="btn green">
+                                    Accept Delivery
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if role == "ADMIN" %}
+                            {% if order.status == "SALES_APPROVAL" or order.status == "ASM_APPROVAL" or order.status == "RSM_APPROVAL" or order.status == "ACCOUNTANT_ORDER_APPROVAL" %}
+                                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">Approve</a>
+                                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">Reject</a>
+                            {% endif %}
+
+                            {% if order.status == "WAREHOUSE_REVIEW" %}
+                                <a href="{% url 'warehouse_order_review' order.id %}" class="btn green">Warehouse Review</a>
+                            {% endif %}
+
+                            {% if order.status == "ACCOUNTANT_INVOICE_REVIEW" %}
+                                <a href="{% url 'accountant_invoice_review' order.id %}" class="btn green">Invoice Review</a>
+                            {% endif %}
+
+                            {% if order.status == "DISPATCH_PENDING" %}
+                                <a href="{% url 'warehouse_dispatch_order' order.id %}" class="btn green">Dispatch</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty">
+                No orders found.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

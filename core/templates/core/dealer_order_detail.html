@@ -1,0 +1,894 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 20px;
+}
+
+.order-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+    margin-bottom: 18px;
+}
+
+.order-card-head {
+    background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.order-no {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1f2937;
+    font-size: 22px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.order-no span {
+    color: #6366f1;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.status-pill.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-pill.blue {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-pill.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.status-pill.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status-pill.gray {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.status-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.order-body {
+    padding: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 13px;
+}
+
+.info-box span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.info-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.tracker-box {
+    background: #f8fafc;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 18px;
+}
+
+.tracker-title {
+    margin: 0 0 15px;
+    font-size: 17px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.tracker-step {
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    gap: 13px;
+    position: relative;
+    padding-bottom: 18px;
+}
+
+.tracker-step:last-child {
+    padding-bottom: 0;
+}
+
+.tracker-step::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 38px;
+    bottom: 0;
+    width: 2px;
+    background: #cbd5e1;
+}
+
+.tracker-step:last-child::before {
+    display: none;
+}
+
+.tracker-step.done::before {
+    background: #16a34a;
+}
+
+.step-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    z-index: 2;
+}
+
+.tracker-step.done .step-icon {
+    background: #16a34a;
+}
+
+.tracker-step.active .step-icon {
+    background: #2563eb;
+}
+
+.tracker-step.rejected .step-icon {
+    background: #dc2626;
+}
+
+.step-title {
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.step-text {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+.reject-box {
+    margin-top: 14px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 16px;
+}
+
+.card h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+/* EASY ITEM CARDS - NO TABLE */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.item-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.item-top {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    gap: 12px;
+    padding: 13px;
+    align-items: center;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.item-img {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ecfdf5, #eff6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.item-letter {
+    font-size: 28px;
+    font-weight: 900;
+    color: #16a34a;
+}
+
+.item-name {
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.item-pack {
+    display: inline-flex;
+    margin-top: 6px;
+    background: #dcfce7;
+    color: #15803d;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.item-details {
+    padding: 13px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.simple-box {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    padding: 12px;
+}
+
+.simple-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.simple-box strong {
+    display: block;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+    margin-top: 5px;
+}
+
+.simple-box.amount-box {
+    grid-column: 1 / -1;
+    background: #07120d;
+    color: white;
+}
+
+.simple-box.amount-box span {
+    color: #cbd5e1;
+}
+
+.simple-box.amount-box strong {
+    color: white;
+    font-size: 20px;
+}
+
+.staff-details {
+    grid-column: 1 / -1;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 15px;
+    padding: 12px;
+}
+
+.staff-details-title {
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.staff-box {
+    background: white;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.staff-box span {
+    display: block;
+    color: #92400e;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.staff-box strong {
+    display: block;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 3px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.total-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 14px 18px;
+    min-width: 240px;
+}
+
+.total-box span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.total-box strong {
+    display: block;
+    color: #07120d;
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 10px 13px;
+    border-radius: 13px;
+    font-weight: 900;
+    background: #07120d;
+    color: white;
+    font-size: 13px;
+}
+
+.btn.green { background:#16a34a; }
+.btn.red { background:#dc2626; }
+.btn.blue { background:#00a8e8; }
+.btn.gold { background:#b9792c; }
+
+@media(max-width:700px){
+    .page {
+        padding: 12px;
+    }
+
+    .order-card-head {
+        padding: 15px;
+    }
+
+    .order-no {
+        font-size: 17px;
+    }
+
+    .order-no span {
+        font-size: 24px;
+    }
+
+    .order-body {
+        padding: 15px;
+    }
+
+    .tracker-box {
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .tracker-step {
+        grid-template-columns: 34px 1fr;
+        gap: 11px;
+    }
+
+    .step-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .tracker-step::before {
+        left: 16px;
+        top: 34px;
+    }
+
+    .step-title {
+        font-size: 14px;
+    }
+
+    .step-text {
+        font-size: 12px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .items-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .item-top {
+        grid-template-columns: 66px 1fr;
+        padding: 11px;
+    }
+
+    .item-img {
+        width: 66px;
+        height: 66px;
+        border-radius: 14px;
+    }
+
+    .item-name {
+        font-size: 15px;
+    }
+
+    .item-details {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 11px;
+    }
+
+    .simple-box {
+        padding: 10px;
+    }
+
+    .simple-box span {
+        font-size: 10px;
+    }
+
+    .simple-box strong {
+        font-size: 14px;
+    }
+
+    .simple-box.amount-box strong {
+        font-size: 18px;
+    }
+
+    .staff-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        text-align: center;
+    }
+
+    .total-row {
+        justify-content: stretch;
+    }
+
+    .total-box {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="order-card">
+        <div class="order-card-head">
+            <h2 class="order-no">
+                <span>#</span>
+                ORD-{{ order.placed_at|date:"Ymd" }}{{ order.id }}
+            </h2>
+
+            {% if order.status == "DELIVERED" %}
+                <div class="status-pill green">
+                    <span class="status-dot">✓</span>
+                    DELIVERED
+                </div>
+            {% elif order.status == "REJECTED" %}
+                <div class="status-pill red">
+                    <span class="status-dot">×</span>
+                    REJECTED
+                </div>
+            {% elif order.status == "DISPATCHED" %}
+                <div class="status-pill orange">
+                    <span class="status-dot">✓</span>
+                    DISPATCHED
+                </div>
+            {% elif order.status == "DISPATCH_PENDING" %}
+                <div class="status-pill orange">
+                    <span class="status-dot">•</span>
+                    DISPATCH PENDING
+                </div>
+            {% elif order.status == "ACCOUNTANT_INVOICE_REVIEW" %}
+                <div class="status-pill blue">
+                    <span class="status-dot">•</span>
+                    INVOICE REVIEW
+                </div>
+            {% elif order.status == "WAREHOUSE_REVIEW" %}
+                <div class="status-pill blue">
+                    <span class="status-dot">•</span>
+                    WAREHOUSE REVIEW
+                </div>
+            {% else %}
+                <div class="status-pill gray">
+                    <span class="status-dot">•</span>
+                    PROCESSING
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="order-body">
+            <div class="info-grid">
+                <div class="info-box">
+                    <span>Dealer</span>
+                    <strong>{{ order.dealer.firm_name }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Placed Date</span>
+                    <strong>{{ order.placed_at|date:"d M Y, h:i A" }}</strong>
+                </div>
+
+                {% if role != "DEALER" %}
+                    <div class="info-box">
+                        <span>Dealer Flag</span>
+                        <strong>{{ order.get_dealer_flag_display }}</strong>
+                    </div>
+                {% endif %}
+
+                {% if order.invoice %}
+                    <div class="info-box">
+                        <span>Invoice No.</span>
+                        <strong>{{ order.invoice.invoice_number }}</strong>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div class="tracker-box">
+                <h3 class="tracker-title">Order Tracking</h3>
+
+                <div class="tracker-step done">
+                    <div class="step-icon">✓</div>
+                    <div>
+                        <div class="step-title">Order Placed</div>
+                        <div class="step-text">
+                            Your order has been placed successfully.
+                            {% if order.placed_at %}
+                                <br>{{ order.placed_at|date:"d M Y, h:i A" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tracker-step {% if order.status == 'REJECTED' %}rejected{% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}done{% else %}active{% endif %}">
+                    <div class="step-icon">
+                        {% if order.status == "REJECTED" %}
+                            ×
+                        {% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}
+                            ✓
+                        {% else %}
+                            •
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <div class="step-title">Processing</div>
+                        <div class="step-text">
+                            {% if order.status == "REJECTED" %}
+                                Order has been rejected.
+                            {% elif order.invoice_released_at or order.dispatched_at or order.delivered_at %}
+                                Order processing completed.
+                            {% else %}
+                                Your order is being processed.
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tracker-step {% if order.dispatched_at or order.delivered_at %}done{% elif order.status == 'DISPATCH_PENDING' %}active{% endif %}">
+                    <div class="step-icon">
+                        {% if order.dispatched_at or order.delivered_at %}✓{% else %}•{% endif %}
+                    </div>
+
+                    <div>
+                        <div class="step-title">Dispatched</div>
+                        <div class="step-text">
+                            {% if order.dispatched_at %}
+                                Your order has been dispatched.
+                                <br>{{ order.dispatched_at|date:"d M Y, h:i A" }}
+                            {% elif order.status == "DISPATCH_PENDING" %}
+                                Dispatch is pending from warehouse.
+                            {% else %}
+                                Waiting for dispatch.
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tracker-step {% if order.delivered_at %}done{% elif order.status == 'DISPATCHED' %}active{% endif %}">
+                    <div class="step-icon">
+                        {% if order.delivered_at %}✓{% else %}•{% endif %}
+                    </div>
+
+                    <div>
+                        <div class="step-title">Delivered</div>
+                        <div class="step-text">
+                            {% if order.delivered_at %}
+                                Order delivered successfully.
+                                <br>{{ order.delivered_at|date:"d M Y, h:i A" }}
+                            {% elif order.status == "DISPATCHED" %}
+                                Waiting for dealer delivery acceptance.
+                            {% else %}
+                                Delivery pending.
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if order.status == "REJECTED" %}
+                    <div class="reject-box">
+                        Rejected Reason:
+                        {{ order.rejection_reason|default:"No reason added." }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Ordered Products</h3>
+
+        <div class="items-grid">
+            {% for item in order.items.all %}
+                <div class="item-card">
+                    <div class="item-top">
+                        <div class="item-img">
+                            {% if item.product_pack.product.image %}
+                                <img src="{{ item.product_pack.product.image.url }}" alt="{{ item.product_name }}">
+                            {% else %}
+                                <div class="item-letter">
+                                    {{ item.product_name|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <div class="item-name">{{ item.product_name }}</div>
+                            <div class="item-pack">{{ item.pack_label }}</div>
+                        </div>
+                    </div>
+
+                    <div class="item-details">
+                        <div class="simple-box">
+                            <span>No. of Boxes</span>
+                            <strong>{{ item.quantity_boxes }}</strong>
+                        </div>
+
+                        <div class="simple-box">
+                            <span>Total Quantity</span>
+                            <strong>{{ item.total_units }} {{ item.unit_name }}</strong>
+                        </div>
+
+                        <div class="simple-box">
+                            <span>Pack Size</span>
+                            <strong>{{ item.pack_label }}</strong>
+                        </div>
+
+                        <div class="simple-box">
+                            <span>Price</span>
+                            <strong>₹{{ item.price_per_unit }}</strong>
+                        </div>
+
+                        <div class="simple-box amount-box">
+                            <span>Total Amount</span>
+                            <strong>₹{{ item.total_amount }}</strong>
+                        </div>
+
+                        {% if role != "DEALER" %}
+                            <div class="staff-details">
+                                <div class="staff-details-title">
+                                    Invoice / Warehouse Details
+                                </div>
+
+                                <div class="staff-grid">
+                                    <div class="staff-box">
+                                        <span>HSN</span>
+                                        <strong>{{ item.hsn_code|default:"-" }}</strong>
+                                    </div>
+
+                                    <div class="staff-box">
+                                        <span>Batch</span>
+                                        <strong>{{ item.batch_no|default:"-" }}</strong>
+                                    </div>
+
+                                    <div class="staff-box">
+                                        <span>MFG</span>
+                                        <strong>{{ item.mfg_date|default:"-" }}</strong>
+                                    </div>
+
+                                    <div class="staff-box">
+                                        <span>EXP</span>
+                                        <strong>{{ item.expiry_date|default:"-" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="item-card">
+                    <div class="item-details">
+                        <div class="simple-box amount-box">
+                            <span>No products found</span>
+                            <strong>-</strong>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="total-row">
+            <div class="total-box">
+                <span>Order Total</span>
+                <strong>₹{{ order.total_amount }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Actions</h3>
+
+        <div class="actions">
+            <a href="{% url 'dealer_order_list' %}" class="btn blue">
+                Back
+            </a>
+
+            {% if permissions.can_approve %}
+                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">
+                    Approve
+                </a>
+            {% endif %}
+
+            {% if permissions.can_reject %}
+                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">
+                    Reject
+                </a>
+            {% endif %}
+
+            {% if permissions.can_warehouse_review %}
+                <a href="{% url 'warehouse_order_review' order.id %}" class="btn green">
+                    Warehouse Review
+                </a>
+            {% endif %}
+
+            {% if permissions.can_accountant_invoice_review %}
+                <a href="{% url 'accountant_invoice_review' order.id %}" class="btn green">
+                    Invoice Review
+                </a>
+            {% endif %}
+
+            {% if permissions.can_dispatch %}
+                <a href="{% url 'warehouse_dispatch_order' order.id %}" class="btn green">
+                    Dispatch Order
+                </a>
+            {% endif %}
+
+            {% if permissions.can_accept_delivery %}
+                <a href="{% url 'dealer_accept_delivery' order.id %}" class="btn green">
+                    Accept Delivery
+                </a>
+            {% endif %}
+
+            {% if order.invoice %}
+                {% if permissions.can_view_dealer_copy %}
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'DEALER' %}" class="btn">
+                        Dealer Copy
+                    </a>
+                {% endif %}
+
+                {% if permissions.can_view_company_copy %}
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'COMPANY' %}" class="btn green">
+                        Company Copy
+                    </a>
+                {% endif %}
+
+                {% if permissions.can_view_transporter_copy %}
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'TRANSPORTER' %}" class="btn gold">
+                        Transporter Copy
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

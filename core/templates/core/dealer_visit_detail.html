@@ -1,0 +1,367 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.visit-detail-page {
+    padding: 18px;
+}
+
+.visit-wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.visit-hero {
+    background:
+        radial-gradient(circle at top right, rgba(37,99,235,.18), transparent 34%),
+        linear-gradient(135deg, #0f172a, #1d4ed8);
+    color: white;
+    border-radius: 26px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 18px 42px rgba(15,23,42,.20);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.visit-hero h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 1000;
+    letter-spacing: -.4px;
+}
+
+.visit-hero p {
+    margin: 6px 0 0;
+    color: #dbeafe;
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-light {
+    background: white;
+    color: #0f172a;
+}
+
+.btn-dark {
+    background: #0f172a;
+    color: white;
+}
+
+.btn-blue {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-green {
+    background: #059669;
+    color: white;
+}
+
+.main-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 14px 34px rgba(15,23,42,.09);
+}
+
+.image-box {
+    background: #020617;
+    padding: 12px;
+}
+
+.visit-img {
+    width: 100%;
+    max-height: 760px;
+    object-fit: contain;
+    display: block;
+    border-radius: 18px;
+    background: #020617;
+}
+
+.body {
+    padding: 18px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 14px;
+    color: #334155;
+    font-weight: 850;
+    line-height: 1.55;
+}
+
+.info-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 1000;
+    margin-bottom: 8px;
+}
+
+.info-title svg {
+    width: 20px;
+    height: 20px;
+    color: #2563eb;
+}
+
+.info b {
+    color: #0f172a;
+}
+
+.note-box {
+    margin-top: 12px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #047857;
+    border-radius: 18px;
+    padding: 14px;
+    font-weight: 900;
+    line-height: 1.5;
+}
+
+.footer-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media(max-width: 760px) {
+    .visit-detail-page {
+        padding: 10px;
+    }
+
+    .visit-hero {
+        border-radius: 22px;
+    }
+
+    .visit-hero h2 {
+        font-size: 22px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn,
+    .btn-row,
+    .footer-actions {
+        width: 100%;
+    }
+
+    .btn-row,
+    .footer-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .body {
+        padding: 14px;
+    }
+}
+</style>
+
+<div class="visit-detail-page">
+    <div class="visit-wrap">
+
+        <div class="visit-hero">
+            <div>
+                <h2>{{ visit.dealer.firm_name }}</h2>
+                <p>
+                    Dealer visit proof with photo, GPS location, date, reason and sales officer details.
+                </p>
+            </div>
+
+            <div class="btn-row">
+                {% if visit.stamped_image %}
+                    <a href="{{ visit.stamped_image.url }}" target="_blank" class="btn btn-light">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M15 10l4.5-4.5M19.5 5.5H15M19.5 5.5V10"/>
+                            <path stroke-width="2" d="M14 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+                        </svg>
+                        Open Photo
+                    </a>
+                {% elif visit.visit_image %}
+                    <a href="{{ visit.visit_image.url }}" target="_blank" class="btn btn-light">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M15 10l4.5-4.5M19.5 5.5H15M19.5 5.5V10"/>
+                            <path stroke-width="2" d="M14 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+                        </svg>
+                        Open Photo
+                    </a>
+                {% endif %}
+
+                {% if visit.latitude and visit.longitude %}
+                    <a href="https://www.google.com/maps?q={{ visit.latitude }},{{ visit.longitude }}"
+                       target="_blank"
+                       class="btn btn-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
+                            <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
+                        </svg>
+                        View Map
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="image-box">
+                {% if visit.stamped_image %}
+                    <img src="{{ visit.stamped_image.url }}" class="visit-img" alt="Dealer Visit Stamped Photo">
+                {% elif visit.visit_image %}
+                    <img src="{{ visit.visit_image.url }}" class="visit-img" alt="Dealer Visit Photo">
+                {% else %}
+                    <div style="color:white;text-align:center;padding:60px;font-weight:900;">
+                        No visit image available.
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="body">
+                <div class="info-grid">
+
+                    <div class="info">
+                        <div class="info-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
+                                <path stroke-width="2" d="M5 5h14v16H5z"/>
+                            </svg>
+                            Visit Details
+                        </div>
+
+                        Date: <b>{{ visit.visit_date|date:"d M Y" }}</b><br>
+                        Time: <b>{{ visit.visit_time|time:"h:i A" }}</b><br>
+                        Reason: <b>{{ visit.get_reason_display }}</b><br>
+                        Note: <b>{{ visit.note|default:"-" }}</b>
+                    </div>
+
+                    <div class="info">
+                        <div class="info-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+                                <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
+                            </svg>
+                            Sales Officer
+                        </div>
+
+                        Name:
+                        <b>{{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}</b><br>
+
+                        Role:
+                        <b>
+                            {% if visit.sales_officer.profile %}
+                                {{ visit.sales_officer.profile.get_role_display }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </b><br>
+
+                        Email:
+                        <b>{{ visit.sales_officer.email|default:"-" }}</b>
+                    </div>
+
+                    <div class="info">
+                        <div class="info-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M3 21h18"/>
+                                <path stroke-width="2" d="M5 21V7l7-4 7 4v14"/>
+                                <path stroke-width="2" d="M9 21v-6h6v6"/>
+                            </svg>
+                            Dealer Details
+                        </div>
+
+                        Firm: <b>{{ visit.dealer.firm_name }}</b><br>
+                        Owner: <b>{{ visit.dealer.owner_name }}</b><br>
+                        Phone: <b>{{ visit.dealer.phone }}</b><br>
+                        GST: <b>{{ visit.dealer.gst_number|default:"-" }}</b>
+                    </div>
+
+                    <div class="info">
+                        <div class="info-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
+                                <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
+                            </svg>
+                            Location
+                        </div>
+
+                        Latitude: <b>{{ visit.latitude }}</b><br>
+                        Longitude: <b>{{ visit.longitude }}</b><br>
+                        Address:
+                        <b>{{ visit.dealer.firm_address|default:visit.dealer.owner_address|default:"-" }}</b>
+                    </div>
+
+                </div>
+
+                <div class="note-box">
+                    This visit proof is saved with dealer details, location and captured photo for verification.
+                </div>
+
+                <div class="footer-actions">
+                    <a href="{% url 'dealer_visit_list' %}" class="btn btn-dark">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2.4" d="M15 18l-6-6 6-6"/>
+                        </svg>
+                        Back to Visits
+                    </a>
+
+                    {% if visit.latitude and visit.longitude %}
+                        <a href="https://www.google.com/maps?q={{ visit.latitude }},{{ visit.longitude }}"
+                           target="_blank"
+                           class="btn btn-blue">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
+                                <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
+                            </svg>
+                            Open GPS Location
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

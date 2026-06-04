@@ -1,0 +1,589 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.payslip-edit-page {
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.08), transparent 30%);
+}
+
+.payslip-edit-card {
+    max-width: 980px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 22px;
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+}
+
+.edit-header {
+    background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 32%),
+        linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.edit-header h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 1000;
+}
+
+.edit-header p {
+    margin: 7px 0 0;
+    color: #dbeafe;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.status-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.meta-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 13px;
+}
+
+.meta-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+}
+
+.meta-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 1000;
+    word-break: break-word;
+}
+
+.note-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 18px;
+    padding: 13px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.error-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 18px;
+    padding: 13px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.section-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: white;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.section-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 1000;
+}
+
+.section-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.section-pill {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 11px;
+    font-weight: 1000;
+    height: fit-content;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.field label {
+    display: block;
+    font-weight: 1000;
+    color: #334155;
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.form-control,
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 15px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 850;
+    outline: none;
+}
+
+.form-control:focus,
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.field textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.errorlist {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: #dc2626;
+    font-size: 12.5px;
+    font-weight: 850;
+}
+
+.help-text {
+    display: block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+.live-summary {
+    background:
+        radial-gradient(circle at top right, rgba(5, 150, 105, 0.12), transparent 30%),
+        #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.summary-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    padding: 13px;
+}
+
+.summary-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+}
+
+.summary-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 1000;
+}
+
+.summary-box.green strong {
+    color: #047857;
+}
+
+.summary-box.red strong {
+    color: #b91c1c;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+    border: none;
+    border-radius: 15px;
+    padding: 12px 16px;
+    color: white;
+    font-weight: 1000;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn.blue {
+    background: linear-gradient(135deg, #2563eb, #0f172a);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.20);
+}
+
+.btn.dark {
+    background: #0f172a;
+}
+
+.btn.light {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+@media(max-width: 860px) {
+    .meta-grid,
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 620px) {
+    .payslip-edit-page {
+        padding: 10px;
+    }
+
+    .payslip-edit-card {
+        padding: 14px;
+        border-radius: 22px;
+    }
+
+    .edit-header {
+        border-radius: 20px;
+        padding: 16px;
+    }
+
+    .edit-header h2 {
+        font-size: 22px;
+    }
+
+    .btn-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="payslip-edit-page">
+    <div class="payslip-edit-card">
+
+        <div class="edit-header">
+            <div>
+                <h2>{{ title }}</h2>
+                <p>
+                    Review employee salary, allowances, PF, insurance and deductions before releasing the payslip.
+                </p>
+            </div>
+
+            <div class="status-badge">
+                {{ payslip.status }}
+            </div>
+        </div>
+
+        <div class="meta-grid">
+            <div class="meta-box">
+                <span>Employee</span>
+                <strong>{{ payslip.employee.get_full_name|default:payslip.employee.username }}</strong>
+            </div>
+
+            <div class="meta-box">
+                <span>Payslip Month</span>
+                <strong>{{ payslip.month_name }} {{ payslip.year }}</strong>
+            </div>
+
+            <div class="meta-box">
+                <span>Payslip Number</span>
+                <strong>{{ payslip.payslip_number }}</strong>
+            </div>
+        </div>
+
+        <div class="note-box">
+            <b>Note:</b> This payslip contains salary deductions only. TA/DA, travel allowance,
+            public vehicle bills and field reimbursements are handled separately.
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="live-summary">
+                <div class="section-head" style="border-bottom:0;padding-bottom:0;margin-bottom:12px;">
+                    <div>
+                        <h3>Live Salary Summary</h3>
+                        <p>Auto preview based on entered values. Final amount is saved after submit.</p>
+                    </div>
+                    <span class="section-pill">Preview</span>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box green">
+                        <span>Gross Salary</span>
+                        <strong id="grossSalaryPreview">₹0.00</strong>
+                    </div>
+
+                    <div class="summary-box red">
+                        <span>Total Deductions</span>
+                        <strong id="deductionPreview">₹0.00</strong>
+                    </div>
+
+                    <div class="summary-box green">
+                        <span>Net Salary</span>
+                        <strong id="netSalaryPreview">₹0.00</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-head">
+                    <div>
+                        <h3>Earnings</h3>
+                        <p>Salary and allowance components payable to employee.</p>
+                    </div>
+                    <span class="section-pill">Credit</span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Basic Salary</label>
+                        {{ form.basic_salary }}
+                        {{ form.basic_salary.errors }}
+                        <span class="help-text">Monthly salary amount for this payslip.</span>
+                    </div>
+
+                    <div class="field">
+                        <label>Allowance Amount</label>
+                        {{ form.allowance_amount }}
+                        {{ form.allowance_amount.errors }}
+                        <span class="help-text">Any additional allowance for this month.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-head">
+                    <div>
+                        <h3>Deductions</h3>
+                        <p>Salary deductions including leave, PF, insurance and other deductions.</p>
+                    </div>
+                    <span class="section-pill">Debit</span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Leave Deduction</label>
+                        {{ form.leave_deduction_amount }}
+                        {{ form.leave_deduction_amount.errors }}
+                        <span class="help-text">Salary deduction for unpaid leaves / LOP.</span>
+                    </div>
+
+                    <div class="field">
+                        <label>PF Deduction</label>
+                        {{ form.pf_deduction_amount }}
+                        {{ form.pf_deduction_amount.errors }}
+                        <span class="help-text">Auto calculated from employee PF percentage, but can be adjusted before release.</span>
+                    </div>
+
+                    <div class="field">
+                        <label>Insurance Deduction</label>
+                        {{ form.insurance_deduction_amount }}
+                        {{ form.insurance_deduction_amount.errors }}
+                        <span class="help-text">Monthly insurance deduction if employee is linked to insurance.</span>
+                    </div>
+
+                    <div class="field">
+                        <label>Other Deduction</label>
+                        {{ form.other_deduction_amount }}
+                        {{ form.other_deduction_amount.errors }}
+                        <span class="help-text">Any additional salary deduction.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-head">
+                    <div>
+                        <h3>Remarks</h3>
+                        <p>Optional internal payroll remarks shown in payslip details.</p>
+                    </div>
+                    <span class="section-pill">Notes</span>
+                </div>
+
+                <div class="field">
+                    <label>Remarks</label>
+                    {{ form.remarks }}
+                    {{ form.remarks.errors }}
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <a href="{% url 'payslip_detail' payslip.id %}" class="btn light">
+                    Back
+                </a>
+
+                <button type="submit" class="btn blue">
+                    Save Payroll Review
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+function getNumberValue(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        return 0;
+    }
+
+    const value = parseFloat(element.value || "0");
+
+    if (isNaN(value)) {
+        return 0;
+    }
+
+    return value;
+}
+
+function formatCurrency(value) {
+    return "₹" + value.toFixed(2);
+}
+
+function updatePayslipPreview() {
+    const basic = getNumberValue("id_basic_salary");
+    const allowance = getNumberValue("id_allowance_amount");
+    const leaveDeduction = getNumberValue("id_leave_deduction_amount");
+    const pfDeduction = getNumberValue("id_pf_deduction_amount");
+    const insuranceDeduction = getNumberValue("id_insurance_deduction_amount");
+    const otherDeduction = getNumberValue("id_other_deduction_amount");
+
+    const gross = basic + allowance;
+    const totalDeduction = leaveDeduction + pfDeduction + insuranceDeduction + otherDeduction;
+    let net = gross - totalDeduction;
+
+    if (net < 0) {
+        net = 0;
+    }
+
+    const grossBox = document.getElementById("grossSalaryPreview");
+    const deductionBox = document.getElementById("deductionPreview");
+    const netBox = document.getElementById("netSalaryPreview");
+
+    if (grossBox) {
+        grossBox.textContent = formatCurrency(gross);
+    }
+
+    if (deductionBox) {
+        deductionBox.textContent = formatCurrency(totalDeduction);
+    }
+
+    if (netBox) {
+        netBox.textContent = formatCurrency(net);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    [
+        "id_basic_salary",
+        "id_allowance_amount",
+        "id_leave_deduction_amount",
+        "id_pf_deduction_amount",
+        "id_insurance_deduction_amount",
+        "id_other_deduction_amount"
+    ].forEach(function(id) {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.addEventListener("input", updatePayslipPreview);
+        }
+    });
+
+    updatePayslipPreview();
+});
+</script>
+
+{% endblock %}

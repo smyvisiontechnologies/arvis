@@ -1,0 +1,360 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.delivery-page {
+    min-height: calc(100vh - 90px);
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delivery-card {
+    width: 100%;
+    max-width: 760px;
+    background:
+        radial-gradient(circle at top right, rgba(34,197,94,.15), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(37,99,235,.10), transparent 34%),
+        linear-gradient(135deg, #ffffff, #f8fafc);
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: 0 24px 60px rgba(15,23,42,.12);
+    position: relative;
+    overflow: hidden;
+}
+
+.delivery-card::before {
+    content: "";
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    background: rgba(22,163,74,.08);
+    border-radius: 50%;
+    top: -100px;
+    right: -100px;
+}
+
+.delivery-header {
+    position: relative;
+    text-align: center;
+    padding: 8px 0 18px;
+}
+
+.delivery-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 14px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 18px 35px rgba(22,163,74,.28);
+}
+
+.delivery-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.delivery-header h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 29px;
+    font-weight: 1000;
+    letter-spacing: -.5px;
+}
+
+.delivery-header p {
+    max-width: 560px;
+    margin: 10px auto 0;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.order-box {
+    position: relative;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    margin-top: 10px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px dashed #e2e8f0;
+    color: #334155;
+    font-weight: 850;
+}
+
+.order-row:last-child {
+    border-bottom: none;
+}
+
+.row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.row-label svg {
+    width: 18px;
+    height: 18px;
+    color: #2563eb;
+    flex: 0 0 auto;
+}
+
+.order-row strong {
+    color: #0f172a;
+    font-size: 14px;
+    text-align: right;
+}
+
+.confirm-box {
+    margin-top: 16px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 14px;
+    color: #047857;
+    font-weight: 900;
+    line-height: 1.55;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.confirm-box svg {
+    width: 24px;
+    height: 24px;
+    color: #059669;
+    flex: 0 0 auto;
+    margin-top: 1px;
+}
+
+.confirm-box b {
+    color: #065f46;
+}
+
+.btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn {
+    border: none;
+    padding: 14px 16px;
+    border-radius: 17px;
+    font-weight: 1000;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    font-size: 15px;
+    transition: .18s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-green {
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    box-shadow: 0 14px 28px rgba(22,163,74,.24);
+}
+
+.btn-green:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 34px rgba(22,163,74,.30);
+}
+
+.btn-light {
+    background: #f1f5f9;
+    color: #111827;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-light:hover {
+    background: #e2e8f0;
+}
+
+.small-note {
+    text-align: center;
+    margin-top: 14px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+@media(max-width: 650px) {
+    .delivery-page {
+        padding: 12px;
+        align-items: flex-start;
+    }
+
+    .delivery-card {
+        border-radius: 24px;
+        padding: 18px;
+    }
+
+    .delivery-icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 23px;
+    }
+
+    .delivery-icon svg {
+        width: 42px;
+        height: 42px;
+    }
+
+    .delivery-header h2 {
+        font-size: 24px;
+    }
+
+    .btn-row {
+        grid-template-columns: 1fr;
+    }
+
+    .order-row {
+        display: block;
+    }
+
+    .order-row strong {
+        display: block;
+        text-align: left;
+        margin-top: 5px;
+    }
+}
+</style>
+
+<div class="delivery-page">
+    <div class="delivery-card">
+        <div class="delivery-header">
+            <div class="delivery-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M21 8l-9-5-9 5 9 5 9-5z"/>
+                    <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M3 8v8l9 5 9-5V8"/>
+                    <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 13v8"/>
+                    <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.5 15.5l2 2 5-5"/>
+                </svg>
+            </div>
+
+            <h2>Accept Delivery</h2>
+
+            <p>
+                Please confirm that you received this order in good condition.
+                After accepting, the order status will be marked as <b>Delivered</b>.
+            </p>
+        </div>
+
+        <div class="order-box">
+            <div class="order-row">
+                <span class="row-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3h10v18H7z"/>
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4"/>
+                    </svg>
+                    Order Number
+                </span>
+                <strong>#{{ order.id }}</strong>
+            </div>
+
+            <div class="order-row">
+                <span class="row-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+                        <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                    </svg>
+                    Delivery Status
+                </span>
+                <strong>Ready for Confirmation</strong>
+            </div>
+
+            {% if order.invoice %}
+                <div class="order-row">
+                    <span class="row-label">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 2h9l3 3v17H6z"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h4"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 12h8M8 16h6"/>
+                        </svg>
+                        Invoice Number
+                    </span>
+                    <strong>{{ order.invoice.invoice_number }}</strong>
+                </div>
+            {% endif %}
+
+            {% if order.total_amount %}
+                <div class="order-row">
+                    <span class="row-label">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 6v12"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 9.5C8 8.1 9.8 7 12 7s4 1.1 4 2.5S14.2 12 12 12s-4 1.1-4 2.5S9.8 17 12 17s4-1.1 4-2.5"/>
+                        </svg>
+                        Order Amount
+                    </span>
+                    <strong>₹{{ order.total_amount|floatformat:2 }}</strong>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="confirm-box">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+                <path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7l8-4z"/>
+            </svg>
+
+            <div>
+                <b>Before accepting:</b> Please check product quantity, packaging condition,
+                and invoice details. Accept only after receiving the goods properly.
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="btn-row">
+                <button type="submit" class="btn btn-green">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+                        <circle cx="12" cy="12" r="9" stroke-width="2.4"/>
+                    </svg>
+                    Accept Delivery
+                </button>
+
+                <a href="{% url 'dealer_order_detail' order.id %}" class="btn btn-light">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        <div class="small-note">
+            This confirmation will be saved permanently in the order history.
+        </div>
+    </div>
+</div>
+{% endblock %}

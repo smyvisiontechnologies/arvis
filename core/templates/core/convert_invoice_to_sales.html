@@ -1,0 +1,708 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 14px;
+}
+
+.compact-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    margin-bottom: 12px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.header-row h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.header-row p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.invoice-badge {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.summary-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.summary-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.summary-box strong {
+    display: block;
+    margin-top: 4px;
+    color: #111827;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.summary-box.paid {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.summary-box.paid strong {
+    color: #047857;
+}
+
+.summary-box.balance {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.summary-box.balance strong {
+    color: #b45309;
+}
+
+.summary-box.discount {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.summary-box.discount strong {
+    color: #1d4ed8;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 12px;
+    align-items: start;
+}
+
+.section-title {
+    margin: 0 0 10px;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.form-table,
+.preview-table,
+.simple-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.form-table th,
+.form-table td,
+.preview-table th,
+.preview-table td,
+.simple-table th,
+.simple-table td {
+    border: 1px solid #e5e7eb;
+    padding: 9px;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.form-table th,
+.preview-table th,
+.simple-table th {
+    width: 34%;
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 900;
+    text-align: left;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 9px 10px;
+    outline: none;
+    font-weight: 700;
+    background: #ffffff;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.preview-panel {
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.preview-main {
+    background: #07120d;
+    color: white;
+    padding: 13px;
+}
+
+.preview-main span {
+    display: block;
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.preview-main strong {
+    display: block;
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+.preview-note {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 7px 9px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+.preview-table th {
+    width: 45%;
+}
+
+.preview-table td {
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.rule-box {
+    background: #eff6ff;
+    border-top: 1px solid #dbeafe;
+    padding: 10px;
+}
+
+.rule-box span {
+    display: block;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.rule-box strong {
+    display: block;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.error-box {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.help-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+.save-btn {
+    width: 100%;
+    border: none;
+    background: #16a34a;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.save-btn:hover {
+    background: #15803d;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+details {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 0;
+    overflow: hidden;
+}
+
+summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 11px 13px;
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+.details-body {
+    padding: 10px;
+}
+
+.empty-text {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media(max-width: 950px) {
+    .main-grid,
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 600px) {
+    .page {
+        padding: 10px;
+    }
+
+    .compact-card {
+        padding: 11px;
+        border-radius: 14px;
+    }
+
+    .header-row h2 {
+        font-size: 19px;
+    }
+
+    .summary-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+    }
+
+    .summary-box {
+        padding: 8px;
+    }
+
+    .summary-box strong {
+        font-size: 14px;
+    }
+
+    .form-table th,
+    .form-table td,
+    .preview-table th,
+    .preview-table td,
+    .simple-table th,
+    .simple-table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .form-table th {
+        width: 38%;
+    }
+
+    .preview-main strong {
+        font-size: 21px;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="compact-card">
+        <div class="header-row">
+            <div>
+                <h2>Convert Invoice to Sales</h2>
+                <p>{{ dealer.firm_name }}</p>
+            </div>
+
+            <div class="invoice-badge">
+                {{ invoice.invoice_number }}
+            </div>
+        </div>
+
+        <div class="summary-row">
+            <div class="summary-box">
+                <span>Invoice Amount</span>
+                <strong>₹{{ invoice.total_amount }}</strong>
+            </div>
+
+            <div class="summary-box discount">
+                <span>Discount</span>
+                <strong>₹{{ invoice.discount_amount }}</strong>
+            </div>
+
+            <div class="summary-box paid">
+                <span>Received</span>
+                <strong>₹{{ invoice.paid_amount }}</strong>
+            </div>
+
+            <div class="summary-box balance">
+                <span>Balance</span>
+                <strong>₹{{ invoice.balance_amount }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="main-grid">
+            <div class="compact-card">
+                <h3 class="section-title">Payment Entry</h3>
+
+                {% if form.non_field_errors %}
+                    <div class="error-box">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <table class="form-table">
+                    <tbody>
+                        <tr>
+                            <th>Payment Type</th>
+                            <td>{{ form.payment_status }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Payment Mode</th>
+                            <td>{{ form.payment_mode }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Payment Date</th>
+                            <td>{{ form.payment_date }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Amount to Settle</th>
+                            <td>{{ form.payment_amount }}</td>
+                        </tr>
+
+                        <tr class="category-rule-row">
+                            <th>Category Rule</th>
+                            <td>{{ form.category_rule_choice }}</td>
+                        </tr>
+
+                        <tr class="manual-discount-row">
+                            <th>Manual Discount %</th>
+                            <td>{{ form.manual_discount_percent }}</td>
+                        </tr>
+
+                        <tr class="upi-row">
+                            <th>UPI Reference No.</th>
+                            <td>{{ form.upi_reference_number }}</td>
+                        </tr>
+
+                        <tr class="bank-row">
+                            <th>Bank Transaction No.</th>
+                            <td>{{ form.bank_transaction_number }}</td>
+                        </tr>
+
+                        <tr class="cheque-row">
+                            <th>Cheque Number</th>
+                            <td>{{ form.cheque_number }}</td>
+                        </tr>
+
+                        <tr class="screenshot-row">
+                            <th>Screenshot</th>
+                            <td>{{ form.payment_screenshot }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="help-box" id="helpBox">
+                    Full payment: select category payment rule if discount is applicable.
+                </div>
+
+                <button type="submit" class="save-btn">
+                    Save Payment & Update Invoice
+                </button>
+            </div>
+
+            <div class="compact-card">
+                <h3 class="section-title">Payment Preview</h3>
+
+                <div class="preview-panel">
+                    <div class="preview-main">
+                        <span>Final Amount To Receive</span>
+                        <strong id="previewFinalAmount">₹0.00</strong>
+
+                        <div class="preview-note" id="previewNote">
+                            Calculating...
+                        </div>
+                    </div>
+
+                    <table class="preview-table">
+                        <tbody>
+                            <tr>
+                                <th>Amount Selected</th>
+                                <td id="previewPaymentAmount">₹0.00</td>
+                            </tr>
+
+                            <tr>
+                                <th>Discount %</th>
+                                <td id="previewDiscountPercent">0%</td>
+                            </tr>
+
+                            <tr>
+                                <th>Discount Amount</th>
+                                <td id="previewDiscountAmount">₹0.00</td>
+                            </tr>
+
+                            <tr>
+                                <th>Balance After Payment</th>
+                                <td id="previewBalance">₹0.00</td>
+                            </tr>
+
+                            <tr>
+                                <th>Order Date</th>
+                                <td id="previewOrderDate">-</td>
+                            </tr>
+
+                            <tr>
+                                <th>Rule Due Date</th>
+                                <td id="previewDueDate">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="rule-box">
+                        <span>Selected Rule</span>
+                        <strong id="previewSelectedRule">No rule selected</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="details-grid">
+        <details>
+            <summary>Previous Payments</summary>
+
+            <div class="details-body">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mode</th>
+                            <th>Received</th>
+                            <th>Discount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.payment_date|date:"d M Y" }}</td>
+                                <td>{{ payment.get_payment_mode_display }}</td>
+                                <td>₹{{ payment.net_received_amount }}</td>
+                                <td>₹{{ payment.discount_amount }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="empty-text">No payments added yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+        <details>
+            <summary>Recent Edit History</summary>
+
+            <div class="details-body">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for h in history|slice:":5" %}
+                            <tr>
+                                <td>{{ h.created_at|date:"d M Y" }}</td>
+                                <td>{{ h.action }}</td>
+                                <td>{{ h.edited_by.get_full_name|default:h.edited_by.username }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="empty-text">No history found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </div>
+</div>
+
+<script>
+function money(value) {
+    const numberValue = parseFloat(value || 0);
+
+    return "₹" + numberValue.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function setTableRowDisplay(selector, show) {
+    document.querySelectorAll(selector).forEach(function(row) {
+        row.style.display = show ? "table-row" : "none";
+    });
+}
+
+function togglePaymentFields() {
+    const paymentStatus = document.getElementById("id_payment_status").value;
+    const paymentMode = document.getElementById("id_payment_mode").value;
+
+    setTableRowDisplay(".upi-row", paymentMode === "UPI");
+    setTableRowDisplay(".bank-row", paymentMode === "BANK");
+    setTableRowDisplay(".cheque-row", paymentMode === "CHEQUE");
+
+    setTableRowDisplay(".screenshot-row", paymentMode === "UPI" || paymentMode === "BANK");
+
+    setTableRowDisplay(".category-rule-row", paymentStatus === "FULL");
+    setTableRowDisplay(".manual-discount-row", paymentStatus === "PARTIAL");
+
+    const helpBox = document.getElementById("helpBox");
+
+    if (paymentStatus === "FULL") {
+        helpBox.innerText = "Full payment: select category payment rule if discount is applicable.";
+    } else {
+        helpBox.innerText = "Partial payment: category rule is hidden. Enter manual discount percentage if needed.";
+    }
+}
+
+function updatePaymentPreview() {
+    const paymentStatus = document.getElementById("id_payment_status").value;
+    const paymentDate = document.getElementById("id_payment_date").value;
+    const paymentAmount = document.getElementById("id_payment_amount").value;
+    const manualDiscount = document.getElementById("id_manual_discount_percent").value || "0";
+
+    const categoryRuleChoice = document.getElementById("id_category_rule_choice")
+        ? document.getElementById("id_category_rule_choice").value
+        : "";
+
+    const url = new URL("{% url 'invoice_payment_preview' invoice.id %}", window.location.origin);
+
+    url.searchParams.set("payment_status", paymentStatus);
+    url.searchParams.set("payment_date", paymentDate);
+    url.searchParams.set("payment_amount", paymentAmount);
+    url.searchParams.set("manual_discount_percent", manualDiscount);
+    url.searchParams.set("category_rule_choice", categoryRuleChoice);
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                document.getElementById("previewNote").innerText = data.message || "Preview unavailable";
+                return;
+            }
+
+            document.getElementById("previewPaymentAmount").innerText = money(data.payment_amount);
+            document.getElementById("previewDiscountPercent").innerText = data.discount_percent + "%";
+            document.getElementById("previewDiscountAmount").innerText = money(data.discount_amount);
+            document.getElementById("previewFinalAmount").innerText = money(data.final_amount_after_discount);
+            document.getElementById("previewBalance").innerText = money(data.balance_after_payment);
+
+            document.getElementById("previewOrderDate").innerText = data.order_date || "-";
+            document.getElementById("previewDueDate").innerText = data.due_date || "-";
+            document.getElementById("previewSelectedRule").innerText = data.selected_rule_name || "No rule selected";
+
+            document.getElementById("previewNote").innerText = data.discount_note;
+        })
+        .catch(() => {
+            document.getElementById("previewNote").innerText = "Preview unavailable";
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    togglePaymentFields();
+    updatePaymentPreview();
+
+    [
+        "id_payment_status",
+        "id_payment_mode",
+        "id_payment_date",
+        "id_payment_amount",
+        "id_manual_discount_percent",
+        "id_category_rule_choice"
+    ].forEach(function(id) {
+        const el = document.getElementById(id);
+
+        if (el) {
+            el.addEventListener("change", function () {
+                togglePaymentFields();
+                updatePaymentPreview();
+            });
+
+            el.addEventListener("input", function () {
+                updatePaymentPreview();
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

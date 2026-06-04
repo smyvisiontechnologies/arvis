@@ -1,0 +1,509 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filter-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-control {
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 10px 12px;
+    font-weight: 800;
+    outline: none;
+    background: white;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.btn {
+    text-decoration: none;
+    border: none;
+    border-radius: 13px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+    background: #07120d;
+    cursor: pointer;
+}
+
+.btn.green {
+    background: #16a34a;
+}
+
+.btn.blue {
+    background: #00a8e8;
+}
+
+.btn.orange {
+    background: #b9792c;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.05);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.stat-card.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.stat-card.green strong {
+    color: #047857;
+}
+
+.stat-card.red {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.stat-card.red strong {
+    color: #b91c1c;
+}
+
+.stat-card.blue {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-card.blue strong {
+    color: #1d4ed8;
+}
+
+.stat-card.orange {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.stat-card.orange strong {
+    color: #b45309;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.card h3 {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e5e7eb;
+    padding: 9px;
+    text-align: left;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.table th {
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 900;
+}
+
+.amount-in {
+    color: #047857;
+    font-weight: 900;
+}
+
+.amount-out {
+    color: #b91c1c;
+    font-weight: 900;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 5px 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.period-badge {
+    display: inline-flex;
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e5e7eb;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 8px;
+}
+
+@media(max-width:1000px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:650px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .top-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form,
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .form-control,
+    .btn {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Accounts</h2>
+                <p>Manage bank accounts, payment in and payment out entries.</p>
+
+                <div class="period-badge">
+                    {{ title }}: {{ start_date|date:"d M Y" }} to {{ end_date|date:"d M Y" }}
+                </div>
+            </div>
+
+            <form method="get" class="filter-form">
+                <select name="period" id="periodSelect" class="form-control">
+                    <option value="this_month" {% if period == "this_month" %}selected{% endif %}>This Month</option>
+                    <option value="last_month" {% if period == "last_month" %}selected{% endif %}>Last Month</option>
+                    <option value="this_year" {% if period == "this_year" %}selected{% endif %}>This Financial Year</option>
+                    <option value="last_year" {% if period == "last_year" %}selected{% endif %}>Last Financial Year</option>
+                    <option value="q1" {% if period == "q1" %}selected{% endif %}>Q1 - Apr / May / Jun</option>
+                    <option value="q2" {% if period == "q2" %}selected{% endif %}>Q2 - Jul / Aug / Sep</option>
+                    <option value="q3" {% if period == "q3" %}selected{% endif %}>Q3 - Oct / Nov / Dec</option>
+                    <option value="q4" {% if period == "q4" %}selected{% endif %}>Q4 - Jan / Feb / Mar</option>
+                    <option value="custom" {% if period == "custom" %}selected{% endif %}>Custom Range</option>
+                </select>
+
+                <input type="date"
+                       name="start_date"
+                       id="startDate"
+                       value="{{ start_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <input type="date"
+                       name="end_date"
+                       id="endDate"
+                       value="{{ end_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <button type="submit" class="btn">
+                    Apply
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="{% url 'company_account_create' %}" class="btn">
+            + Bank Account
+        </a>
+
+        <a href="{% url 'company_payment_in_create' %}" class="btn green">
+            + Payment In
+        </a>
+
+        <a href="{% url 'company_payment_out_create' %}" class="btn orange">
+            + Payment Out
+        </a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <span>Total Account Balance</span>
+            <strong>₹{{ total_balance }}</strong>
+        </div>
+
+        <div class="stat-card green">
+            <span>Payment In</span>
+            <strong>₹{{ total_payment_in }}</strong>
+        </div>
+
+        <div class="stat-card red">
+            <span>Payment Out</span>
+            <strong>₹{{ total_payment_out }}</strong>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Net Cash Flow</span>
+            <strong>₹{{ net_cash_flow }}</strong>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Bank Accounts</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>Bank</th>
+                    <th>Account No.</th>
+                    <th>IFSC</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td>
+                            <b>{{ account.account_name }}</b><br>
+                            {{ account.account_holder_name }}
+                        </td>
+                        <td>{{ account.bank_name }}</td>
+                        <td>{{ account.account_number }}</td>
+                        <td>{{ account.ifsc_code }}</td>
+                        <td class="amount-in">₹{{ account.current_balance }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No bank accounts added.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="content-grid">
+        <div class="card">
+            <h3>Payment In - {{ title }}</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Source</th>
+                        <th>Account</th>
+                        <th>Mode</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for payment in recent_ins %}
+                        <tr>
+                            <td>{{ payment.payment_date|date:"d M Y" }}</td>
+
+                            <td>
+                                {{ payment.get_source_type_display }}
+                                {% if payment.dealer %}
+                                    <br><b>{{ payment.dealer.firm_name }}</b>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ payment.account.account_name }}</td>
+
+                            <td>
+                                <span class="badge">{{ payment.get_payment_mode_display }}</span>
+                            </td>
+
+                            <td class="amount-in">₹{{ payment.amount }}</td>
+
+                            <td>{{ payment.reason|truncatechars:50 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">No payment in entries for this period.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Payment Out - {{ title }}</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Expense</th>
+                        <th>Account</th>
+                        <th>Mode</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for payment in recent_outs %}
+                        <tr>
+                            <td>{{ payment.payment_date|date:"d M Y" }}</td>
+
+                            <td>
+                                {{ payment.get_expense_type_display }}
+                                {% if payment.payee_name %}
+                                    <br><b>{{ payment.payee_name }}</b>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ payment.account.account_name }}</td>
+
+                            <td>
+                                <span class="badge">{{ payment.get_payment_mode_display }}</span>
+                            </td>
+
+                            <td class="amount-out">₹{{ payment.amount }}</td>
+
+                            <td>{{ payment.reason|truncatechars:50 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">No payment out entries for this period.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function toggleCustomDates() {
+    const period = document.getElementById("periodSelect").value;
+    const showCustom = period === "custom";
+
+    document.querySelectorAll(".custom-date").forEach(function(input) {
+        input.style.display = showCustom ? "block" : "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleCustomDates();
+
+    const periodSelect = document.getElementById("periodSelect");
+
+    if (periodSelect) {
+        periodSelect.addEventListener("change", toggleCustomDates);
+    }
+});
+</script>
+{% endblock %}

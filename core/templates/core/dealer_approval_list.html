@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <div style="background:white;border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <h2>Dealer Approval Requests</h2>
+
+        {% if dealers %}
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#f8fafc;">
+                            <th style="padding:12px;text-align:left;">Photo</th>
+                            <th style="padding:12px;text-align:left;">Firm</th>
+                            <th style="padding:12px;text-align:left;">Owner</th>
+                            <th style="padding:12px;text-align:left;">Phone</th>
+                            <th style="padding:12px;text-align:left;">GST</th>
+                            <th style="padding:12px;text-align:left;">Cheque</th>
+                            <th style="padding:12px;text-align:left;">Flag</th>
+                            <th style="padding:12px;text-align:left;">Target</th>
+                            <th style="padding:12px;text-align:left;">Status</th>
+                            <th style="padding:12px;text-align:left;">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for dealer in dealers %}
+                            <td style="padding:12px;">
+                                {% if dealer.dealer_image %}
+                                    <img src="{{ dealer.dealer_image.url }}" style="width:46px;height:46px;border-radius:14px;object-fit:cover;">
+                                {% else %}
+                                    <div style="width:46px;height:46px;border-radius:14px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-weight:900;">
+                                        D
+                                    </div>
+                                {% endif %}
+                            </td>
+
+                            <td style="padding:12px;">{{ dealer.firm_name }}</td>
+                            <td style="padding:12px;">{{ dealer.owner_name }}</td>
+                            <td style="padding:12px;">{{ dealer.phone }}</td>
+                            <td style="padding:12px;">{{ dealer.gst_number|default:"-" }}</td>
+                            <td style="padding:12px;">{{ dealer.cheque_number|default:"-" }}</td>
+                            <td style="padding:12px;">{{ dealer.get_flag_display }}</td>
+                            <td style="padding:12px;">₹{{ dealer.yearly_target_amount }}</td>
+                            <td style="padding:12px;">{{ dealer.get_approval_status_display }}</td>
+
+                            <td style="padding:12px;">
+                                <a href="{% url 'dealer_approval_detail' dealer.id %}" style="background:#2563eb;color:white;padding:8px 12px;border-radius:10px;text-decoration:none;">
+                                    Review
+                                </a>
+                            </td>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No approval requests found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

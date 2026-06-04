@@ -1,0 +1,575 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ product.name }} - Product Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.14), transparent 34%),
+                #f5f7fb;
+            color: #0f172a;
+        }
+
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 18px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .top-card {
+            background: linear-gradient(135deg, #0f172a, #14532d);
+            color: white;
+            border-radius: 26px;
+            padding: 18px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+            margin-bottom: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-card::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.10);
+            right: -70px;
+            top: -80px;
+        }
+
+        .brand-row {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .verified-badge {
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 340px minmax(0, 1fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .image-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 14px;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+            position: sticky;
+            top: 16px;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 310px;
+            object-fit: contain;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f8fafc, #eef2ff);
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+        }
+
+        .letter-box {
+            width: 100%;
+            height: 310px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #2563eb, #059669);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 92px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .content-card {
+            min-width: 0;
+        }
+
+        .category {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #bbf7d0;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.1;
+            color: #0f172a;
+            font-weight: 900;
+            letter-spacing: -0.7px;
+        }
+
+        .sub-text {
+            margin-top: 10px;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .meta-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 14px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .meta-box span {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .meta-box strong {
+            display: block;
+            margin-top: 7px;
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 900;
+            word-break: break-word;
+        }
+
+        .available {
+            color: #047857 !important;
+        }
+
+        .not-available {
+            color: #dc2626 !important;
+        }
+
+        .section-title {
+            margin: 22px 0 12px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+        .desc-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            padding: 16px;
+            color: #334155;
+            line-height: 1.65;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .pack-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .pack-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            padding: 15px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .pack-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.10);
+        }
+
+        .pack-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .pack-name {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .pack-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-size: 11px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .pack-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .pack-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .pack-info span {
+            display: block;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .pack-info strong {
+            display: block;
+            margin-top: 5px;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .price-highlight {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+            border-color: #bbf7d0;
+        }
+
+        .price-highlight strong {
+            color: #047857;
+            font-size: 16px;
+        }
+
+        .empty-card {
+            background: #ffffff;
+            border: 1px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .bottom-note {
+            margin-top: 18px;
+            background: #0f172a;
+            color: white;
+            border-radius: 22px;
+            padding: 16px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .bottom-note span {
+            color: #bbf7d0;
+            font-weight: 900;
+        }
+
+        @media(max-width: 900px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .image-card {
+                position: static;
+            }
+
+            .product-img,
+            .letter-box {
+                height: 260px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+        }
+
+        @media(max-width: 640px) {
+            .page {
+                padding: 10px;
+            }
+
+            .top-card {
+                border-radius: 22px;
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+
+            .brand-title {
+                font-size: 16px;
+                line-height: 1.25;
+            }
+
+            .verified-badge {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .main-card {
+                border-radius: 22px;
+                padding: 12px;
+            }
+
+            .image-card {
+                border-radius: 20px;
+                padding: 10px;
+            }
+
+            .product-img,
+            .letter-box {
+                height: 230px;
+                border-radius: 16px;
+            }
+
+            .letter-box {
+                font-size: 76px;
+            }
+
+            h1 {
+                font-size: 25px;
+                letter-spacing: -0.4px;
+            }
+
+            .sub-text {
+                font-size: 14px;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .pack-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pack-card {
+                border-radius: 20px;
+                padding: 13px;
+            }
+
+            .pack-info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .pack-info {
+                padding: 9px;
+            }
+
+            .pack-info strong {
+                font-size: 13px;
+            }
+
+            .price-highlight strong {
+                font-size: 15px;
+            }
+        }
+
+        @media(max-width: 390px) {
+            .pack-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-img,
+            .letter-box {
+                height: 205px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="container">
+
+        <div class="top-card">
+            <div class="brand-row">
+                <h2 class="brand-title">Arvis Fertilizers & Chemicals Pvt. Ltd.</h2>
+                <div class="verified-badge">Verified Product Details</div>
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="product-layout">
+
+                <div class="image-card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="letter-box">
+                            {{ product.name|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="content-card">
+                    <div class="category">
+                        {% if product.category %}
+                            {{ product.category.name }}
+                        {% else %}
+                            Product Details
+                        {% endif %}
+                    </div>
+
+                    <h1>{{ product.name }}</h1>
+
+                    <div class="sub-text">
+                        Scan verified product information, pack sizes, MRP and product details.
+                    </div>
+
+                    <div class="meta-grid">
+                        <div class="meta-box">
+                            <span>HSN Code</span>
+                            <strong>{{ product.hsn_number|default:"-" }}</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <span>Availability</span>
+                            <strong class="{% if product.is_active %}available{% else %}not-available{% endif %}">
+                                {% if product.is_active %}
+                                    Available
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    {% if product.description %}
+                        <h3 class="section-title">About Product</h3>
+                        <div class="desc-card">
+                            {{ product.description|linebreaks }}
+                        </div>
+                    {% endif %}
+
+                    <h3 class="section-title">Available Pack Sizes</h3>
+
+                    <div class="pack-grid">
+                        {% for pack in product.pack_sizes.all %}
+                            <div class="pack-card">
+                                <div class="pack-head">
+                                    <div class="pack-name">{{ pack.display_pack }}</div>
+                                    <div class="pack-tag">{{ pack.units_per_box }} Units / Box</div>
+                                </div>
+
+                                <div class="pack-info-grid">
+                                    <div class="pack-info price-highlight">
+                                        <span>MRP / Unit</span>
+                                        <strong>₹{{ pack.mrp_per_unit }}</strong>
+                                    </div>
+
+                                    <div class="pack-info price-highlight">
+                                        <span>Sale / Unit</span>
+                                        <strong>₹{{ pack.sale_price_per_unit }}</strong>
+                                    </div>
+
+                                    <div class="pack-info">
+                                        <span>Box Price</span>
+                                        <strong>₹{{ pack.box_sale_price }}</strong>
+                                    </div>
+
+                                    <div class="pack-info">
+                                        <span>Pack</span>
+                                        <strong>{{ pack.display_pack }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="empty-card">
+                                No pack details available.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bottom-note">
+            This page is opened from the product QR code. <span>Always verify label and batch details before purchase.</span>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

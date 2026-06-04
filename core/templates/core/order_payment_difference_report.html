@@ -1,0 +1,775 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filter-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-control {
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 10px 12px;
+    font-weight: 800;
+    outline: none;
+    background: white;
+}
+
+.btn {
+    border: none;
+    background: #07120d;
+    color: white;
+    border-radius: 13px;
+    padding: 10px 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.period-badge {
+    display: inline-flex;
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e5e7eb;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 8px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.05);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.stat-card.blue {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-card.blue strong {
+    color: #1d4ed8;
+}
+
+.stat-card.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.stat-card.green strong {
+    color: #047857;
+}
+
+.stat-card.orange {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.stat-card.orange strong {
+    color: #b45309;
+}
+
+.stat-card.red {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.stat-card.red strong {
+    color: #b91c1c;
+}
+
+.graph-grid {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 14px;
+    align-items: start;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.card-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.chart-wrap {
+    width: 100%;
+    height: 365px;
+    position: relative;
+}
+
+.donut-summary {
+    display: grid;
+    gap: 10px;
+}
+
+.summary-mini {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 13px;
+}
+
+.summary-mini span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.summary-mini strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.summary-mini.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.summary-mini.green strong {
+    color: #047857;
+}
+
+.summary-mini.red {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.summary-mini.red strong {
+    color: #b91c1c;
+}
+
+.summary-mini.orange {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.summary-mini.orange strong {
+    color: #b45309;
+}
+
+.chart-empty {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-weight: 800;
+    background: #f8fafc;
+    border-radius: 16px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e5e7eb;
+    padding: 9px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.table th {
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 900;
+}
+
+.table td {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.amount-blue {
+    color: #1d4ed8;
+    font-weight: 900;
+}
+
+.amount-green {
+    color: #047857;
+    font-weight: 900;
+}
+
+.amount-orange {
+    color: #b45309;
+    font-weight: 900;
+}
+
+.amount-red {
+    color: #b91c1c;
+    font-weight: 900;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 5px 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+@media(max-width: 1150px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .graph-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .top-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .form-control,
+    .btn {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card strong {
+        font-size: 15px;
+    }
+
+    .chart-wrap,
+    .chart-empty {
+        height: 290px;
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Order vs Payment Difference</h2>
+                <p>Compare ordered bill value, final payable amount, received payment and pending balance.</p>
+
+                <div class="period-badge">
+                    {{ title }}: {{ start_date|date:"d M Y" }} to {{ end_date|date:"d M Y" }}
+                </div>
+            </div>
+
+            <form method="get" class="filter-form">
+                <select name="period" id="periodSelect" class="form-control">
+                    <option value="this_month" {% if period == "this_month" %}selected{% endif %}>This Month</option>
+                    <option value="last_month" {% if period == "last_month" %}selected{% endif %}>Last Month</option>
+                    <option value="this_year" {% if period == "this_year" %}selected{% endif %}>This Financial Year</option>
+                    <option value="last_year" {% if period == "last_year" %}selected{% endif %}>Last Financial Year</option>
+                    <option value="q1" {% if period == "q1" %}selected{% endif %}>Q1 - Apr / May / Jun</option>
+                    <option value="q2" {% if period == "q2" %}selected{% endif %}>Q2 - Jul / Aug / Sep</option>
+                    <option value="q3" {% if period == "q3" %}selected{% endif %}>Q3 - Oct / Nov / Dec</option>
+                    <option value="q4" {% if period == "q4" %}selected{% endif %}>Q4 - Jan / Feb / Mar</option>
+                    <option value="custom" {% if period == "custom" %}selected{% endif %}>Custom Range</option>
+                </select>
+
+                <input type="date"
+                       name="start_date"
+                       id="startDate"
+                       value="{{ start_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <input type="date"
+                       name="end_date"
+                       id="endDate"
+                       value="{{ end_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <button type="submit" class="btn">
+                    Apply
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <span>Order Amount</span>
+            <strong>₹{{ total_order_amount }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Final Payable</span>
+            <strong>₹{{ total_final_payable }}</strong>
+        </div>
+
+        <div class="stat-card green">
+            <span>Received</span>
+            <strong>₹{{ total_received }}</strong>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Discount</span>
+            <strong>₹{{ total_discount }}</strong>
+        </div>
+
+        <div class="stat-card red">
+            <span>Pending</span>
+            <strong>₹{{ total_pending }}</strong>
+        </div>
+    </div>
+
+    <div class="graph-grid">
+        <div class="card">
+            <div class="card-head">
+                <h3 class="card-title">Graph View</h3>
+
+                <select id="graphType" class="form-control">
+                    <option value="donut">Donut: Received vs Pending</option>
+                    <option value="overall_bar">Bar: Overall Comparison</option>
+                    <option value="invoice_bar">Bar: Invoice-wise Difference</option>
+                    <option value="line">Line: Difference Trend</option>
+                </select>
+            </div>
+
+            {% if has_data %}
+                <div class="chart-wrap">
+                    <canvas id="differenceChart"></canvas>
+                </div>
+            {% else %}
+                <div class="chart-empty">
+                    No invoices found for this period.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:12px;">Simple Summary</h3>
+
+            <div class="donut-summary">
+                <div class="summary-mini green">
+                    <span>Money Received</span>
+                    <strong>₹{{ total_received }}</strong>
+                </div>
+
+                <div class="summary-mini red">
+                    <span>Still Pending</span>
+                    <strong>₹{{ total_pending }}</strong>
+                </div>
+
+                <div class="summary-mini orange">
+                    <span>Discount Given</span>
+                    <strong>₹{{ total_discount }}</strong>
+                </div>
+
+                <div class="summary-mini">
+                    <span>Final Payable After Discount</span>
+                    <strong>₹{{ total_final_payable }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title" style="margin-bottom:12px;">Invoice Wise Difference</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Dealer</th>
+                    <th>Invoice</th>
+                    <th>Order Amount</th>
+                    <th>Discount</th>
+                    <th>Final Payable</th>
+                    <th>Received</th>
+                    <th>Pending</th>
+                    <th>Order - Received Diff</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in report_rows %}
+                    <tr>
+                        <td>{{ row.invoice.invoice_date|date:"d M Y" }}</td>
+                        <td>{{ row.dealer_name }}</td>
+                        <td>
+                            <span class="badge">{{ row.invoice.invoice_number }}</span>
+                        </td>
+                        <td class="amount-blue">₹{{ row.order_amount }}</td>
+                        <td class="amount-orange">₹{{ row.discount_amount }}</td>
+                        <td>₹{{ row.final_payable }}</td>
+                        <td class="amount-green">₹{{ row.received_amount }}</td>
+                        <td class="amount-red">₹{{ row.pending_amount }}</td>
+                        <td class="amount-red">₹{{ row.difference_amount }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9">No data found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{{ chart_labels|json_script:"chartLabels" }}
+{{ order_values|json_script:"orderValues" }}
+{{ final_payable_values|json_script:"finalPayableValues" }}
+{{ received_values|json_script:"receivedValues" }}
+{{ pending_values|json_script:"pendingValues" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let differenceChartInstance = null;
+
+function rupee(value) {
+    return "₹" + Number(value || 0).toLocaleString("en-IN");
+}
+
+function toggleCustomDates() {
+    const period = document.getElementById("periodSelect").value;
+    const showCustom = period === "custom";
+
+    document.querySelectorAll(".custom-date").forEach(function(input) {
+        input.style.display = showCustom ? "block" : "none";
+    });
+}
+
+function buildChart(graphType) {
+    const chartCanvas = document.getElementById("differenceChart");
+
+    if (!chartCanvas) {
+        return;
+    }
+
+    const labels = JSON.parse(document.getElementById("chartLabels").textContent);
+    const orderValues = JSON.parse(document.getElementById("orderValues").textContent);
+    const finalPayableValues = JSON.parse(document.getElementById("finalPayableValues").textContent);
+    const receivedValues = JSON.parse(document.getElementById("receivedValues").textContent);
+    const pendingValues = JSON.parse(document.getElementById("pendingValues").textContent);
+
+    const totalOrder = orderValues.reduce((a, b) => a + Number(b || 0), 0);
+    const totalFinalPayable = finalPayableValues.reduce((a, b) => a + Number(b || 0), 0);
+    const totalReceived = receivedValues.reduce((a, b) => a + Number(b || 0), 0);
+    const totalPending = pendingValues.reduce((a, b) => a + Number(b || 0), 0);
+
+    if (differenceChartInstance) {
+        differenceChartInstance.destroy();
+    }
+
+    let config = {};
+
+    if (graphType === "donut") {
+        config = {
+            type: "doughnut",
+            data: {
+                labels: ["Received", "Pending"],
+                datasets: [{
+                    data: [totalReceived, totalPending],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "62%",
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = totalReceived + totalPending;
+                                const value = Number(context.raw || 0);
+                                const percent = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+
+                                return context.label + ": " + rupee(value) + " (" + percent + "%)";
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    if (graphType === "overall_bar") {
+        config = {
+            type: "bar",
+            data: {
+                labels: ["Order Amount", "Final Payable", "Received", "Pending"],
+                datasets: [{
+                    label: "Amount",
+                    data: [totalOrder, totalFinalPayable, totalReceived, totalPending],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return rupee(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return rupee(value);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    if (graphType === "invoice_bar") {
+        config = {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Final Payable",
+                        data: finalPayableValues,
+                        borderWidth: 1
+                    },
+                    {
+                        label: "Received",
+                        data: receivedValues,
+                        borderWidth: 1
+                    },
+                    {
+                        label: "Pending",
+                        data: pendingValues,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ": " + rupee(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return rupee(value);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    if (graphType === "line") {
+        const differenceValues = finalPayableValues.map(function(value, index) {
+            const finalAmount = Number(value || 0);
+            const receivedAmount = Number(receivedValues[index] || 0);
+            const difference = finalAmount - receivedAmount;
+
+            return difference > 0 ? difference : 0;
+        });
+
+        config = {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Pending Difference",
+                    data: differenceValues,
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return "Pending Difference: " + rupee(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return rupee(value);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    differenceChartInstance = new Chart(chartCanvas, config);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    toggleCustomDates();
+
+    const periodSelect = document.getElementById("periodSelect");
+
+    if (periodSelect) {
+        periodSelect.addEventListener("change", toggleCustomDates);
+    }
+
+    const graphType = document.getElementById("graphType");
+
+    if (graphType) {
+        buildChart(graphType.value);
+
+        graphType.addEventListener("change", function() {
+            buildChart(graphType.value);
+        });
+    }
+});
+</script>
+{% endblock %}

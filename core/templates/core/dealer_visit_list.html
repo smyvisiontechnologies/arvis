@@ -1,0 +1,270 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.visit-page {
+    padding: 18px;
+}
+
+.visit-head {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.visit-head h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-light { background: white; color: #0f172a; }
+.btn-dark { background: #0f172a; color: white; }
+.btn-blue { background: #2563eb; color: white; }
+
+.stats {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.filter-card {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+    gap: 10px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 11px;
+    font-weight: 800;
+}
+
+.visit-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.visit-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+}
+
+.visit-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    background: #f1f5f9;
+}
+
+.visit-body {
+    padding: 14px;
+}
+
+.visit-title {
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.visit-meta {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.reason {
+    display: inline-flex;
+    margin-top: 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.card-actions {
+    margin-top: 12px;
+}
+
+@media(max-width: 1000px) {
+    .visit-grid { grid-template-columns: repeat(2, 1fr); }
+    .filter-grid { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 600px) {
+    .visit-page { padding: 10px; }
+    .visit-grid { grid-template-columns: 1fr; }
+    .btn { width: 100%; }
+}
+</style>
+
+<div class="visit-page">
+    <div class="visit-head">
+        <div>
+            <h2>Dealer Visits</h2>
+            <div style="font-weight:800;color:#dbeafe;margin-top:5px;">
+                Dealer-wise visit photo proof with date, reason and GPS location.
+            </div>
+        </div>
+
+        {% if role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
+            <a href="{% url 'dealer_visit_create' %}" class="btn btn-light">
+                Add Dealer Visit
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <span>Today Visits</span>
+            <strong>{{ today_count }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>This Month Visits</span>
+            <strong>{{ month_count }}</strong>
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-grid">
+            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search dealer, officer, reason">
+
+            <select name="dealer" class="form-control">
+                <option value="">All Dealers</option>
+                {% for dealer in dealers %}
+                    <option value="{{ dealer.id }}" {% if dealer_id == dealer.id|stringformat:"s" %}selected{% endif %}>
+                        {{ dealer.firm_name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+            <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+
+            <button type="submit" class="btn btn-dark">Search</button>
+        </form>
+    </div>
+
+    <div class="visit-grid">
+        {% for visit in visits %}
+            <div class="visit-card">
+                {% if visit.stamped_image %}
+                    <img src="{{ visit.stamped_image.url }}" class="visit-img">
+                {% elif visit.visit_image %}
+                    <img src="{{ visit.visit_image.url }}" class="visit-img">
+                {% endif %}
+
+                <div class="visit-body">
+                    <div class="visit-title">
+                        {{ visit.dealer.firm_name }}
+                    </div>
+
+                    <div class="reason">
+                        {{ visit.get_reason_display }}
+                    </div>
+
+                    <div class="visit-meta">
+                        <strong>Sales Officer:</strong>
+                        {{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}<br>
+
+                        <strong>Date:</strong>
+                        {{ visit.visit_date|date:"d M Y" }},
+                        {{ visit.visit_time|time:"h:i A" }}<br>
+
+                        <strong>Location:</strong>
+                        {{ visit.latitude }}, {{ visit.longitude }}<br>
+
+                        {% if visit.note %}
+                            <strong>Note:</strong> {{ visit.note|truncatechars:80 }}
+                        {% endif %}
+                    </div>
+
+                    <div class="card-actions">
+                        <a href="{% url 'dealer_visit_detail' visit.id %}" class="btn btn-blue">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="visit-card">
+                <div class="visit-body">
+                    No dealer visits found.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

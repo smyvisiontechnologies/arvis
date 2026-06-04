@@ -1,0 +1,832 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.dealer-form-page {
+    padding: 18px;
+}
+
+.dealer-card {
+    background: white;
+    border-radius: 24px;
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.form-header h2 {
+    margin: 0;
+    font-size: 26px;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.form-header p {
+    color: #64748b;
+    margin: 8px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.note-box {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #047857;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.image-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 14px;
+    position: sticky;
+    top: 90px;
+}
+
+.image-preview {
+    width: 100%;
+    height: 245px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #07120d, #123020);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-fallback {
+    color: white;
+    text-align: center;
+}
+
+.image-fallback svg {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 10px;
+}
+
+.image-fallback strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.image-fallback span {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #d1fae5;
+    font-weight: 700;
+}
+
+.file-upload-btn {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    background: #07120d;
+    color: white;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.file-upload-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.image-help {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.form-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    margin: 0 0 14px;
+    font-size: 17px;
+    color: #0f172a;
+    font-weight: 900;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 900;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 13px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #0f172a;
+    font-weight: 700;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background: #f1f5f9;
+    color: #475569;
+    cursor: not-allowed;
+}
+
+textarea.form-control {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 12px;
+    margin: 6px 0 0;
+    padding-left: 18px;
+    font-weight: 800;
+}
+
+.error-text {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 800;
+}
+
+.manager-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-weight: 800;
+    margin-top: 12px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn-primary {
+    background: #16a34a;
+    color: white;
+    border: 0;
+    padding: 13px 18px;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-light {
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    padding: 13px 18px;
+    border-radius: 14px;
+    font-weight: 900;
+    display: inline-block;
+    font-size: 14px;
+}
+
+
+.gps-capture-box {
+    grid-column: 1 / -1;
+    background:
+        radial-gradient(circle at top right, rgba(34,197,94,.14), transparent 34%),
+        linear-gradient(135deg, #f8fafc, #ecfdf5);
+    border: 1px solid #bbf7d0;
+    border-radius: 18px;
+    padding: 14px;
+}
+
+.gps-capture-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.gps-capture-head strong {
+    display: block;
+    color: #064e3b;
+    font-size: 15px;
+    font-weight: 1000;
+}
+
+.gps-capture-head span {
+    display: block;
+    color: #047857;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.gps-capture-btn {
+    border: 0;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    padding: 11px 15px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 1000;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(22,163,74,.22);
+}
+
+.gps-capture-btn:hover {
+    transform: translateY(-1px);
+}
+
+.gps-status {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.55;
+    display: none;
+}
+
+.gps-status.success {
+    display: block;
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #bbf7d0;
+}
+
+.gps-status.error {
+    display: block;
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.gps-status.info {
+    display: block;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+@media(max-width: 950px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .image-card {
+        position: static;
+    }
+
+    .image-preview {
+        height: 220px;
+    }
+}
+
+@media(max-width: 700px) {
+    .dealer-form-page {
+        padding: 12px;
+    }
+
+    .dealer-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .form-header h2 {
+        font-size: 21px;
+    }
+
+    .form-section {
+        padding: 13px;
+        border-radius: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .image-preview {
+        height: 190px;
+    }
+
+    .action-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn-primary,
+    .btn-light {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+
+<div class="dealer-form-page">
+    <div class="dealer-card">
+
+        <div class="form-header">
+            <div>
+                <h2>{{ title }}</h2>
+                <p>Dealer KYC, dealer ID, manager, cheque deposit, and yearly target.</p>
+            </div>
+        </div>
+
+        <div class="note-box">
+            Select dealer manager / sales officer. Concerned ASM will be assigned automatically based on the selected Sales Officer's manager.
+            Deposit mode is cheque only and default deposit amount is ₹15,000.
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="main-layout">
+
+                <div class="image-card">
+                    <div class="image-preview" id="dealerImagePreview">
+                        {% if dealer and dealer.dealer_image %}
+                            <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name|default:'Dealer image' }}">
+                        {% else %}
+                            <div class="image-fallback" id="dealerImageFallback">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16"/>
+                                    <path stroke-width="2" d="M14 14l1.5-1.5a2 2 0 0 1 2.8 0L21 15"/>
+                                    <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/>
+                                    <circle cx="8.5" cy="9.5" r="1.5" stroke-width="2"/>
+                                </svg>
+                                <strong>Dealer Image</strong>
+                                <span>Upload dealer photo or firm photo</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <label class="file-upload-btn" for="dealerImageInput">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M12 16V4"/>
+                            <path stroke-width="2" d="M7 9l5-5 5 5"/>
+                            <path stroke-width="2" d="M4 20h16"/>
+                        </svg>
+                        Choose / Change Image
+                    </label>
+
+                    <input type="file"
+                           name="dealer_image"
+                           id="dealerImageInput"
+                           class="hidden-file-input"
+                           accept="image/*">
+
+                    <div class="image-help">
+                        The selected image will be shown here directly. No file link will be shown to the user.
+                    </div>
+
+                    {% if form.dealer_image.errors %}
+                        <div class="error-text">{{ form.dealer_image.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Dealer ID & Manager</h3>
+
+                        <div class="form-grid">
+                            {% if form.dealer_code %}
+                                <div class="form-group">
+                                    <label>Dealer ID</label>
+                                    {{ form.dealer_code }}
+                                    {{ form.dealer_code.errors }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.created_by_sales_officer %}
+                                <div class="form-group">
+                                    <label>Dealer Manager / Sales Officer</label>
+                                    {{ form.created_by_sales_officer }}
+                                    {{ form.created_by_sales_officer.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="manager-box">
+                            Dealer ID can be entered manually like <b>DLR00001</b>. If it is left empty, system will create it automatically after saving.
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Dealer Owner Details</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Owner Name</label>
+                                {{ form.owner_name }}
+                                {{ form.owner_name.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Owner Email / Login Email</label>
+                                {{ form.email }}
+                                {{ form.email.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                {{ form.phone }}
+                                {{ form.phone.errors }}
+                            </div>
+
+                            <div class="form-group full">
+                                <label>Owner Address</label>
+                                {{ form.owner_address }}
+                                {{ form.owner_address.errors }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Firm Details</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Firm Name</label>
+                                {{ form.firm_name }}
+                                {{ form.firm_name.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>GST Number</label>
+                                {{ form.gst_number }}
+                                {{ form.gst_number.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>State</label>
+                                {{ form.state }}
+                                {{ form.state.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>District</label>
+                                {{ form.district }}
+                                {{ form.district.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Firm Type</label>
+                                {{ form.firm_type }}
+                                {{ form.firm_type.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>License Number Optional</label>
+                                {{ form.license_number }}
+                                {{ form.license_number.errors }}
+                            </div>
+
+                            <div class="form-group full">
+                                <label>Firm Address</label>
+                                {{ form.firm_address }}
+                                {{ form.firm_address.errors }}
+                            </div>
+
+                            {% if form.latitude or form.longitude or form.location_accuracy_meters or form.visit_radius_meters %}
+                                <div class="gps-capture-box">
+                                    <div class="gps-capture-head">
+                                        <div>
+                                            <strong>Dealer Shop Exact GPS Location</strong>
+                                            <span>
+                                                Stand at the dealer shop. This location will be used to verify Sales Officer dealer visits.
+                                                Visit will be accepted only when the Sales Officer is at this saved location.
+                                            </span>
+                                        </div>
+
+                                        <button type="button" class="gps-capture-btn" onclick="captureDealerLocation(false)">
+                                            📍 Re-Capture GPS
+                                        </button>
+                                    </div>
+
+                                    <div class="form-grid">
+                                        {% if form.latitude %}
+                                            <div class="form-group">
+                                                <label>Dealer Latitude</label>
+                                                {{ form.latitude }}
+                                                {{ form.latitude.errors }}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if form.longitude %}
+                                            <div class="form-group">
+                                                <label>Dealer Longitude</label>
+                                                {{ form.longitude }}
+                                                {{ form.longitude.errors }}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if form.location_accuracy_meters %}
+                                            <div class="form-group">
+                                                <label>GPS Accuracy Meter</label>
+                                                {{ form.location_accuracy_meters }}
+                                                {{ form.location_accuracy_meters.errors }}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if form.visit_radius_meters %}
+                                            <div class="form-group">
+                                                <label>Allowed Visit Radius Meter</label>
+                                                {{ form.visit_radius_meters }}
+                                                {{ form.visit_radius_meters.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div id="dealerLocationStatus" class="gps-status"></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Deposit Details</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Deposit Amount</label>
+                                {{ form.deposit_amount }}
+                                {{ form.deposit_amount.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Deposit Mode</label>
+                                {{ form.deposit_mode }}
+                                {{ form.deposit_mode.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cheque Number</label>
+                                {{ form.cheque_number }}
+                                {{ form.cheque_number.errors }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Business Target & Login</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Dealer Flag</label>
+                                {{ form.flag }}
+                                {{ form.flag.errors }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Yearly Target Amount</label>
+                                {{ form.yearly_target_amount }}
+                                {{ form.yearly_target_amount.errors }}
+                            </div>
+
+                            {% if form.achieved_amount %}
+                                <div class="form-group">
+                                    <label>Achieved Amount</label>
+                                    {{ form.achieved_amount }}
+                                    {{ form.achieved_amount.errors }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.password %}
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    {{ form.password }}
+                                    {{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button type="submit" class="btn-primary">
+                            {{ button_text|default:"Save Dealer" }}
+                        </button>
+
+                        <a href="{% url 'dealer_list' %}" class="btn-light">
+                            Back
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function setDealerLocationStatus(message, type) {
+    const statusBox = document.getElementById("dealerLocationStatus");
+
+    if (!statusBox) {
+        return;
+    }
+
+    statusBox.className = "gps-status " + type;
+    statusBox.innerHTML = message;
+}
+
+function captureDealerLocation(isAuto) {
+    const latInput = document.getElementById("id_dealer_latitude");
+    const lngInput = document.getElementById("id_dealer_longitude");
+    const accuracyInput = document.getElementById("id_dealer_location_accuracy");
+
+    if (!latInput || !lngInput || !accuracyInput) {
+        return;
+    }
+
+    setDealerLocationStatus(
+        "Getting accurate dealer GPS location... Please stand at dealer shop and allow location permission.",
+        "info"
+    );
+
+    if (!navigator.geolocation) {
+        setDealerLocationStatus("GPS is not supported in this browser.", "error");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            latInput.value = lat.toFixed(7);
+            lngInput.value = lng.toFixed(7);
+            accuracyInput.value = accuracy.toFixed(2);
+
+            if (accuracy > 25) {
+                setDealerLocationStatus(
+                    "GPS accuracy is weak: <b>" + Math.round(accuracy) + " meters</b>.<br>" +
+                    "Move outside / open area near dealer shop and click <b>Re-Capture GPS</b>. Form will not save with weak GPS.",
+                    "error"
+                );
+                return;
+            }
+
+            setDealerLocationStatus(
+                "Dealer GPS captured successfully.<br>" +
+                "Latitude: <b>" + lat.toFixed(7) + "</b><br>" +
+                "Longitude: <b>" + lng.toFixed(7) + "</b><br>" +
+                "Accuracy: <b>" + Math.round(accuracy) + " meters</b>",
+                "success"
+            );
+        },
+        function(error) {
+            let message = "GPS failed. Please allow location permission and try again.";
+
+            if (error && error.code === 1) {
+                message = "Location permission denied. Please allow location permission in browser settings.";
+            } else if (error && error.code === 2) {
+                message = "Location unavailable. Please turn on GPS and try again.";
+            } else if (error && error.code === 3) {
+                message = "GPS timeout. Please stand in open area and try again.";
+            }
+
+            setDealerLocationStatus(message, "error");
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 25000,
+            maximumAge: 0
+        }
+    );
+}
+
+function autoCaptureDealerLocationIfEmpty() {
+    const latInput = document.getElementById("id_dealer_latitude");
+    const lngInput = document.getElementById("id_dealer_longitude");
+    const accuracyInput = document.getElementById("id_dealer_location_accuracy");
+
+    if (!latInput || !lngInput || !accuracyInput) {
+        return;
+    }
+
+    if (!latInput.value && !lngInput.value && !accuracyInput.value) {
+        setTimeout(function() {
+            captureDealerLocation(true);
+        }, 800);
+    }
+}
+
+function setupDealerImagePreview() {
+    const input = document.getElementById("dealerImageInput");
+    const preview = document.getElementById("dealerImagePreview");
+
+    if (!input || !preview) {
+        return;
+    }
+
+    input.addEventListener("change", function () {
+        const file = input.files && input.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            preview.innerHTML = "";
+
+            const image = document.createElement("img");
+            image.src = event.target.result;
+            image.alt = "Dealer image preview";
+
+            preview.appendChild(image);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    setupDealerImagePreview();
+    autoCaptureDealerLocationIfEmpty();
+});
+</script>
+{% endblock %}

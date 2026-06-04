@@ -1,0 +1,217 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.print-page {
+    max-width: 900px;
+    margin: 18px auto;
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 26px;
+    color: #0f172a;
+}
+
+.print-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+}
+
+.print-head h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.print-head p {
+    margin: 4px 0;
+    font-weight: 800;
+    color: #475569;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.info-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 900;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 9px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+th {
+    background: #f8fafc;
+    text-align: left;
+    font-weight: 900;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.total-box {
+    margin-top: 16px;
+    margin-left: auto;
+    width: 320px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 900;
+}
+
+.total-row:last-child {
+    border-bottom: none;
+    background: #f8fafc;
+}
+
+.print-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin: 18px auto;
+    max-width: 900px;
+}
+
+.print-btn {
+    border: none;
+    background: #0f172a;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+@media print {
+    .topbar,
+    .footer,
+    .messages-wrap,
+    .print-actions {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .print-page {
+        margin: 0;
+        max-width: none;
+        border: none;
+        box-shadow: none;
+    }
+}
+</style>
+
+<div class="print-actions">
+    <a href="{% url 'purchase_dashboard' %}" class="print-btn">Back</a>
+    <button onclick="window.print()" class="print-btn">Print</button>
+</div>
+
+<div class="print-page">
+    <div class="print-head">
+        <div>
+            <h2>Purchase Invoice</h2>
+            <p>Arvis Fertilizers & Chemicals Pvt Ltd</p>
+        </div>
+
+        <div>
+            <p><strong>Bill No:</strong> {{ bill.bill_number }}</p>
+            <p><strong>Date:</strong> {{ bill.bill_date|date:"d/m/Y" }}</p>
+            <p><strong>Status:</strong> {{ bill.get_payment_status_display }}</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <strong>Party Details</strong>
+            {{ bill.party.party_name }}<br>
+            {% if bill.party.phone %}Phone: {{ bill.party.phone }}<br>{% endif %}
+            {% if bill.party.gst_number %}GST: {{ bill.party.gst_number }}{% endif %}
+        </div>
+
+        <div class="info-box">
+            <strong>Payment Details</strong>
+            Total: ₹{{ bill.total_amount }}<br>
+            Paid: ₹{{ bill.paid_amount }}<br>
+            Balance: ₹{{ bill.balance_amount }}
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Rate</th>
+                <th class="text-right">GST %</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.inventory_item.name }}</td>
+                    <td>{{ item.unit }}</td>
+                    <td class="text-right">{{ item.quantity }}</td>
+                    <td class="text-right">₹{{ item.purchase_price }}</td>
+                    <td class="text-right">{{ item.gst_percent }}</td>
+                    <td class="text-right">₹{{ item.line_total }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-box">
+        <div class="total-row">
+            <span>Total Amount</span>
+            <span>₹{{ bill.total_amount }}</span>
+        </div>
+        <div class="total-row">
+            <span>Paid Amount</span>
+            <span>₹{{ bill.paid_amount }}</span>
+        </div>
+        <div class="total-row">
+            <span>Balance Due</span>
+            <span>₹{{ bill.balance_amount }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

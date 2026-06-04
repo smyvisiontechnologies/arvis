@@ -1,0 +1,260 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.form-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.form-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.form-head p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 900;
+    color: #334155;
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.form-control,
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 800;
+    outline: none;
+}
+
+.form-control:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.help-text {
+    display: block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 750;
+}
+
+.errorlist {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: #dc2626;
+    font-size: 12.5px;
+    font-weight: 800;
+}
+
+.check-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    color: #334155;
+}
+
+.check-card input {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563eb;
+}
+
+.manager-note {
+    margin-top: 16px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 17px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.action-row {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #0f172a);
+    color: white;
+    border: none;
+    padding: 13px 18px;
+    border-radius: 15px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.btn-light {
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    padding: 13px 18px;
+    border-radius: 15px;
+    font-weight: 900;
+    border: 1px solid #e2e8f0;
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .form-card {
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn-primary,
+    .btn-light {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="form-card">
+        <div class="form-head">
+            <div>
+                <h2>{{ title|default:"Warehouse" }}</h2>
+                <p>Create or update warehouse and assign warehouse manager.</p>
+            </div>
+
+            <a href="{% url 'warehouse_list' %}" class="btn-light">
+                Back
+            </a>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="errorlist">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>State</label>
+                    {{ form.state }}
+                    {{ form.state.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>District</label>
+                    {{ form.district }}
+                    {{ form.district.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Warehouse Name</label>
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Warehouse Manager</label>
+                    {{ form.warehouse_manager }}
+                    {{ form.warehouse_manager.errors }}
+                    <span class="help-text">
+                        Select the employee who will manage this warehouse.
+                    </span>
+                </div>
+            </div>
+
+            <div style="margin-top:14px;">
+                <label class="check-card">
+                    {{ form.is_active }}
+                    <span>Active Warehouse</span>
+                </label>
+                {{ form.is_active.errors }}
+            </div>
+
+            <div class="manager-note">
+                Only users with role <b>Warehouse Manager</b> will appear in this dropdown.
+                Create employee with Warehouse Manager role first, then assign here.
+            </div>
+
+            <div class="action-row">
+                <a href="{% url 'warehouse_list' %}" class="btn-light">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn-primary">
+                    {{ button_text|default:"Save Warehouse" }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

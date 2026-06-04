@@ -1,0 +1,675 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.product-page {
+    padding: 18px;
+}
+
+.admin-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.admin-top h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.admin-top p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.top-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn.dark {
+    background: #07120d;
+    color: white;
+}
+
+.action-btn.green {
+    background: linear-gradient(135deg, #ffb000, #84c341);
+    color: #07120d;
+}
+
+.search-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 13px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 12px 14px;
+    outline: none;
+    font-weight: 700;
+}
+
+.form-control:focus {
+    border-color: #84c341;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.14);
+}
+
+.search-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 18px;
+    background: #00a8e8;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.product-img {
+    height: 235px;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    position: relative;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.product-letter {
+    width: 92px;
+    height: 92px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #ffb000, #84c341);
+    color: #07120d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.status-pill {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.status-pill.active {
+    background: #2f8f46;
+    color: white;
+}
+
+.status-pill.inactive {
+    background: #dc2626;
+    color: white;
+}
+
+.product-body {
+    padding: 13px;
+}
+
+.category-text {
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.product-title {
+    margin: 0;
+    color: #111827;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.25;
+    min-height: 40px;
+}
+
+.mini-meta {
+    margin-top: 7px;
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.meta-chip {
+    background: #f1f5f9;
+    color: #334155;
+    border-radius: 999px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.meta-chip.stock {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.meta-chip.out {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.pack-chips {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    margin-top: 12px;
+    padding-bottom: 3px;
+}
+
+.pack-chips::-webkit-scrollbar {
+    height: 0;
+}
+
+.pack-chip {
+    min-width: 76px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 13px;
+    padding: 8px;
+}
+
+.pack-chip strong {
+    display: block;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.pack-chip span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    margin-top: 3px;
+}
+
+.spec-details {
+    margin-top: 12px;
+}
+
+.spec-details summary {
+    list-style: none;
+    cursor: pointer;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 13px;
+    padding: 10px 12px;
+    color: #07120d;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.spec-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.spec-box {
+    margin-top: 9px;
+    display: grid;
+    gap: 8px;
+}
+
+.spec-pack {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.spec-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.spec-head strong {
+    color: #111827;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.spec-price {
+    text-align: right;
+    color: #07120d;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.spec-small {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin-top: 6px;
+}
+
+.scheme-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.scheme-badge {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 999px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.card-actions {
+    margin-top: 13px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.edit-btn,
+.sticker-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    border-radius: 14px;
+    padding: 11px 12px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.edit-btn {
+    background: #07120d;
+    color: white;
+}
+
+.sticker-btn {
+    background: linear-gradient(135deg, #2563eb, #00a8e8);
+    color: white;
+}
+
+.empty-box {
+    background: white;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    color: #64748b;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+@media(min-width: 1400px) {
+    .product-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media(min-width: 1100px) and (max-width: 1399px) {
+    .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media(min-width: 800px) and (max-width: 1099px) {
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 700px) {
+    .product-page {
+        padding: 10px;
+    }
+
+    .admin-top h2 {
+        font-size: 21px;
+    }
+
+    .top-actions {
+        width: 100%;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product-card {
+        border-radius: 15px;
+    }
+
+    .product-img {
+        height: 150px;
+        padding: 7px;
+    }
+
+    .status-pill {
+        left: 7px;
+        bottom: 7px;
+        font-size: 8px;
+        padding: 4px 7px;
+    }
+
+    .product-body {
+        padding: 8px;
+    }
+
+    .category-text {
+        font-size: 8px;
+        margin-bottom: 4px;
+    }
+
+    .product-title {
+        font-size: 12px;
+        min-height: 30px;
+    }
+
+    .meta-chip {
+        font-size: 8px;
+        padding: 4px 6px;
+    }
+
+    .pack-chip {
+        min-width: 62px;
+        padding: 6px;
+        border-radius: 10px;
+    }
+
+    .pack-chip strong {
+        font-size: 10px;
+    }
+
+    .pack-chip span {
+        font-size: 8px;
+    }
+
+    .spec-details summary {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    .spec-pack {
+        padding: 8px;
+    }
+
+    .spec-head {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .spec-head strong,
+    .spec-price {
+        font-size: 10px;
+        text-align: left;
+    }
+
+    .spec-small {
+        font-size: 9px;
+    }
+
+    .scheme-badge {
+        font-size: 8px;
+        padding: 4px 6px;
+    }
+
+    .edit-btn {
+        padding: 9px;
+        font-size: 10px;
+        border-radius: 11px;
+    }
+}
+
+@media(max-width: 390px) {
+    .product-page {
+        padding: 8px;
+    }
+
+    .product-grid {
+        gap: 8px;
+    }
+
+    .product-img {
+        height: 138px;
+    }
+}
+</style>
+
+<div class="product-page">
+
+    <div class="admin-top">
+        <div>
+            <h2>Products</h2>
+            <p>{{ products|length }} products available</p>
+        </div>
+
+        <div class="top-actions">
+            <a href="{% url 'product_category_create' %}" class="action-btn dark">
+                + Category
+            </a>
+
+            <a href="{% url 'product_create' %}" class="action-btn green">
+                + Create Product
+            </a>
+        </div>
+    </div>
+
+    <div class="search-card">
+        <form method="get" class="search-form">
+            <input
+                type="text"
+                name="q"
+                value="{{ search }}"
+                class="form-control"
+                placeholder="Search product, category, HSN..."
+            >
+
+            <button type="submit" class="search-btn">
+                Search
+            </button>
+        </form>
+    </div>
+
+    {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+
+                    <div class="product-img">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="product-letter">
+                                {{ product.name|first|upper }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.is_active %}
+                            <span class="status-pill active">Active</span>
+                        {% else %}
+                            <span class="status-pill inactive">Inactive</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="product-body">
+                        <div class="category-text">
+                            {{ product.category.name }}
+                        </div>
+
+                        <h3 class="product-title">
+                            {{ product.name }}
+                        </h3>
+
+                        <div class="mini-meta">
+                            {% if product.hsn_number %}
+                                <span class="meta-chip">HSN {{ product.hsn_number }}</span>
+                            {% endif %}
+
+                            {% if product.in_stock %}
+                                <span class="meta-chip stock">In Stock</span>
+                            {% else %}
+                                <span class="meta-chip out">Out of Stock</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="pack-chips">
+                            {% for pack in product.pack_sizes.all %}
+                                <div class="pack-chip">
+                                    <strong>{{ pack.display_pack }}</strong>
+                                    <span>₹{{ pack.sale_price_per_unit }}</span>
+                                </div>
+                            {% empty %}
+                                <div class="pack-chip">
+                                    <strong>-</strong>
+                                    <span>No packs</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <details class="spec-details">
+                            <summary>View Specs</summary>
+
+                            <div class="spec-box">
+                                {% for pack in product.pack_sizes.all %}
+                                    <div class="spec-pack">
+                                        <div class="spec-head">
+                                            <strong>{{ pack.display_pack }}</strong>
+                                            <div class="spec-price">
+                                                ₹{{ pack.sale_price_per_unit }}
+                                            </div>
+                                        </div>
+
+                                        <div class="spec-small">
+                                            MRP: ₹{{ pack.mrp_per_unit }}<br>
+                                            Box: ₹{{ pack.box_sale_price }}<br>
+                                            Contains: {{ pack.units_per_box }} × {{ pack.display_pack }}<br>
+                                            Stock: {{ pack.stock_boxes }} boxes<br>
+                                            Warehouse: {{ pack.warehouse.name }}<br>
+                                            Purchase: ₹{{ pack.purchase_price_per_unit }} |
+                                            Margin: {{ pack.margin_percent }}%
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="spec-pack">
+                                        <div class="spec-small">
+                                            No pack sizes added.
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </details>
+
+                        {% if product.schemes.all %}
+                            <div class="scheme-row">
+                                {% for scheme in product.schemes.all %}
+                                    {% if scheme.is_active %}
+                                        <span class="scheme-badge">
+                                            {{ scheme.scheme_name }}
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="card-actions">
+                            {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "INVENTORY_MANAGER" %}
+                                <a href="{% url 'product_sticker_print' product.id %}" class="sticker-btn">
+                                    Print Sticker
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'product_edit' product.id %}" class="edit-btn">
+                                Edit Product
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-box">
+            <h3 style="margin-top:0;">No products found</h3>
+            <p>Create your first product with pack sizes and schemes.</p>
+
+            <a href="{% url 'product_create' %}" class="action-btn green">
+                + Create Product
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

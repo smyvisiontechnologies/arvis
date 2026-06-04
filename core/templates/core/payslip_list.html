@@ -1,0 +1,211 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:18px; }
+.head {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 8px 22px rgba(15,23,42,.05);
+    margin-bottom:14px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.head h2 { margin:0;color:#0f172a;font-size:24px;font-weight:900; }
+.head p { margin:5px 0 0;color:#64748b;font-weight:750;font-size:13px; }
+.btn {
+    border:none;
+    border-radius:13px;
+    padding:10px 13px;
+    color:white;
+    text-decoration:none;
+    font-weight:900;
+    cursor:pointer;
+    display:inline-flex;
+}
+.btn.blue { background:#2563eb; }
+.btn.green { background:#16a34a; }
+.btn.orange { background:#d97706; }
+.btn.dark { background:#0f172a; }
+.btn.red { background:#dc2626; }
+.filter-card {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:12px;
+    margin-bottom:14px;
+}
+.filter-form { display:flex;gap:8px;flex-wrap:wrap;align-items:center; }
+.filter-form input, .filter-form select {
+    padding:10px;
+    border-radius:12px;
+    border:1px solid #cbd5e1;
+    font-weight:800;
+}
+.table-card {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:22px;
+    padding:0;
+    overflow:hidden;
+    box-shadow:0 8px 22px rgba(15,23,42,.05);
+}
+.table-wrap { overflow-x:auto; }
+table { width:100%;border-collapse:collapse;min-width:980px; }
+th {
+    background:#f8fafc;
+    color:#334155;
+    font-size:12px;
+    font-weight:900;
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid #e2e8f0;
+}
+td {
+    padding:12px;
+    border-bottom:1px solid #edf2f7;
+    font-size:13px;
+    font-weight:800;
+}
+.badge {
+    display:inline-flex;
+    border-radius:999px;
+    padding:6px 10px;
+    font-size:11px;
+    font-weight:900;
+}
+.badge.draft { background:#fffbeb;color:#b45309;border:1px solid #fde68a; }
+.badge.released { background:#ecfdf5;color:#047857;border:1px solid #bbf7d0; }
+.action-row { display:flex;gap:6px;flex-wrap:wrap; }
+.empty {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:20px;
+    padding:24px;
+    color:#64748b;
+    font-weight:800;
+    text-align:center;
+}
+@media(max-width:700px){
+    .page{padding:12px;}
+    .filter-form{display:grid;grid-template-columns:1fr;}
+}
+</style>
+
+<div class="page">
+    <div class="head">
+        <div>
+            <h2>Payslip Management</h2>
+            <p>Generate draft payslips, review salary details, then release to employees.</p>
+        </div>
+
+        <a href="{% url 'payslip_generate' %}" class="btn blue">Generate Payslips</a>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <select name="status">
+                <option value="DRAFT" {% if status == "DRAFT" %}selected{% endif %}>Draft / Review Pending</option>
+                <option value="RELEASED" {% if status == "RELEASED" %}selected{% endif %}>Released</option>
+                <option value="" {% if not status %}selected{% endif %}>All</option>
+            </select>
+
+            <input type="number" name="month" placeholder="Month" min="1" max="12" value="{{ month|default:'' }}">
+            <input type="number" name="year" placeholder="Year" value="{{ year|default:'' }}">
+
+            <button type="submit" class="btn dark">Filter</button>
+        </form>
+    </div>
+
+    {% if month and year and status == "DRAFT" and payslips %}
+        <div class="filter-card">
+            <form method="post" action="{% url 'payslip_release_bulk' %}">
+                {% csrf_token %}
+                <input type="hidden" name="month" value="{{ month }}">
+                <input type="hidden" name="year" value="{{ year }}">
+
+                <button type="submit" class="btn green"
+                        onclick="return confirm('Release all reviewed draft payslips for this month/year?')">
+                    Release All Reviewed Payslips
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if payslips %}
+        <div class="table-card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payslip</th>
+                            <th>Employee</th>
+                            <th>Month</th>
+                            <th>Basic</th>
+                            <th>Allowance</th>
+                            <th>Deductions</th>
+                            <th>Net Salary</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for p in payslips %}
+                            <tr>
+                                <td>{{ p.payslip_number }}</td>
+
+                                <td>
+                                    {{ p.employee.get_full_name|default:p.employee.username }}
+                                    <br>
+                                    <small>{{ p.employee.profile.get_role_display }}</small>
+                                </td>
+
+                                <td>{{ p.month_name }} {{ p.year }}</td>
+                                <td>₹{{ p.basic_salary }}</td>
+                                <td>₹{{ p.allowance_amount }}</td>
+                                <td>₹{{ p.total_deductions }}</td>
+                                <td><b>₹{{ p.net_salary }}</b></td>
+
+                                <td>
+                                    {% if p.status == "RELEASED" %}
+                                        <span class="badge released">Released</span>
+                                    {% else %}
+                                        <span class="badge draft">Draft</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="action-row">
+                                        <a href="{% url 'payslip_detail' p.id %}" class="btn blue">Review</a>
+
+                                        {% if p.status == "DRAFT" %}
+                                            <a href="{% url 'payslip_edit' p.id %}" class="btn orange">Edit</a>
+
+                                            <form method="post" action="{% url 'payslip_release' p.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn green"
+                                                        onclick="return confirm('Release this payslip to employee?')">
+                                                    Release
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <a href="{% url 'payslip_print' p.id %}" target="_blank" class="btn dark">Print</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty">No payslips found.</div>
+    {% endif %}
+</div>
+{% endblock %}

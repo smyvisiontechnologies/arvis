@@ -1,0 +1,112 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.page {
+    padding: 18px;
+}
+
+.card {
+    max-width: 720px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+}
+
+.card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.info {
+    margin-top: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px;
+    color: #334155;
+    font-weight: 850;
+    line-height: 1.5;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 12px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-orange {
+    background: #d97706;
+    color: white;
+}
+
+.btn-dark {
+    background: #0f172a;
+    color: white;
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Return Asset</h2>
+
+        <div class="info">
+            Asset:
+            <strong>{{ assignment.asset.asset_code }} - {{ assignment.asset.name }}</strong><br>
+            Used By:
+            <strong>{{ assignment.employee.get_full_name|default:assignment.employee.username }}</strong><br>
+            Assigned At:
+            {{ assignment.assigned_at|date:"d M Y, h:i A" }}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label style="display:block;margin-top:16px;font-weight:900;color:#334155;">
+                Return Note
+            </label>
+
+            <textarea name="return_note"
+                      rows="4"
+                      class="form-control"
+                      placeholder="Example: Returned in good condition / screen damaged / charger missing"></textarea>
+
+            <div class="btn-row">
+                <button type="submit" class="btn btn-orange">
+                    Confirm Return
+                </button>
+
+                <a href="{% url 'asset_detail' assignment.asset.id %}" class="btn btn-dark">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

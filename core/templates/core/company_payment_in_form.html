@@ -1,0 +1,574 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    max-width: 980px;
+    margin: auto;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+h2 {
+    margin: 0 0 5px;
+    color: #0f172a;
+    font-weight: 900;
+    font-size: 24px;
+}
+
+.subtitle {
+    color: #64748b;
+    font-weight: 700;
+    margin: 0;
+    font-size: 13px;
+}
+
+.back-link {
+    text-decoration: none;
+    background: #07120d;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 13px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 900;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 11px 12px;
+    outline: none;
+    font-weight: 700;
+    background: white;
+    color: #0f172a;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 95px;
+}
+
+.error-box {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 13px;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.error {
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+.help-box {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 11px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 14px;
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn {
+    border: none;
+    text-decoration: none;
+    border-radius: 13px;
+    padding: 12px 16px;
+    font-weight: 900;
+    color: white;
+    background: #16a34a;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn.back {
+    background: #07120d;
+}
+
+/* Dealer searchable dropdown */
+.dealer-hidden-select {
+    display: none;
+}
+
+.dealer-combo {
+    position: relative;
+}
+
+.dealer-search-input {
+    cursor: text;
+}
+
+.dealer-dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.14);
+    max-height: 270px;
+    overflow-y: auto;
+    z-index: 80;
+    padding: 6px;
+}
+
+.dealer-dropdown.show {
+    display: block;
+}
+
+.dealer-option {
+    padding: 10px 11px;
+    border-radius: 11px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-bottom: 5px;
+    background: white;
+}
+
+.dealer-option:hover {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.dealer-code {
+    display: inline-flex;
+    background: #07120d;
+    color: white;
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.dealer-main {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.3;
+}
+
+.dealer-sub {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+.dealer-selected {
+    margin-top: 8px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 9px 11px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+.dealer-selected.active {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+    color: #047857;
+}
+
+@media(max-width:650px) {
+    .page {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn,
+    .back-link {
+        text-align: center;
+        width: 100%;
+    }
+
+    .page-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <div class="page-head">
+            <div>
+                <h2>{{ title }}</h2>
+                <p class="subtitle">Record money received into the company account.</p>
+            </div>
+
+            <a href="{% url 'accounts_dashboard' %}" class="back-link">
+                Back to Accounts
+            </a>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="grid">
+                <div class="field">
+                    <label>Deposit To Account</label>
+                    {{ form.account }}
+                    <div class="error">{{ form.account.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payment In Type</label>
+                    {{ form.source_type }}
+                    <div class="error">{{ form.source_type.errors }}</div>
+                </div>
+
+                <div class="field full dealer-field">
+                    <label>Select Dealer</label>
+
+                    <div class="dealer-combo" id="dealerCombo">
+                        <input type="text"
+                               id="dealerSearchInput"
+                               class="form-control dealer-search-input"
+                               placeholder="Search dealer ID, firm name, owner name or phone"
+                               autocomplete="off">
+
+                        <div class="dealer-dropdown" id="dealerDropdown"></div>
+                    </div>
+
+                    {{ form.dealer }}
+
+                    <div class="dealer-selected" id="dealerSelectedText">
+                        No dealer selected
+                    </div>
+
+                    <div class="error">{{ form.dealer.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Amount</label>
+                    {{ form.amount }}
+                    <div class="error">{{ form.amount.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payment Mode</label>
+                    {{ form.payment_mode }}
+                    <div class="error">{{ form.payment_mode.errors }}</div>
+                </div>
+
+                <div class="field">
+                    <label>Payment Date</label>
+                    {{ form.payment_date }}
+                    <div class="error">{{ form.payment_date.errors }}</div>
+                </div>
+
+                <div class="field reference-field">
+                    <label>Reference / Transaction Number</label>
+                    {{ form.reference_number }}
+                    <div class="error">{{ form.reference_number.errors }}</div>
+                </div>
+
+                <div class="field cheque-field">
+                    <label>Cheque Number</label>
+                    {{ form.cheque_number }}
+                    <div class="error">{{ form.cheque_number.errors }}</div>
+                </div>
+
+                <div class="field screenshot-field">
+                    <label>Payment Screenshot</label>
+                    {{ form.payment_screenshot }}
+                    <div class="error">{{ form.payment_screenshot.errors }}</div>
+                </div>
+
+                <div class="field full">
+                    <label>Reason / Note</label>
+                    {{ form.reason }}
+                    <div class="error">{{ form.reason.errors }}</div>
+                </div>
+            </div>
+
+            <div class="help-box" id="helpBox">
+                Select dealer payment only when amount is received from a dealer. For UPI/Bank, reference number is required. For cheque, cheque number is required.
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">
+                    {{ button_text }}
+                </button>
+
+                <a href="{% url 'accounts_dashboard' %}" class="btn back">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function togglePaymentInFields() {
+    const sourceType = document.getElementById("id_source_type").value;
+    const paymentMode = document.getElementById("id_payment_mode").value;
+    const dealerSelect = document.getElementById("id_dealer");
+    const dealerSearchInput = document.getElementById("dealerSearchInput");
+    const dealerSelectedText = document.getElementById("dealerSelectedText");
+
+    document.querySelectorAll(".dealer-field").forEach(function(el) {
+        el.style.display = sourceType === "DEALER" ? "block" : "none";
+    });
+
+    if (sourceType !== "DEALER") {
+        if (dealerSelect) {
+            dealerSelect.value = "";
+        }
+
+        if (dealerSearchInput) {
+            dealerSearchInput.value = "";
+        }
+
+        if (dealerSelectedText) {
+            dealerSelectedText.innerText = "No dealer selected";
+            dealerSelectedText.classList.remove("active");
+        }
+    }
+
+    document.querySelectorAll(".reference-field").forEach(function(el) {
+        el.style.display = paymentMode === "UPI" || paymentMode === "BANK" ? "block" : "none";
+    });
+
+    document.querySelectorAll(".cheque-field").forEach(function(el) {
+        el.style.display = paymentMode === "CHEQUE" ? "block" : "none";
+    });
+
+    document.querySelectorAll(".screenshot-field").forEach(function(el) {
+        el.style.display = paymentMode === "UPI" || paymentMode === "BANK" ? "block" : "none";
+    });
+
+    const helpBox = document.getElementById("helpBox");
+
+    if (paymentMode === "UPI") {
+        helpBox.innerText = "UPI selected: enter UPI reference number. Screenshot is optional but recommended.";
+    } else if (paymentMode === "BANK") {
+        helpBox.innerText = "Bank transfer selected: enter bank transaction/reference number. Screenshot is optional but recommended.";
+    } else if (paymentMode === "CHEQUE") {
+        helpBox.innerText = "Cheque selected: enter cheque number.";
+    } else {
+        helpBox.innerText = "Cash selected: enter amount and compulsory reason/note.";
+    }
+}
+
+function setupDealerDropdownSearch() {
+    const searchInput = document.getElementById("dealerSearchInput");
+    const dropdown = document.getElementById("dealerDropdown");
+    const dealerSelect = document.getElementById("id_dealer");
+    const selectedText = document.getElementById("dealerSelectedText");
+
+    if (!searchInput || !dropdown || !dealerSelect || !selectedText) {
+        return;
+    }
+
+    const dealerOptions = Array.from(dealerSelect.options)
+        .filter(function(option) {
+            return option.value;
+        })
+        .map(function(option) {
+            const parts = option.text.split("|").map(function(item) {
+                return item.trim();
+            });
+
+            return {
+                value: option.value,
+                fullText: option.text,
+                dealerCode: parts[0] || "",
+                firmName: parts[1] || "",
+                ownerName: parts[2] || "",
+                phone: parts[3] || "",
+            };
+        });
+
+    function setSelectedDealer(item) {
+        dealerSelect.value = item.value;
+        searchInput.value = item.firmName;
+
+        selectedText.innerText = item.dealerCode + " | " + item.firmName + " | " + item.ownerName + " | " + item.phone;
+        selectedText.classList.add("active");
+
+        dropdown.classList.remove("show");
+    }
+
+    function renderOptions(keyword) {
+        dropdown.innerHTML = "";
+
+        const cleanKeyword = (keyword || "").toLowerCase().trim();
+
+        const filtered = dealerOptions.filter(function(item) {
+            return (
+                item.fullText.toLowerCase().includes(cleanKeyword) ||
+                item.dealerCode.toLowerCase().includes(cleanKeyword) ||
+                item.firmName.toLowerCase().includes(cleanKeyword) ||
+                item.ownerName.toLowerCase().includes(cleanKeyword) ||
+                item.phone.toLowerCase().includes(cleanKeyword)
+            );
+        });
+
+        if (filtered.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "dealer-option";
+            empty.innerHTML =
+                '<div class="dealer-main">No dealer found</div>' +
+                '<div class="dealer-sub">Try dealer ID, firm name, owner name or phone number</div>';
+
+            dropdown.appendChild(empty);
+            return;
+        }
+
+        filtered.forEach(function(item) {
+            const optionDiv = document.createElement("div");
+            optionDiv.className = "dealer-option";
+
+            optionDiv.innerHTML =
+                '<div class="dealer-code">' + item.dealerCode + '</div>' +
+                '<div class="dealer-main">' + item.firmName + '</div>' +
+                '<div class="dealer-sub">Owner: ' + item.ownerName + ' · Phone: ' + item.phone + '</div>';
+
+            optionDiv.addEventListener("click", function() {
+                setSelectedDealer(item);
+            });
+
+            dropdown.appendChild(optionDiv);
+        });
+    }
+
+    searchInput.addEventListener("focus", function() {
+        renderOptions(searchInput.value);
+        dropdown.classList.add("show");
+    });
+
+    searchInput.addEventListener("input", function() {
+        dealerSelect.value = "";
+        selectedText.innerText = "No dealer selected";
+        selectedText.classList.remove("active");
+
+        renderOptions(searchInput.value);
+        dropdown.classList.add("show");
+    });
+
+    document.addEventListener("click", function(event) {
+        const combo = document.getElementById("dealerCombo");
+
+        if (combo && !combo.contains(event.target)) {
+            dropdown.classList.remove("show");
+        }
+    });
+
+    const alreadySelected = dealerOptions.find(function(item) {
+        return item.value === dealerSelect.value;
+    });
+
+    if (alreadySelected) {
+        setSelectedDealer(alreadySelected);
+    }
+
+    renderOptions("");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    togglePaymentInFields();
+    setupDealerDropdownSearch();
+
+    const sourceType = document.getElementById("id_source_type");
+    const paymentMode = document.getElementById("id_payment_mode");
+
+    if (sourceType) {
+        sourceType.addEventListener("change", togglePaymentInFields);
+    }
+
+    if (paymentMode) {
+        paymentMode.addEventListener("change", togglePaymentInFields);
+    }
+});
+</script>
+{% endblock %}

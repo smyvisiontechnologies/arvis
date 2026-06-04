@@ -1,0 +1,137 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding: 18px; }
+
+.head {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.head h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.grid {
+    display: grid;
+    gap: 12px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+}
+
+.card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.meta {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.6;
+    margin-top: 8px;
+}
+
+textarea {
+    width: 100%;
+    padding: 11px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    margin-top: 10px;
+    font-weight: 800;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.btn {
+    border: none;
+    border-radius: 13px;
+    padding: 10px 13px;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.btn.green { background: #16a34a; }
+.btn.red { background: #dc2626; }
+
+.empty {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 800;
+}
+
+@media(max-width:650px) {
+    .page { padding: 12px; }
+    .actions { display: grid; grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="page">
+    <div class="head">
+        <h2>Leave Approvals</h2>
+    </div>
+
+    {% if leaves %}
+        <div class="grid">
+            {% for leave in leaves %}
+                <div class="card">
+                    <h3>{{ leave.employee.get_full_name|default:leave.employee.username }}</h3>
+
+                    <div class="meta">
+                        Leave: {{ leave.get_leave_type_display }} - {{ leave.get_day_type_display }}<br>
+                        From: {{ leave.from_date|date:"d M Y" }} |
+                        To: {{ leave.to_date|date:"d M Y" }}<br>
+                        Reason: {{ leave.reason }}<br>
+                        Days: {{ leave.deduction_days }}
+                    </div>
+
+                    <form method="post" action="{% url 'manager_approve_leave' leave.id %}">
+                        {% csrf_token %}
+                        <textarea name="manager_remarks" rows="2" placeholder="Approval remarks"></textarea>
+
+                        <div class="actions">
+                            <button type="submit" class="btn green">Approve</button>
+                        </div>
+                    </form>
+
+                    <form method="post" action="{% url 'manager_reject_leave' leave.id %}">
+                        {% csrf_token %}
+                        <textarea name="manager_remarks" rows="2" placeholder="Reject reason"></textarea>
+
+                        <div class="actions">
+                            <button type="submit" class="btn red">Reject</button>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">No pending leave approvals.</div>
+    {% endif %}
+</div>
+{% endblock %}

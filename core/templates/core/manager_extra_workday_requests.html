@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% block content %}
+<style>
+.page{padding:18px}.head{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+h2{margin:0;color:#0f172a;font-size:24px;font-weight:900}.card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}.meta{margin-top:8px;color:#64748b;font-size:13px;font-weight:750;line-height:1.6}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:none;border-radius:13px;padding:10px 13px;color:white;font-weight:900;text-decoration:none;cursor:pointer}.green{background:#16a34a}.red{background:#dc2626}
+textarea{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px;margin-top:10px;font-weight:800}
+.empty{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:24px;text-align:center;color:#64748b;font-weight:800}
+</style>
+
+<div class="page">
+    <div class="head"><h2>Extra Working Day Approvals</h2></div>
+
+    {% for r in requests_qs %}
+        <div class="card">
+            <h3>{{ r.employee.get_full_name|default:r.employee.username }}</h3>
+            <div class="meta">
+                Work Date: {{ r.work_date|date:"d M Y" }}<br>
+                Reason: {{ r.reason }}
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'manager_approve_extra_workday' r.id %}" class="btn green">Review & Approve</a>
+
+                <form method="post" action="{% url 'manager_reject_extra_workday' r.id %}">
+                    {% csrf_token %}
+                    <textarea name="manager_remarks" rows="2" placeholder="Reject reason"></textarea>
+                    <button type="submit" class="btn red">Reject</button>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty">No pending extra workday requests.</div>
+    {% endfor %}
+</div>
+{% endblock %}

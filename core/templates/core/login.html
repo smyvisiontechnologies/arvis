@@ -1,0 +1,355 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Arvis OMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #f6b400;
+            --gold-dark: #d99a00;
+            --cyan: #00aeef;
+            --cyan-dark: #0284c7;
+            --black: #050505;
+            --text: #111827;
+            --muted: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --input-bg: #ffffff;
+            --danger: #dc2626;
+            --danger-soft: #fef2f2;
+            --success: #047857;
+            --success-soft: #ecfdf5;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                linear-gradient(135deg, #ffffff 0%, #f8fafc 45%, #eef9ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            color: var(--text);
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .login-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+        }
+
+        .login-header {
+            padding: 28px 24px 22px;
+            text-align: center;
+            background:
+                linear-gradient(135deg, rgba(246, 180, 0, 0.14), rgba(0, 174, 239, 0.10));
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-box {
+            width: 210px;
+            height: 92px;
+            margin: 0 auto 14px;
+            background: #ffffff;
+            border: 1px solid #edf2f7;
+            border-radius: 18px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .login-header h1 {
+            margin: 0;
+            font-size: 27px;
+            font-weight: 900;
+            color: var(--black);
+            letter-spacing: -0.4px;
+        }
+
+        .login-header h1 span {
+            color: var(--gold-dark);
+        }
+
+        .login-header p {
+            margin: 8px 0 0;
+            color: var(--cyan-dark);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .login-body {
+            padding: 25px;
+        }
+
+        .error-box {
+            background: var(--danger-soft);
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-weight: 900;
+            font-size: 13px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            font-size: 15px;
+            font-weight: 700;
+            background: var(--input-bg);
+            color: var(--text);
+            padding: 0 14px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.14);
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 68px;
+        }
+
+        .show-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 32px;
+            border: none;
+            border-radius: 10px;
+            background: #e0f2fe;
+            color: var(--cyan-dark);
+            padding: 0 12px;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .field-errors {
+            margin-top: 6px;
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .field-errors ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--gold), #ffc928);
+            color: #000000;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 4px;
+            box-shadow: 0 10px 22px rgba(246, 180, 0, 0.22);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #ffc21a, var(--gold));
+        }
+
+
+        .footer-note {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+
+        .footer-note a {
+            color: var(--cyan-dark);
+            text-decoration: none;
+            font-weight: 900;
+        }
+
+        .footer-note a:hover {
+            color: var(--gold-dark);
+        }
+
+        @media(max-width: 520px) {
+            body {
+                padding: 14px;
+                align-items: flex-start;
+                padding-top: 28px;
+            }
+
+            .login-card {
+                border-radius: 20px;
+            }
+
+            .login-header {
+                padding: 25px 20px 20px;
+            }
+
+            .login-body {
+                padding: 21px;
+            }
+
+            .logo-box {
+                width: 190px;
+                height: 84px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Arvis Fertilizers Logo">
+            </div>
+
+            <h1>Welcome <span>Back</span></h1>
+            <p>Login to Arvis Order Management System</p>
+        </div>
+
+        <div class="login-body">
+
+            {% if form.non_field_errors %}
+                <div class="error-box">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Email Address</label>
+                    {{ form.username }}
+
+                    {% if form.username.errors %}
+                        <div class="field-errors">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+
+                    <div class="password-wrap">
+                        {{ form.password }}
+
+                        <button type="button" class="show-btn" onclick="togglePassword()" id="passwordToggle">
+                            Show
+                        </button>
+                    </div>
+
+                    {% if form.password.errors %}
+                        <div class="field-errors">
+                            {{ form.password.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Login
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="footer-note">
+        © {% now "Y" %} Arvis Fertilizers & Chemicals Pvt. Ltd.<br>
+        Developed by
+        <a href="https://smyvisiontechnologies.vercel.app" target="_blank">
+            SMYVISION TECHNOLOGIES
+        </a>
+    </div>
+
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById("id_password");
+    const toggleBtn = document.getElementById("passwordToggle");
+
+    if (!passwordInput || !toggleBtn) {
+        return;
+    }
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleBtn.textContent = "Hide";
+    } else {
+        passwordInput.type = "password";
+        toggleBtn.textContent = "Show";
+    }
+}
+</script>
+
+</body>
+</html>

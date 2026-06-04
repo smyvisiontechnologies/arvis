@@ -1,0 +1,207 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.pm-page {
+    padding: 24px;
+}
+
+.pm-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+}
+
+.pm-title {
+    margin: 0;
+    font-size: 26px;
+    color: #0f172a;
+}
+
+.pm-subtitle {
+    color: #64748b;
+    margin: 8px 0 22px;
+}
+
+.section-title {
+    margin: 24px 0 14px;
+    color: #0f172a;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: #334155;
+}
+
+.inline-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.btn-primary {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.btn-light {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+</style>
+
+<div class="pm-page">
+    <div class="pm-card">
+        <h2 class="pm-title">{{ title }}</h2>
+        <p class="pm-subtitle">Create product with multiple pack sizes, stock, warehouse, and schemes.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h3 class="section-title">Product Details</h3>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Category</label>
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Product Name</label>
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Image</label>
+                    {{ form.image }}
+                    {{ form.image.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>HSN Number</label>
+                    {{ form.hsn_number }}
+                    {{ form.hsn_number.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Active</label>
+                    {{ form.is_active }}
+                    {{ form.is_active.errors }}
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
+                <label>Description</label>
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+
+            <h3 class="section-title">Pack Sizes / Warehouse Stock</h3>
+
+            {{ pack_formset.management_form }}
+
+            <div id="packForms">
+                {% for pack_form in pack_formset %}
+                    <div class="inline-box">
+                        {{ pack_form.id }}
+
+                        <div class="form-grid">
+                            {% for field in pack_form.visible_fields %}
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {{ field }}
+                                    {{ field.errors }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn-light" onclick="addForm('packForms', 'id_packs-TOTAL_FORMS', 'inline-box')">
+                + Add Pack Size
+            </button>
+
+            <h3 class="section-title">Product Schemes</h3>
+
+            {{ scheme_formset.management_form }}
+
+            <div id="schemeForms">
+                {% for scheme_form in scheme_formset %}
+                    <div class="inline-box">
+                        {{ scheme_form.id }}
+
+                        <div class="form-grid">
+                            {% for field in scheme_form.visible_fields %}
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {{ field }}
+                                    {{ field.errors }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn-light" onclick="addForm('schemeForms', 'id_schemes-TOTAL_FORMS', 'inline-box')">
+                + Add Scheme
+            </button>
+
+            <div style="margin-top:24px;">
+                <button type="submit" class="btn-primary">
+                    {{ button_text|default:"Save Product" }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addForm(containerId, totalFormsId, boxClass) {
+    const container = document.getElementById(containerId);
+    const totalForms = document.getElementById(totalFormsId);
+    const currentCount = parseInt(totalForms.value);
+    const firstBox = container.querySelector("." + boxClass);
+    const newBox = firstBox.cloneNode(true);
+
+    newBox.innerHTML = newBox.innerHTML.replaceAll("-0-", "-" + currentCount + "-");
+    newBox.innerHTML = newBox.innerHTML.replaceAll("_0_", "_" + currentCount + "_");
+
+    newBox.querySelectorAll("input, textarea, select").forEach(function(input) {
+        if (input.type === "checkbox") {
+            input.checked = false;
+        } else {
+            input.value = "";
+        }
+    });
+
+    container.appendChild(newBox);
+    totalForms.value = currentCount + 1;
+}
+</script>
+{% endblock %}

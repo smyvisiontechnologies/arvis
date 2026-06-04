@@ -1,0 +1,1064 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 16px;
+}
+
+.top-card,
+.filter-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn {
+    text-decoration: none;
+    border: none;
+    background: #07120d;
+    color: white;
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn.green {
+    background: #16a34a;
+}
+
+.btn.blue {
+    background: #00a8e8;
+}
+
+.btn.light {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.filter-form {
+    display: grid;
+    grid-template-columns: 1fr 170px 110px;
+    gap: 10px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 10px 12px;
+    outline: none;
+    font-weight: 800;
+    background: white;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+}
+
+/* MINI CARDS */
+.dealer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+}
+
+.dealer-mini-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 11px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    cursor: pointer;
+    transition: .18s ease;
+    min-height: 245px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.dealer-mini-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(15,23,42,.12);
+    border-color: #bbf7d0;
+}
+
+.mini-edit-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #07120d;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+    z-index: 3;
+}
+
+.mini-edit-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.mini-edit-btn:hover {
+    background: #16a34a;
+}
+
+.mini-image {
+    width: 100%;
+    height: 118px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 10px;
+}
+
+.mini-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #07120d, #123020);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 900;
+}
+
+.mini-name {
+    margin: 0;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.25;
+    min-height: 35px;
+}
+
+.mini-owner {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 9px;
+}
+
+.dealer-code {
+    display: inline-flex;
+    background: #07120d;
+    color: white;
+    padding: 4px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.status {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 4px 7px;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.status.active {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.status.inactive {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.status.flag {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.status.gps {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.status.gps-missing {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+.detail-box.gps {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.detail-box.gps strong {
+    color: #15803d;
+}
+
+.mini-contact-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.icon-btn {
+    min-height: 36px;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.tap-text {
+    margin-top: auto;
+    padding-top: 9px;
+    color: #16a34a;
+    font-size: 11px;
+    font-weight: 900;
+    text-align: center;
+}
+
+/* MODAL */
+.dealer-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.dealer-modal.show {
+    display: block;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .62);
+    backdrop-filter: blur(5px);
+}
+
+.modal-panel {
+    position: relative;
+    width: min(980px, calc(100% - 24px));
+    max-height: calc(100vh - 36px);
+    overflow-y: auto;
+    margin: 18px auto;
+    background: white;
+    border-radius: 26px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+    border: 1px solid #e5e7eb;
+}
+
+.modal-hero {
+    background: linear-gradient(135deg, #ecfdf5, #eff6ff);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 112px 1fr auto;
+    gap: 16px;
+    align-items: center;
+}
+
+.modal-photo {
+    width: 112px;
+    height: 112px;
+    border-radius: 24px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 26px rgba(15,23,42,.10);
+}
+
+.modal-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-title h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.modal-title p {
+    margin: 6px 0 0;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.close-btn {
+    border: none;
+    background: #07120d;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 18px;
+}
+
+.detail-section {
+    margin-bottom: 18px;
+}
+
+.detail-section-title {
+    margin: 0 0 10px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.detail-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.detail-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.detail-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.detail-box.full {
+    grid-column: 1 / -1;
+}
+
+.detail-box.money {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.detail-box.money strong {
+    color: #047857;
+}
+
+.detail-box.warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.detail-box.warning strong {
+    color: #b45309;
+}
+
+.detail-box.staff {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.detail-box.staff strong {
+    color: #1d4ed8;
+}
+
+.modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding-top: 14px;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.empty-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 28px;
+    color: #64748b;
+    font-weight: 800;
+    text-align: center;
+}
+
+@media(max-width: 900px) {
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .modal-hero {
+        grid-template-columns: 90px 1fr auto;
+    }
+
+    .modal-photo {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .filter-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .top-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .dealer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .dealer-mini-card {
+        min-height: 220px;
+        padding: 9px;
+        border-radius: 18px;
+    }
+
+    .mini-edit-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        top: 7px;
+        right: 7px;
+    }
+
+    .mini-edit-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .mini-image {
+        height: 90px;
+        border-radius: 14px;
+    }
+
+    .mini-name {
+        font-size: 12px;
+        min-height: 31px;
+    }
+
+    .mini-owner {
+        font-size: 10px;
+    }
+
+    .mini-contact-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .btn {
+        font-size: 11px;
+        padding: 8px 9px;
+    }
+
+    .modal-panel {
+        width: calc(100% - 18px);
+        margin: 9px auto;
+        max-height: calc(100vh - 18px);
+        border-radius: 20px;
+    }
+
+    .modal-hero {
+        grid-template-columns: 70px 1fr 34px;
+        gap: 10px;
+        padding: 13px;
+    }
+
+    .modal-photo {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+    }
+
+    .modal-title h3 {
+        font-size: 17px;
+    }
+
+    .modal-title p {
+        font-size: 11px;
+    }
+
+    .close-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        font-size: 19px;
+    }
+
+    .modal-body {
+        padding: 13px;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-box.full {
+        grid-column: auto;
+    }
+
+    .modal-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Dealers</h2>
+                <p>
+                    {% if can_edit_dealer %}
+                        Mini dealer cards with GPS status. Tap card to view details.
+                    {% else %}
+                        View dealers assigned to your role.
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if can_edit_dealer %}
+                <a href="{% url 'dealer_create' %}" class="btn green">
+                    + Create Dealer
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <input type="text"
+                   name="search"
+                   value="{{ search }}"
+                   class="form-control"
+                   placeholder="Search dealer ID, firm name, owner name, phone, email or GST">
+
+            <select name="status" class="form-control">
+                <option value="">All Status</option>
+                <option value="active" {% if status == "active" %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if status == "inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+
+            <button type="submit" class="btn">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <div class="dealer-grid">
+        {% for dealer in dealers %}
+            <div class="dealer-mini-card" onclick="openDealerModal('dealerModal{{ dealer.id }}')">
+
+                {% if can_edit_dealer %}
+                    <a href="{% url 'dealer_edit' dealer.id %}"
+                       class="mini-edit-btn"
+                       title="Edit Dealer"
+                       aria-label="Edit Dealer"
+                       onclick="event.stopPropagation();">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M12 20h9"/>
+                            <path stroke-width="2" d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                        </svg>
+                    </a>
+                {% endif %}
+
+                <div class="mini-image">
+                    {% if dealer.dealer_image %}
+                        <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name }}">
+                    {% else %}
+                        <div class="photo-fallback">
+                            {{ dealer.firm_name|default:"D"|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <h3 class="mini-name">
+                    {{ dealer.firm_name|default:"Dealer Firm" }}
+                </h3>
+
+                <div class="mini-owner">
+                    {{ dealer.owner_name|default:"-" }}
+                </div>
+
+                <div class="mini-badges">
+                    <span class="dealer-code">
+                        {% if dealer.dealer_code %}
+                            {{ dealer.dealer_code }}
+                        {% else %}
+                            DLR{{ dealer.id }}
+                        {% endif %}
+                    </span>
+
+                    {% if dealer.user and dealer.user.is_active %}
+                        <span class="status active">Active</span>
+                    {% else %}
+                        <span class="status inactive">Inactive</span>
+                    {% endif %}
+
+                    {% if dealer.latitude and dealer.longitude %}
+                        <span class="status gps">GPS Saved</span>
+                    {% else %}
+                        <span class="status gps-missing">GPS Missing</span>
+                    {% endif %}
+                </div>
+
+                <div class="mini-contact-row">
+                    {% if dealer.phone %}
+                        <a href="tel:{{ dealer.phone }}"
+                           class="btn blue icon-btn"
+                           onclick="event.stopPropagation();">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.6 2.5a2 2 0 0 1-.45 2.11L9 10.5a16 16 0 0 0 4.5 4.5l1.17-1.15a2 2 0 0 1 2.11-.45c.8.28 1.64.48 2.5.6A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            Call
+                        </a>
+
+                        <a href="https://wa.me/91{{ dealer.phone }}"
+                           target="_blank"
+                           class="btn green icon-btn"
+                           onclick="event.stopPropagation();">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
+                                <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2c.2-.2.5-.25.75-.15.85.35 1.55.55 2.05.6"/>
+                            </svg>
+                            WhatsApp
+                        </a>
+                    {% else %}
+                        <button type="button" class="btn light icon-btn" disabled>
+                            No Phone
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div class="tap-text">
+                    Tap to view details
+                </div>
+            </div>
+
+            <div class="dealer-modal" id="dealerModal{{ dealer.id }}">
+                <div class="modal-backdrop" onclick="closeDealerModal('dealerModal{{ dealer.id }}')"></div>
+
+                <div class="modal-panel">
+                    <div class="modal-hero">
+                        <div class="modal-photo">
+                            {% if dealer.dealer_image %}
+                                <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name }}">
+                            {% else %}
+                                <div class="photo-fallback">
+                                    {{ dealer.firm_name|default:"D"|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="modal-title">
+                            <h3>{{ dealer.firm_name|default:"Dealer Firm" }}</h3>
+                            <p>
+                                Dealer ID:
+                                {% if dealer.dealer_code %}
+                                    {{ dealer.dealer_code }}
+                                {% else %}
+                                    DLR{{ dealer.id }}
+                                {% endif %}
+                                |
+                                Owner: {{ dealer.owner_name|default:"-" }}
+                            </p>
+
+                            <div class="mini-badges">
+                                {% if dealer.user and dealer.user.is_active %}
+                                    <span class="status active">Active</span>
+                                {% else %}
+                                    <span class="status inactive">Inactive</span>
+                                {% endif %}
+
+                                {% if dealer.flag %}
+                                    <span class="status flag">
+                                        {{ dealer.get_flag_display|default:dealer.flag }}
+                                    </span>
+                                {% endif %}
+
+                                {% if dealer.latitude and dealer.longitude %}
+                                    <span class="status gps">GPS Saved</span>
+                                {% else %}
+                                    <span class="status gps-missing">GPS Missing</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <button type="button"
+                                class="close-btn"
+                                onclick="closeDealerModal('dealerModal{{ dealer.id }}')">
+                            ×
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Contact Details</h4>
+
+                            <div class="detail-grid">
+                                <div class="detail-box">
+                                    <span>Owner Name</span>
+                                    <strong>{{ dealer.owner_name|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Phone</span>
+                                    <strong>{{ dealer.phone|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Email</span>
+                                    <strong>{{ dealer.email|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box full">
+                                    <span>Owner Address</span>
+                                    <strong>{{ dealer.owner_address|default:"-" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Firm Details</h4>
+
+                            <div class="detail-grid">
+                                <div class="detail-box">
+                                    <span>Firm Name</span>
+                                    <strong>{{ dealer.firm_name|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>GST Number</span>
+                                    <strong>{{ dealer.gst_number|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>License Number</span>
+                                    <strong>{{ dealer.license_number|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Firm Type</span>
+                                    <strong>{{ dealer.get_firm_type_display|default:dealer.firm_type|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>State</span>
+                                    <strong>{{ dealer.state|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>District</span>
+                                    <strong>{{ dealer.district|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box full">
+                                    <span>Firm Address</span>
+                                    <strong>{{ dealer.firm_address|default:"-" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Dealer GPS Location</h4>
+
+                            <div class="detail-grid">
+                                <div class="detail-box gps">
+                                    <span>Latitude</span>
+                                    <strong>{{ dealer.latitude|default:"Not Captured" }}</strong>
+                                </div>
+
+                                <div class="detail-box gps">
+                                    <span>Longitude</span>
+                                    <strong>{{ dealer.longitude|default:"Not Captured" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>GPS Accuracy</span>
+                                    <strong>
+                                        {% if dealer.location_accuracy_meters %}
+                                            {{ dealer.location_accuracy_meters }} meters
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Visit Allowed Radius</span>
+                                    <strong>{{ dealer.visit_radius_meters|default:"15" }} meters</strong>
+                                </div>
+
+                                <div class="detail-box full">
+                                    <span>Map Location</span>
+                                    <strong>
+                                        {% if dealer.latitude and dealer.longitude %}
+                                            <a href="https://www.google.com/maps?q={{ dealer.latitude }},{{ dealer.longitude }}"
+                                               target="_blank"
+                                               style="color:#15803d;text-decoration:none;font-weight:900;">
+                                                Open dealer location in Google Maps
+                                            </a>
+                                        {% else %}
+                                            GPS location not captured. Edit dealer and capture exact location.
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Manager & Approval</h4>
+
+                            <div class="detail-grid">
+                                <div class="detail-box staff">
+                                    <span>Sales Officer / Dealer Manager</span>
+                                    <strong>
+                                        {% if dealer.created_by_sales_officer %}
+                                            {{ dealer.created_by_sales_officer.get_full_name|default:dealer.created_by_sales_officer.email|default:dealer.created_by_sales_officer.username }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="detail-box staff">
+                                    <span>Concerned ASM</span>
+                                    <strong>
+                                        {% if dealer.concerned_asm %}
+                                            {{ dealer.concerned_asm.get_full_name|default:dealer.concerned_asm.email|default:dealer.concerned_asm.username }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Approval Status</span>
+                                    <strong>{{ dealer.get_approval_status_display|default:dealer.approval_status|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Login Status</span>
+                                    <strong>
+                                        {% if dealer.user and dealer.user.is_active %}
+                                            Active
+                                        {% else %}
+                                            Inactive
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Deposit & Target</h4>
+
+                            <div class="detail-grid">
+                                <div class="detail-box money">
+                                    <span>Deposit Amount</span>
+                                    <strong>₹{{ dealer.deposit_amount|default:"0.00" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Deposit Mode</span>
+                                    <strong>{{ dealer.get_deposit_mode_display|default:dealer.deposit_mode|default:"CHEQUE" }}</strong>
+                                </div>
+
+                                <div class="detail-box">
+                                    <span>Cheque Number</span>
+                                    <strong>{{ dealer.cheque_number|default:"-" }}</strong>
+                                </div>
+
+                                <div class="detail-box money">
+                                    <span>Yearly Target</span>
+                                    <strong>₹{{ dealer.yearly_target_amount|default:"0.00" }}</strong>
+                                </div>
+
+                                <div class="detail-box warning">
+                                    <span>Achieved Amount</span>
+                                    <strong>₹{{ dealer.achieved_amount|default:"0.00" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-actions">
+                            {% if dealer.phone %}
+                                <a href="tel:{{ dealer.phone }}" class="btn blue">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.6 2.5a2 2 0 0 1-.45 2.11L9 10.5a16 16 0 0 0 4.5 4.5l1.17-1.15a2 2 0 0 1 2.11-.45c.8.28 1.64.48 2.5.6A2 2 0 0 1 22 16.92z"/>
+                                    </svg>
+                                    Call
+                                </a>
+
+                                <a href="https://wa.me/91{{ dealer.phone }}" target="_blank" class="btn green">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
+                                        <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2c.2-.2.5-.25.75-.15.85.35 1.55.55 2.05.6"/>
+                                    </svg>
+                                    WhatsApp
+                                </a>
+                            {% endif %}
+
+                            {% if dealer.latitude and dealer.longitude %}
+                                <a href="https://www.google.com/maps?q={{ dealer.latitude }},{{ dealer.longitude }}"
+                                   target="_blank"
+                                   class="btn green">
+                                    📍 Open Location
+                                </a>
+                            {% endif %}
+
+                            {% if can_edit_dealer %}
+                                <a href="{% url 'dealer_edit' dealer.id %}" class="btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" d="M12 20h9"/>
+                                        <path stroke-width="2" d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                                    </svg>
+                                    Edit Dealer
+                                </a>
+                            {% endif %}
+
+                            <button type="button"
+                                    class="btn light"
+                                    onclick="closeDealerModal('dealerModal{{ dealer.id }}')">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-card">
+                No dealers found.
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+function openDealerModal(id) {
+    const modal = document.getElementById(id);
+
+    if (modal) {
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+    }
+}
+
+function closeDealerModal(id) {
+    const modal = document.getElementById(id);
+
+    if (modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        document.querySelectorAll(".dealer-modal.show").forEach(function(modal) {
+            modal.classList.remove("show");
+        });
+
+        document.body.style.overflow = "";
+    }
+});
+</script>
+{% endblock %}

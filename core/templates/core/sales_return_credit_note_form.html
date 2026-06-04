@@ -1,0 +1,861 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:18px; }
+
+.card {
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:18px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+    margin-bottom:14px;
+}
+
+.head h2 {
+    margin:0;
+    color:#0f172a;
+    font-size:25px;
+    font-weight:900;
+}
+
+.head p {
+    margin:6px 0 0;
+    color:#64748b;
+    font-weight:700;
+    font-size:13px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+.field.full { grid-column:1 / -1; }
+
+.field label {
+    display:block;
+    color:#334155;
+    font-size:13px;
+    font-weight:900;
+    margin-bottom:6px;
+}
+
+.form-control {
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:13px;
+    padding:11px 12px;
+    font-weight:800;
+    outline:none;
+    background:white;
+}
+
+.form-control:focus {
+    border-color:#16a34a;
+    box-shadow:0 0 0 4px rgba(22,163,74,.12);
+}
+
+.form-control:disabled {
+    background:#f1f5f9;
+    color:#64748b;
+    cursor:not-allowed;
+}
+
+/* Dealer Search */
+.dealer-hidden-select { display:none; }
+
+.dealer-combo,
+.invoice-combo {
+    position:relative;
+}
+
+.dealer-dropdown,
+.invoice-dropdown {
+    display:none;
+    position:absolute;
+    left:0;
+    right:0;
+    top:calc(100% + 6px);
+    background:white;
+    border:1px solid #cbd5e1;
+    border-radius:14px;
+    box-shadow:0 16px 34px rgba(15,23,42,.14);
+    max-height:280px;
+    overflow-y:auto;
+    z-index:100;
+    padding:6px;
+}
+
+.dealer-dropdown.show,
+.invoice-dropdown.show {
+    display:block;
+}
+
+.dealer-option,
+.invoice-option {
+    padding:11px;
+    border-radius:12px;
+    cursor:pointer;
+    border:1px solid transparent;
+    margin-bottom:5px;
+}
+
+.dealer-option:hover {
+    background:#ecfdf5;
+    border-color:#bbf7d0;
+}
+
+.invoice-option:hover {
+    background:#eff6ff;
+    border-color:#bfdbfe;
+}
+
+.dealer-code,
+.invoice-number-badge {
+    display:inline-flex;
+    background:#07120d;
+    color:white;
+    border-radius:999px;
+    padding:4px 9px;
+    font-size:11px;
+    font-weight:900;
+    margin-bottom:5px;
+}
+
+.dealer-main,
+.invoice-main {
+    color:#0f172a;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.35;
+}
+
+.dealer-sub,
+.invoice-sub {
+    color:#64748b;
+    font-size:12px;
+    font-weight:700;
+    margin-top:3px;
+    line-height:1.45;
+}
+
+.invoice-hidden-select {
+    display:none;
+}
+
+.invoice-box {
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1d4ed8;
+    border-radius:14px;
+    padding:12px;
+    font-weight:900;
+    margin-top:8px;
+    line-height:1.5;
+}
+
+/* Product return cards */
+.item-select-card {
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:12px;
+    background:#f8fafc;
+    margin-bottom:10px;
+    display:grid;
+    grid-template-columns:1fr 120px 150px 120px;
+    gap:10px;
+    align-items:end;
+}
+
+.item-title {
+    font-weight:900;
+    color:#0f172a;
+}
+
+.item-meta {
+    color:#64748b;
+    font-size:12px;
+    font-weight:700;
+    margin-top:3px;
+    line-height:1.5;
+}
+
+.item-select-card label {
+    display:block;
+    font-size:12px;
+    font-weight:900;
+    color:#334155;
+    margin-bottom:5px;
+}
+
+.btn {
+    border:none;
+    text-decoration:none;
+    background:#07120d;
+    color:white;
+    padding:11px 14px;
+    border-radius:13px;
+    font-weight:900;
+    cursor:pointer;
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.btn.green { background:#16a34a; }
+.btn.light { background:#f1f5f9; color:#0f172a; }
+
+.total-box {
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    color:#c2410c;
+    border-radius:16px;
+    padding:14px;
+    font-weight:900;
+    text-align:right;
+    margin-top:12px;
+}
+
+.error-box {
+    background:#fef2f2;
+    color:#b91c1c;
+    border:1px solid #fecaca;
+    padding:14px;
+    border-radius:13px;
+    font-weight:900;
+    margin-bottom:12px;
+    line-height:1.5;
+}
+
+.info-empty {
+    background:#fff7ed;
+    color:#c2410c;
+    border:1px solid #fed7aa;
+    padding:12px;
+    border-radius:14px;
+    font-weight:900;
+}
+
+.info-error {
+    background:#fef2f2;
+    color:#b91c1c;
+    border:1px solid #fecaca;
+    padding:12px;
+    border-radius:14px;
+    font-weight:900;
+}
+
+@media(max-width:800px) {
+    .page { padding:12px; }
+
+    .card {
+        padding:14px;
+        border-radius:18px;
+    }
+
+    .grid { grid-template-columns:1fr; }
+
+    .field.full { grid-column:auto; }
+
+    .item-select-card { grid-template-columns:1fr; }
+
+    .btn { width:100%; }
+
+    .head h2 {
+        font-size:21px;
+    }
+}
+</style>
+
+<div class="page">
+    <div class="card head">
+        <h2>{{ title }}</h2>
+        <p>Select dealer, search invoice/bill, enter returned product quantity and taking price.</p>
+    </div>
+
+    <form method="post" id="creditNoteForm">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {{ form.invoice }}
+
+        <div class="card">
+            <div class="grid">
+                <div class="field">
+                    <label>Select Dealer</label>
+
+                    <div class="dealer-combo" id="dealerCombo">
+                        <input type="text"
+                               id="dealerSearchInput"
+                               class="form-control"
+                               placeholder="Search dealer ID, firm name, owner or phone"
+                               autocomplete="off">
+
+                        <div class="dealer-dropdown" id="dealerDropdown"></div>
+                    </div>
+
+                    {{ form.dealer }}
+                    {{ form.dealer.errors }}
+                </div>
+
+                <div class="field">
+                    <label>Return Date</label>
+                    {{ form.return_date }}
+                    {{ form.return_date.errors }}
+                </div>
+
+                <div class="field full">
+                    <label>Select Bill / Invoice</label>
+
+                    <div class="invoice-combo" id="invoiceCombo">
+                        <input type="text"
+                               id="invoiceSearchInput"
+                               class="form-control"
+                               placeholder="First select dealer"
+                               autocomplete="off"
+                               disabled>
+
+                        <div class="invoice-dropdown" id="invoiceDropdown"></div>
+                    </div>
+
+                    <select id="invoiceSelect" class="form-control invoice-hidden-select">
+                        <option value="">First select dealer</option>
+                    </select>
+
+                    <div class="invoice-box" id="invoiceInfo">
+                        No invoice selected.
+                    </div>
+                </div>
+
+                <div class="field full">
+                    <label>Reason</label>
+                    {{ form.reason }}
+                    {{ form.reason.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">Returned Products</h3>
+
+            <div id="invoiceItemsBox">
+                Select invoice to load products.
+            </div>
+
+            <div class="total-box">
+                Total Credit Amount: ₹<span id="grandTotal">0.00</span>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="submit" class="btn green">
+                {{ button_text }}
+            </button>
+
+            <a href="{% url 'sales_return_credit_note_list' %}" class="btn light">
+                Back
+            </a>
+        </div>
+    </form>
+</div>
+
+{{ existing_items|json_script:"existingItemsJson" }}
+
+<script>
+const creditNoteId = "{% if credit_note %}{{ credit_note.id }}{% endif %}";
+let invoiceOptions = [];
+
+function rupee(value) {
+    return Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function getExistingItems() {
+    const el = document.getElementById("existingItemsJson");
+
+    if (!el) {
+        return [];
+    }
+
+    try {
+        const parsed = JSON.parse(el.textContent);
+
+        if (Array.isArray(parsed)) {
+            return parsed;
+        }
+
+        if (typeof parsed === "string") {
+            const secondParsed = JSON.parse(parsed);
+            return Array.isArray(secondParsed) ? secondParsed : [];
+        }
+
+        return [];
+    } catch (e) {
+        return [];
+    }
+}
+
+/* =========================
+   RESET HELPERS
+========================= */
+function resetInvoiceAndProducts() {
+    const invoiceSelect = document.getElementById("invoiceSelect");
+    const invoiceSearchInput = document.getElementById("invoiceSearchInput");
+    const invoiceDropdown = document.getElementById("invoiceDropdown");
+
+    invoiceOptions = [];
+
+    document.getElementById("id_invoice").value = "";
+
+    invoiceSelect.innerHTML = '<option value="">First select dealer</option>';
+    invoiceSelect.value = "";
+
+    invoiceSearchInput.value = "";
+    invoiceSearchInput.placeholder = "First select dealer";
+    invoiceSearchInput.disabled = true;
+
+    invoiceDropdown.innerHTML = "";
+    invoiceDropdown.classList.remove("show");
+
+    document.getElementById("invoiceInfo").innerText = "No invoice selected.";
+    document.getElementById("invoiceItemsBox").innerHTML = "Select invoice to load products.";
+
+    calculateTotal();
+}
+
+/* =========================
+   DEALER SEARCH
+========================= */
+function setupDealerDropdownSearch() {
+    const searchInput = document.getElementById("dealerSearchInput");
+    const dropdown = document.getElementById("dealerDropdown");
+    const dealerSelect = document.getElementById("id_dealer");
+
+    const dealerOptions = Array.from(dealerSelect.options)
+        .filter(option => option.value)
+        .map(option => {
+            const parts = option.text.split("|").map(item => item.trim());
+
+            return {
+                value: option.value,
+                fullText: option.text,
+                dealerCode: parts[0] || "",
+                firmName: parts[1] || "",
+                ownerName: parts[2] || "",
+                phone: parts[3] || "",
+            };
+        });
+
+    function renderOptions(keyword) {
+        dropdown.innerHTML = "";
+
+        const cleanKeyword = (keyword || "").toLowerCase().trim();
+
+        const filtered = dealerOptions.filter(item => {
+            return (
+                item.fullText.toLowerCase().includes(cleanKeyword) ||
+                item.dealerCode.toLowerCase().includes(cleanKeyword) ||
+                item.firmName.toLowerCase().includes(cleanKeyword) ||
+                item.ownerName.toLowerCase().includes(cleanKeyword) ||
+                item.phone.toLowerCase().includes(cleanKeyword)
+            );
+        });
+
+        if (filtered.length === 0) {
+            dropdown.innerHTML = `
+                <div class="dealer-option">
+                    <div class="dealer-main">No dealer found</div>
+                    <div class="dealer-sub">Search by dealer ID, firm name, owner or phone</div>
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "dealer-option";
+
+            div.innerHTML = `
+                <span class="dealer-code">${item.dealerCode}</span>
+                <div class="dealer-main">${item.firmName}</div>
+                <div class="dealer-sub">Owner: ${item.ownerName} · Phone: ${item.phone}</div>
+            `;
+
+            div.addEventListener("click", function() {
+                dealerSelect.value = item.value;
+                searchInput.value = item.firmName;
+                dropdown.classList.remove("show");
+
+                resetInvoiceAndProducts();
+                loadDealerInvoices(item.value);
+            });
+
+            dropdown.appendChild(div);
+        });
+    }
+
+    searchInput.addEventListener("focus", function() {
+        renderOptions(searchInput.value);
+        dropdown.classList.add("show");
+    });
+
+    searchInput.addEventListener("input", function() {
+        dealerSelect.value = "";
+        resetInvoiceAndProducts();
+
+        renderOptions(searchInput.value);
+        dropdown.classList.add("show");
+    });
+
+    document.addEventListener("click", function(event) {
+        const combo = document.getElementById("dealerCombo");
+
+        if (combo && !combo.contains(event.target)) {
+            dropdown.classList.remove("show");
+        }
+    });
+
+    if (dealerSelect.value) {
+        const selected = dealerOptions.find(x => x.value === dealerSelect.value);
+
+        if (selected) {
+            searchInput.value = selected.firmName;
+            loadDealerInvoices(selected.value, document.getElementById("id_invoice").value);
+        }
+    }
+}
+
+/* =========================
+   INVOICE SEARCH
+========================= */
+function loadDealerInvoices(dealerId, selectedInvoiceId = "") {
+    const invoiceSelect = document.getElementById("invoiceSelect");
+    const invoiceSearchInput = document.getElementById("invoiceSearchInput");
+    const invoiceDropdown = document.getElementById("invoiceDropdown");
+
+    invoiceOptions = [];
+
+    invoiceSelect.innerHTML = '<option value="">Loading invoices...</option>';
+    invoiceSearchInput.value = "";
+    invoiceSearchInput.placeholder = "Loading invoices...";
+    invoiceSearchInput.disabled = true;
+    invoiceDropdown.innerHTML = "";
+    document.getElementById("invoiceInfo").innerText = "Loading invoices...";
+
+    fetch("{% url 'ajax_return_dealer_invoices' %}?dealer_id=" + dealerId)
+        .then(response => response.json())
+        .then(data => {
+            invoiceSelect.innerHTML = '<option value="">Select invoice</option>';
+            invoiceOptions = [];
+
+            if (!data.success || !data.invoices || data.invoices.length === 0) {
+                invoiceSelect.innerHTML = '<option value="">No invoices found</option>';
+                invoiceSearchInput.value = "";
+                invoiceSearchInput.placeholder = "No invoices found for this dealer";
+                invoiceSearchInput.disabled = true;
+                document.getElementById("invoiceInfo").innerText = "No invoice found.";
+                return;
+            }
+
+            data.invoices.forEach(invoice => {
+                const searchText =
+                    String(invoice.invoice_number || "") + " " +
+                    String(invoice.invoice_date || "") + " " +
+                    "Order " + String(invoice.order_id || "") + " " +
+                    String(invoice.amount || "") + " " +
+                    String(invoice.final_payable || "") + " " +
+                    String(invoice.balance || "");
+
+                const invoiceObj = {
+                    id: String(invoice.id),
+                    invoice_number: invoice.invoice_number || "",
+                    invoice_date: invoice.invoice_date || "",
+                    order_id: invoice.order_id || "",
+                    amount: invoice.amount || "0.00",
+                    final_payable: invoice.final_payable || "0.00",
+                    return_credit: invoice.return_credit || "0.00",
+                    balance: invoice.balance || "0.00",
+                    searchText: searchText.toLowerCase()
+                };
+
+                invoiceOptions.push(invoiceObj);
+
+                const option = document.createElement("option");
+                option.value = invoiceObj.id;
+                option.textContent =
+                    invoiceObj.invoice_number +
+                    " | " + invoiceObj.invoice_date +
+                    " | Order #" + invoiceObj.order_id +
+                    " | ₹" + invoiceObj.amount;
+
+                invoiceSelect.appendChild(option);
+            });
+
+            invoiceSearchInput.disabled = false;
+            invoiceSearchInput.placeholder = "Search invoice number, order ID, date or amount";
+            document.getElementById("invoiceInfo").innerText = "Search and select invoice.";
+
+            if (selectedInvoiceId) {
+                const selectedInvoice = invoiceOptions.find(item => item.id === String(selectedInvoiceId));
+
+                if (selectedInvoice) {
+                    selectInvoiceOption(selectedInvoice);
+                }
+            }
+        })
+        .catch(error => {
+            invoiceSearchInput.disabled = true;
+            invoiceSearchInput.placeholder = "Failed to load invoices";
+            document.getElementById("invoiceInfo").innerHTML = "Invoice loading failed. Please check server console.";
+        });
+}
+
+function renderInvoiceOptions(keyword = "") {
+    const dropdown = document.getElementById("invoiceDropdown");
+    dropdown.innerHTML = "";
+
+    const cleanKeyword = (keyword || "").toLowerCase().trim();
+
+    const filtered = invoiceOptions.filter(item => {
+        return item.searchText.includes(cleanKeyword);
+    });
+
+    if (filtered.length === 0) {
+        dropdown.innerHTML = `
+            <div class="invoice-option">
+                <div class="invoice-main">No invoice found</div>
+                <div class="invoice-sub">Search by invoice number, order ID, date or amount</div>
+            </div>
+        `;
+        return;
+    }
+
+    filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "invoice-option";
+
+        div.innerHTML = `
+            <span class="invoice-number-badge">${item.invoice_number}</span>
+            <div class="invoice-main">Order #${item.order_id} · ₹${item.amount}</div>
+            <div class="invoice-sub">
+                Date: ${item.invoice_date} · Final Payable: ₹${item.final_payable} · Balance: ₹${item.balance}
+            </div>
+        `;
+
+        div.addEventListener("click", function () {
+            selectInvoiceOption(item);
+        });
+
+        dropdown.appendChild(div);
+    });
+}
+
+function selectInvoiceOption(invoice) {
+    const invoiceSelect = document.getElementById("invoiceSelect");
+    const invoiceSearchInput = document.getElementById("invoiceSearchInput");
+    const invoiceDropdown = document.getElementById("invoiceDropdown");
+
+    invoiceSelect.value = invoice.id;
+    document.getElementById("id_invoice").value = invoice.id;
+
+    invoiceSearchInput.value =
+        invoice.invoice_number +
+        " | Order #" + invoice.order_id +
+        " | ₹" + invoice.amount;
+
+    invoiceDropdown.classList.remove("show");
+
+    document.getElementById("invoiceInfo").innerText =
+        "Invoice: " + invoice.invoice_number +
+        " | Date: " + invoice.invoice_date +
+        " | Order #" + invoice.order_id +
+        " | Amount: ₹" + invoice.amount +
+        " | Previous Return Credit: ₹" + invoice.return_credit;
+
+    loadInvoiceItems(invoice.id);
+}
+
+function setupInvoiceDropdownSearch() {
+    const invoiceSearchInput = document.getElementById("invoiceSearchInput");
+    const invoiceDropdown = document.getElementById("invoiceDropdown");
+    const invoiceCombo = document.getElementById("invoiceCombo");
+
+    if (!invoiceSearchInput || !invoiceDropdown || !invoiceCombo) {
+        return;
+    }
+
+    invoiceSearchInput.addEventListener("focus", function () {
+        if (invoiceSearchInput.disabled) {
+            return;
+        }
+
+        renderInvoiceOptions(invoiceSearchInput.value);
+        invoiceDropdown.classList.add("show");
+    });
+
+    invoiceSearchInput.addEventListener("input", function () {
+        document.getElementById("id_invoice").value = "";
+        document.getElementById("invoiceSelect").value = "";
+        document.getElementById("invoiceInfo").innerText = "No invoice selected.";
+        document.getElementById("invoiceItemsBox").innerHTML = "Select invoice to load products.";
+        calculateTotal();
+
+        renderInvoiceOptions(invoiceSearchInput.value);
+        invoiceDropdown.classList.add("show");
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!invoiceCombo.contains(event.target)) {
+            invoiceDropdown.classList.remove("show");
+        }
+    });
+}
+
+/* =========================
+   RETURN PRODUCTS
+========================= */
+function loadInvoiceItems(invoiceId) {
+    const box = document.getElementById("invoiceItemsBox");
+    box.innerHTML = "Loading products...";
+
+    let url = "{% url 'ajax_return_invoice_items' %}?invoice_id=" + invoiceId;
+
+    if (creditNoteId) {
+        url += "&credit_note_id=" + creditNoteId;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                box.innerHTML = `
+                    <div class="info-error">
+                        ${data.message || "Unable to load products."}
+                    </div>
+                `;
+                return;
+            }
+
+            if (!data.items || data.items.length === 0) {
+                box.innerHTML = `
+                    <div class="info-empty">
+                        No returnable products found for this invoice.
+                    </div>
+                `;
+                return;
+            }
+
+            const existingItems = getExistingItems();
+            box.innerHTML = "";
+
+            data.items.forEach(item => {
+                const existing = existingItems.find(x => String(x.order_item_id) === String(item.order_item_id));
+
+                const returnQty = existing ? existing.return_quantity_boxes : 0;
+                const pricePerBox = existing ? existing.price_per_box : item.price_per_box;
+
+                const div = document.createElement("div");
+                div.className = "item-select-card";
+
+                div.innerHTML = `
+                    <div>
+                        <div class="item-title">${item.product_name}</div>
+                        <div class="item-meta">
+                            Pack: ${item.pack_label}<br>
+                            Sold: ${item.sold_quantity_boxes} boxes |
+                            Already Returned: ${item.already_returned_boxes} |
+                            Balance: ${item.balance_quantity_boxes}<br>
+                            HSN: ${item.hsn_code || "-"} |
+                            Batch: ${item.batch_no || "-"} |
+                            MFG: ${item.mfg_date || "-"} |
+                            EXP: ${item.expiry_date || "-"}
+                        </div>
+                        <input type="hidden" name="order_item_id[]" value="${item.order_item_id}">
+                    </div>
+
+                    <div>
+                        <label>Return Boxes</label>
+                        <input type="number"
+                               name="return_quantity_boxes[]"
+                               class="form-control return-qty"
+                               min="0"
+                               max="${item.balance_quantity_boxes}"
+                               value="${returnQty}">
+                    </div>
+
+                    <div>
+                        <label>Taking Price / Box</label>
+                        <input type="number"
+                               name="price_per_box[]"
+                               class="form-control price-box"
+                               step="0.01"
+                               min="0"
+                               value="${pricePerBox}">
+                    </div>
+
+                    <div>
+                        <label>Total</label>
+                        <div style="font-weight:900;color:#c2410c;">
+                            ₹<span class="line-total">0.00</span>
+                        </div>
+                    </div>
+                `;
+
+                box.appendChild(div);
+            });
+
+            bindCalculations();
+        })
+        .catch(error => {
+            box.innerHTML = `
+                <div class="info-error">
+                    Product loading failed. Please check AJAX view or server console.
+                </div>
+            `;
+        });
+}
+
+function bindCalculations() {
+    document.querySelectorAll(".return-qty, .price-box").forEach(input => {
+        input.addEventListener("input", calculateTotal);
+    });
+
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let total = 0;
+
+    document.querySelectorAll(".item-select-card").forEach(row => {
+        const qty = Number(row.querySelector(".return-qty")?.value || 0);
+        const price = Number(row.querySelector(".price-box")?.value || 0);
+        const line = qty * price;
+
+        const lineTotal = row.querySelector(".line-total");
+
+        if (lineTotal) {
+            lineTotal.innerText = rupee(line);
+        }
+
+        total += line;
+    });
+
+    document.getElementById("grandTotal").innerText = rupee(total);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    setupDealerDropdownSearch();
+    setupInvoiceDropdownSearch();
+});
+</script>
+{% endblock %}

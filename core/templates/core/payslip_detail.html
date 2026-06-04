@@ -1,0 +1,742 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.payslip-review-page {
+    padding: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.08), transparent 30%);
+}
+
+.review-card {
+    max-width: 1120px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 22px;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+}
+
+.review-hero {
+    background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.18), transparent 32%),
+        linear-gradient(135deg, #0f172a, #1d4ed8);
+    color: white;
+    border-radius: 26px;
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.review-hero h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 1000;
+    letter-spacing: -0.4px;
+}
+
+.review-hero p {
+    margin: 8px 0 0;
+    color: #dbeafe;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 9px 13px;
+    font-size: 12px;
+    font-weight: 1000;
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.14);
+}
+
+.status-pill.released {
+    background: rgba(16, 185, 129, 0.16);
+    color: #d1fae5;
+}
+
+.status-pill.draft {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fef3c7;
+}
+
+.top-summary {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.summary-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 14px;
+}
+
+.summary-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.summary-box strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 1000;
+    word-break: break-word;
+    line-height: 1.35;
+}
+
+.summary-box.net {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.summary-box.net strong {
+    color: #047857;
+    font-size: 24px;
+}
+
+.section-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding-bottom: 13px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-head h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 1000;
+}
+
+.section-head p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.section-badge {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 7px 11px;
+    font-size: 11px;
+    font-weight: 1000;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 13px;
+}
+
+.info-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+}
+
+.info-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 1000;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.info-box.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.info-box.green strong {
+    color: #047857;
+}
+
+.info-box.red {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.info-box.red strong {
+    color: #b91c1c;
+}
+
+.info-box.blue {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.info-box.blue strong {
+    color: #1d4ed8;
+}
+
+.payroll-table-wrap {
+    overflow-x: auto;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+}
+
+.payroll-table th {
+    background: #f8fafc;
+    color: #334155;
+    text-align: left;
+    padding: 13px;
+    font-size: 12px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.payroll-table td {
+    padding: 13px;
+    border-bottom: 1px solid #edf2f7;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.payroll-table tr:last-child td {
+    border-bottom: none;
+}
+
+.amount {
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 1000;
+}
+
+.amount.green {
+    color: #047857;
+}
+
+.amount.red {
+    color: #b91c1c;
+}
+
+.total-row td {
+    background: #f8fafc;
+    font-weight: 1000;
+}
+
+.net-row td {
+    background: #ecfdf5;
+    color: #064e3b;
+    font-size: 16px;
+    font-weight: 1000;
+    border-top: 2px solid #10b981;
+}
+
+.note-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 18px;
+    padding: 13px;
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1.55;
+}
+
+.remarks-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 14px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1.55;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn,
+.btn-form button {
+    border: none;
+    border-radius: 15px;
+    padding: 12px 16px;
+    color: white;
+    font-weight: 1000;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.btn.dark {
+    background: #0f172a;
+}
+
+.btn.blue {
+    background: #2563eb;
+}
+
+.btn.green,
+.btn-form button {
+    background: #16a34a;
+}
+
+.btn.orange {
+    background: #d97706;
+}
+
+.btn.light {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-form {
+    margin: 0;
+}
+
+@media(max-width: 980px) {
+    .top-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 640px) {
+    .payslip-review-page {
+        padding: 10px;
+    }
+
+    .review-card {
+        padding: 14px;
+        border-radius: 22px;
+    }
+
+    .review-hero {
+        border-radius: 20px;
+        padding: 16px;
+    }
+
+    .review-hero h2 {
+        font-size: 22px;
+    }
+
+    .top-summary,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .btn,
+    .btn-form button {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="payslip-review-page">
+    <div class="review-card">
+
+        <div class="review-hero">
+            <div>
+                <h2>Payslip Review</h2>
+                <p>
+                    Review employee salary, PF, insurance, bank details and final payable amount before release.
+                    TA/DA and field reimbursements are handled separately.
+                </p>
+            </div>
+
+            {% if payslip.status == "RELEASED" %}
+                <span class="status-pill released">Released Payslip</span>
+            {% else %}
+                <span class="status-pill draft">Draft Payslip</span>
+            {% endif %}
+        </div>
+
+        <div class="top-summary">
+            <div class="summary-box">
+                <span>Payslip Number</span>
+                <strong>{{ payslip.payslip_number }}</strong>
+            </div>
+
+            <div class="summary-box">
+                <span>Employee</span>
+                <strong>{{ payslip.employee.get_full_name|default:payslip.employee.username }}</strong>
+            </div>
+
+            <div class="summary-box">
+                <span>Salary Month</span>
+                <strong>{{ payslip.month_name }} {{ payslip.year }}</strong>
+            </div>
+
+            <div class="summary-box net">
+                <span>Net Payable</span>
+                <strong>₹{{ payslip.net_salary }}</strong>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-head">
+                <div>
+                    <h3>Employee & Payroll Identity</h3>
+                    <p>Employee profile, PAN, DOB and payslip generation information.</p>
+                </div>
+                <span class="section-badge">Employee</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box blue">
+                    <span>Employee ID</span>
+                    <strong>{{ payslip.employee.profile.employee_code|default:payslip.employee.id }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Designation</span>
+                    <strong>{{ payslip.employee.profile.get_role_display|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Email</span>
+                    <strong>{{ payslip.employee.email|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Phone</span>
+                    <strong>{{ payslip.employee.profile.phone|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Date of Birth</span>
+                    <strong>{{ payslip.employee_dob|date:"d M Y"|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>PAN Number</span>
+                    <strong>{{ payslip.employee_pan_number|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Generated By</span>
+                    <strong>
+                        {% if payslip.generated_by %}
+                            {{ payslip.generated_by.get_full_name|default:payslip.generated_by.username }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Generated Date</span>
+                    <strong>{{ payslip.generated_at|date:"d M Y, h:i A"|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Released Date</span>
+                    <strong>
+                        {% if payslip.released_at %}
+                            {{ payslip.released_at|date:"d M Y, h:i A" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Status</span>
+                    <strong>{{ payslip.get_status_display }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-head">
+                <div>
+                    <h3>Bank Details</h3>
+                    <p>Bank details captured at the time of payslip generation.</p>
+                </div>
+                <span class="section-badge">Bank</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <span>Bank Name</span>
+                    <strong>{{ payslip.employee_bank_name|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Account Holder</span>
+                    <strong>{{ payslip.employee_bank_account_holder_name|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Account Number</span>
+                    <strong>{{ payslip.employee_bank_account_number|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>IFSC Code</span>
+                    <strong>{{ payslip.employee_bank_ifsc_code|default:"-" }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-head">
+                <div>
+                    <h3>PF & Insurance Details</h3>
+                    <p>Statutory and insurance deductions linked to this payslip.</p>
+                </div>
+                <span class="section-badge">Deductions</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <span>PF Status</span>
+                    <strong>
+                        {% if payslip.employee_pf_uan_number or payslip.pf_deduction_amount %}
+                            Applicable
+                        {% else %}
+                            Not Applicable
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>PF UAN Number</span>
+                    <strong>{{ payslip.employee_pf_uan_number|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>PF Percentage</span>
+                    <strong>{{ payslip.employee_pf_percentage|default:"0.00" }}%</strong>
+                </div>
+
+                <div class="info-box red">
+                    <span>PF Deduction</span>
+                    <strong>₹{{ payslip.pf_deduction_amount|default:"0.00" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Insurance Status</span>
+                    <strong>
+                        {% if payslip.employee_insurance_provider_name or payslip.insurance_deduction_amount %}
+                            Applicable
+                        {% else %}
+                            Not Applicable
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Insurance Provider</span>
+                    <strong>{{ payslip.employee_insurance_provider_name|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box">
+                    <span>Policy Number</span>
+                    <strong>{{ payslip.employee_insurance_policy_number|default:"-" }}</strong>
+                </div>
+
+                <div class="info-box red">
+                    <span>Insurance Deduction</span>
+                    <strong>₹{{ payslip.insurance_deduction_amount|default:"0.00" }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-head">
+                <div>
+                    <h3>Salary Breakup</h3>
+                    <p>Complete earnings and deductions calculation for this salary month.</p>
+                </div>
+                <span class="section-badge">Salary</span>
+            </div>
+
+            <div class="payroll-table-wrap">
+                <table class="payroll-table">
+                    <thead>
+                        <tr>
+                            <th>Earnings</th>
+                            <th style="text-align:right;">Amount</th>
+                            <th>Deductions</th>
+                            <th style="text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Basic Salary</td>
+                            <td class="amount green">₹{{ payslip.basic_salary }}</td>
+
+                            <td>Leave Deduction</td>
+                            <td class="amount red">₹{{ payslip.leave_deduction_amount }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Allowance Amount</td>
+                            <td class="amount green">₹{{ payslip.allowance_amount }}</td>
+
+                            <td>PF Deduction</td>
+                            <td class="amount red">₹{{ payslip.pf_deduction_amount|default:"0.00" }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>-</td>
+                            <td class="amount">-</td>
+
+                            <td>Insurance Deduction</td>
+                            <td class="amount red">₹{{ payslip.insurance_deduction_amount|default:"0.00" }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>-</td>
+                            <td class="amount">-</td>
+
+                            <td>Other Deduction</td>
+                            <td class="amount red">₹{{ payslip.other_deduction_amount }}</td>
+                        </tr>
+
+                        <tr class="total-row">
+                            <td>Gross Salary</td>
+                            <td class="amount green">₹{{ payslip.gross_salary }}</td>
+
+                            <td>Total Deductions</td>
+                            <td class="amount red">₹{{ payslip.total_deductions }}</td>
+                        </tr>
+
+                        <tr class="net-row">
+                            <td colspan="3">Net Salary Payable</td>
+                            <td class="amount">₹{{ payslip.net_salary }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-head">
+                <div>
+                    <h3>Notes</h3>
+                    <p>Payroll remarks and important salary note.</p>
+                </div>
+                <span class="section-badge">Note</span>
+            </div>
+
+            <div class="note-box">
+                <b>Important:</b>
+                This payslip contains salary components only. TA/DA, travel allowance, public vehicle bills,
+                dealer visit claims and field reimbursements are processed separately.
+            </div>
+
+            {% if payslip.remarks %}
+                <div class="remarks-box" style="margin-top:12px;">
+                    <b>Remarks:</b><br>
+                    {{ payslip.remarks }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="btn-row">
+            <a href="{% url 'payslip_print' payslip.id %}" target="_blank" class="btn dark">
+                Print / Save PDF
+            </a>
+
+            {% if payslip.status == "DRAFT" %}
+                {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "HR" or request.user.profile.role == "ACCOUNTANT" %}
+                    <a href="{% url 'payslip_edit' payslip.id %}" class="btn orange">
+                        Edit Payroll Review
+                    </a>
+
+                    <form method="post" action="{% url 'payslip_release' payslip.id %}" class="btn-form">
+                        {% csrf_token %}
+                        <button type="submit"
+                                onclick="return confirm('Release this payslip to employee? After release, employee can view and print it.')">
+                            Release Payslip
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "HR" or request.user.profile.role == "ACCOUNTANT" %}
+                <a href="{% url 'payslip_list' %}" class="btn blue">
+                    Back to Payslips
+                </a>
+            {% else %}
+                <a href="{% url 'my_payslips' %}" class="btn blue">
+                    Back
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,474 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card,
+.filter-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    margin-bottom: 14px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.badge-main {
+    display: inline-flex;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.filter-form {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr 120px;
+    gap: 10px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 11px 12px;
+    outline: none;
+    font-weight: 800;
+    background: white;
+}
+
+.form-control:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+}
+
+.btn {
+    text-decoration: none;
+    border: none;
+    background: #07120d;
+    color: white;
+    padding: 10px 13px;
+    border-radius: 13px;
+    font-weight: 900;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+}
+
+.btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn.green {
+    background: #16a34a;
+}
+
+.btn.blue {
+    background: #00a8e8;
+}
+
+.btn.orange {
+    background: #b9792c;
+}
+
+.btn.light {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.copy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 14px;
+}
+
+.copy-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+}
+
+.copy-head {
+    background: linear-gradient(135deg, #ecfdf5, #eff6ff);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 15px;
+}
+
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.invoice-number {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.copy-type {
+    display: inline-flex;
+    background: #07120d;
+    color: white;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.dealer-name {
+    margin-top: 7px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.copy-body {
+    padding: 14px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.info-box span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.info-box strong {
+    display: block;
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.info-box.full {
+    grid-column: 1 / -1;
+}
+
+.info-box.money {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.info-box.money strong {
+    color: #047857;
+}
+
+.info-box.transport {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.info-box.transport strong {
+    color: #1d4ed8;
+}
+
+.action-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding-top: 13px;
+    margin-top: 13px;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.empty-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 34px;
+    color: #64748b;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+}
+
+@media(max-width: 1050px) {
+    .filter-form {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(max-width: 700px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .filter-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .top-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .copy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-box.full {
+        grid-column: auto;
+    }
+
+    .action-row {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Transport Copies</h2>
+                <p>All transporter invoice copies in one place for Accountant, Admin and Warehouse team.</p>
+            </div>
+
+            <span class="badge-main">
+                Transport Copy Section
+            </span>
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <select name="dealer" class="form-control">
+                <option value="">All Dealers</option>
+                {% for dealer in dealers %}
+                    <option value="{{ dealer.id }}" {% if selected_dealer|stringformat:"s" == dealer.id|stringformat:"s" %}selected{% endif %}>
+                        {{ dealer.firm_name }} - {{ dealer.phone }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="date"
+                   name="from_date"
+                   value="{{ from_date }}"
+                   class="form-control">
+
+            <input type="date"
+                   name="to_date"
+                   value="{{ to_date }}"
+                   class="form-control">
+
+            <input type="text"
+                   name="order_id"
+                   value="{{ order_search }}"
+                   class="form-control"
+                   placeholder="Order ID / Invoice No.">
+
+            <button type="submit" class="btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" d="M21 21l-4.35-4.35"/>
+                    <circle cx="11" cy="11" r="7" stroke-width="2"/>
+                </svg>
+                Filter
+            </button>
+        </form>
+    </div>
+
+    <div class="copy-grid">
+        {% for row in rows %}
+            <div class="copy-card">
+                <div class="copy-head">
+                    <div class="invoice-row">
+                        <div>
+                            <h3 class="invoice-number">
+                                {{ row.invoice.invoice_number }}
+                            </h3>
+
+                            <div class="dealer-name">
+                                {{ row.dealer.firm_name|default:"-" }}
+                            </div>
+                        </div>
+
+                        <span class="copy-type">
+                            Transporter Copy
+                        </span>
+                    </div>
+                </div>
+
+                <div class="copy-body">
+                    <div class="info-grid">
+                        <div class="info-box">
+                            <span>Order ID</span>
+                            <strong>#{{ row.order.id|default:"-" }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Invoice Date</span>
+                            <strong>{{ row.invoice.invoice_date|date:"d M Y" }}</strong>
+                        </div>
+
+                        <div class="info-box money">
+                            <span>Invoice Amount</span>
+                            <strong>₹{{ row.invoice.total_amount|default:"0.00" }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Dealer Phone</span>
+                            <strong>{{ row.dealer.phone|default:"-" }}</strong>
+                        </div>
+
+                        <div class="info-box transport">
+                            <span>Transport Type</span>
+                            <strong>
+                                {% if row.dispatch %}
+                                    {{ row.dispatch.get_transport_type_display|default:row.dispatch.transport_type }}
+                                {% else %}
+                                    Not entered
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="info-box transport">
+                            <span>Driver Phone</span>
+                            <strong>
+                                {% if row.dispatch and row.dispatch.driver_phone %}
+                                    {{ row.dispatch.driver_phone }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="info-box full">
+                            <span>Vehicle / Tracking Details</span>
+                            <strong>
+                                {% if row.dispatch %}
+                                    {% if row.dispatch.transport_type == "OWN" %}
+                                        {{ row.dispatch.vehicle_name|default:"Vehicle" }} -
+                                        {{ row.dispatch.vehicle_number|default:"-" }}
+                                        {% if row.dispatch.driver_name %}
+                                            | Driver: {{ row.dispatch.driver_name }}
+                                        {% endif %}
+                                    {% else %}
+                                        Tracking ID:
+                                        {{ row.dispatch.other_transport_tracking_id|default:"-" }}
+                                    {% endif %}
+                                {% else %}
+                                    Dispatch details not entered yet.
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <a href="{{ row.copy_url }}"
+                           target="_blank"
+                           class="btn blue">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                            </svg>
+                            View
+                        </a>
+
+                        <a href="{{ row.copy_url }}"
+                           target="_blank"
+                           class="btn orange">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M6 9V2h12v7"/>
+                                <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                <path stroke-width="2" d="M6 14h12v8H6z"/>
+                            </svg>
+                            Print
+                        </a>
+
+                        {% if row.whatsapp_url %}
+                            <a href="{{ row.whatsapp_url }}"
+                               target="_blank"
+                               class="btn green">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
+                                    <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2c.2-.2.5-.25.75-.15.85.35 1.55.55 2.05.6"/>
+                                </svg>
+                                WhatsApp
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn light" disabled>
+                                No Number
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-card">
+                No transport copies found for selected filter.
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

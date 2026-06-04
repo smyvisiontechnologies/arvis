@@ -1,0 +1,578 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 18px;
+}
+
+.top-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    margin-bottom: 14px;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.top-row h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.top-row p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filter-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-control {
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    padding: 10px 12px;
+    font-weight: 800;
+    outline: none;
+    background: white;
+}
+
+.btn {
+    border: none;
+    background: #07120d;
+    color: white;
+    border-radius: 13px;
+    padding: 10px 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.stat-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.stat-card.green {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.stat-card.green strong {
+    color: #047857;
+}
+
+.stat-card.blue {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-card.blue strong {
+    color: #1d4ed8;
+}
+
+.stat-card.orange {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.stat-card.orange strong {
+    color: #b45309;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.6fr;
+    gap: 14px;
+    align-items: start;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    margin-bottom: 14px;
+}
+
+.card-title {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.chart-wrap {
+    width: 100%;
+    height: 330px;
+    position: relative;
+}
+
+.pie-wrap {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.chart-empty {
+    height: 330px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-weight: 800;
+    background: #f8fafc;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.small-empty {
+    height: 180px;
+    margin-bottom: 14px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e5e7eb;
+    padding: 9px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.table th {
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 900;
+}
+
+.table td {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.amount {
+    font-weight: 900;
+    color: #047857;
+}
+
+.percent {
+    font-weight: 900;
+    color: #1d4ed8;
+}
+
+.badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 5px 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+@media(max-width: 1000px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 650px) {
+    .page {
+        padding: 12px;
+    }
+
+    .top-card,
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .form-control,
+    .btn {
+        width: 100%;
+    }
+
+    .chart-wrap,
+    .chart-empty {
+        height: 260px;
+    }
+
+    .pie-wrap {
+        height: 220px;
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+</style>
+
+<div class="page">
+
+    <div class="top-card">
+        <div class="top-row">
+            <div>
+                <h2>Paid Sales Report</h2>
+                <p>Only received/paid sales are shown here. Period: {{ title }}</p>
+            </div>
+
+            <form method="get" class="filter-form">
+                <select name="period" id="periodSelect" class="form-control">
+                    <option value="this_month" {% if period == "this_month" %}selected{% endif %}>This Month</option>
+                    <option value="last_month" {% if period == "last_month" %}selected{% endif %}>Last Month</option>
+                    <option value="this_year" {% if period == "this_year" %}selected{% endif %}>This Financial Year</option>
+                    <option value="last_year" {% if period == "last_year" %}selected{% endif %}>Last Financial Year</option>
+                    <option value="q1" {% if period == "q1" %}selected{% endif %}>Q1 - Apr / May / Jun</option>
+                    <option value="q2" {% if period == "q2" %}selected{% endif %}>Q2 - Jul / Aug / Sep</option>
+                    <option value="q3" {% if period == "q3" %}selected{% endif %}>Q3 - Oct / Nov / Dec</option>
+                    <option value="q4" {% if period == "q4" %}selected{% endif %}>Q4 - Jan / Feb / Mar</option>
+                    <option value="custom" {% if period == "custom" %}selected{% endif %}>Custom Range</option>
+                </select>
+
+                <input type="date"
+                       name="start_date"
+                       id="startDate"
+                       value="{{ start_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <input type="date"
+                       name="end_date"
+                       id="endDate"
+                       value="{{ end_date|date:'Y-m-d' }}"
+                       class="form-control custom-date">
+
+                <button type="submit" class="btn">
+                    Apply
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card green">
+            <span>Total Paid Sales</span>
+            <strong>₹{{ total_paid }}</strong>
+        </div>
+
+        <div class="stat-card blue">
+            <span>Paid Entries</span>
+            <strong>{{ total_entries }}</strong>
+        </div>
+
+        <div class="stat-card orange">
+            <span>Total Discount</span>
+            <strong>₹{{ total_discount }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Parties</span>
+            <strong>{{ parties_count }}</strong>
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <div>
+            <div class="card">
+                <h3 class="card-title">Paid Sales Graph</h3>
+
+                {% if has_paid_sales %}
+                    <div class="chart-wrap">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="chart-empty">
+                        No paid sales found for this period.
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Recent Paid Payments</h3>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Dealer</th>
+                            <th>Invoice</th>
+                            <th>Mode</th>
+                            <th>Received</th>
+                            <th>Discount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for payment in recent_payments %}
+                            <tr>
+                                <td>{{ payment.payment_date|date:"d M Y" }}</td>
+                                <td>{{ payment.invoice.order.dealer.firm_name }}</td>
+                                <td>{{ payment.invoice.invoice_number }}</td>
+                                <td>
+                                    <span class="badge">
+                                        {{ payment.get_payment_mode_display }}
+                                    </span>
+                                </td>
+                                <td class="amount">₹{{ payment.net_received_amount }}</td>
+                                <td>₹{{ payment.discount_amount }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">No payments found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <h3 class="card-title">Payment Mode</h3>
+
+                {% if has_paid_sales %}
+                    <div class="pie-wrap">
+                        <canvas id="paymentModeChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="chart-empty small-empty">
+                        No payment mode data.
+                    </div>
+                {% endif %}
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Paid</th>
+                            <th>%</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in mode_rows %}
+                            <tr>
+                                <td>{{ row.mode }}</td>
+                                <td class="amount">₹{{ row.total }}</td>
+                                <td class="percent">{{ row.percentage|floatformat:1 }}%</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">No mode data.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Top Dealers</h3>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Dealer</th>
+                            <th>Paid</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in dealer_rows %}
+                            <tr>
+                                <td>{{ row.invoice__order__dealer__firm_name }}</td>
+                                <td class="amount">₹{{ row.total }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2">No dealer data.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ chart_labels|json_script:"chartLabels" }}
+{{ chart_values|json_script:"chartValues" }}
+{{ mode_labels|json_script:"modeLabels" }}
+{{ mode_values|json_script:"modeValues" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function toggleCustomDates() {
+    const period = document.getElementById("periodSelect").value;
+    const showCustom = period === "custom";
+
+    document.querySelectorAll(".custom-date").forEach(function(input) {
+        input.style.display = showCustom ? "block" : "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    toggleCustomDates();
+
+    document.getElementById("periodSelect").addEventListener("change", toggleCustomDates);
+
+    const labelsElement = document.getElementById("chartLabels");
+    const valuesElement = document.getElementById("chartValues");
+    const chartCanvas = document.getElementById("salesChart");
+
+    if (labelsElement && valuesElement && chartCanvas) {
+        const labels = JSON.parse(labelsElement.textContent);
+        const values = JSON.parse(valuesElement.textContent);
+
+        new Chart(chartCanvas, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Paid Sales",
+                    data: values,
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return "₹" + Number(context.raw || 0).toLocaleString("en-IN");
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return "₹" + Number(value).toLocaleString("en-IN");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const modeLabelsElement = document.getElementById("modeLabels");
+    const modeValuesElement = document.getElementById("modeValues");
+    const modeCanvas = document.getElementById("paymentModeChart");
+
+    if (modeLabelsElement && modeValuesElement && modeCanvas) {
+        const modeLabels = JSON.parse(modeLabelsElement.textContent);
+        const modeValues = JSON.parse(modeValuesElement.textContent);
+
+        const totalModeAmount = modeValues.reduce(function(sum, value) {
+            return sum + Number(value || 0);
+        }, 0);
+
+        new Chart(modeCanvas, {
+            type: "pie",
+            data: {
+                labels: modeLabels,
+                datasets: [{
+                    data: modeValues,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = Number(context.raw || 0);
+                                const percentage = totalModeAmount > 0
+                                    ? ((value / totalModeAmount) * 100).toFixed(1)
+                                    : "0.0";
+
+                                return context.label + ": ₹" + value.toLocaleString("en-IN") + " (" + percentage + "%)";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<div style="padding:18px;">
+    <div style="max-width:900px;margin:auto;background:white;border:1px solid #e2e8f0;border-radius:22px;padding:18px;">
+
+        <h2 style="margin-top:0;">Redeem Points</h2>
+
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:16px;padding:12px;margin-bottom:16px;font-weight:900;">
+            Available Points: {{ balance_points }} |
+            1 Point = ₹{{ setting.rupees_per_point }} |
+            Money minimum: {{ setting.minimum_money_redemption_points }} points |
+            Product minimum: {{ setting.minimum_product_redemption_points }} points
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div style="margin-bottom:14px;">
+                <label style="font-weight:900;">Redemption Type</label>
+                <select name="redemption_type" id="redemptionType" class="form-control" onchange="toggleRedemptionFields()" required>
+                    <option value="">Select Type</option>
+                    <option value="MONEY">Money</option>
+                    <option value="PRODUCT">Product / Free Quantity</option>
+                </select>
+            </div>
+
+            <div id="moneyBox" style="display:none;margin-bottom:14px;">
+                <label style="font-weight:900;">Points to Redeem as Money</label>
+                <input type="number" name="points_requested" class="form-control" placeholder="Example: 100">
+            </div>
+
+            <div id="productBox" style="display:none;margin-bottom:14px;">
+                <label style="font-weight:900;">Select Product Redemption</label>
+                <select name="product_rule" class="form-control">
+                    <option value="">Select Product</option>
+                    {% for rule in product_rules %}
+                        <option value="{{ rule.id }}">
+                            {{ rule.product.name }}
+                            {% if rule.pack_size %} - {{ rule.pack_size.display_pack }}{% endif %}
+                            | {{ rule.points_required }} points = {{ rule.free_quantity }} free qty
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label style="font-weight:900;margin-top:12px;display:block;">Request Quantity</label>
+                <input type="number" name="request_quantity" class="form-control" value="1" min="1">
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <label style="font-weight:900;">Note Optional</label>
+                <textarea name="note" class="form-control" rows="3" placeholder="Any note..."></textarea>
+            </div>
+
+            <button type="submit" style="background:#059669;color:white;border:0;border-radius:14px;padding:12px 16px;font-weight:900;">
+                Send Request
+            </button>
+
+            <a href="{% url 'dealer_points_dashboard' %}" style="background:#f1f5f9;color:#0f172a;border-radius:14px;padding:12px 16px;text-decoration:none;font-weight:900;">
+                Back
+            </a>
+        </form>
+
+    </div>
+</div>
+
+<script>
+function toggleRedemptionFields() {
+    const type = document.getElementById("redemptionType").value;
+
+    document.getElementById("moneyBox").style.display = type === "MONEY" ? "block" : "none";
+    document.getElementById("productBox").style.display = type === "PRODUCT" ? "block" : "none";
+}
+</script>
+
+{% endblock %}

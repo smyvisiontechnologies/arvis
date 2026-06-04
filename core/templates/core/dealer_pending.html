@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="padding:24px;">
+    <div style="background:white;border-radius:22px;padding:32px;text-align:center;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <h2>Dealer Profile Not Approved</h2>
+
+        <p style="color:#64748b;">
+            Your dealer account is waiting for approval. You can access your dashboard only after approval.
+        </p>
+
+        {% if dealer %}
+            <p><strong>Status:</strong> {{ dealer.get_approval_status_display }}</p>
+
+            {% if dealer.rejection_reason %}
+                <p style="color:#dc2626;">
+                    <strong>Reason:</strong> {{ dealer.rejection_reason }}
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

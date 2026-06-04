@@ -1,0 +1,202 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.sh-page{padding:16px;max-width:1350px;margin:0 auto}
+.sh-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
+.sh-hero h2{margin:0;font-size:28px;font-weight:900}
+.sh-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.sh-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.sh-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.sh-btn.green{background:#16a34a}.sh-btn.blue{background:#2563eb}.sh-btn.light{background:#f1f5f9;color:#0f172a}
+.sh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.sh-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.sh-card span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.sh-card strong{display:block;color:#0f172a;font-size:24px;font-weight:900;margin-top:8px}
+.sh-card.green strong{color:#16a34a}
+.sh-card.red strong{color:#dc2626}
+.sh-card.orange strong{color:#d97706}
+.sh-form-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.sh-filter{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:10px;align-items:end}
+.sh-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+.sh-section-title{margin:0 0 12px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+.sh-table-wrap{overflow:auto;background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.sh-table{width:100%;border-collapse:collapse;min-width:1000px}
+.sh-table th,.sh-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.sh-table th{background:#f8fafc;font-weight:900;color:#334155}
+.sh-table td{font-weight:800;color:#0f172a}
+.text-right{text-align:right!important}
+.badge{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900}
+.badge.purchase{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.badge.used{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.badge.returned{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.stock-ok{color:#16a34a;font-weight:900}
+.stock-low{color:#dc2626;font-weight:900}
+.sh-empty{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:24px;text-align:center;color:#64748b;font-weight:900}
+@media(max-width:950px){.sh-grid{grid-template-columns:repeat(2,1fr)}.sh-filter{grid-template-columns:1fr}}
+@media(max-width:600px){.sh-page{padding:10px}.sh-grid{grid-template-columns:1fr}.sh-hero{padding:18px;border-radius:20px}.sh-actions{display:grid;grid-template-columns:1fr}.sh-btn{justify-content:center}}
+</style>
+
+<div class="sh-page">
+
+    <div class="sh-hero">
+        <h2>Stock Usage History</h2>
+        <p>Track purchased quantity, used production quantity, returned quantity and current remaining stock.</p>
+
+        <div class="sh-actions">
+            <a href="{% url 'purchase_dashboard' %}" class="sh-btn light">Back to Purchase</a>
+            <a href="{% url 'purchase_entry_create' %}" class="sh-btn green">+ Purchase Entry</a>
+            <a href="{% url 'production_make_product_create' %}" class="sh-btn blue">Production / Repacking</a>
+        </div>
+    </div>
+
+    <div class="sh-grid">
+        <div class="sh-card green">
+            <span>Total Purchased</span>
+            <strong>{{ total_purchased|floatformat:3 }}</strong>
+        </div>
+
+        <div class="sh-card orange">
+            <span>Total Used</span>
+            <strong>{{ total_used|floatformat:3 }}</strong>
+        </div>
+
+        <div class="sh-card red">
+            <span>Total Returned</span>
+            <strong>{{ total_returned|floatformat:3 }}</strong>
+        </div>
+
+        <div class="sh-card green">
+            <span>Current Remaining</span>
+            <strong>{{ total_remaining|floatformat:3 }}</strong>
+        </div>
+    </div>
+
+    <div class="sh-form-card">
+        <h3 class="sh-section-title">Filter</h3>
+
+        <form method="get" class="sh-filter">
+            <div class="sh-field">
+                <label>Search Item / SKU / Type</label>
+                <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Example: Boric Acid, MEA, SKU...">
+            </div>
+
+            <div class="sh-field">
+                <label>From Date</label>
+                <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+            </div>
+
+            <div class="sh-field">
+                <label>To Date</label>
+                <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+            </div>
+
+            <button type="submit" class="sh-btn green">Search</button>
+        </form>
+    </div>
+
+    <div class="sh-form-card">
+        <h3 class="sh-section-title">Current Stock Summary</h3>
+
+        {% if summary_rows %}
+            <div class="sh-table-wrap">
+                <table class="sh-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>SKU</th>
+                            <th>Type</th>
+                            <th class="text-right">Purchased</th>
+                            <th class="text-right">Used</th>
+                            <th class="text-right">Returned</th>
+                            <th class="text-right">Current Remaining</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in summary_rows %}
+                            <tr>
+                                <td>{{ row.item.name }}</td>
+                                <td>{{ row.item.sku_code|default:"-" }}</td>
+                                <td>{{ row.item.get_item_type_display|default:row.item.item_type }}</td>
+                                <td class="text-right">{{ row.purchased_qty|floatformat:3 }}</td>
+                                <td class="text-right">{{ row.used_qty|floatformat:3 }}</td>
+                                <td class="text-right">{{ row.returned_qty|floatformat:3 }}</td>
+                                <td class="text-right">
+                                    {% if row.current_stock <= 0 %}
+                                        <span class="stock-low">{{ row.current_stock|floatformat:3 }}</span>
+                                    {% else %}
+                                        <span class="stock-ok">{{ row.current_stock|floatformat:3 }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.item.stock_unit }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="sh-empty">No stock items found.</div>
+        {% endif %}
+    </div>
+
+    <div class="sh-form-card">
+        <h3 class="sh-section-title">Full Movement History</h3>
+
+        {% if movements %}
+            <div class="sh-table-wrap">
+                <table class="sh-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Item</th>
+                            <th>SKU</th>
+                            <th>Reference</th>
+                            <th>Party / Product</th>
+                            <th class="text-right">In Qty</th>
+                            <th class="text-right">Out Qty</th>
+                            <th>Unit</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for m in movements %}
+                            <tr>
+                                <td>{{ m.date|date:"d/m/Y" }}</td>
+
+                                <td>
+                                    {% if m.type == "PURCHASED" %}
+                                        <span class="badge purchase">Purchased</span>
+                                    {% elif m.type == "USED" %}
+                                        <span class="badge used">Used</span>
+                                    {% else %}
+                                        <span class="badge returned">Returned</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ m.item_name }}</td>
+                                <td>{{ m.sku|default:"-" }}</td>
+                                <td>{{ m.reference }}</td>
+                                <td>{{ m.party }}</td>
+                                <td class="text-right">{{ m.in_qty|floatformat:3 }}</td>
+                                <td class="text-right">{{ m.out_qty|floatformat:3 }}</td>
+                                <td>{{ m.unit }}</td>
+                                <td>{{ m.note }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="sh-empty">No stock movement history found.</div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding:20px; }
+.card {
+    max-width:700px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:20px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+.btn {
+    border:none;
+    padding:12px 16px;
+    border-radius:14px;
+    font-weight:900;
+    cursor:pointer;
+}
+.btn-red { background:#dc2626;color:white; }
+.btn-light { background:#f1f5f9;color:#111827;text-decoration:none; }
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Reject Order #{{ order.id }}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div>
+                <label style="font-weight:900;">Reason</label>
+                {{ form.reason }}
+                {{ form.reason.errors }}
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:18px;">
+                <button type="submit" class="btn btn-red">Reject Order</button>
+                <a href="{% url 'dealer_order_detail' order.id %}" class="btn btn-light">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

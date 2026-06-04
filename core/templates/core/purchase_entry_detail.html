@@ -1,0 +1,145 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pd-page{max-width:1120px;margin:20px auto;padding:0 14px}
+.pd-card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;box-shadow:0 14px 36px rgba(15,23,42,.08);overflow:hidden}
+.pd-head{background:linear-gradient(135deg,#07120d,#123020);color:#fff;padding:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.pd-head h2{margin:0;font-size:25px;font-weight:900}
+.pd-head p{margin:6px 0 0;color:#dcfce7;font-weight:800}
+.pd-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pd-btn{border:0;text-decoration:none;background:#fff;color:#0f172a;border-radius:12px;padding:10px 13px;font-weight:900;display:inline-flex;align-items:center;gap:7px}
+.pd-btn.green{background:#16a34a;color:#fff}.pd-btn.blue{background:#2563eb;color:#fff}.pd-btn.orange{background:#d97706;color:#fff}.pd-btn.light{background:#f1f5f9;color:#0f172a}
+.pd-body{padding:20px}
+.pd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.pd-box{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:14px}
+.pd-box span{display:block;color:#64748b;font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:6px}
+.pd-box strong{display:block;color:#0f172a;font-size:17px;font-weight:900}
+.pd-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:18px}
+.pd-table{width:100%;border-collapse:collapse;min-width:850px}
+.pd-table th,.pd-table td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.pd-table th{background:#f8fafc;color:#334155;font-weight:900}
+.pd-table td{font-weight:800;color:#0f172a}
+.text-right{text-align:right!important}
+.pd-status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900}
+.pd-status.PAID{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.pd-status.UNPAID{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.pd-status.PARTIAL{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.pd-section-title{font-size:18px;font-weight:900;margin:18px 0 10px;color:#0f172a}
+@media(max-width:800px){.pd-grid{grid-template-columns:1fr}.pd-actions{width:100%}.pd-btn{justify-content:center;flex:1}}
+</style>
+
+<div class="pd-page">
+    <div class="pd-card">
+        <div class="pd-head">
+            <div>
+                <h2>Purchase Bill Details</h2>
+                <p>{{ bill.bill_number }} • {{ bill.party.party_name }}</p>
+            </div>
+
+            <div class="pd-actions">
+                <a href="{% url 'purchase_entry_edit' bill.id %}" class="pd-btn blue">Edit</a>
+                <a href="{% url 'purchase_payment_out_create' %}?bill={{ bill.id }}" class="pd-btn green">Make Payment</a>
+                <a href="{% url 'purchase_return_create' %}?bill={{ bill.id }}" class="pd-btn orange">Convert To Return</a>
+                <a href="{% url 'purchase_entry_print' bill.id %}" target="_blank" class="pd-btn light">Print</a>
+                <a href="{% url 'purchase_dashboard' %}" class="pd-btn light">Back</a>
+            </div>
+        </div>
+
+        <div class="pd-body">
+            <div class="pd-grid">
+                <div class="pd-box">
+                    <span>Bill No</span>
+                    <strong>{{ bill.bill_number }}</strong>
+                </div>
+                <div class="pd-box">
+                    <span>Date</span>
+                    <strong>{{ bill.bill_date|date:"d/m/Y" }}</strong>
+                </div>
+                <div class="pd-box">
+                    <span>Status</span>
+                    <strong><span class="pd-status {{ bill.payment_status }}">{{ bill.get_payment_status_display }}</span></strong>
+                </div>
+                <div class="pd-box">
+                    <span>Party</span>
+                    <strong>{{ bill.party.party_name }}</strong>
+                </div>
+                <div class="pd-box">
+                    <span>Total</span>
+                    <strong>₹ {{ bill.total_amount }}</strong>
+                </div>
+                <div class="pd-box">
+                    <span>Balance Due</span>
+                    <strong>₹ {{ bill.balance_amount }}</strong>
+                </div>
+            </div>
+
+            {% if bill.note %}
+                <div class="pd-box" style="margin-bottom:16px;">
+                    <span>Note</span>
+                    <strong>{{ bill.note }}</strong>
+                </div>
+            {% endif %}
+
+            <h3 class="pd-section-title">Items</h3>
+            <div class="pd-table-wrap">
+                <table class="pd-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Item</th>
+                            <th>Unit</th>
+                            <th class="text-right">Qty</th>
+                            <th class="text-right">Rate</th>
+                            <th class="text-right">GST %</th>
+                            <th class="text-right">Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in item_rows %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ row.item.inventory_item.name }}</td>
+        <td>{{ row.item.unit }}</td>
+        <td class="text-right">{{ row.item.quantity }}</td>
+        <td class="text-right">₹ {{ row.item.purchase_price }}</td>
+        <td class="text-right">{{ row.item.gst_percent }}</td>
+        <td class="text-right">₹ {{ row.line_total|floatformat:2 }}</td>
+    </tr>
+{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="pd-section-title">Payments</h3>
+            {% if payments %}
+                <div class="pd-table-wrap">
+                    <table class="pd-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mode</th>
+                                <th>Reference</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.payment_date|date:"d/m/Y" }}</td>
+                                    <td>{{ payment.get_payment_mode_display }}</td>
+                                    <td>{{ payment.reference_number|default:payment.cheque_number|default:"-" }}</td>
+                                    <td class="text-right">₹ {{ payment.amount }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="pd-box"><strong>No payment added yet.</strong></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

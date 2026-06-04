@@ -1,0 +1,998 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.catalog-page {
+    padding: 14px;
+    padding-bottom: 84px;
+}
+
+.catalog-top {
+    margin-bottom: 12px;
+}
+
+.catalog-top h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 24px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.catalog-top p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.filter-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 12px;
+    margin-bottom: 14px;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 11px 13px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    outline: none;
+    font-weight: 700;
+    background: #f8fafc;
+}
+
+.search-input:focus {
+    border-color: #84c341;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.14);
+}
+
+.btn-filter {
+    background: #07120d;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.category-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.category-scroll::-webkit-scrollbar {
+    height: 0;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #111827;
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.category-chip.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 14px;
+    align-items: start;
+}
+
+.product-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-image {
+    height: 250px;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffb000, #84c341);
+    color: #07120d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 54px;
+    font-weight: 900;
+}
+
+.available-badge {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    background: #2f8f46;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.product-body {
+    padding: 12px;
+    background: linear-gradient(180deg, #ffffff, #fbfdff);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-text {
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.product-title {
+    margin: 0;
+    font-size: 16px;
+    color: #111827;
+    line-height: 1.2;
+    font-weight: 900;
+    min-height: 38px;
+}
+
+.pack-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.pack-option {
+    border: 1px solid #d4ded7;
+    background: white;
+    border-radius: 10px;
+    padding: 8px 6px;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+    min-height: 62px;
+    transition: 0.18s ease;
+}
+
+.pack-option::after {
+    content: "";
+    display: none;
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #0f6b3a;
+}
+
+.pack-option.active {
+    background: #0f6b3a;
+    border-color: #0f6b3a;
+    color: white;
+    box-shadow: 0 10px 20px rgba(15, 107, 58, 0.2);
+}
+
+.pack-option.active::after {
+    display: block;
+}
+
+.pack-icon {
+    display: block;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.pack-size {
+    display: block;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.05;
+}
+
+.pack-rate {
+    display: block;
+    margin-top: 3px;
+    font-size: 9px;
+    font-weight: 800;
+    color: #64748b;
+}
+
+.pack-option.active .pack-rate {
+    color: rgba(255,255,255,0.88);
+}
+
+.pack-detail {
+    display: none;
+    margin-top: 11px;
+}
+
+.pack-detail.active {
+    display: block;
+}
+
+.price-panel {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.price-row {
+    padding: 11px 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.price-main {
+    color: #111827;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.price-main small {
+    font-size: 11px;
+    color: #111827;
+}
+
+.gst-text {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 4px;
+    font-weight: 800;
+}
+
+.best-price {
+    color: #16a34a;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+    padding-top: 4px;
+}
+
+.box-row {
+    border-top: 1px solid #eef2f7;
+    padding: 11px 12px;
+    display: grid;
+    grid-template-columns: 32px 1fr 40px;
+    gap: 8px;
+    align-items: center;
+    background: #fbfdff;
+}
+
+.box-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 12px;
+}
+
+.box-title {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.box-title span {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.box-total {
+    color: #111827;
+    font-size: 16px;
+    font-weight: 900;
+    margin-top: 3px;
+}
+
+.bubble-wrap {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.9;
+    animation: floatBubble 2.6s ease-in-out infinite;
+}
+
+.b1 {
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 149, 0, 0.9);
+    left: 10px;
+    top: 14px;
+    animation-delay: 0s;
+}
+
+.b2 {
+    width: 12px;
+    height: 12px;
+    background: rgba(34, 197, 94, 0.85);
+    left: 2px;
+    top: 18px;
+    animation-delay: 0.3s;
+}
+
+.b3 {
+    width: 10px;
+    height: 10px;
+    background: rgba(59, 130, 246, 0.85);
+    right: 1px;
+    top: 16px;
+    animation-delay: 0.5s;
+}
+
+.b4 {
+    width: 8px;
+    height: 8px;
+    background: rgba(168, 85, 247, 0.82);
+    left: 14px;
+    top: 2px;
+    animation-delay: 0.7s;
+}
+
+@keyframes floatBubble {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translateY(-4px) scale(1.08);
+        opacity: 1;
+    }
+}
+
+.scheme-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.scheme-badge {
+    display: inline-flex;
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 4px 7px;
+    border-radius: 999px;
+}
+
+.cart-form {
+    display: grid;
+    grid-template-columns: 105px 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.qty-control {
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 38px;
+}
+
+.qty-btn {
+    border: none;
+    background: #f8fafc;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.qty-input {
+    border: none;
+    text-align: center;
+    outline: none;
+    font-weight: 900;
+    width: 100%;
+    font-size: 13px;
+}
+
+.btn-cart {
+    background: #ff6b2c;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    color: white;
+    font-size: 13px;
+}
+
+.floating-cart {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    z-index: 999;
+    background: linear-gradient(135deg, #00a8e8, #84c341);
+    color: white;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 13px 24px;
+    font-weight: 900;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.empty-box {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    color: #64748b;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+@media (min-width: 1200px) {
+    .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 801px) and (max-width: 899px) {
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 800px) {
+    .catalog-page {
+        padding: 10px;
+        padding-bottom: 80px;
+    }
+
+    .catalog-top h2 {
+        font-size: 20px;
+    }
+
+    .catalog-top p {
+        font-size: 11px;
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-card {
+        padding: 10px;
+        border-radius: 16px;
+    }
+
+    .search-input {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .btn-filter {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
+    .category-chip {
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product-card {
+        border-radius: 14px;
+    }
+
+    .product-image {
+        height: 155px;
+        padding: 6px;
+    }
+
+    .available-badge {
+        left: 6px;
+        bottom: 6px;
+        font-size: 8px;
+        padding: 3px 7px;
+    }
+
+    .product-body {
+        padding: 8px;
+    }
+
+    .category-text {
+        font-size: 8px;
+        margin-bottom: 4px;
+    }
+
+    .product-title {
+        font-size: 12px;
+        min-height: 28px;
+    }
+
+    .pack-options {
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+    .pack-option {
+        padding: 5px 4px;
+        min-height: 48px;
+        border-radius: 8px;
+    }
+
+    .pack-option::after {
+        bottom: -6px;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #0f6b3a;
+    }
+
+    .pack-icon {
+        font-size: 8px;
+        margin-bottom: 2px;
+    }
+
+    .pack-size {
+        font-size: 11px;
+    }
+
+    .pack-rate {
+        display: none;
+    }
+
+    .pack-detail {
+        margin-top: 8px;
+    }
+
+    .price-panel {
+        border-radius: 12px;
+    }
+
+    .price-row {
+        padding: 8px 9px;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .price-main {
+        font-size: 14px;
+    }
+
+    .price-main small {
+        font-size: 9px;
+    }
+
+    .gst-text {
+        font-size: 9px;
+        margin-top: 2px;
+    }
+
+    .best-price {
+        font-size: 9px;
+        padding-top: 0;
+    }
+
+    .box-row {
+        grid-template-columns: 24px 1fr 26px;
+        gap: 6px;
+        padding: 8px 9px;
+    }
+
+    .box-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        font-size: 10px;
+    }
+
+    .box-title {
+        font-size: 10px;
+        line-height: 1.2;
+    }
+
+    .box-title span {
+        font-size: 9px;
+    }
+
+    .box-total {
+        font-size: 13px;
+    }
+
+    .bubble-wrap {
+        width: 24px;
+        height: 24px;
+    }
+
+    .b1 {
+        width: 11px;
+        height: 11px;
+        left: 6px;
+        top: 9px;
+    }
+
+    .b2 {
+        width: 7px;
+        height: 7px;
+        left: 1px;
+        top: 11px;
+    }
+
+    .b3 {
+        width: 6px;
+        height: 6px;
+        right: 1px;
+        top: 10px;
+    }
+
+    .b4 {
+        width: 5px;
+        height: 5px;
+        left: 9px;
+        top: 1px;
+    }
+
+    .scheme-badge {
+        font-size: 8px;
+        padding: 3px 5px;
+    }
+
+    .cart-form {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    .qty-control {
+        height: 32px;
+        grid-template-columns: 28px 1fr 28px;
+    }
+
+    .qty-btn {
+        font-size: 15px;
+    }
+
+    .qty-input {
+        font-size: 11px;
+    }
+
+    .btn-cart {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .floating-cart {
+        width: calc(100% - 20px);
+        justify-content: center;
+        bottom: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+}
+
+@media(max-width: 390px) {
+    .catalog-page {
+        padding: 8px;
+        padding-bottom: 78px;
+    }
+
+    .product-grid {
+        gap: 8px;
+    }
+
+    .product-image {
+        height: 145px;
+    }
+
+    .product-body {
+        padding: 7px;
+    }
+
+    .product-title {
+        font-size: 11px;
+    }
+}
+</style>
+
+<div class="catalog-page">
+    <div class="catalog-top">
+        <h2>▣ Products</h2>
+        <p>{{ products|length }} products available</p>
+    </div>
+
+    <div class="filter-card">
+        <form method="get">
+            <div class="search-row">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search }}"
+                    class="search-input"
+                    placeholder="Search products..."
+                >
+                <button type="submit" class="btn-filter">Search</button>
+            </div>
+
+            <div class="category-scroll">
+                <a href="{% url 'dealer_products' %}" class="category-chip {% if not selected_category %}active{% endif %}">
+                    All
+                </a>
+
+                {% for category in categories %}
+                    <a
+                        href="?category={{ category.id }}{% if search %}&q={{ search }}{% endif %}"
+                        class="category-chip {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}"
+                    >
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card" data-product-card>
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="product-placeholder">
+                            {{ product.name|first|upper }}
+                        </div>
+                    {% endif %}
+
+                    <span class="available-badge">Available</span>
+                </div>
+
+                <div class="product-body">
+                    <div class="category-text">
+                        {{ product.category.name }}
+                    </div>
+
+                    <h3 class="product-title">{{ product.name }}</h3>
+
+                    <div class="pack-options">
+                        {% for pack in product.pack_sizes.all %}
+                            <button
+                                type="button"
+                                class="pack-option {% if forloop.first %}active{% endif %}"
+                                data-pack-target="pack-{{ product.id }}-{{ pack.id }}"
+                            >
+                                <span class="pack-icon">▣</span>
+                                <span class="pack-size">{{ pack.display_pack }}</span>
+                                <span class="pack-rate">₹{{ pack.sale_price_per_unit }}</span>
+                            </button>
+                        {% endfor %}
+                    </div>
+
+                    {% for pack in product.pack_sizes.all %}
+                        <div
+                            class="pack-detail {% if forloop.first %}active{% endif %}"
+                            id="pack-{{ product.id }}-{{ pack.id }}"
+                        >
+                            <div class="price-panel">
+                                <div class="price-row">
+                                    <div>
+                                        <div class="price-main">
+                                            ₹{{ pack.sale_price_per_unit }}<small>/{{ pack.get_unit_display }}</small>
+                                        </div>
+                                        <div class="gst-text">(incl GST)</div>
+                                    </div>
+
+                                    <div class="best-price">Best Price</div>
+                                </div>
+
+                                <div class="box-row">
+                                    <div class="box-icon">□</div>
+
+                                    <div>
+                                        <div class="box-title">
+                                            1 Box
+                                            <br>
+                                            <span>Contains {{ pack.units_per_box }} × {{ pack.display_pack }}</span>
+                                            <br>
+                                            <span>Total {{ pack.total_quantity_label }}</span>
+                                        </div>
+
+                                        <div class="box-total">
+                                            ₹{{ pack.box_sale_price }}
+                                        </div>
+                                    </div>
+
+                                    <div class="bubble-wrap">
+                                        <span class="bubble b1"></span>
+                                        <span class="bubble b2"></span>
+                                        <span class="bubble b3"></span>
+                                        <span class="bubble b4"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if product.schemes.all %}
+                                <div class="scheme-row">
+                                    {% for scheme in product.schemes.all %}
+                                        {% if scheme.is_active %}
+                                            <span class="scheme-badge">
+                                                {{ scheme.scheme_name }}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'dealer_add_to_cart' pack.id %}" class="cart-form">
+                                {% csrf_token %}
+
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn" onclick="changeQty(this, -1)">−</button>
+
+                                    <input
+                                        type="number"
+                                        name="quantity_boxes"
+                                        min="1"
+                                        max="{{ pack.stock_boxes }}"
+                                        value="1"
+                                        class="qty-input"
+                                    >
+
+                                    <button type="button" class="qty-btn" onclick="changeQty(this, 1)">+</button>
+                                </div>
+
+                                <button type="submit" class="btn-cart">
+                                    🛒 Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <div class="pack-detail active">
+                            <div class="price-panel">
+                                <div class="price-row">
+                                    <div class="gst-text">No pack size available.</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-box">
+                No products available.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{% url 'dealer_cart' %}" class="floating-cart">
+    🛒 View Cart
+</a>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-product-card]").forEach(function(card) {
+        const options = card.querySelectorAll(".pack-option");
+        const details = card.querySelectorAll(".pack-detail");
+
+        options.forEach(function(option) {
+            option.addEventListener("click", function() {
+                const targetId = option.getAttribute("data-pack-target");
+
+                options.forEach(function(btn) {
+                    btn.classList.remove("active");
+                });
+
+                details.forEach(function(detail) {
+                    detail.classList.remove("active");
+                });
+
+                option.classList.add("active");
+
+                const target = card.querySelector("#" + targetId);
+                if (target) {
+                    target.classList.add("active");
+                }
+            });
+        });
+    });
+});
+
+function changeQty(button, step) {
+    const control = button.closest(".qty-control");
+    const input = control.querySelector(".qty-input");
+
+    let value = parseInt(input.value || "1");
+    const min = parseInt(input.getAttribute("min") || "1");
+    const max = parseInt(input.getAttribute("max") || "999999");
+
+    value = value + step;
+
+    if (value < min) value = min;
+    if (value > max) value = max;
+
+    input.value = value;
+}
+</script>
+{% endblock %}

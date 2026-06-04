@@ -1,0 +1,236 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page { padding: 18px; }
+
+.card {
+    max-width: 850px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+}
+
+h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.meta {
+    color: #64748b;
+    font-weight: 750;
+    line-height: 1.6;
+    margin-top: 8px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 12px;
+}
+
+.info span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.info strong {
+    display: block;
+    margin-top: 5px;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.image-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 10px;
+}
+
+.image-box img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.field {
+    margin-top: 14px;
+}
+
+.field label {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 7px;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    font-weight: 800;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.btn {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 16px;
+    color: white;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn.green { background: #16a34a; }
+.btn.dark { background: #0f172a; }
+
+@media(max-width: 650px) {
+    .page { padding: 12px; }
+    .btn-row { display: grid; grid-template-columns: 1fr; }
+    .btn { text-align: center; }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>Review Attendance Claim</h2>
+
+        <div class="meta">
+            Employee: <b>{{ attendance.employee.get_full_name|default:attendance.employee.username }}</b><br>
+            Date: {{ attendance.attendance_date|date:"d M Y" }}<br>
+            Vehicle: {{ attendance.get_vehicle_type_display }}
+        </div>
+
+        <div class="info-grid">
+            <div class="info">
+                <span>System Tracked KM</span>
+                <strong>{{ attendance.system_distance_km }} KM</strong>
+            </div>
+
+            <div class="info">
+                <span>Current Approved KM</span>
+                <strong>{{ attendance.manager_approved_km }} KM</strong>
+            </div>
+
+            <div class="info">
+                <span>TA Rate</span>
+                <strong>₹{{ attendance.ta_rate_per_km }}/KM</strong>
+            </div>
+
+            <div class="info">
+                <span>TA Amount</span>
+                <strong>₹{{ attendance.ta_amount }}</strong>
+            </div>
+
+            <div class="info">
+                <span>DA Amount</span>
+                <strong>₹{{ attendance.da_amount }}</strong>
+            </div>
+
+            <div class="info">
+                <span>Total Claim</span>
+                <strong>₹{{ attendance.total_claim_amount }}</strong>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info">
+                <span>Clock In Location</span>
+                <strong>
+                    <a target="_blank" href="https://www.google.com/maps?q={{ attendance.clock_in_latitude }},{{ attendance.clock_in_longitude }}">
+                        Open Map
+                    </a>
+                </strong>
+            </div>
+
+            <div class="info">
+                <span>Clock Out Location</span>
+                <strong>
+                    <a target="_blank" href="https://www.google.com/maps?q={{ attendance.clock_out_latitude }},{{ attendance.clock_out_longitude }}">
+                        Open Map
+                    </a>
+                </strong>
+            </div>
+        </div>
+
+        <div class="image-grid">
+            {% if attendance.dealer_visit_image_1 %}
+                <div class="image-box">
+                    <strong>Dealer Visit Image 1</strong>
+                    <img src="{{ attendance.dealer_visit_image_1.url }}" alt="Dealer Visit 1">
+                </div>
+            {% endif %}
+
+            {% if attendance.dealer_visit_image_2 %}
+                <div class="image-box">
+                    <strong>Dealer Visit Image 2</strong>
+                    <img src="{{ attendance.dealer_visit_image_2.url }}" alt="Dealer Visit 2">
+                </div>
+            {% endif %}
+
+            {% if attendance.public_vehicle_bill %}
+                <div class="image-box">
+                    <strong>Public Vehicle Bill</strong><br>
+                    <a href="{{ attendance.public_vehicle_bill.url }}" target="_blank">View Bill</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Manager Approved KM</label>
+                {{ form.manager_approved_km }}
+                {{ form.manager_approved_km.errors }}
+            </div>
+
+            <div class="field">
+                <label>Manager Remarks</label>
+                {{ form.manager_remarks }}
+                {{ form.manager_remarks.errors }}
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn green">Approve & Send to HR</button>
+                <a href="{% url 'manager_attendance_approvals' %}" class="btn dark">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
