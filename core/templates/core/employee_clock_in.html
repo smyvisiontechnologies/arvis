@@ -1,0 +1,394 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card h2 i {
+    color: #84c341;
+    font-size: 26px;
+}
+
+.card p {
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+.mode-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    margin: 6px 0 18px;
+}
+
+.mode-chip.tada {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.mode-chip.no-tada {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.time-info {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 20px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-time-clock {
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: 800;
+    color: #84c341;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(132, 195, 65, 0.3);
+}
+
+.current-date-clock {
+    font-size: 14px;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.current-date-clock i {
+    color: #84c341;
+}
+
+.help-box {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 18px;
+    padding: 16px;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.help-box i {
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 20px;
+    margin-top: 8px;
+}
+
+.field label {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field label i {
+    margin-right: 6px;
+    color: #84c341;
+}
+
+.form-control,
+.field input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    font-weight: 600;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.form-control:focus,
+.field input:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
+}
+
+.no-tada-box {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    border-radius: 18px;
+    padding: 16px;
+    font-weight: 800;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.btn {
+    border: none;
+    border-radius: 40px;
+    padding: 12px 24px;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn.green { background: linear-gradient(135deg, #16a34a, #059669); }
+.btn.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+
+@media (max-width: 768px) {
+    .page { padding: 16px; }
+    .card { padding: 20px; border-radius: 24px; }
+    .card h2 { font-size: 22px; }
+    .time-info { flex-direction: column; text-align: center; padding: 14px 16px; }
+    .current-time-clock { font-size: 28px; }
+    .current-date-clock { justify-content: center; }
+    .help-box { flex-direction: column; }
+    .btn-row { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 550px) {
+    .page { padding: 12px; }
+    .card { padding: 16px; border-radius: 20px; }
+    .card h2 { font-size: 20px; }
+    .card p { font-size: 13px; }
+    .current-time-clock { font-size: 24px; }
+    .current-date-clock { font-size: 12px; flex-wrap: wrap; justify-content: center; }
+    .help-box, .no-tada-box { padding: 12px; font-size: 12px; }
+    .field label { font-size: 12px; }
+    .form-control, .field input { padding: 10px 12px; font-size: 13px; }
+    .btn { padding: 10px 20px; font-size: 13px; }
+}
+</style>
+
+<div class="page">
+    <div class="card">
+        <h2>
+            <i class="fas fa-sign-in-alt"></i>
+            Clock In
+        </h2>
+
+        {% if tada_applicable %}
+            <p>
+                <i class="fas fa-map-marker-alt"></i>
+                Your clock-in location will be saved. Starting odometer is required for TA/DA claim.
+            </p>
+            <div class="mode-chip tada">
+                <i class="fas fa-route"></i>
+                TA/DA Applicable
+            </div>
+        {% else %}
+            <p>
+                <i class="fas fa-map-marker-alt"></i>
+                Your clock-in location will be saved. Odometer is not required for this employee profile.
+            </p>
+            <div class="mode-chip no-tada">
+                <i class="fas fa-user-check"></i>
+                Attendance Only
+            </div>
+        {% endif %}
+
+        <div class="time-info">
+            <div class="current-time-clock" id="digitalTime">--:--:--</div>
+            <div class="current-date-clock">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="dateText">--</span>
+                <i class="fas fa-clock"></i>
+                <span id="sessionText">--</span>
+            </div>
+        </div>
+
+        <div class="help-box">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                {% if tada_applicable %}
+                    <strong>Before check-in:</strong> Enter starting odometer reading. Browser location permission is required.
+                {% else %}
+                    <strong>Before check-in:</strong> Browser location permission is required. No odometer will be asked.
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not tada_applicable %}
+            <div class="no-tada-box">
+                ✅ This employee is marked as <strong>TA/DA Not Applicable</strong>.
+                Only clock-in and clock-out locations will be stored.
+            </div>
+        {% endif %}
+
+        <form method="post" id="clockInForm">
+            {% csrf_token %}
+
+            <input type="hidden" name="latitude" id="clockInLatitude">
+            <input type="hidden" name="longitude" id="clockInLongitude">
+
+            {% if tada_applicable %}
+                <div class="form-grid">
+                    <div class="field">
+                        <label><i class="fas fa-tachometer-alt"></i> Starting Odometer Reading</label>
+                        <input type="number"
+                               name="clock_in_odometer_reading"
+                               id="clockInOdometer"
+                               class="form-control"
+                               step="0.01"
+                               min="0"
+                               placeholder="Example: 24560">
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="btn-row">
+                <button type="button" class="btn green" onclick="submitClockIn()">
+                    <i class="fas fa-save"></i> Save Clock In
+                </button>
+
+                <a href="{% url 'employee_attendance_dashboard' %}" class="btn dark">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateDigitalTime() {
+    const now = new Date();
+
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    const timeElement = document.getElementById("digitalTime");
+    if (timeElement) {
+        timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    const dateElement = document.getElementById("dateText");
+    if (dateElement) {
+        dateElement.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+    }
+
+    const hour = now.getHours();
+    let session = "";
+    let icon = "";
+
+    if (hour < 12) {
+        session = "Morning";
+        icon = "🌅";
+    } else if (hour < 17) {
+        session = "Afternoon";
+        icon = "☀️";
+    } else if (hour < 20) {
+        session = "Evening";
+        icon = "🌤️";
+    } else {
+        session = "Night";
+        icon = "🌙";
+    }
+
+    const sessionElement = document.getElementById("sessionText");
+    if (sessionElement) {
+        sessionElement.innerHTML = `${icon} ${session}`;
+    }
+}
+
+updateDigitalTime();
+setInterval(updateDigitalTime, 1000);
+
+function submitClockIn() {
+    {% if tada_applicable %}
+        const odoInput = document.getElementById("clockInOdometer");
+
+        if (!odoInput || !odoInput.value || parseFloat(odoInput.value) < 0) {
+            alert("Please enter valid starting odometer reading.");
+            return;
+        }
+    {% endif %}
+
+    if (!navigator.geolocation) {
+        alert("Location is not supported in this browser.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById("clockInLatitude").value = position.coords.latitude;
+        document.getElementById("clockInLongitude").value = position.coords.longitude;
+        document.getElementById("clockInForm").submit();
+    }, function() {
+        alert("Please allow location permission for clock-in.");
+    }, {
+        enableHighAccuracy: true,
+        timeout: 12000,
+        maximumAge: 0
+    });
+}
+</script>
+{% endblock %}

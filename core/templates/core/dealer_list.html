@@ -3,23 +3,25 @@
 {% block content %}
 <style>
 .page {
-    padding: 16px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .top-card,
 .filter-card {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    padding: 16px;
+    border-radius: 24px;
+    padding: 20px;
     box-shadow: 0 10px 24px rgba(15,23,42,.06);
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .top-row {
     display: flex;
     justify-content: space-between;
-    gap: 14px;
+    gap: 16px;
     align-items: flex-start;
     flex-wrap: wrap;
 }
@@ -29,10 +31,18 @@
     color: #0f172a;
     font-size: 24px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-row h2 i {
+    color: #84c341;
+    font-size: 24px;
 }
 
 .top-row p {
-    margin: 5px 0 0;
+    margin: 6px 0 0;
     color: #64748b;
     font-size: 13px;
     font-weight: 700;
@@ -41,119 +51,140 @@
 .btn {
     text-decoration: none;
     border: none;
-    background: #07120d;
+    background: #0f172a;
     color: white;
-    padding: 9px 12px;
-    border-radius: 12px;
-    font-weight: 900;
-    font-size: 12px;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-weight: 800;
+    font-size: 13px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.btn svg {
-    width: 16px;
-    height: 16px;
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .btn.green {
-    background: #16a34a;
+    background: linear-gradient(135deg, #16a34a, #059669);
+}
+
+.btn.green:hover {
+    background: linear-gradient(135deg, #059669, #047857);
 }
 
 .btn.blue {
-    background: #00a8e8;
+    background: linear-gradient(135deg, #00a8e8, #2563eb);
+}
+
+.btn.blue:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .btn.light {
     background: #f1f5f9;
     color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+
+.btn.light:hover {
+    background: #e2e8f0;
 }
 
 .filter-form {
     display: grid;
-    grid-template-columns: 1fr 170px 110px;
-    gap: 10px;
+    grid-template-columns: 1fr 200px 120px;
+    gap: 12px;
 }
 
 .form-control {
     width: 100%;
-    border: 1px solid #cbd5e1;
-    border-radius: 13px;
-    padding: 10px 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 12px 16px;
     outline: none;
-    font-weight: 800;
-    background: white;
+    font-weight: 600;
+    background: #f8fafc;
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
-    border-color: #16a34a;
-    box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
 }
 
-/* MINI CARDS */
+/* Dealer Cards Grid - 2 columns on mobile */
 .dealer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
 .dealer-mini-card {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 20px;
-    padding: 11px;
-    box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.06);
     cursor: pointer;
-    transition: .18s ease;
-    min-height: 245px;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
 .dealer-mini-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 34px rgba(15,23,42,.12);
-    border-color: #bbf7d0;
+    transform: translateY(-4px);
+    box-shadow: 0 20px 35px rgba(15,23,42,.12);
+    border-color: #84c341;
 }
 
 .mini-edit-btn {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-    background: #07120d;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #0f172a;
     color: white;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
     z-index: 3;
+    transition: all 0.3s ease;
 }
 
-.mini-edit-btn svg {
-    width: 16px;
-    height: 16px;
+.mini-edit-btn i {
+    font-size: 14px;
 }
 
 .mini-edit-btn:hover {
-    background: #16a34a;
+    background: #84c341;
+    transform: scale(1.05);
 }
 
 .mini-image {
     width: 100%;
-    height: 118px;
+    height: 130px;
     border-radius: 16px;
     overflow: hidden;
-    background: #f8fafc;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     border: 1px solid #e5e7eb;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .mini-image img {
@@ -165,28 +196,28 @@
 .photo-fallback {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #07120d, #123020);
+    background: linear-gradient(135deg, #84c341, #6ba82e);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 900;
 }
 
 .mini-name {
     margin: 0;
     color: #0f172a;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 900;
-    line-height: 1.25;
-    min-height: 35px;
+    line-height: 1.3;
+    min-height: 38px;
 }
 
 .mini-owner {
     color: #64748b;
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 700;
     margin-top: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -196,27 +227,39 @@
 .mini-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 9px;
+    gap: 6px;
+    margin-top: 10px;
 }
 
 .dealer-code {
     display: inline-flex;
-    background: #07120d;
+    align-items: center;
+    gap: 4px;
+    background: #0f172a;
     color: white;
-    padding: 4px 7px;
+    padding: 4px 8px;
     border-radius: 999px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
+}
+
+.dealer-code i {
+    font-size: 8px;
 }
 
 .status {
     display: inline-flex;
+    align-items: center;
+    gap: 4px;
     border-radius: 999px;
-    padding: 4px 7px;
-    font-size: 10px;
+    padding: 4px 8px;
+    font-size: 9px;
     font-weight: 900;
     white-space: nowrap;
+}
+
+.status i {
+    font-size: 8px;
 }
 
 .status.active {
@@ -249,38 +292,35 @@
     border: 1px solid #fed7aa;
 }
 
-.detail-box.gps {
-    background: #f0fdf4;
-    border-color: #bbf7d0;
-}
-
-.detail-box.gps strong {
-    color: #15803d;
-}
-
 .mini-contact-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 7px;
-    margin-top: 10px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .icon-btn {
     min-height: 36px;
     border-radius: 12px;
     padding: 8px;
+    font-size: 11px;
 }
 
 .tap-text {
-    margin-top: auto;
-    padding-top: 9px;
-    color: #16a34a;
-    font-size: 11px;
-    font-weight: 900;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+    color: #84c341;
+    font-size: 10px;
+    font-weight: 800;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
-/* MODAL */
+/* MODAL STYLES */
 .dealer-modal {
     display: none;
     position: fixed;
@@ -295,35 +335,35 @@
 .modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, .62);
+    background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(5px);
 }
 
 .modal-panel {
     position: relative;
-    width: min(980px, calc(100% - 24px));
+    width: min(1000px, calc(100% - 24px));
     max-height: calc(100vh - 36px);
     overflow-y: auto;
     margin: 18px auto;
     background: white;
-    border-radius: 26px;
-    box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.3);
     border: 1px solid #e5e7eb;
 }
 
 .modal-hero {
-    background: linear-gradient(135deg, #ecfdf5, #eff6ff);
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     border-bottom: 1px solid #e5e7eb;
-    padding: 18px;
+    padding: 24px;
     display: grid;
-    grid-template-columns: 112px 1fr auto;
-    gap: 16px;
+    grid-template-columns: 120px 1fr auto;
+    gap: 20px;
     align-items: center;
 }
 
 .modal-photo {
-    width: 112px;
-    height: 112px;
+    width: 120px;
+    height: 120px;
     border-radius: 24px;
     background: white;
     border: 1px solid #e5e7eb;
@@ -331,7 +371,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 12px 26px rgba(15,23,42,.10);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .modal-photo img {
@@ -343,71 +383,95 @@
 .modal-title h3 {
     margin: 0;
     color: #0f172a;
-    font-size: 23px;
+    font-size: 24px;
     font-weight: 900;
     line-height: 1.25;
 }
 
 .modal-title p {
-    margin: 6px 0 0;
+    margin: 8px 0 0;
     color: #475569;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .close-btn {
     border: none;
-    background: #07120d;
+    background: #0f172a;
     color: white;
-    width: 38px;
-    height: 38px;
-    border-radius: 13px;
-    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 24px;
     font-weight: 900;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #dc2626;
+    transform: rotate(90deg);
 }
 
 .modal-body {
-    padding: 18px;
+    padding: 24px;
 }
 
 .detail-section {
-    margin-bottom: 18px;
+    margin-bottom: 24px;
 }
 
 .detail-section-title {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     color: #0f172a;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.detail-section-title i {
+    color: #84c341;
+    font-size: 16px;
 }
 
 .detail-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 .detail-box {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    padding: 12px;
+    padding: 12px 14px;
+    transition: all 0.3s ease;
+}
+
+.detail-box:hover {
+    border-color: #84c341;
+    background: #fefce8;
 }
 
 .detail-box span {
     display: block;
     color: #64748b;
-    font-size: 11px;
-    font-weight: 900;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .detail-box strong {
     display: block;
-    margin-top: 5px;
+    margin-top: 6px;
     color: #0f172a;
-    font-size: 13px;
-    font-weight: 900;
+    font-size: 14px;
+    font-weight: 800;
     line-height: 1.35;
     word-break: break-word;
 }
@@ -443,31 +507,58 @@
     color: #1d4ed8;
 }
 
+.detail-box.gps {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.detail-box.gps strong {
+    color: #15803d;
+}
+
 .modal-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 9px;
-    padding-top: 14px;
-    border-top: 1px dashed #cbd5e1;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 8px;
 }
 
 .empty-card {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    padding: 28px;
+    border-radius: 24px;
+    padding: 48px;
     color: #64748b;
     font-weight: 800;
     text-align: center;
+    grid-column: 1 / -1;
 }
 
-@media(max-width: 900px) {
+.empty-card i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    color: #cbd5e1;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .dealer-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+    }
+    
     .detail-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
 
+@media (max-width: 900px) {
     .modal-hero {
         grid-template-columns: 90px 1fr auto;
+        padding: 20px;
     }
 
     .modal-photo {
@@ -476,123 +567,217 @@
     }
 }
 
-@media(max-width: 700px) {
+@media (max-width: 768px) {
     .page {
-        padding: 12px;
+        padding: 16px;
     }
 
     .top-card,
     .filter-card {
-        padding: 14px;
-        border-radius: 18px;
+        padding: 16px;
+        border-radius: 20px;
     }
 
     .top-row {
-        display: grid;
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+    
+    .top-row h2 {
+        font-size: 22px;
     }
 
     .filter-form {
         grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .form-control {
+        padding: 10px 14px;
     }
 
+    /* 2 cards per row on mobile */
     .dealer-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
 
     .dealer-mini-card {
-        min-height: 220px;
-        padding: 9px;
-        border-radius: 18px;
+        padding: 12px;
+        border-radius: 16px;
     }
 
     .mini-edit-btn {
-        width: 30px;
-        height: 30px;
-        border-radius: 10px;
-        top: 7px;
-        right: 7px;
+        width: 28px;
+        height: 28px;
+        top: 8px;
+        right: 8px;
     }
-
-    .mini-edit-btn svg {
-        width: 14px;
-        height: 14px;
+    
+    .mini-edit-btn i {
+        font-size: 12px;
     }
 
     .mini-image {
-        height: 90px;
-        border-radius: 14px;
+        height: 100px;
+        border-radius: 12px;
+    }
+    
+    .photo-fallback {
+        font-size: 28px;
     }
 
     .mini-name {
-        font-size: 12px;
-        min-height: 31px;
+        font-size: 13px;
+        min-height: 32px;
     }
 
     .mini-owner {
         font-size: 10px;
     }
 
+    .dealer-code {
+        font-size: 8px;
+        padding: 3px 6px;
+    }
+    
+    .dealer-code i {
+        font-size: 7px;
+    }
+
+    .status {
+        font-size: 8px;
+        padding: 3px 6px;
+    }
+    
+    .status i {
+        font-size: 7px;
+    }
+
     .mini-contact-row {
-        grid-template-columns: 1fr 1fr;
         gap: 6px;
+        margin-top: 10px;
     }
 
     .btn {
-        font-size: 11px;
-        padding: 8px 9px;
+        font-size: 10px;
+        padding: 7px 10px;
+    }
+    
+    .icon-btn {
+        min-height: 32px;
     }
 
-    .modal-panel {
-        width: calc(100% - 18px);
-        margin: 9px auto;
-        max-height: calc(100vh - 18px);
-        border-radius: 20px;
+    .tap-text {
+        font-size: 9px;
+        margin-top: 10px;
+        padding-top: 6px;
     }
-
+    
     .modal-hero {
-        grid-template-columns: 70px 1fr 34px;
-        gap: 10px;
-        padding: 13px;
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 12px;
+        padding: 16px;
     }
-
+    
     .modal-photo {
-        width: 70px;
-        height: 70px;
-        border-radius: 18px;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
     }
-
+    
     .modal-title h3 {
-        font-size: 17px;
+        font-size: 18px;
     }
-
-    .modal-title p {
-        font-size: 11px;
-    }
-
+    
     .close-btn {
-        width: 34px;
-        height: 34px;
-        border-radius: 11px;
-        font-size: 19px;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
     }
-
+    
     .modal-body {
-        padding: 13px;
+        padding: 16px;
     }
-
+    
     .detail-grid {
         grid-template-columns: 1fr;
     }
-
-    .detail-box.full {
-        grid-column: auto;
-    }
-
+    
     .modal-actions {
-        display: grid;
+        flex-direction: column;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    /* 2 cards per row on small mobile */
+    .dealer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .dealer-mini-card {
+        padding: 10px;
+    }
+    
+    .mini-image {
+        height: 85px;
+    }
+    
+    .photo-fallback {
+        font-size: 24px;
+    }
+    
+    .mini-name {
+        font-size: 12px;
+        min-height: 28px;
+    }
+    
+    .mini-badges {
+        gap: 4px;
+    }
+    
+    .dealer-code, .status {
+        font-size: 7px;
+        padding: 2px 5px;
+    }
+    
+    .mini-contact-row {
         grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .icon-btn {
+        justify-content: center;
+    }
+    
+    .tap-text {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .dealer-grid {
+        gap: 8px;
+    }
+    
+    .mini-image {
+        height: 75px;
+    }
+    
+    .mini-name {
+        font-size: 11px;
     }
 }
 </style>
@@ -602,19 +787,22 @@
     <div class="top-card">
         <div class="top-row">
             <div>
-                <h2>Dealers</h2>
+                <h2>
+                    <i class="fas fa-store"></i>
+                    Dealers
+                </h2>
                 <p>
                     {% if can_edit_dealer %}
-                        Mini dealer cards with GPS status. Tap card to view details.
+                        <i class="fas fa-credit-card"></i> Mini dealer cards with GPS status. Tap card to view details.
                     {% else %}
-                        View dealers assigned to your role.
+                        <i class="fas fa-eye"></i> View dealers assigned to your role.
                     {% endif %}
                 </p>
             </div>
 
             {% if can_edit_dealer %}
                 <a href="{% url 'dealer_create' %}" class="btn green">
-                    + Create Dealer
+                    <i class="fas fa-plus-circle"></i> Create Dealer
                 </a>
             {% endif %}
         </div>
@@ -626,16 +814,16 @@
                    name="search"
                    value="{{ search }}"
                    class="form-control"
-                   placeholder="Search dealer ID, firm name, owner name, phone, email or GST">
+                   placeholder="🔍 Search dealer ID, firm name, owner name, phone, email or GST">
 
             <select name="status" class="form-control">
                 <option value="">All Status</option>
-                <option value="active" {% if status == "active" %}selected{% endif %}>Active</option>
-                <option value="inactive" {% if status == "inactive" %}selected{% endif %}>Inactive</option>
+                <option value="active" {% if status == "active" %}selected{% endif %}>✅ Active</option>
+                <option value="inactive" {% if status == "inactive" %}selected{% endif %}>❌ Inactive</option>
             </select>
 
-            <button type="submit" class="btn">
-                Search
+            <button type="submit" class="btn blue">
+                <i class="fas fa-search"></i> Search
             </button>
         </form>
     </div>
@@ -648,12 +836,8 @@
                     <a href="{% url 'dealer_edit' dealer.id %}"
                        class="mini-edit-btn"
                        title="Edit Dealer"
-                       aria-label="Edit Dealer"
                        onclick="event.stopPropagation();">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 20h9"/>
-                            <path stroke-width="2" d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                        </svg>
+                        <i class="fas fa-edit"></i>
                     </a>
                 {% endif %}
 
@@ -662,7 +846,7 @@
                         <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name }}">
                     {% else %}
                         <div class="photo-fallback">
-                            {{ dealer.firm_name|default:"D"|first|upper }}
+                            <i class="fas fa-store"></i>
                         </div>
                     {% endif %}
                 </div>
@@ -672,11 +856,12 @@
                 </h3>
 
                 <div class="mini-owner">
-                    {{ dealer.owner_name|default:"-" }}
+                    <i class="fas fa-user"></i> {{ dealer.owner_name|default:"-" }}
                 </div>
 
                 <div class="mini-badges">
                     <span class="dealer-code">
+                        <i class="fas fa-id-card"></i>
                         {% if dealer.dealer_code %}
                             {{ dealer.dealer_code }}
                         {% else %}
@@ -685,15 +870,15 @@
                     </span>
 
                     {% if dealer.user and dealer.user.is_active %}
-                        <span class="status active">Active</span>
+                        <span class="status active"><i class="fas fa-circle"></i> Active</span>
                     {% else %}
-                        <span class="status inactive">Inactive</span>
+                        <span class="status inactive"><i class="fas fa-circle"></i> Inactive</span>
                     {% endif %}
 
                     {% if dealer.latitude and dealer.longitude %}
-                        <span class="status gps">GPS Saved</span>
+                        <span class="status gps"><i class="fas fa-map-marker-alt"></i> GPS</span>
                     {% else %}
-                        <span class="status gps-missing">GPS Missing</span>
+                        <span class="status gps-missing"><i class="fas fa-map-marker-alt"></i> No GPS</span>
                     {% endif %}
                 </div>
 
@@ -702,31 +887,24 @@
                         <a href="tel:{{ dealer.phone }}"
                            class="btn blue icon-btn"
                            onclick="event.stopPropagation();">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.6 2.5a2 2 0 0 1-.45 2.11L9 10.5a16 16 0 0 0 4.5 4.5l1.17-1.15a2 2 0 0 1 2.11-.45c.8.28 1.64.48 2.5.6A2 2 0 0 1 22 16.92z"/>
-                            </svg>
-                            Call
+                            <i class="fas fa-phone"></i> Call
                         </a>
 
                         <a href="https://wa.me/91{{ dealer.phone }}"
                            target="_blank"
                            class="btn green icon-btn"
                            onclick="event.stopPropagation();">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
-                                <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2c.2-.2.5-.25.75-.15.85.35 1.55.55 2.05.6"/>
-                            </svg>
-                            WhatsApp
+                            <i class="fab fa-whatsapp"></i> WhatsApp
                         </a>
                     {% else %}
                         <button type="button" class="btn light icon-btn" disabled>
-                            No Phone
+                            <i class="fas fa-phone-slash"></i> No Phone
                         </button>
                     {% endif %}
                 </div>
 
                 <div class="tap-text">
-                    Tap to view details
+                    <i class="fas fa-hand-pointer"></i> Tap to view details
                 </div>
             </div>
 
@@ -740,7 +918,7 @@
                                 <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name }}">
                             {% else %}
                                 <div class="photo-fallback">
-                                    {{ dealer.firm_name|default:"D"|first|upper }}
+                                    <i class="fas fa-store" style="font-size: 48px;"></i>
                                 </div>
                             {% endif %}
                         </div>
@@ -748,33 +926,32 @@
                         <div class="modal-title">
                             <h3>{{ dealer.firm_name|default:"Dealer Firm" }}</h3>
                             <p>
-                                Dealer ID:
+                                <i class="fas fa-id-card"></i> Dealer ID:
                                 {% if dealer.dealer_code %}
                                     {{ dealer.dealer_code }}
                                 {% else %}
                                     DLR{{ dealer.id }}
                                 {% endif %}
-                                |
-                                Owner: {{ dealer.owner_name|default:"-" }}
+                                | <i class="fas fa-user"></i> Owner: {{ dealer.owner_name|default:"-" }}
                             </p>
 
                             <div class="mini-badges">
                                 {% if dealer.user and dealer.user.is_active %}
-                                    <span class="status active">Active</span>
+                                    <span class="status active"><i class="fas fa-circle"></i> Active</span>
                                 {% else %}
-                                    <span class="status inactive">Inactive</span>
+                                    <span class="status inactive"><i class="fas fa-circle"></i> Inactive</span>
                                 {% endif %}
 
                                 {% if dealer.flag %}
                                     <span class="status flag">
-                                        {{ dealer.get_flag_display|default:dealer.flag }}
+                                        <i class="fas fa-flag"></i> {{ dealer.get_flag_display|default:dealer.flag }}
                                     </span>
                                 {% endif %}
 
                                 {% if dealer.latitude and dealer.longitude %}
-                                    <span class="status gps">GPS Saved</span>
+                                    <span class="status gps"><i class="fas fa-map-marker-alt"></i> GPS Saved</span>
                                 {% else %}
-                                    <span class="status gps-missing">GPS Missing</span>
+                                    <span class="status gps-missing"><i class="fas fa-map-marker-alt"></i> GPS Missing</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -782,95 +959,101 @@
                         <button type="button"
                                 class="close-btn"
                                 onclick="closeDealerModal('dealerModal{{ dealer.id }}')">
-                            ×
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
 
                     <div class="modal-body">
 
                         <div class="detail-section">
-                            <h4 class="detail-section-title">Contact Details</h4>
+                            <h4 class="detail-section-title">
+                                <i class="fas fa-address-card"></i> Contact Details
+                            </h4>
 
                             <div class="detail-grid">
                                 <div class="detail-box">
-                                    <span>Owner Name</span>
+                                    <span><i class="fas fa-user"></i> Owner Name</span>
                                     <strong>{{ dealer.owner_name|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Phone</span>
+                                    <span><i class="fas fa-phone"></i> Phone</span>
                                     <strong>{{ dealer.phone|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Email</span>
+                                    <span><i class="fas fa-envelope"></i> Email</span>
                                     <strong>{{ dealer.email|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box full">
-                                    <span>Owner Address</span>
+                                    <span><i class="fas fa-location-dot"></i> Owner Address</span>
                                     <strong>{{ dealer.owner_address|default:"-" }}</strong>
                                 </div>
                             </div>
                         </div>
 
                         <div class="detail-section">
-                            <h4 class="detail-section-title">Firm Details</h4>
+                            <h4 class="detail-section-title">
+                                <i class="fas fa-building"></i> Firm Details
+                            </h4>
 
                             <div class="detail-grid">
                                 <div class="detail-box">
-                                    <span>Firm Name</span>
+                                    <span><i class="fas fa-building"></i> Firm Name</span>
                                     <strong>{{ dealer.firm_name|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>GST Number</span>
+                                    <span><i class="fas fa-file-invoice"></i> GST Number</span>
                                     <strong>{{ dealer.gst_number|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>License Number</span>
+                                    <span><i class="fas fa-id-card"></i> License Number</span>
                                     <strong>{{ dealer.license_number|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Firm Type</span>
+                                    <span><i class="fas fa-tag"></i> Firm Type</span>
                                     <strong>{{ dealer.get_firm_type_display|default:dealer.firm_type|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>State</span>
+                                    <span><i class="fas fa-map-pin"></i> State</span>
                                     <strong>{{ dealer.state|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>District</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> District</span>
                                     <strong>{{ dealer.district|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box full">
-                                    <span>Firm Address</span>
+                                    <span><i class="fas fa-location-dot"></i> Firm Address</span>
                                     <strong>{{ dealer.firm_address|default:"-" }}</strong>
                                 </div>
                             </div>
                         </div>
 
                         <div class="detail-section">
-                            <h4 class="detail-section-title">Dealer GPS Location</h4>
+                            <h4 class="detail-section-title">
+                                <i class="fas fa-map-marker-alt"></i> Dealer GPS Location
+                            </h4>
 
                             <div class="detail-grid">
                                 <div class="detail-box gps">
-                                    <span>Latitude</span>
+                                    <span><i class="fas fa-arrow-up"></i> Latitude</span>
                                     <strong>{{ dealer.latitude|default:"Not Captured" }}</strong>
                                 </div>
 
                                 <div class="detail-box gps">
-                                    <span>Longitude</span>
+                                    <span><i class="fas fa-arrow-right"></i> Longitude</span>
                                     <strong>{{ dealer.longitude|default:"Not Captured" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>GPS Accuracy</span>
+                                    <span><i class="fas fa-ruler"></i> GPS Accuracy</span>
                                     <strong>
                                         {% if dealer.location_accuracy_meters %}
                                             {{ dealer.location_accuracy_meters }} meters
@@ -881,21 +1064,21 @@
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Visit Allowed Radius</span>
+                                    <span><i class="fas fa-circle"></i> Visit Allowed Radius</span>
                                     <strong>{{ dealer.visit_radius_meters|default:"15" }} meters</strong>
                                 </div>
 
                                 <div class="detail-box full">
-                                    <span>Map Location</span>
+                                    <span><i class="fas fa-map"></i> Map Location</span>
                                     <strong>
                                         {% if dealer.latitude and dealer.longitude %}
                                             <a href="https://www.google.com/maps?q={{ dealer.latitude }},{{ dealer.longitude }}"
                                                target="_blank"
                                                style="color:#15803d;text-decoration:none;font-weight:900;">
-                                                Open dealer location in Google Maps
+                                                <i class="fas fa-external-link-alt"></i> Open dealer location in Google Maps
                                             </a>
                                         {% else %}
-                                            GPS location not captured. Edit dealer and capture exact location.
+                                            <i class="fas fa-exclamation-triangle"></i> GPS location not captured. Edit dealer and capture exact location.
                                         {% endif %}
                                     </strong>
                                 </div>
@@ -903,11 +1086,13 @@
                         </div>
 
                         <div class="detail-section">
-                            <h4 class="detail-section-title">Manager & Approval</h4>
+                            <h4 class="detail-section-title">
+                                <i class="fas fa-users"></i> Manager & Approval
+                            </h4>
 
                             <div class="detail-grid">
                                 <div class="detail-box staff">
-                                    <span>Sales Officer / Dealer Manager</span>
+                                    <span><i class="fas fa-user-tie"></i> Sales Officer / Dealer Manager</span>
                                     <strong>
                                         {% if dealer.created_by_sales_officer %}
                                             {{ dealer.created_by_sales_officer.get_full_name|default:dealer.created_by_sales_officer.email|default:dealer.created_by_sales_officer.username }}
@@ -918,7 +1103,7 @@
                                 </div>
 
                                 <div class="detail-box staff">
-                                    <span>Concerned ASM</span>
+                                    <span><i class="fas fa-user-tie"></i> Concerned ASM</span>
                                     <strong>
                                         {% if dealer.concerned_asm %}
                                             {{ dealer.concerned_asm.get_full_name|default:dealer.concerned_asm.email|default:dealer.concerned_asm.username }}
@@ -929,17 +1114,17 @@
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Approval Status</span>
+                                    <span><i class="fas fa-stamp"></i> Approval Status</span>
                                     <strong>{{ dealer.get_approval_status_display|default:dealer.approval_status|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Login Status</span>
+                                    <span><i class="fas fa-key"></i> Login Status</span>
                                     <strong>
                                         {% if dealer.user and dealer.user.is_active %}
-                                            Active
+                                            <i class="fas fa-check-circle" style="color:#059669;"></i> Active
                                         {% else %}
-                                            Inactive
+                                            <i class="fas fa-times-circle" style="color:#dc2626;"></i> Inactive
                                         {% endif %}
                                     </strong>
                                 </div>
@@ -947,31 +1132,33 @@
                         </div>
 
                         <div class="detail-section">
-                            <h4 class="detail-section-title">Deposit & Target</h4>
+                            <h4 class="detail-section-title">
+                                <i class="fas fa-chart-line"></i> Deposit & Target
+                            </h4>
 
                             <div class="detail-grid">
                                 <div class="detail-box money">
-                                    <span>Deposit Amount</span>
+                                    <span>₹  Deposit Amount</span>
                                     <strong>₹{{ dealer.deposit_amount|default:"0.00" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Deposit Mode</span>
+                                    <span><i class="fas fa-credit-card"></i> Deposit Mode</span>
                                     <strong>{{ dealer.get_deposit_mode_display|default:dealer.deposit_mode|default:"CHEQUE" }}</strong>
                                 </div>
 
                                 <div class="detail-box">
-                                    <span>Cheque Number</span>
+                                    <span><i class="fas fa-money-bill"></i> Cheque Number</span>
                                     <strong>{{ dealer.cheque_number|default:"-" }}</strong>
                                 </div>
 
                                 <div class="detail-box money">
-                                    <span>Yearly Target</span>
+                                    <span><i class="fas fa-bullseye"></i> Yearly Target</span>
                                     <strong>₹{{ dealer.yearly_target_amount|default:"0.00" }}</strong>
                                 </div>
 
                                 <div class="detail-box warning">
-                                    <span>Achieved Amount</span>
+                                    <span><i class="fas fa-trophy"></i> Achieved Amount</span>
                                     <strong>₹{{ dealer.achieved_amount|default:"0.00" }}</strong>
                                 </div>
                             </div>
@@ -980,18 +1167,11 @@
                         <div class="modal-actions">
                             {% if dealer.phone %}
                                 <a href="tel:{{ dealer.phone }}" class="btn blue">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.6 2.5a2 2 0 0 1-.45 2.11L9 10.5a16 16 0 0 0 4.5 4.5l1.17-1.15a2 2 0 0 1 2.11-.45c.8.28 1.64.48 2.5.6A2 2 0 0 1 22 16.92z"/>
-                                    </svg>
-                                    Call
+                                    <i class="fas fa-phone"></i> Call
                                 </a>
 
                                 <a href="https://wa.me/91{{ dealer.phone }}" target="_blank" class="btn green">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
-                                        <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2c.2-.2.5-.25.75-.15.85.35 1.55.55 2.05.6"/>
-                                    </svg>
-                                    WhatsApp
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
                                 </a>
                             {% endif %}
 
@@ -999,24 +1179,20 @@
                                 <a href="https://www.google.com/maps?q={{ dealer.latitude }},{{ dealer.longitude }}"
                                    target="_blank"
                                    class="btn green">
-                                    📍 Open Location
+                                    <i class="fas fa-map-marker-alt"></i> Open Location
                                 </a>
                             {% endif %}
 
                             {% if can_edit_dealer %}
                                 <a href="{% url 'dealer_edit' dealer.id %}" class="btn">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 20h9"/>
-                                        <path stroke-width="2" d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                                    </svg>
-                                    Edit Dealer
+                                    <i class="fas fa-edit"></i> Edit Dealer
                                 </a>
                             {% endif %}
 
                             <button type="button"
                                     class="btn light"
                                     onclick="closeDealerModal('dealerModal{{ dealer.id }}')">
-                                Close
+                                <i class="fas fa-times"></i> Close
                             </button>
                         </div>
 
@@ -1025,6 +1201,7 @@
             </div>
         {% empty %}
             <div class="empty-card">
+                <i class="fas fa-store-slash"></i>
                 No dealers found.
             </div>
         {% endfor %}
@@ -1057,6 +1234,14 @@ document.addEventListener("keydown", function(event) {
             modal.classList.remove("show");
         });
 
+        document.body.style.overflow = "";
+    }
+});
+
+// Close modal when clicking outside
+document.addEventListener("click", function(event) {
+    if (event.target.classList && event.target.classList.contains("modal-backdrop")) {
+        event.target.parentElement.classList.remove("show");
         document.body.style.overflow = "";
     }
 });

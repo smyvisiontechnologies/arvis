@@ -3,121 +3,176 @@
 {% block content %}
 <style>
 .product-page {
-    padding: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
+/* Header Section */
 .admin-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+    background: white;
+    padding: 20px 24px;
+    border-radius: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .admin-top h2 {
     margin: 0;
-    color: #111827;
-    font-size: 25px;
-    font-weight: 900;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-top h2 i {
+    color: #84c341;
+    font-size: 28px;
 }
 
 .admin-top p {
-    margin: 5px 0 0;
+    margin: 6px 0 0;
     color: #64748b;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .top-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
 .action-btn {
     text-decoration: none;
-    border-radius: 14px;
-    padding: 11px 15px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    transition: all 0.3s ease;
 }
 
 .action-btn.dark {
-    background: #07120d;
+    background: #0f172a;
     color: white;
+    border: 1px solid #1e293b;
+}
+
+.action-btn.dark:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
 }
 
 .action-btn.green {
-    background: linear-gradient(135deg, #ffb000, #84c341);
-    color: #07120d;
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+    color: white;
+    border: none;
 }
 
+.action-btn.green:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(132, 195, 65, 0.3);
+}
+
+/* Search Card */
 .search-card {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 13px;
-    margin-bottom: 18px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .search-form {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.form-control {
-    width: 100%;
-    border: 1px solid #e5e7eb;
+.search-form .form-control {
+    flex: 1;
+    min-width: 250px;
+    border: 2px solid #e5e7eb;
     background: #f8fafc;
-    border-radius: 14px;
-    padding: 12px 14px;
+    border-radius: 50px;
+    padding: 12px 18px;
     outline: none;
-    font-weight: 700;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
-.form-control:focus {
+.search-form .form-control:focus {
     border-color: #84c341;
-    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.14);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
 }
 
 .search-btn {
     border: none;
-    border-radius: 14px;
-    padding: 12px 18px;
-    background: #00a8e8;
+    border-radius: 50px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #00a8e8, #2563eb);
     color: white;
-    font-weight: 900;
+    font-weight: 700;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
 }
 
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 168, 232, 0.3);
+}
+
+/* Product Grid */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
     align-items: start;
 }
 
 .product-card {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Image */
 .product-img {
-    height: 235px;
-    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    height: 220px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
+    padding: 20px;
     position: relative;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .product-img img {
@@ -128,74 +183,100 @@
 }
 
 .product-letter {
-    width: 92px;
-    height: 92px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, #ffb000, #84c341);
-    color: #07120d;
+    width: 100px;
+    height: 100px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 48px;
     font-weight: 900;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .status-pill {
     position: absolute;
-    left: 10px;
-    bottom: 10px;
+    top: 12px;
+    right: 12px;
     border-radius: 999px;
-    padding: 5px 10px;
+    padding: 5px 12px;
     font-size: 10px;
     font-weight: 900;
+    backdrop-filter: blur(10px);
 }
 
 .status-pill.active {
-    background: #2f8f46;
+    background: rgba(47, 143, 70, 0.9);
     color: white;
 }
 
 .status-pill.inactive {
-    background: #dc2626;
+    background: rgba(220, 38, 38, 0.9);
     color: white;
 }
 
+/* Product Body */
 .product-body {
-    padding: 13px;
+    padding: 16px;
 }
 
 .category-text {
     color: #2563eb;
-    font-size: 10px;
-    font-weight: 900;
+    font-size: 11px;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #eff6ff;
+    padding: 4px 10px;
+    border-radius: 20px;
 }
 
 .product-title {
-    margin: 0;
-    color: #111827;
-    font-size: 16px;
-    font-weight: 900;
-    line-height: 1.25;
-    min-height: 40px;
+    margin: 0 0 8px 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.3;
 }
 
+.technical-name {
+    margin-bottom: 12px;
+    color: #047857;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Meta Chips */
 .mini-meta {
-    margin-top: 7px;
     display: flex;
-    gap: 7px;
+    gap: 8px;
     flex-wrap: wrap;
+    margin-bottom: 12px;
 }
 
 .meta-chip {
     background: #f1f5f9;
     color: #334155;
-    border-radius: 999px;
-    padding: 5px 8px;
+    border-radius: 20px;
+    padding: 4px 10px;
     font-size: 10px;
-    font-weight: 900;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .meta-chip.stock {
@@ -208,43 +289,64 @@
     color: #b91c1c;
 }
 
+/* Pack Chips */
 .pack-chips {
     display: flex;
-    gap: 7px;
+    gap: 8px;
     overflow-x: auto;
-    margin-top: 12px;
-    padding-bottom: 3px;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
 }
 
 .pack-chips::-webkit-scrollbar {
-    height: 0;
+    height: 4px;
+}
+
+.pack-chips::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.pack-chips::-webkit-scrollbar-thumb {
+    background: #84c341;
+    border-radius: 10px;
 }
 
 .pack-chip {
-    min-width: 76px;
-    background: #f8fafc;
+    min-width: 80px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     border: 1px solid #e5e7eb;
-    border-radius: 13px;
-    padding: 8px;
+    border-radius: 14px;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.pack-chip:hover {
+    transform: translateY(-2px);
+    border-color: #84c341;
+    box-shadow: 0 4px 12px rgba(132, 195, 65, 0.15);
 }
 
 .pack-chip strong {
     display: block;
-    color: #111827;
-    font-size: 13px;
-    font-weight: 900;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .pack-chip span {
     display: block;
     color: #64748b;
-    font-size: 10px;
-    font-weight: 800;
-    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
 }
 
+/* Spec Details */
 .spec-details {
-    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .spec-details summary {
@@ -252,99 +354,147 @@
     cursor: pointer;
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    border-radius: 13px;
-    padding: 10px 12px;
-    color: #07120d;
+    border-radius: 14px;
+    padding: 10px 14px;
+    color: #0f172a;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.spec-details summary:hover {
+    background: #f1f5f9;
+    border-color: #84c341;
 }
 
 .spec-details summary::-webkit-details-marker {
     display: none;
 }
 
+.spec-details summary::before {
+    content: "\f06e";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 12px;
+}
+
 .spec-box {
-    margin-top: 9px;
+    margin-top: 10px;
     display: grid;
-    gap: 8px;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 4px;
 }
 
 .spec-pack {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
-    padding: 10px;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.spec-pack:hover {
+    border-color: #84c341;
+    background: #fefce8;
 }
 
 .spec-head {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .spec-head strong {
-    color: #111827;
-    font-size: 13px;
-    font-weight: 900;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .spec-price {
-    text-align: right;
-    color: #07120d;
-    font-size: 13px;
-    font-weight: 900;
+    color: #84c341;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .spec-small {
     color: #64748b;
     font-size: 11px;
-    font-weight: 700;
-    line-height: 1.45;
-    margin-top: 6px;
+    font-weight: 600;
+    line-height: 1.5;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
 }
 
+.spec-small span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Scheme Row */
 .scheme-row {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-bottom: 12px;
 }
 
 .scheme-badge {
     background: #fffbeb;
     color: #92400e;
     border: 1px solid #fde68a;
-    border-radius: 999px;
-    padding: 5px 8px;
+    border-radius: 20px;
+    padding: 5px 10px;
     font-size: 10px;
-    font-weight: 900;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
+/* Card Actions */
 .card-actions {
-    margin-top: 13px;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .edit-btn,
-.sticker-btn {
-    width: 100%;
+.sticker-btn,
+.deactivate-btn,
+.delete-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: white;
+    border: none;
     border-radius: 14px;
-    padding: 11px 12px;
-    font-weight: 900;
-    font-size: 13px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 6px;
 }
 
 .edit-btn {
-    background: #07120d;
+    background: #0f172a;
     color: white;
+}
+
+.edit-btn:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
 }
 
 .sticker-btn {
@@ -352,41 +502,91 @@
     color: white;
 }
 
+.sticker-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.deactivate-btn {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.deactivate-btn:hover {
+    background: #fde68a;
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background: #dc2626;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-2px);
+}
+
+/* Empty State */
 .empty-box {
     background: white;
-    border-radius: 22px;
-    padding: 28px;
+    border-radius: 28px;
+    padding: 48px;
     text-align: center;
     color: #64748b;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-@media(min-width: 1400px) {
+.empty-box h3 {
+    margin: 0 0 8px 0;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.empty-box p {
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.empty-box .action-btn {
+    display: inline-flex;
+}
+
+/* Responsive */
+@media (min-width: 1400px) {
     .product-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
-@media(min-width: 1100px) and (max-width: 1399px) {
+@media (min-width: 1100px) and (max-width: 1399px) {
     .product-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media(min-width: 800px) and (max-width: 1099px) {
+@media (min-width: 800px) and (max-width: 1099px) {
     .product-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media(max-width: 700px) {
+@media (max-width: 768px) {
     .product-page {
-        padding: 10px;
+        padding: 12px;
+    }
+
+    .admin-top {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .admin-top h2 {
-        font-size: 21px;
+        font-size: 22px;
     }
 
     .top-actions {
@@ -395,115 +595,135 @@
 
     .action-btn {
         flex: 1;
-        padding: 10px;
+        justify-content: center;
+        padding: 8px 16px;
         font-size: 12px;
+    }
+
+    .search-card {
+        padding: 16px;
     }
 
     .search-form {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .search-form .form-control {
+        min-width: 100%;
     }
 
     .product-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
 
     .product-card {
-        border-radius: 15px;
+        border-radius: 18px;
     }
 
     .product-img {
-        height: 150px;
-        padding: 7px;
+        height: 160px;
+        padding: 12px;
+    }
+
+    .product-letter {
+        width: 70px;
+        height: 70px;
+        font-size: 32px;
+        border-radius: 20px;
     }
 
     .status-pill {
-        left: 7px;
-        bottom: 7px;
+        top: 8px;
+        right: 8px;
         font-size: 8px;
-        padding: 4px 7px;
+        padding: 3px 8px;
     }
 
     .product-body {
-        padding: 8px;
+        padding: 12px;
     }
 
     .category-text {
-        font-size: 8px;
-        margin-bottom: 4px;
+        font-size: 9px;
+        padding: 3px 8px;
     }
 
     .product-title {
-        font-size: 12px;
-        min-height: 30px;
+        font-size: 14px;
+    }
+
+    .technical-name {
+        font-size: 10px;
+        padding: 4px 8px;
     }
 
     .meta-chip {
-        font-size: 8px;
-        padding: 4px 6px;
+        font-size: 9px;
+        padding: 3px 8px;
     }
 
     .pack-chip {
-        min-width: 62px;
+        min-width: 65px;
         padding: 6px;
-        border-radius: 10px;
     }
 
     .pack-chip strong {
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .pack-chip span {
-        font-size: 8px;
-    }
-
-    .spec-details summary {
-        padding: 8px;
-        font-size: 10px;
-    }
-
-    .spec-pack {
-        padding: 8px;
-    }
-
-    .spec-head {
-        flex-direction: column;
-        gap: 4px;
+        font-size: 9px;
     }
 
     .spec-head strong,
     .spec-price {
-        font-size: 10px;
-        text-align: left;
+        font-size: 11px;
     }
 
     .spec-small {
         font-size: 9px;
+        grid-template-columns: 1fr;
     }
 
-    .scheme-badge {
-        font-size: 8px;
-        padding: 4px 6px;
+    .card-actions {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
-    .edit-btn {
-        padding: 9px;
-        font-size: 10px;
-        border-radius: 11px;
+    .edit-btn,
+    .sticker-btn,
+    .deactivate-btn,
+    .delete-btn {
+        padding: 8px;
+        font-size: 11px;
     }
 }
 
-@media(max-width: 390px) {
+@media (max-width: 480px) {
     .product-page {
         padding: 8px;
     }
 
+    .admin-top {
+        padding: 12px;
+    }
+
     .product-grid {
-        gap: 8px;
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .product-img {
-        height: 138px;
+        height: 180px;
+    }
+
+    .empty-box {
+        padding: 32px 20px;
+    }
+
+    .empty-box h3 {
+        font-size: 18px;
     }
 }
 </style>
@@ -512,33 +732,39 @@
 
     <div class="admin-top">
         <div>
-            <h2>Products</h2>
-            <p>{{ products|length }} products available</p>
+            <h2>
+                <i class="fas fa-boxes"></i>
+                Products
+            </h2>
+            <p><i class="fas fa-chart-line"></i> {{ products|length }} products available</p>
         </div>
 
         <div class="top-actions">
             <a href="{% url 'product_category_create' %}" class="action-btn dark">
-                + Category
+                <i class="fas fa-tags"></i> Add Category
             </a>
 
             <a href="{% url 'product_create' %}" class="action-btn green">
-                + Create Product
+                <i class="fas fa-plus-circle"></i> Create Product
             </a>
         </div>
     </div>
 
     <div class="search-card">
         <form method="get" class="search-form">
-            <input
-                type="text"
-                name="q"
-                value="{{ search }}"
-                class="form-control"
-                placeholder="Search product, category, HSN..."
-            >
-
+            <div style="flex: 1; position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search }}"
+                    class="form-control"
+                    placeholder="Search by product name, technical name, category or HSN..."
+                    style="padding-left: 42px;"
+                >
+            </div>
             <button type="submit" class="search-btn">
-                Search
+                <i class="fas fa-arrow-right"></i> Search
             </button>
         </form>
     </div>
@@ -558,30 +784,47 @@
                         {% endif %}
 
                         {% if product.is_active %}
-                            <span class="status-pill active">Active</span>
+                            <span class="status-pill active">
+                                <i class="fas fa-check-circle"></i> Active
+                            </span>
                         {% else %}
-                            <span class="status-pill inactive">Inactive</span>
+                            <span class="status-pill inactive">
+                                <i class="fas fa-ban"></i> Inactive
+                            </span>
                         {% endif %}
                     </div>
 
                     <div class="product-body">
                         <div class="category-text">
-                            {{ product.category.name }}
+                            <i class="fas fa-tag"></i> {{ product.category.name }}
                         </div>
 
                         <h3 class="product-title">
                             {{ product.name }}
                         </h3>
 
+                        {% if product.technical_name %}
+                            <div class="technical-name">
+                                <i class="fas fa-flask"></i>
+                                {{ product.technical_name }}
+                            </div>
+                        {% endif %}
+
                         <div class="mini-meta">
                             {% if product.hsn_number %}
-                                <span class="meta-chip">HSN {{ product.hsn_number }}</span>
+                                <span class="meta-chip">
+                                    <i class="fas fa-barcode"></i> HSN {{ product.hsn_number }}
+                                </span>
                             {% endif %}
 
                             {% if product.in_stock %}
-                                <span class="meta-chip stock">In Stock</span>
+                                <span class="meta-chip stock">
+                                    <i class="fas fa-check-circle"></i> In Stock
+                                </span>
                             {% else %}
-                                <span class="meta-chip out">Out of Stock</span>
+                                <span class="meta-chip out">
+                                    <i class="fas fa-times-circle"></i> Out of Stock
+                                </span>
                             {% endif %}
                         </div>
 
@@ -600,32 +843,33 @@
                         </div>
 
                         <details class="spec-details">
-                            <summary>View Specs</summary>
+                            <summary>Product Specifications</summary>
 
                             <div class="spec-box">
                                 {% for pack in product.pack_sizes.all %}
                                     <div class="spec-pack">
                                         <div class="spec-head">
-                                            <strong>{{ pack.display_pack }}</strong>
+                                            <strong>
+                                                <i class="fas fa-cube"></i> {{ pack.display_pack }}
+                                            </strong>
                                             <div class="spec-price">
                                                 ₹{{ pack.sale_price_per_unit }}
                                             </div>
                                         </div>
 
                                         <div class="spec-small">
-                                            MRP: ₹{{ pack.mrp_per_unit }}<br>
-                                            Box: ₹{{ pack.box_sale_price }}<br>
-                                            Contains: {{ pack.units_per_box }} × {{ pack.display_pack }}<br>
-                                            Stock: {{ pack.stock_boxes }} boxes<br>
-                                            Warehouse: {{ pack.warehouse.name }}<br>
-                                            Purchase: ₹{{ pack.purchase_price_per_unit }} |
-                                            Margin: {{ pack.margin_percent }}%
+                                            <span><i class="fas fa-tag"></i> MRP: ₹{{ pack.mrp_per_unit }}</span>
+                                            <span><i class="fas fa-box"></i> Box Price: ₹{{ pack.box_sale_price }}</span>
+                                            <span><i class="fas fa-boxes"></i> Contains: {{ pack.units_per_box }} × {{ pack.display_pack }}</span>
+                                            <span><i class="fas fa-warehouse"></i> Stock: {{ pack.stock_boxes }} boxes</span>
+                                            <span><i class="fas fa-building"></i> Warehouse: {{ pack.warehouse.name }}</span>
+                                            <span><i class="fas fa-chart-line"></i> Margin: {{ pack.margin_percent }}%</span>
                                         </div>
                                     </div>
                                 {% empty %}
                                     <div class="spec-pack">
                                         <div class="spec-small">
-                                            No pack sizes added.
+                                            <span>No pack sizes added.</span>
                                         </div>
                                     </div>
                                 {% endfor %}
@@ -637,7 +881,7 @@
                                 {% for scheme in product.schemes.all %}
                                     {% if scheme.is_active %}
                                         <span class="scheme-badge">
-                                            {{ scheme.scheme_name }}
+                                            <i class="fas fa-gift"></i> {{ scheme.scheme_name }}
                                         </span>
                                     {% endif %}
                                 {% endfor %}
@@ -647,13 +891,31 @@
                         <div class="card-actions">
                             {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "INVENTORY_MANAGER" %}
                                 <a href="{% url 'product_sticker_print' product.id %}" class="sticker-btn">
-                                    Print Sticker
+                                    <i class="fas fa-print"></i> Sticker
+                                </a>
+
+                                <a href="{% url 'product_edit' product.id %}" class="edit-btn">
+                                    <i class="fas fa-edit"></i> Edit
                                 </a>
                             {% endif %}
 
-                            <a href="{% url 'product_edit' product.id %}" class="edit-btn">
-                                Edit Product
-                            </a>
+                            {% if request.user.is_superuser or request.user.profile.role == "ADMIN" %}
+                                {% if product.is_active %}
+                                    <form method="post"
+                                          action="{% url 'product_deactivate' product.id %}"
+                                          onsubmit="return confirm('Deactivate this product? It will be hidden from dealer products.');"
+                                          style="display: contents;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="deactivate-btn">
+                                            <i class="fas fa-ban"></i> Deactivate
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                <a href="{% url 'product_force_delete' product.id %}" class="delete-btn" onclick="return confirm('Permanently delete this product? This action cannot be undone.');">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -662,11 +924,12 @@
         </div>
     {% else %}
         <div class="empty-box">
-            <h3 style="margin-top:0;">No products found</h3>
+            <i class="fas fa-box-open" style="font-size: 64px; color: #cbd5e1; margin-bottom: 16px; display: block;"></i>
+            <h3>No products found</h3>
             <p>Create your first product with pack sizes and schemes.</p>
 
             <a href="{% url 'product_create' %}" class="action-btn green">
-                + Create Product
+                <i class="fas fa-plus-circle"></i> Create Product
             </a>
         </div>
     {% endif %}

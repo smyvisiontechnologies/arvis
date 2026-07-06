@@ -3,30 +3,36 @@
 {% block content %}
 <style>
 .profile-page {
-    padding: 18px;
-}
-
-.profile-shell {
-    display: grid;
-    gap: 16px;
-}
-
-.profile-hero {
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.12), transparent 34%),
-        linear-gradient(135deg, #ffffff, #f8fafc);
-    border: 1px solid #e2e8f0;
-    border-radius: 28px;
     padding: 20px;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Responsive Container */
+.profile-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Profile Hero Card */
+.profile-hero {
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    border-radius: 28px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
 .profile-main {
-    display: grid;
-    grid-template-columns: 170px minmax(0, 1fr);
-    gap: 22px;
-    align-items: start;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+/* Profile Photo */
+.profile-photo-section {
+    flex-shrink: 0;
 }
 
 .profile-photo-click {
@@ -36,90 +42,89 @@
     cursor: pointer;
     border-radius: 28px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 3px solid white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     background: #e5e7eb;
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.10);
 }
 
 .profile-photo-click:hover .profile-photo-overlay {
     opacity: 1;
 }
 
-.profile-img,
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .profile-letter {
     width: 100%;
     height: 100%;
-}
-
-.profile-img {
-    object-fit: cover;
-    display: block;
-}
-
-.profile-letter {
     background: linear-gradient(135deg, #2563eb, #059669);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 54px;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 .profile-photo-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.76);
+    background: rgba(15, 23, 42, 0.8);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
+    font-weight: 700;
     opacity: 0;
-    transition: 0.2s ease;
+    transition: 0.2s;
     text-align: center;
     padding: 12px;
+    font-size: 13px;
+}
+
+/* Profile Info */
+.profile-info-section {
+    flex: 1;
+    min-width: 250px;
 }
 
 .profile-title-row {
     display: flex;
     justify-content: space-between;
-    gap: 14px;
     align-items: flex-start;
     flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .profile-name {
-    margin: 0;
-    color: #0f172a;
     font-size: 28px;
-    font-weight: 900;
-    line-height: 1.2;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
 }
 
 .profile-subtitle {
-    margin: 7px 0 0;
     color: #64748b;
     font-size: 14px;
-    font-weight: 750;
-    line-height: 1.5;
+    margin: 6px 0 0;
 }
 
 .badge-row {
     display: flex;
-    gap: 8px;
     flex-wrap: wrap;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 7px 11px;
+    padding: 6px 14px;
+    border-radius: 40px;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
 }
 
 .status-badge.blue {
@@ -135,72 +140,52 @@
 }
 
 .status-badge.orange {
-    background: #f8fafc;
-    color: #334155;
-    border: 1px solid #e2e8f0;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
 }
 
-.section-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 24px;
-    padding: 18px;
-    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
-}
-
-.section-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-    margin-bottom: 14px;
-}
-
-.section-title {
-    margin: 0;
-    color: #0f172a;
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.section-desc {
-    margin: 5px 0 0;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1.45;
-}
-
+/* Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 12px;
+    margin-top: 20px;
 }
 
 .info-box {
     background: #f8fafc;
-    border-radius: 17px;
-    padding: 13px;
+    border-radius: 16px;
+    padding: 12px 14px;
     border: 1px solid #e2e8f0;
 }
 
 .info-box span {
-    display: block;
-    color: #64748b;
     font-size: 11px;
-    font-weight: 900;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.25px;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    display: block;
 }
 
 .info-box strong {
-    display: block;
-    margin-top: 5px;
-    color: #0f172a;
     font-size: 14px;
-    font-weight: 900;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+    margin-top: 6px;
     word-break: break-word;
-    line-height: 1.4;
+}
+
+.phone-click {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.phone-click:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 .info-box.highlight {
@@ -221,212 +206,188 @@
     color: #047857;
 }
 
-.info-box.warning {
-    background: #f8fafc;
-    border-color: #e2e8f0;
+/* Section Cards */
+.section-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
-.info-box.warning strong {
-    color: #334155;
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.target-calc-box {
-    margin-top: 12px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
-    border-radius: 17px;
-    padding: 13px;
-    font-size: 12.5px;
-    font-weight: 850;
-    line-height: 1.55;
-}
-
-.target-calc-box strong {
+.section-title {
+    font-size: 18px;
+    font-weight: 800;
     color: #0f172a;
-    font-weight: 900;
+    margin: 0;
 }
 
+.section-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin: 5px 0 0;
+}
+
+/* Address Grid */
 .address-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 12px;
 }
 
 .address-box {
     background: #f8fafc;
-    border-radius: 17px;
+    border-radius: 16px;
     padding: 14px;
     border: 1px solid #e2e8f0;
 }
 
 .address-box span {
-    display: block;
-    color: #64748b;
     font-size: 11px;
-    font-weight: 900;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.25px;
+    color: #64748b;
 }
 
 .address-box p {
-    margin: 7px 0 0;
+    margin: 8px 0 0;
     color: #0f172a;
-    line-height: 1.55;
-    font-weight: 750;
+    line-height: 1.5;
+    font-weight: 500;
 }
 
-.manager-card {
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-}
-
-.manager-card .section-title {
-    color: #9a3412;
-}
-
-/* SIMPLE RACER TARGET METER */
+/* Racer Target Meter */
 .racer-target-card {
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.10), transparent 34%),
-        #ffffff;
+    background: white;
     overflow: hidden;
 }
 
 .racer-wrap {
-    display: grid;
-    grid-template-columns: 320px minmax(0, 1fr);
-    gap: 22px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
     align-items: center;
 }
 
 .racer-meter-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-shrink: 0;
 }
 
 .racer-meter {
-    width: 280px;
-    height: 172px;
+    width: 260px;
+    height: 160px;
     position: relative;
-    --angle: 0deg;
 }
 
 .racer-arc-wrap {
-    width: 280px;
-    height: 140px;
+    width: 260px;
+    height: 130px;
     overflow: hidden;
     position: relative;
 }
 
 .racer-arc {
-    width: 280px;
-    height: 280px;
+    width: 260px;
+    height: 260px;
     border-radius: 50%;
-    background:
-        conic-gradient(
-            from 270deg,
-            #e2e8f0 0deg,
-            #e2e8f0 180deg,
-            transparent 180deg
-        );
-    animation: racerArcGlow 1.2s ease-out both;
+    background: conic-gradient(from 270deg, #e2e8f0 0deg, #e2e8f0 180deg, transparent 180deg);
 }
 
 .racer-inner {
     position: absolute;
-    left: 32px;
-    top: 32px;
-    width: 216px;
-    height: 216px;
+    left: 30px;
+    top: 30px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    background: #ffffff;
+    background: white;
     border: 1px solid #e2e8f0;
 }
+
 .racer-needle {
     position: absolute;
     left: 50%;
     bottom: 28px;
     width: 6px;
-    height: 98px;
+    height: 90px;
     background: linear-gradient(180deg, #2563eb, #0f172a);
-    border-radius: 999px;
+    border-radius: 10px;
     transform-origin: bottom center;
     transform: translateX(-50%) rotate(calc(-90deg + var(--angle)));
-    animation: racerNeedleMove 1.3s cubic-bezier(.18,.9,.28,1.2) both;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
-    z-index: 4;
+    transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .racer-needle::before {
     content: "";
     position: absolute;
-    top: -12px;
+    top: -10px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 18px solid #2563eb;
-}
-.racer-center-dot {
-    display: none !important;
-}
-
-.racer-percent {
-    position: absolute;
-    left: 0;
-    right: 0;
-    
-    text-align: center;
-}
-
-.racer-percent strong {
-    display: block;
-    color: #0f172a;
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1;
-}
-
-.racer-percent span {
-    display: block;
-    margin-top: 3px;
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 900;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid #2563eb;
 }
 
 .racer-labels {
     position: absolute;
     left: 0;
     right: 0;
-    top: 120px;
+    bottom: 5px;
     display: flex;
     justify-content: space-between;
-    color: #64748b;
+    padding: 0 10px;
     font-size: 11px;
-    font-weight: 900;
-    padding: 0 4px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.racer-percent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 45%;
+    text-align: center;
+    transform: translateY(-50%);
+}
+
+.racer-percent strong {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+}
+
+.racer-percent span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
 }
 
 .racer-details {
-    display: grid;
-    gap: 12px;
+    flex: 1;
+    min-width: 250px;
 }
 
 .racer-status {
     display: inline-flex;
-    width: fit-content;
     align-items: center;
-    gap: 8px;
-    border-radius: 999px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 40px;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
 }
 
 .racer-status.achieved {
@@ -436,99 +397,38 @@
 }
 
 .racer-status.pending {
-    background: #f8fafc;
-    color: #334155;
-    border: 1px solid #e2e8f0;
-}
-
-.racer-status.no-target {
-    background: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-}
-.upload-box input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px dashed #94a3b8;
-    border-radius: 14px;
-    background: #f8fafc;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.upload-box input[type="file"]:hover {
-    background: #eff6ff;
-    border-color: #2563eb;
-}
-
-.error-text {
-    margin-top: 8px;
+    background: #fef2f2;
     color: #dc2626;
-    font-size: 13px;
-    font-weight: 800;
+    border: 1px solid #fecaca;
 }
 
-@keyframes racerNeedleMove {
-    from {
-        transform: translateX(-50%) rotate(-90deg);
-    }
-    to {
-        transform: translateX(-50%) rotate(calc(-90deg + var(--angle)));
-    }
-}
-
-@keyframes racerArcGlow {
-    from {
-        opacity: 0.45;
-        transform: scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-
-
-/* PAYROLL / BANK / PF / INSURANCE DETAILS */
-.payroll-section-card {
-    background:
-        radial-gradient(circle at top right, rgba(5, 150, 105, 0.10), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.10), transparent 34%),
-        #ffffff;
-}
-
+/* Payroll Section */
 .payroll-summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 12px;
 }
 
 .payroll-box {
     background: #f8fafc;
+    border-radius: 16px;
+    padding: 12px 14px;
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 14px;
-    min-height: 86px;
 }
 
 .payroll-box span {
-    display: block;
-    color: #64748b;
     font-size: 11px;
-    font-weight: 900;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.25px;
+    color: #64748b;
 }
 
 .payroll-box strong {
-    display: block;
-    margin-top: 7px;
-    color: #0f172a;
     font-size: 14px;
-    font-weight: 900;
-    word-break: break-word;
-    line-height: 1.4;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+    margin-top: 6px;
 }
 
 .payroll-box.salary {
@@ -551,122 +451,109 @@
 }
 
 .payroll-box.warning {
-    background: #fff7ed;
-    border-color: #fed7aa;
-}
-
-.payroll-box.warning strong {
-    color: #c2410c;
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #d97706;
 }
 
 .payroll-box.disabled {
-    background: #f8fafc;
+    background: #f1f5f9;
     border-style: dashed;
-}
-
-.payroll-status-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
 }
 
 .payroll-pill {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 7px 11px;
-    font-size: 12px;
-    font-weight: 900;
+    padding: 5px 12px;
+    border-radius: 40px;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .payroll-pill.green {
     background: #ecfdf5;
     color: #047857;
-    border: 1px solid #bbf7d0;
 }
 
 .payroll-pill.red {
     background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
+    color: #dc2626;
 }
 
 .payroll-pill.blue {
     background: #eff6ff;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
 }
 
 .payroll-note {
-    margin-top: 12px;
+    margin-top: 16px;
     background: #fffbeb;
     border: 1px solid #fde68a;
-    color: #92400e;
     border-radius: 16px;
     padding: 12px;
-    font-size: 12.5px;
-    font-weight: 850;
-    line-height: 1.55;
+    font-size: 12px;
+    font-weight: 600;
+    color: #92400e;
 }
 
-/* SUPPORT */
+/* Support Grid */
 .support-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
 }
 
 .support-card {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
     border-radius: 18px;
-    padding: 15px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
 }
 
 .support-card span {
-    display: block;
-    color: #64748b;
     font-size: 11px;
-    font-weight: 900;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.25px;
+    color: #64748b;
 }
 
 .support-card strong {
     display: block;
-    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    margin: 8px 0;
     color: #0f172a;
-    word-break: break-word;
-    font-weight: 900;
 }
 
 .support-phone {
-    margin: 8px 0 0;
+    font-size: 13px;
     color: #64748b;
-    font-weight: 800;
+    margin: 8px 0;
+}
+
+.support-phone.phone-click {
+    color: #2563eb;
+    font-weight: 700;
 }
 
 .support-actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
-.call-btn,
-.whatsapp-btn {
-    padding: 9px 13px;
-    border-radius: 12px;
+.call-btn, .whatsapp-btn {
+    padding: 8px 16px;
+    border-radius: 40px;
     text-decoration: none;
     color: white;
-    font-weight: 900;
+    font-weight: 700;
+    font-size: 12px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 7px;
-    font-size: 13px;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
 }
 
 .call-btn {
@@ -674,74 +561,42 @@
 }
 
 .whatsapp-btn {
-    background: #16a34a;
+    background: #25D366;
+}
+
+.call-btn:hover, .whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .no-contact {
-    margin-top: 10px;
     color: #94a3b8;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+/* Target Calc Box */
+.target-calc-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 14px;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
+    color: #1d4ed8;
+    margin-top: 16px;
 }
 
-.form-group label {
-    display: block;
-    font-weight: 900;
-    margin-bottom: 7px;
-    color: #334155;
-    font-size: 13px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 11px 12px;
-    border-radius: 13px;
-    border: 1px solid #cbd5e1;
-    font-weight: 800;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-}
-
-.errorlist {
-    color: #dc2626;
-    margin: 6px 0 0;
-    padding-left: 18px;
-    font-size: 13px;
-}
-
-.btn-primary {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 14px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.btn-cancel {
-    background: #f1f5f9;
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
-    padding: 12px 18px;
-    border-radius: 14px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
+/* Modal */
 .image-modal {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(0,0,0,0.6);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    padding: 18px;
+    z-index: 1000;
+    padding: 20px;
 }
 
 .image-modal.active {
@@ -750,126 +605,400 @@
 
 .image-modal-card {
     background: white;
+    max-width: 450px;
     width: 100%;
-    max-width: 430px;
-    border-radius: 24px;
-    padding: 22px;
-    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3);
+    border-radius: 28px;
+    padding: 24px;
 }
 
 .image-modal-card h3 {
+    font-size: 20px;
+    font-weight: 800;
     margin: 0 0 8px;
-    color: #0f172a;
-    font-weight: 900;
 }
 
 .image-modal-card p {
-    margin: 0 0 18px;
     color: #64748b;
-    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.upload-box input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed #94a3b8;
+    border-radius: 14px;
+    background: #f8fafc;
+    cursor: pointer;
 }
 
 .modal-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 20px;
     flex-wrap: wrap;
-    margin-top: 18px;
 }
 
-@media(max-width: 850px) {
-    .profile-page {
-        padding: 12px;
-    }
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 700;
+    cursor: pointer;
+}
 
-    .profile-hero,
-    .section-card {
-        border-radius: 21px;
-        padding: 15px;
-    }
+.btn-cancel {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 700;
+    cursor: pointer;
+}
 
+.error-text {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* Phone click styling */
+.phone-number {
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.phone-number:hover {
+    color: #2563eb;
+    transform: translateX(2px);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 900px) {
     .profile-main {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .profile-photo-click {
-        width: 124px;
-        height: 124px;
-        border-radius: 24px;
-        margin: 0 auto;
-    }
-
-    .profile-title-row {
+        flex-direction: column;
+        align-items: center;
         text-align: center;
+    }
+    
+    .profile-title-row {
         justify-content: center;
     }
-
-    .profile-name {
-        font-size: 23px;
-    }
-
+    
     .badge-row {
         justify-content: center;
     }
+    
+    .racer-wrap {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .racer-meter {
+        width: 240px;
+        height: 150px;
+    }
+    
+    .racer-arc-wrap {
+        width: 240px;
+        height: 120px;
+    }
+    
+    .racer-arc {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .racer-inner {
+        left: 28px;
+        top: 28px;
+        width: 184px;
+        height: 184px;
+    }
+    
+    .racer-needle {
+        height: 82px;
+        bottom: 26px;
+    }
+    
+    .racer-percent strong {
+        font-size: 24px;
+    }
+}
 
-    .info-grid,
-    .address-grid,
+@media (max-width: 768px) {
+    /* Profile image covers full width on mobile */
+    .profile-photo-section {
+        width: 100%;
+    }
+    
+    .profile-photo-click {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 2 / 1;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .profile-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .profile-letter {
+        font-size: 64px;
+    }
+    
+    .profile-photo-overlay {
+        font-size: 16px;
+    }
+    
+    .profile-name {
+        font-size: 24px;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .address-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .payroll-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
     .support-grid {
         grid-template-columns: 1fr;
     }
+}
 
+@media (max-width: 600px) {
+    .profile-page {
+        padding: 12px;
+    }
+    
+    .profile-hero {
+        padding: 16px;
+        border-radius: 20px;
+    }
+    
+    .section-card {
+        padding: 16px;
+        border-radius: 20px;
+    }
+    
+    .profile-photo-click {
+        border-radius: 16px;
+    }
+    
+    .profile-letter {
+        font-size: 48px;
+    }
+    
+    .profile-name {
+        font-size: 20px;
+    }
+    
+    .profile-subtitle {
+        font-size: 12px;
+    }
+    
+    .status-badge {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .info-box {
+        padding: 10px 12px;
+    }
+    
+    .info-box strong {
+        font-size: 13px;
+    }
+    
+    .payroll-summary-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .payroll-box {
+        padding: 10px 12px;
+    }
+    
+    .payroll-box.salary strong {
+        font-size: 16px;
+    }
+    
     .section-head {
-        display: grid;
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
-
-    .racer-wrap {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
+    
     .racer-meter {
-        width: 250px;
-        height: 160px;
+        width: 220px;
+        height: 140px;
     }
-
+    
     .racer-arc-wrap {
-        width: 250px;
-        height: 125px;
+        width: 220px;
+        height: 110px;
     }
-
+    
     .racer-arc {
-        width: 250px;
-        height: 250px;
+        width: 220px;
+        height: 220px;
     }
-
+    
     .racer-inner {
-        left: 30px;
-        top: 30px;
-        width: 190px;
-        height: 190px;
+        left: 25px;
+        top: 25px;
+        width: 170px;
+        height: 170px;
     }
-
+    
     .racer-needle {
-        height: 88px;
-        bottom: 32px;
+        height: 75px;
+        bottom: 24px;
     }
-
-    .racer-center-dot {
-        bottom: 23px;
-    }
-
+    
     .racer-percent strong {
-        font-size: 28px;
+        font-size: 22px;
     }
-
-    .racer-labels {
-        top: 108px;
+    
+    .support-actions {
+        flex-direction: column;
     }
-
+    
+    .call-btn, .whatsapp-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
     .modal-actions {
-        display: grid;
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-cancel {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-photo-click {
+        aspect-ratio: 2 / 1;
+    }
+    
+    .profile-letter {
+        font-size: 36px;
+    }
+    
+    .profile-name {
+        font-size: 18px;
+    }
+    
+    .badge-row {
+        gap: 6px;
+    }
+    
+    .status-badge {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+    
+    .info-box span {
+        font-size: 9px;
+    }
+    
+    .info-box strong {
+        font-size: 12px;
+    }
+    
+    .section-title {
+        font-size: 16px;
+    }
+    
+    .section-desc {
+        font-size: 11px;
+    }
+    
+    .racer-meter {
+        width: 200px;
+        height: 130px;
+    }
+    
+    .racer-arc-wrap {
+        width: 200px;
+        height: 100px;
+    }
+    
+    .racer-arc {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .racer-inner {
+        left: 22px;
+        top: 22px;
+        width: 156px;
+        height: 156px;
+    }
+    
+    .racer-needle {
+        height: 68px;
+        bottom: 22px;
+    }
+    
+    .racer-percent strong {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    .racer-meter {
+        width: 180px;
+        height: 120px;
+    }
+    
+    .racer-arc-wrap {
+        width: 180px;
+        height: 90px;
+    }
+    
+    .racer-arc {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .racer-inner {
+        left: 20px;
+        top: 20px;
+        width: 140px;
+        height: 140px;
+    }
+    
+    .racer-needle {
+        height: 60px;
+        bottom: 20px;
+    }
+    
+    .racer-percent strong {
+        font-size: 18px;
     }
 }
 </style>
@@ -878,9 +1007,10 @@
     <div class="profile-shell">
 
         {% if dealer %}
+            <!-- DEALER PROFILE -->
             <div class="profile-hero">
                 <div class="profile-main">
-                    <div>
+                    <div class="profile-photo-section">
                         <div class="profile-photo-click" onclick="openImageModal()">
                             {% if profile.profile_image %}
                                 <img src="{{ profile.profile_image.url }}" class="profile-img" alt="Profile">
@@ -889,810 +1019,275 @@
                             {% else %}
                                 <div class="profile-letter">{{ dealer.owner_name|first|upper }}</div>
                             {% endif %}
-
-                            <div class="profile-photo-overlay">
-                                Update Image
-                            </div>
+                            <div class="profile-photo-overlay">Update Image</div>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="profile-info-section">
                         <div class="profile-title-row">
                             <div>
                                 <h2 class="profile-name">{{ dealer.firm_name }}</h2>
-                                <p class="profile-subtitle">
-                                    Dealer Profile · Owner: {{ dealer.owner_name|default:"-" }}
-                                </p>
-
+                                <p class="profile-subtitle">Dealer Profile · Owner: {{ dealer.owner_name|default:"-" }}</p>
                                 <div class="badge-row">
-                                    <span class="status-badge blue">
-                                        Dealer ID: {{ dealer.dealer_code|default:dealer.id }}
-                                    </span>
-
-                                    <span class="status-badge green">
-                                        {{ dealer.get_approval_status_display }}
-                                    </span>
-
-                                    <span class="status-badge orange">
-                                        Target {{ dealer.target_achieved_percentage }}%
-                                    </span>
+                                    <span class="status-badge blue">Dealer ID: {{ dealer.dealer_code|default:dealer.id }}</span>
+                                    <span class="status-badge green">{{ dealer.get_approval_status_display }}</span>
+                                    <span class="status-badge orange">Target {{ dealer.target_achieved_percentage }}%</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="info-grid" style="margin-top:16px;">
-                            <div class="info-box highlight">
-                                <span>Dealer ID</span>
-                                <strong>{{ dealer.dealer_code|default:dealer.id }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Owner Name</span>
-                                <strong>{{ dealer.owner_name|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Owner Email</span>
-                                <strong>{{ dealer.email|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Owner Phone</span>
-                                <strong>{{ dealer.phone|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Firm Name</span>
-                                <strong>{{ dealer.firm_name|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>GST Number</span>
-                                <strong>{{ dealer.gst_number|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>License Number</span>
-                                <strong>{{ dealer.license_number|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Firm Type</span>
-                                <strong>{{ dealer.get_firm_type_display|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>State</span>
-                                <strong>{{ dealer.state|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>District</span>
-                                <strong>{{ dealer.district|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Joined</span>
-                                <strong>{{ request.user.date_joined|date:"d M Y" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Login Status</span>
-                                <strong>
-                                    {% if request.user.is_active %}
-                                        Active
-                                    {% else %}
-                                        Blocked
-                                    {% endif %}
-                                </strong>
-                            </div>
+                        <div class="info-grid">
+                            <div class="info-box highlight"><span>Dealer ID</span><strong>{{ dealer.dealer_code|default:dealer.id }}</strong></div>
+                            <div class="info-box"><span>Owner Name</span><strong>{{ dealer.owner_name|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Owner Email</span><strong>{{ dealer.email|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Owner Phone</span><strong class="phone-number" onclick="makeCall('{{ dealer.phone|default:"" }}')"><i class="fas fa-phone"></i> {{ dealer.phone|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Firm Name</span><strong>{{ dealer.firm_name|default:"-" }}</strong></div>
+                            <div class="info-box"><span>GST Number</span><strong>{{ dealer.gst_number|default:"-" }}</strong></div>
+                            <div class="info-box"><span>License Number</span><strong>{{ dealer.license_number|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Firm Type</span><strong>{{ dealer.get_firm_type_display|default:"-" }}</strong></div>
+                            <div class="info-box"><span>State</span><strong>{{ dealer.state|default:"-" }}</strong></div>
+                            <div class="info-box"><span>District</span><strong>{{ dealer.district|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Joined</span><strong>{{ request.user.date_joined|date:"d M Y" }}</strong></div>
+                            <div class="info-box"><span>Status</span><strong>{% if request.user.is_active %}Active{% else %}Blocked{% endif %}</strong></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Address Section -->
             <div class="section-card">
                 <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Address Details</h3>
-                        <p class="section-desc">Owner and firm address details.</p>
-                    </div>
+                    <div><h3 class="section-title">Address Details</h3><p class="section-desc">Owner and firm address details</p></div>
                 </div>
-
                 <div class="address-grid">
-                    <div class="address-box">
-                        <span>Owner Address</span>
-                        <p>{{ dealer.owner_address|default:"-" }}</p>
-                    </div>
-
-                    <div class="address-box">
-                        <span>Firm Address</span>
-                        <p>{{ dealer.firm_address|default:"-" }}</p>
-                    </div>
+                    <div class="address-box"><span>Owner Address</span><p>{{ dealer.owner_address|default:"-" }}</p></div>
+                    <div class="address-box"><span>Firm Address</span><p>{{ dealer.firm_address|default:"-" }}</p></div>
                 </div>
             </div>
 
+            <!-- Target Section -->
             <div class="section-card racer-target-card">
                 <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Dealer Target</h3>
-                        <p class="section-desc">Target achievement shown with simple animated arrow.</p>
-                    </div>
-
+                    <div><h3 class="section-title">Dealer Target</h3><p class="section-desc">Target achievement progress</p></div>
                     {% if dealer.target_achieved_percentage >= 100 %}
-                        <span class="racer-status achieved">Target Achieved</span>
+                        <span class="racer-status achieved"><i class="fas fa-check-circle"></i> Target Achieved</span>
                     {% else %}
-                        <span class="racer-status pending">Target Not Achieved</span>
+                        <span class="racer-status pending"><i class="fas fa-hourglass-half"></i> Target Pending</span>
                     {% endif %}
                 </div>
-
                 <div class="racer-wrap">
                     <div class="racer-meter-area">
                         <div class="racer-meter" data-percent="{{ dealer.target_achieved_percentage }}">
-                            <div class="racer-arc-wrap">
-                                <div class="racer-arc"></div>
-                                <div class="racer-inner"></div>
-                            </div>
-
+                            <div class="racer-arc-wrap"><div class="racer-arc"></div><div class="racer-inner"></div></div>
                             <div class="racer-needle"></div>
-
-                            <div class="racer-labels">
-                                <span>0</span>
-                                <span>50</span>
-                                <span>100</span>
-                            </div>
-
-                            <div class="racer-percent">
-                                <strong>{{ dealer.target_achieved_percentage }}%</strong>
-                                <span>Target Reached</span>
-                            </div>
+                            <div class="racer-labels"><span>0</span><span>50</span><span>100</span></div>
+                            <div class="racer-percent"><strong>{{ dealer.target_achieved_percentage }}%</strong><span>Completed</span></div>
                         </div>
                     </div>
-
                     <div class="racer-details">
                         <div class="info-grid">
-                            <div class="info-box">
-                                <span>Yearly Target</span>
-                                <strong>₹{{ dealer.yearly_target_amount }}</strong>
-                            </div>
-
-                            <div class="info-box success">
-                                <span>Achieved</span>
-                                <strong>₹{{ dealer.achieved_amount }}</strong>
-                            </div>
-
-                            <div class="info-box warning">
-                                <span>Balance</span>
-                                <strong>₹{{ dealer.target_balance_amount }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Status</span>
-                                <strong>
-                                    {% if dealer.target_achieved_percentage >= 100 %}
-                                        Achieved
-                                    {% else %}
-                                        Not Achieved
-                                    {% endif %}
-                                </strong>
-                            </div>
+                            <div class="info-box"><span>Yearly Target</span><strong>₹{{ dealer.yearly_target_amount }}</strong></div>
+                            <div class="info-box success"><span>Achieved</span><strong>₹{{ dealer.achieved_amount }}</strong></div>
+                            <div class="info-box"><span>Balance</span><strong>₹{{ dealer.target_balance_amount }}</strong></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Deposit Section -->
             <div class="section-card">
-                <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Deposit / Cheque Details</h3>
-                        <p class="section-desc">Security deposit and cheque information.</p>
-                    </div>
-                </div>
-
+                <div class="section-head"><div><h3 class="section-title">Deposit / Cheque Details</h3></div></div>
                 <div class="info-grid">
-                    <div class="info-box">
-                        <span>Deposit Amount</span>
-                        <strong>₹{{ dealer.deposit_amount }}</strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Deposit Mode</span>
-                        <strong>{{ dealer.get_deposit_mode_display|default:"Cheque" }}</strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Cheque Number</span>
-                        <strong>{{ dealer.cheque_number|default:"-" }}</strong>
-                    </div>
+                    <div class="info-box"><span>Deposit Amount</span><strong>₹{{ dealer.deposit_amount }}</strong></div>
+                    <div class="info-box"><span>Deposit Mode</span><strong>{{ dealer.get_deposit_mode_display|default:"Cheque" }}</strong></div>
+                    <div class="info-box"><span>Cheque Number</span><strong>{{ dealer.cheque_number|default:"-" }}</strong></div>
                 </div>
             </div>
 
+            <!-- Support Section -->
             <div class="section-card">
-                <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Support Contacts</h3>
-                        <p class="section-desc">Your assigned sales and ASM support contacts.</p>
-                    </div>
-                </div>
-
+                <div class="section-head"><div><h3 class="section-title">Support Contacts</h3></div></div>
                 <div class="support-grid">
                     <div class="support-card">
-                        <span>Sales Officer</span>
-
-                        <strong>
-                            {% if dealer_contacts.sales_officer %}
-                                {{ dealer_contacts.sales_officer.get_full_name|default:dealer_contacts.sales_officer.username }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-
+                        <span><i class="fas fa-user-tie"></i> Sales Officer</span>
+                        <strong>{% if dealer_contacts.sales_officer %}{{ dealer_contacts.sales_officer.get_full_name|default:dealer_contacts.sales_officer.username }}{% else %}-{% endif %}</strong>
                         {% if dealer_contacts.sales_profile and dealer_contacts.sales_profile.phone %}
-                            <p class="support-phone">
-                                {{ dealer_contacts.sales_profile.phone }}
-                            </p>
-
+                            <div class="support-phone phone-click" onclick="makeCall('{{ dealer_contacts.sales_profile.phone }}')"><i class="fas fa-phone"></i> {{ dealer_contacts.sales_profile.phone }}</div>
                             <div class="support-actions">
-                                <a href="tel:+{{ dealer_contacts.sales_phone }}" class="call-btn">
-                                    Call
-                                </a>
-
-                                <a href="https://wa.me/{{ dealer_contacts.sales_phone }}" target="_blank" class="whatsapp-btn">
-                                    WhatsApp
-                                </a>
+                                <button onclick="makeCall('{{ dealer_contacts.sales_profile.phone }}')" class="call-btn"><i class="fas fa-phone"></i> Call</button>
+                                <button onclick="makeWhatsApp('{{ dealer_contacts.sales_profile.phone }}')" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                             </div>
-                        {% else %}
-                            <div class="no-contact">Phone number not available</div>
-                        {% endif %}
+                        {% else %}<div class="no-contact">Phone number not available</div>{% endif %}
                     </div>
-
                     <div class="support-card">
-                        <span>Concerned ASM</span>
-
-                        <strong>
-                            {% if dealer_contacts.asm %}
-                                {{ dealer_contacts.asm.get_full_name|default:dealer_contacts.asm.username }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-
+                        <span><i class="fas fa-user-tie"></i> Concerned ASM</span>
+                        <strong>{% if dealer_contacts.asm %}{{ dealer_contacts.asm.get_full_name|default:dealer_contacts.asm.username }}{% else %}-{% endif %}</strong>
                         {% if dealer_contacts.asm_profile and dealer_contacts.asm_profile.phone %}
-                            <p class="support-phone">
-                                {{ dealer_contacts.asm_profile.phone }}
-                            </p>
-
+                            <div class="support-phone phone-click" onclick="makeCall('{{ dealer_contacts.asm_profile.phone }}')"><i class="fas fa-phone"></i> {{ dealer_contacts.asm_profile.phone }}</div>
                             <div class="support-actions">
-                                <a href="tel:+{{ dealer_contacts.asm_phone }}" class="call-btn">
-                                    Call
-                                </a>
-
-                                <a href="https://wa.me/{{ dealer_contacts.asm_phone }}" target="_blank" class="whatsapp-btn">
-                                    WhatsApp
-                                </a>
+                                <button onclick="makeCall('{{ dealer_contacts.asm_profile.phone }}')" class="call-btn"><i class="fas fa-phone"></i> Call</button>
+                                <button onclick="makeWhatsApp('{{ dealer_contacts.asm_profile.phone }}')" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                             </div>
-                        {% else %}
-                            <div class="no-contact">Phone number not available</div>
-                        {% endif %}
+                        {% else %}<div class="no-contact">Phone number not available</div>{% endif %}
                     </div>
                 </div>
             </div>
 
         {% else %}
+            <!-- EMPLOYEE PROFILE -->
             <div class="profile-hero">
                 <div class="profile-main">
-                    <div>
+                    <div class="profile-photo-section">
                         <div class="profile-photo-click" onclick="openImageModal()">
                             {% if profile.profile_image %}
                                 <img src="{{ profile.profile_image.url }}" class="profile-img" alt="Profile">
                             {% else %}
                                 <div class="profile-letter">{{ request.user.username|first|upper }}</div>
                             {% endif %}
-
-                            <div class="profile-photo-overlay">
-                                Update Image
-                            </div>
+                            <div class="profile-photo-overlay">Update Image</div>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="profile-info-section">
                         <div class="profile-title-row">
                             <div>
-                                <h2 class="profile-name">
-                                    {{ request.user.get_full_name|default:request.user.username }}
-                                </h2>
-
-                                <p class="profile-subtitle">
-                                    {{ profile.get_role_display }} · Employee Profile
-                                </p>
-
+                                <h2 class="profile-name">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                                <p class="profile-subtitle">{{ profile.get_role_display }} · Employee Profile</p>
                                 <div class="badge-row">
-                                    <span class="status-badge blue">
-                                        Employee ID: {{ profile.employee_code|default:request.user.username }}
-                                    </span>
-
-                                    <span class="status-badge green">
-                                        {% if request.user.is_active %}
-                                            Active Login
-                                        {% else %}
-                                            Blocked Login
-                                        {% endif %}
-                                    </span>
-
-                                    {% if employee_target %}
-                                        <span class="status-badge orange">
-                                            {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                                Team Target {{ employee_target.achieved_percentage }}%
-                                            {% else %}
-                                                Target {{ employee_target.achieved_percentage }}%
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
+                                    <span class="status-badge blue">ID: {{ profile.employee_code|default:request.user.username }}</span>
+                                    <span class="status-badge green">{% if request.user.is_active %}Active{% else %}Blocked{% endif %}</span>
+                                    {% if employee_target %}<span class="status-badge orange">Target {{ employee_target.achieved_percentage }}%</span>{% endif %}
                                 </div>
                             </div>
                         </div>
 
-                        <div class="info-grid" style="margin-top:16px;">
-                            <div class="info-box highlight">
-                                <span>Employee / Login ID</span>
-                                <strong>{{ profile.employee_code|default:request.user.username }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Full Name</span>
-                                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Email</span>
-                                <strong>{{ request.user.email|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Phone</span>
-                                <strong>{{ profile.phone|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Role</span>
-                                <strong>{{ profile.get_role_display }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>State</span>
-                                <strong>{{ profile.state|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>District</span>
-                                <strong>{{ profile.district|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Joined Date</span>
-                                <strong>{{ request.user.date_joined|date:"d M Y" }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Login Status</span>
-                                <strong>
-                                    {% if request.user.is_active %}
-                                        Active
-                                    {% else %}
-                                        Blocked
-                                    {% endif %}
-                                </strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Username</span>
-                                <strong>{{ request.user.username }}</strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Last Login</span>
-                                <strong>
-                                    {% if request.user.last_login %}
-                                        {{ request.user.last_login|date:"d M Y, h:i A" }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </strong>
-                            </div>
-
-                            <div class="info-box">
-                                <span>Monthly Salary</span>
-                                <strong>₹{{ profile.salary_amount|default:"0.00" }}</strong>
-                            </div>
-
+                        <div class="info-grid">
+                            <div class="info-box highlight"><span>Employee ID</span><strong>{{ profile.employee_code|default:request.user.username }}</strong></div>
+                            <div class="info-box"><span>Full Name</span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></div>
+                            <div class="info-box"><span>Email</span><strong>{{ request.user.email|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Phone</span><strong class="phone-number" onclick="makeCall('{{ profile.phone|default:"" }}')"><i class="fas fa-phone"></i> {{ profile.phone|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Role</span><strong>{{ profile.get_role_display }}</strong></div>
+                            <div class="info-box"><span>State</span><strong>{{ profile.state|default:"-" }}</strong></div>
+                            <div class="info-box"><span>District</span><strong>{{ profile.district|default:"-" }}</strong></div>
+                            <div class="info-box"><span>Joined</span><strong>{{ request.user.date_joined|date:"d M Y" }}</strong></div>
+                            <div class="info-box"><span>Last Login</span><strong>{% if request.user.last_login %}{{ request.user.last_login|date:"d M Y, h:i A" }}{% else %}-{% endif %}</strong></div>
+                            <div class="info-box"><span>Monthly Salary</span><strong>₹{{ profile.salary_amount|default:"0.00" }}</strong></div>
                             {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                <div class="info-box highlight">
-                                    <span>Manager Extra Target %</span>
-                                    <strong>{{ profile.manager_target_extra_percentage|default:"0.00" }}%</strong>
-                                </div>
+                                <div class="info-box highlight"><span>Manager Extra %</span><strong>{{ profile.manager_target_extra_percentage|default:"0.00" }}%</strong></div>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="section-card manager-card">
-                <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Reporting Manager</h3>
-                        <p class="section-desc">Manager details assigned for your profile.</p>
-                    </div>
-                </div>
-
+            <!-- Manager Section -->
+            <div class="section-card">
+                <div class="section-head"><div><h3 class="section-title"><i class="fas fa-user-tie"></i> Reporting Manager</h3><p class="section-desc">Your reporting manager details</p></div></div>
                 <div class="info-grid">
-                    <div class="info-box">
-                        <span>Manager Name</span>
-                        <strong>
-                            {% if profile.manager %}
-                                {{ profile.manager.get_full_name|default:profile.manager.username }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Manager Role</span>
-                        <strong>
-                            {% if profile.manager and profile.manager.profile %}
-                                {{ profile.manager.profile.get_role_display }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Manager Phone</span>
-                        <strong>
-                            {% if profile.manager and profile.manager.profile %}
-                                {{ profile.manager.profile.phone|default:"-" }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Manager Email</span>
-                        <strong>
-                            {% if profile.manager %}
-                                {{ profile.manager.email|default:"-" }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-                    </div>
+                    <div class="info-box"><span>Manager Name</span><strong>{% if profile.manager %}{{ profile.manager.get_full_name|default:profile.manager.username }}{% else %}-{% endif %}</strong></div>
+                    <div class="info-box"><span>Manager Role</span><strong>{% if profile.manager and profile.manager.profile %}{{ profile.manager.profile.get_role_display }}{% else %}-{% endif %}</strong></div>
+                    <div class="info-box"><span>Manager Phone</span><strong class="phone-number" onclick="makeCall('{{ profile.manager.profile.phone|default:"" }}')"><i class="fas fa-phone"></i> {% if profile.manager and profile.manager.profile %}{{ profile.manager.profile.phone|default:"-" }}{% else %}-{% endif %}</strong></div>
+                    <div class="info-box"><span>Manager Email</span><strong>{% if profile.manager %}{{ profile.manager.email|default:"-" }}{% else %}-{% endif %}</strong></div>
                 </div>
+                {% if profile.manager and profile.manager.profile and profile.manager.profile.phone %}
+                <div class="support-actions" style="margin-top: 12px;">
+                    <button onclick="makeCall('{{ profile.manager.profile.phone }}')" class="call-btn"><i class="fas fa-phone"></i> Call Manager</button>
+                    <button onclick="makeWhatsApp('{{ profile.manager.profile.phone }}')" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> WhatsApp Manager</button>
+                </div>
+                {% endif %}
             </div>
 
-
-            <div class="section-card payroll-section-card">
+            <!-- Payroll Section -->
+            <div class="section-card">
                 <div class="section-head">
-                    <div>
-                        <h3 class="section-title">Payroll, Bank & Statutory Details</h3>
-                        <p class="section-desc">
-                            Salary, PAN, bank account, PF and insurance details used for payslip generation.
-                        </p>
-                    </div>
-
-                    <div class="payroll-status-row" style="margin-top:0;">
-                        {% if profile.pf_applicable %}
-                            <span class="payroll-pill green">PF Applicable</span>
-                        {% else %}
-                            <span class="payroll-pill red">PF Not Applicable</span>
-                        {% endif %}
-
-                        {% if profile.insurance_applicable %}
-                            <span class="payroll-pill blue">Insurance Applicable</span>
-                        {% else %}
-                            <span class="payroll-pill red">No Insurance</span>
-                        {% endif %}
+                    <div><h3 class="section-title"><i class="fas fa-wallet"></i> Payroll & Bank Details</h3></div>
+                    <div class="badge-row">
+                        {% if profile.pf_applicable %}<span class="payroll-pill green"><i class="fas fa-check"></i> PF Applicable</span>{% else %}<span class="payroll-pill red"><i class="fas fa-times"></i> PF Not Applicable</span>{% endif %}
+                        {% if profile.insurance_applicable %}<span class="payroll-pill blue"><i class="fas fa-shield-alt"></i> Insurance Active</span>{% else %}<span class="payroll-pill red"><i class="fas fa-times"></i> No Insurance</span>{% endif %}
                     </div>
                 </div>
-
                 <div class="payroll-summary-grid">
-                    <div class="payroll-box salary">
-                        <span>Monthly Gross Salary</span>
-                        <strong>₹{{ profile.salary_amount|default:"0.00" }}</strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>Date of Birth</span>
-                        <strong>
-                            {% if profile.date_of_birth %}
-                                {{ profile.date_of_birth|date:"d M Y" }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>PAN Number</span>
-                        <strong>{{ profile.pan_number|default:"-" }}</strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>Bank Name</span>
-                        <strong>{{ profile.bank_name|default:"-" }}</strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>Account Holder Name</span>
-                        <strong>{{ profile.bank_account_holder_name|default:"-" }}</strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>Bank Account Number</span>
-                        <strong>{{ profile.bank_account_number|default:"-" }}</strong>
-                    </div>
-
-                    <div class="payroll-box">
-                        <span>IFSC Code</span>
-                        <strong>{{ profile.bank_ifsc_code|default:"-" }}</strong>
-                    </div>
-
+                    <div class="payroll-box salary"><span>Monthly Salary</span><strong>₹{{ profile.salary_amount|default:"0.00" }}</strong></div>
+                    <div class="payroll-box"><span>PAN Number</span><strong>{{ profile.pan_number|default:"-" }}</strong></div>
+                    <div class="payroll-box"><span>Bank Name</span><strong>{{ profile.bank_name|default:"-" }}</strong></div>
+                    <div class="payroll-box"><span>Account Holder</span><strong>{{ profile.bank_account_holder_name|default:"-" }}</strong></div>
+                    <div class="payroll-box"><span>Account Number</span><strong>{{ profile.bank_account_number|default:"-" }}</strong></div>
+                    <div class="payroll-box"><span>IFSC Code</span><strong>{{ profile.bank_ifsc_code|default:"-" }}</strong></div>
                     {% if profile.pf_applicable %}
-                        <div class="payroll-box success">
-                            <span>PF UAN Number</span>
-                            <strong>{{ profile.pf_uan_number|default:"-" }}</strong>
-                        </div>
-
-                        <div class="payroll-box success">
-                            <span>PF Deduction Percentage</span>
-                            <strong>{{ profile.pf_deduction_percentage|default:"0.00" }}%</strong>
-                        </div>
-                    {% else %}
-                        <div class="payroll-box disabled">
-                            <span>PF Details</span>
-                            <strong>Not Applicable</strong>
-                        </div>
+                        <div class="payroll-box success"><span>PF UAN Number</span><strong>{{ profile.pf_uan_number|default:"-" }}</strong></div>
+                        <div class="payroll-box success"><span>PF Deduction %</span><strong>{{ profile.pf_deduction_percentage|default:"0.00" }}%</strong></div>
                     {% endif %}
-
                     {% if profile.insurance_applicable %}
-                        <div class="payroll-box warning">
-                            <span>Insurance Provider</span>
-                            <strong>{{ profile.insurance_provider_name|default:"-" }}</strong>
-                        </div>
-
-                        <div class="payroll-box warning">
-                            <span>Insurance Policy Number</span>
-                            <strong>{{ profile.insurance_policy_number|default:"-" }}</strong>
-                        </div>
-
-                        <div class="payroll-box warning">
-                            <span>Monthly Insurance Deduction</span>
-                            <strong>₹{{ profile.insurance_deduction_amount|default:"0.00" }}</strong>
-                        </div>
-                    {% else %}
-                        <div class="payroll-box disabled">
-                            <span>Insurance Details</span>
-                            <strong>Not Applicable</strong>
-                        </div>
+                        <div class="payroll-box warning"><span>Insurance Provider</span><strong>{{ profile.insurance_provider_name|default:"-" }}</strong></div>
+                        <div class="payroll-box warning"><span>Policy Number</span><strong>{{ profile.insurance_policy_number|default:"-" }}</strong></div>
+                        <div class="payroll-box warning"><span>Monthly Deduction</span><strong>₹{{ profile.insurance_deduction_amount|default:"0.00" }}</strong></div>
                     {% endif %}
                 </div>
-
-                <div class="payroll-note">
-                    PF amount is automatically calculated during payslip generation using salary × PF percentage / 100.
-                    Insurance deduction is taken as the monthly fixed insurance deduction amount.
-                </div>
+                <div class="payroll-note"><i class="fas fa-info-circle"></i> PF is calculated as salary × PF percentage / 100. Insurance deduction is fixed monthly amount.</div>
             </div>
 
+            <!-- Address Section -->
             {% if profile.address %}
-                <div class="section-card">
-                    <div class="section-head">
-                        <div>
-                            <h3 class="section-title">Address</h3>
-                            <p class="section-desc">Your registered address.</p>
-                        </div>
-                    </div>
-
-                    <div class="address-grid">
-                        <div class="address-box">
-                            <span>Address</span>
-                            <p>{{ profile.address }}</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="section-card">
+                <div class="section-head"><div><h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Address</h3></div></div>
+                <div class="address-grid"><div class="address-box"><span>Registered Address</span><p>{{ profile.address }}</p></div></div>
+            </div>
             {% endif %}
 
+            <!-- Target Section -->
             {% if employee_target %}
-                <div class="section-card racer-target-card">
-                    <div class="section-head">
-                        <div>
-                            <h3 class="section-title">
-                                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    Team Target
-                                {% else %}
-                                    Employee Target
-                                {% endif %}
-                            </h3>
-                            <p class="section-desc">
-                                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    Auto calculated from direct reporting employee targets plus manager extra percentage.
-                                {% else %}
-                                    Current year target progress with simple animated arrow.
-                                {% endif %}
-                            </p>
+            <div class="section-card racer-target-card">
+                <div class="section-head">
+                    <div><h3 class="section-title"><i class="fas fa-bullseye"></i> {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}Team Target{% else %}Employee Target{% endif %}</h3></div>
+                    {% if employee_target.achieved_percentage >= 100 %}<span class="racer-status achieved"><i class="fas fa-check-circle"></i> Target Achieved</span>{% else %}<span class="racer-status pending"><i class="fas fa-hourglass-half"></i> Target Pending</span>{% endif %}
+                </div>
+                <div class="racer-wrap">
+                    <div class="racer-meter-area">
+                        <div class="racer-meter" data-percent="{{ employee_target.achieved_percentage }}">
+                            <div class="racer-arc-wrap"><div class="racer-arc"></div><div class="racer-inner"></div></div>
+                            <div class="racer-needle"></div>
+                            <div class="racer-labels"><span>0</span><span>50</span><span>100</span></div>
+                            <div class="racer-percent"><strong>{{ employee_target.achieved_percentage }}%</strong><span>Completed</span></div>
                         </div>
-
-                        {% if employee_target.achieved_percentage >= 100 %}
-                            <span class="racer-status achieved">Target Achieved</span>
-                        {% else %}
-                            <span class="racer-status pending">Target Not Achieved</span>
+                    </div>
+                    <div class="racer-details">
+                        <div class="info-grid">
+                            <div class="info-box"><span>Year</span><strong>{{ employee_target.year }}</strong></div>
+                            <div class="info-box highlight"><span>Target</span><strong>₹{{ employee_target.target_amount }}</strong></div>
+                            <div class="info-box success"><span>Achieved</span><strong>₹{{ employee_target.achieved_amount }}</strong></div>
+                            <div class="info-box"><span>Balance</span><strong>₹{{ employee_target.balance_amount }}</strong></div>
+                        </div>
+                        {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
+                            <div class="target-calc-box"><i class="fas fa-calculator"></i> Target = Sum of direct employee targets + {{ profile.manager_target_extra_percentage|default:"0.00" }}% extra</div>
                         {% endif %}
                     </div>
-
-                    <div class="racer-wrap">
-                        <div class="racer-meter-area">
-                            <div class="racer-meter" data-percent="{{ employee_target.achieved_percentage }}">
-                                <div class="racer-arc-wrap">
-                                    <div class="racer-arc"></div>
-                                    <div class="racer-inner"></div>
-                                </div>
-
-                                <div class="racer-needle"></div>
-
-                                <div class="racer-labels">
-                                    <span>0</span>
-                                    <span>50</span>
-                                    <span>100</span>
-                                </div>
-
-                                <div class="racer-percent">
-                                    <strong>{{ employee_target.achieved_percentage }}%</strong>
-                                    <span>Target Reached</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="racer-details">
-                            <div class="info-grid">
-                                <div class="info-box">
-                                    <span>Year</span>
-                                    <strong>{{ employee_target.year }}</strong>
-                                </div>
-
-                                <div class="info-box highlight">
-                                    <span>Target Type</span>
-                                    <strong>
-                                        {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                            Auto Team Target
-                                        {% else %}
-                                            Individual Target
-                                        {% endif %}
-                                    </strong>
-                                </div>
-
-                                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    <div class="info-box">
-                                        <span>Extra Percentage</span>
-                                        <strong>{{ profile.manager_target_extra_percentage|default:"0.00" }}%</strong>
-                                    </div>
-                                {% endif %}
-
-                                <div class="info-box">
-                                    <span>
-                                        {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                            Final Team Target
-                                        {% else %}
-                                            Target
-                                        {% endif %}
-                                    </span>
-                                    <strong>₹{{ employee_target.target_amount }}</strong>
-                                </div>
-
-                                <div class="info-box success">
-                                    <span>Achieved</span>
-                                    <strong>₹{{ employee_target.achieved_amount }}</strong>
-                                </div>
-
-                                <div class="info-box warning">
-                                    <span>Balance</span>
-                                    <strong>₹{{ employee_target.balance_amount }}</strong>
-                                </div>
-
-                                <div class="info-box">
-                                    <span>Status</span>
-                                    <strong>
-                                        {% if employee_target.achieved_percentage >= 100 %}
-                                            Achieved
-                                        {% else %}
-                                            Not Achieved
-                                        {% endif %}
-                                    </strong>
-                                </div>
-                            </div>
-
-                            {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                <div class="target-calc-box">
-                                    <strong>Calculation:</strong>
-                                    Manager target is auto calculated as direct under-employee target total
-                                    + {{ profile.manager_target_extra_percentage|default:"0.00" }}% extra.
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
+            </div>
             {% else %}
-                <div class="section-card racer-target-card">
-                    <div class="section-head">
-                        <div>
-                            <h3 class="section-title">
-                                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    Team Target
-                                {% else %}
-                                    Employee Target
-                                {% endif %}
-                            </h3>
-                            <p class="section-desc">
-                                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    No team target has been generated yet. It will come automatically after direct reporting employees get targets.
-                                {% else %}
-                                    No target has been assigned yet.
-                                {% endif %}
-                            </p>
-                        </div>
-
-                        <span class="racer-status no-target">
-                            {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                No Team Target
-                            {% else %}
-                                No Target Assigned
-                            {% endif %}
-                        </span>
-                    </div>
-
-                    {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                        <div class="target-calc-box">
-                            <strong>Manager Extra Target %:</strong>
-                            {{ profile.manager_target_extra_percentage|default:"0.00" }}%.
-                            Team target will be calculated from direct under employees.
-                        </div>
-                    {% endif %}
-                </div>
+            <div class="section-card">
+                <div class="section-head"><div><h3 class="section-title"><i class="fas fa-bullseye"></i> Target</h3><p>No target assigned yet</p></div></div>
+                {% if profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
+                    <div class="target-calc-box"><i class="fas fa-calculator"></i> Manager Extra %: {{ profile.manager_target_extra_percentage|default:"0.00" }}%</div>
+                {% endif %}
+            </div>
             {% endif %}
         {% endif %}
 
     </div>
 </div>
 
+<!-- Image Upload Modal -->
 <div id="profileImageModal" class="image-modal">
     <div class="image-modal-card">
-        <h3>Update Profile Image</h3>
-        <p>Select a new profile picture and save.</p>
-
+        <h3><i class="fas fa-camera"></i> Update Profile Image</h3>
+        <p>Select a new profile picture</p>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
-            <div class="form-group">
-               <label>Choose New Profile Picture</label>
-
-<div class="upload-box">
-    {{ profile_image_form.profile_image }}
-</div>
-
-{% if profile_image_form.profile_image.errors %}
-    <div class="error-text">
-        {{ profile_image_form.profile_image.errors }}
-    </div>
-{% endif %}
-            </div>
-
+            <div class="upload-box">{{ profile_image_form.profile_image }}</div>
+            {% if profile_image_form.profile_image.errors %}<div class="error-text">{{ profile_image_form.profile_image.errors }}</div>{% endif %}
             <div class="modal-actions">
-                <button type="submit" class="btn-primary">
-                    Save Image
-                </button>
-
-                <button type="button" class="btn-cancel" onclick="closeImageModal()">
-                    Cancel
-                </button>
+                <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Image</button>
+                <button type="button" class="btn-cancel" onclick="closeImageModal()"><i class="fas fa-times"></i> Cancel</button>
             </div>
         </form>
     </div>
@@ -1702,19 +1297,9 @@
 function setupRacerMeters() {
     document.querySelectorAll(".racer-meter").forEach(function(meter) {
         let percent = parseFloat(meter.getAttribute("data-percent") || "0");
-
-        if (isNaN(percent)) {
-            percent = 0;
-        }
-
-        if (percent < 0) {
-            percent = 0;
-        }
-
-        if (percent > 100) {
-            percent = 100;
-        }
-
+        if (isNaN(percent)) percent = 0;
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
         const angle = percent * 1.8;
         meter.style.setProperty("--angle", angle + "deg");
     });
@@ -1722,38 +1307,41 @@ function setupRacerMeters() {
 
 function openImageModal() {
     const modal = document.getElementById("profileImageModal");
-    if (modal) {
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    }
+    if (modal) { modal.classList.add("active"); document.body.style.overflow = "hidden"; }
 }
 
 function closeImageModal() {
     const modal = document.getElementById("profileImageModal");
-    if (modal) {
-        modal.classList.remove("active");
-        document.body.style.overflow = "";
+    if (modal) { modal.classList.remove("active"); document.body.style.overflow = ""; }
+}
+
+// Make a phone call
+function makeCall(phoneNumber) {
+    if (phoneNumber && phoneNumber !== '-') {
+        window.location.href = 'tel:' + phoneNumber;
+    } else {
+        alert('Phone number not available');
     }
 }
 
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
-        closeImageModal();
+// Send WhatsApp message
+function makeWhatsApp(phoneNumber) {
+    if (phoneNumber && phoneNumber !== '-') {
+        let cleanNumber = phoneNumber.replace(/\D/g, '');
+        if (cleanNumber.length === 10) {
+            cleanNumber = '91' + cleanNumber;
+        }
+        window.open('https://wa.me/' + cleanNumber, '_blank');
+    } else {
+        alert('Phone number not available');
     }
-});
+}
 
+document.addEventListener("keydown", function(e) { if (e.key === "Escape") closeImageModal(); });
 document.addEventListener("DOMContentLoaded", function() {
     setupRacerMeters();
-
     const modal = document.getElementById("profileImageModal");
-
-    if (modal) {
-        modal.addEventListener("click", function(event) {
-            if (event.target === modal) {
-                closeImageModal();
-            }
-        });
-    }
+    if (modal) modal.addEventListener("click", function(e) { if (e.target === modal) closeImageModal(); });
 });
 </script>
 {% endblock %}

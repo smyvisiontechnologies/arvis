@@ -51,7 +51,13 @@
                                 <tr>
                                     <td>{{ pack.product.name }}</td>
                                     <td>{{ pack.pack_size }} {{ pack.unit }}</td>
-                                    <td>{{ pack.units_per_box }} in 1 {{ pack.packing_type }}</td>
+                                    <td>
+    {% if pack.units_per_box == 1 %}
+        1 {{ pack.get_packing_type_display|default:pack.packing_type|title }} in 1 Box
+    {% else %}
+        {{ pack.units_per_box }} {{ pack.get_packing_type_display|default:pack.packing_type|title }}s in 1 Box
+    {% endif %}
+</td>
                                     <td class="st-stock">{{ pack.stock_boxes }}</td>
                                 </tr>
                             {% endfor %}

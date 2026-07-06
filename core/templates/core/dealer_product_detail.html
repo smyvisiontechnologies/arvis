@@ -1,0 +1,479 @@
+{% extends "core/base.html" %}
+{% load volume_filters %}
+
+{% block content %}
+<style>
+.product-detail-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: #e2e8f0;
+    transform: translateX(-5px);
+}
+
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.product-gallery {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.main-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.main-image:hover {
+    transform: scale(1.02);
+}
+
+.product-info {
+    padding: 30px;
+}
+
+.product-category {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #4338ca;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.product-name {
+    font-size: 28px;
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.technical-name {
+    font-size: 16px;
+    color: #64748b;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.pack-selector {
+    margin: 20px 0;
+}
+
+.pack-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.pack-btn {
+    border: 2px solid #e2e8f0;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    min-width: 100px;
+}
+
+.pack-btn.active {
+    border-color: #84c341;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.pack-size-label {
+    font-size: 16px;
+    font-weight: 800;
+    display: block;
+}
+
+.pack-price {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.pack-detail-panel {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.price-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.current-price {
+    font-size: 32px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.current-price small {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.best-price-badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.box-info {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.box-info-title {
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.box-info-detail {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.schemes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.scheme-badge {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.cart-form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 5px;
+}
+
+.qty-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.btn-add-cart {
+    background: #ff6b2c;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.btn-add-cart:hover {
+    background: #e05a1f;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .product-name {
+        font-size: 24px;
+    }
+    
+    .current-price {
+        font-size: 28px;
+    }
+    
+    .cart-form {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="product-detail-page">
+    <a href="{% url 'dealer_products' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+
+    <div class="product-detail-grid">
+        <div class="product-gallery">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image" onclick="openImageModal('{{ product.image.url }}', '{{ product.name }}')">
+            {% else %}
+                <div style="text-align: center;">
+                    <i class="fas fa-seedling" style="font-size: 100px; color: #84c341;"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="product-info">
+            <span class="product-category">
+                <i class="fas fa-tag"></i> {{ product.category.name }}
+            </span>
+            <h1 class="product-name">{{ product.name }}</h1>
+            {% if product.technical_name %}
+                <span class="technical-name">
+                    <i class="fas fa-flask"></i> {{ product.technical_name }}
+                </span>
+            {% endif %}
+
+            <div class="pack-selector">
+                <div class="pack-buttons" id="packButtons">
+                    {% for pack in product.pack_sizes.all %}
+                        <button class="pack-btn {% if forloop.first %}active{% endif %}" data-pack-id="{{ pack.id }}">
+                            <span class="pack-size-label">{{ pack.display_pack|format_volume }}</span>
+                            <span class="pack-price">₹{{ pack.sale_price_per_unit }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+
+                {% for pack in product.pack_sizes.all %}
+                    <div class="pack-detail-panel" id="packDetail-{{ pack.id }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
+                        <div class="price-section">
+                            <div>
+                                <span class="current-price">
+                                    ₹{{ pack.sale_price_per_unit }}<small>/{{ pack.get_unit_display }}</small>
+                                </span>
+                                <div class="gst-text">(incl GST)</div>
+                            </div>
+                            <span class="best-price-badge">
+                                <i class="fas fa-tag"></i> Best Price
+                            </span>
+                        </div>
+
+                        <div class="box-info">
+                            <div class="box-info-title">📦 1 Box Contains:</div>
+                            <div class="box-info-detail">
+                                {{ pack.units_per_box }} × {{ pack.display_pack|format_volume }}<br>
+                                <strong>Total: {{ pack.total_quantity_label|format_total_volume }}</strong>
+                            </div>
+                            <div class="box-total" style="margin-top: 10px; font-weight: 800;">
+                                Box Price: ₹{{ pack.box_sale_price }}
+                            </div>
+                        </div>
+
+                        {% if product.schemes.all %}
+                            <div class="schemes">
+                                {% for scheme in product.schemes.all %}
+                                    {% if scheme.is_active %}
+                                        <span class="scheme-badge">
+                                            <i class="fas fa-gift"></i> {{ scheme.scheme_name }}
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'dealer_add_to_cart' pack.id %}" class="cart-form">
+                            {% csrf_token %}
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty(this, -1)">−</button>
+                                <input type="number" name="quantity_boxes" min="1" max="{{ pack.stock_boxes }}" value="1" class="qty-input">
+                                <button type="button" class="qty-btn" onclick="changeQty(this, 1)">+</button>
+                            </div>
+                            <button type="submit" class="btn-add-cart">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="modal-close" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" alt="">
+    <div id="modalCaption" class="modal-caption"></div>
+</div>
+
+<style>
+.image-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.image-modal.active {
+    display: flex;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.modal-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    padding: 8px;
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 8px;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Pack selector functionality
+    const packBtns = document.querySelectorAll('.pack-btn');
+    
+    packBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const packId = this.dataset.packId;
+            
+            // Remove active class from all buttons
+            packBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Hide all pack details and show selected one
+            document.querySelectorAll('.pack-detail-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            document.getElementById(`packDetail-${packId}`).style.display = 'block';
+        });
+    });
+});
+
+function changeQty(button, step) {
+    const control = button.closest(".qty-control");
+    const input = control.querySelector(".qty-input");
+    let value = parseInt(input.value || "1");
+    const min = parseInt(input.getAttribute("min") || "1");
+    const max = parseInt(input.getAttribute("max") || "999999");
+    value = value + step;
+    if (value < min) value = min;
+    if (value > max) value = max;
+    input.value = value;
+}
+
+function openImageModal(imageUrl, productName) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    if (imageUrl && imageUrl !== 'None') {
+        modalImg.src = imageUrl;
+        modalCaption.innerHTML = productName;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeImageModal();
+});
+</script>
+{% endblock %}

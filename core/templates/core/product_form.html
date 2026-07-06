@@ -3,178 +3,655 @@
 {% block content %}
 <style>
 .pm-page {
-    padding: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
 .pm-card {
     background: white;
-    border-radius: 24px;
-    padding: 24px;
+    border-radius: 28px;
+    padding: 28px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08);
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .pm-title {
     margin: 0;
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 800;
     color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pm-title i {
+    color: #84c341;
+    font-size: 28px;
 }
 
 .pm-subtitle {
     color: #64748b;
-    margin: 8px 0 22px;
+    margin: 8px 0 24px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .section-title {
-    margin: 24px 0 14px;
+    margin: 28px 0 18px;
     color: #0f172a;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.section-title i {
+    color: #84c341;
+    font-size: 20px;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    margin-bottom: 0;
 }
 
 .form-group label {
     display: block;
     font-weight: 800;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     color: #334155;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+.form-group label i {
+    margin-right: 6px;
+    color: #84c341;
+    font-size: 12px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    border: 2px solid #e5e7eb;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
+}
+
+.form-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    transform: scale(1);
+    cursor: pointer;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Image Box Styles */
+.image-box {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.image-box:hover {
+    border-color: #84c341;
+    background: #fefce8;
+}
+
+.image-preview {
+    width: 100%;
+    height: 180px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.image-preview-placeholder {
+    color: #64748b;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.image-preview-placeholder i {
+    font-size: 40px;
+    color: #cbd5e1;
+}
+
+.image-field-widget input[type="file"] {
+    display: block;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Inline Box Styles */
 .inline-box {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 14px;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
+.inline-box:hover {
+    border-color: #84c341;
+    box-shadow: 0 4px 12px rgba(132, 195, 65, 0.1);
+}
+
+.inline-box-title {
+    margin: 0 0 16px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.inline-box-title i {
+    color: #84c341;
+}
+
+.remove-inline-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.remove-inline-btn:hover {
+    background: #dc2626;
+    color: white;
+    border-color: #dc2626;
+    transform: scale(1.02);
+}
+
+/* Button Styles */
 .btn-primary {
-    background: #16a34a;
+    background: linear-gradient(135deg, #16a34a, #059669);
     color: white;
     border: none;
-    padding: 12px 18px;
-    border-radius: 14px;
-    font-weight: 900;
+    padding: 12px 28px;
+    border-radius: 40px;
+    font-weight: 800;
     cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
 }
 
 .btn-light {
     background: #f1f5f9;
     color: #0f172a;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 14px;
-    font-weight: 900;
+    border: 2px solid #e5e7eb;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 800;
     cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.btn-light:hover {
+    background: #e2e8f0;
+    border-color: #84c341;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+    transform: translateY(-2px);
+}
+
+.empty-inline-note {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 24px;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.empty-inline-note i {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.non-field-errors {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.hidden-delete-field {
+    display: none !important;
+}
+
+.form-actions {
+    margin-top: 32px;
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pm-page {
+        padding: 12px;
+    }
+    
+    .pm-card {
+        padding: 18px;
+        border-radius: 20px;
+    }
+    
+    .pm-title {
+        font-size: 22px;
+    }
+    
+    .section-title {
+        font-size: 18px;
+        margin: 20px 0 12px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    
+    .inline-box {
+        padding: 14px;
+    }
+    
+    .remove-inline-btn {
+        position: static;
+        width: 100%;
+        margin-bottom: 12px;
+        justify-content: center;
+    }
+    
+    .image-preview {
+        height: 150px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-primary,
+    .btn-light,
+    .btn-danger {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .pm-page {
+        padding: 8px;
+    }
+    
+    .pm-card {
+        padding: 12px;
+    }
 }
 </style>
 
 <div class="pm-page">
     <div class="pm-card">
-        <h2 class="pm-title">{{ title }}</h2>
-        <p class="pm-subtitle">Create product with multiple pack sizes, stock, warehouse, and schemes.</p>
+        <h2 class="pm-title">
+            <i class="fas fa-boxes"></i>
+            {{ title }}
+        </h2>
+        <p class="pm-subtitle">
+            <i class="fas fa-info-circle"></i>
+            Create product with multiple pack sizes, stock, warehouse, and schemes.
+        </p>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <h3 class="section-title">Product Details</h3>
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Product Details Section -->
+            <h3 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Product Details
+            </h3>
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Category</label>
+                    <label><i class="fas fa-tags"></i> Category</label>
                     {{ form.category }}
                     {{ form.category.errors }}
                 </div>
 
                 <div class="form-group">
-                    <label>Product Name</label>
+                    <label><i class="fas fa-box"></i> Product Name</label>
                     {{ form.name }}
                     {{ form.name.errors }}
                 </div>
 
                 <div class="form-group">
-                    <label>Image</label>
-                    {{ form.image }}
+                    <label><i class="fas fa-flask"></i> Technical Name</label>
+                    {{ form.technical_name }}
+                    {{ form.technical_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Image</label>
+                    <div class="image-box">
+                        <div class="image-preview" id="imagePreviewBox">
+                            {% if form.instance.image %}
+                                <img src="{{ form.instance.image.url }}" id="productImagePreview" alt="Product Image">
+                            {% else %}
+                                <div class="image-preview-placeholder" id="imagePreviewPlaceholder">
+                                    <i class="fas fa-image"></i>
+                                    <span>Product image preview</span>
+                                </div>
+                                <img src="" id="productImagePreview" alt="Product Image" style="display:none;">
+                            {% endif %}
+                        </div>
+                        <div class="image-field-widget">
+                            {{ form.image }}
+                        </div>
+                    </div>
                     {{ form.image.errors }}
                 </div>
 
                 <div class="form-group">
-                    <label>HSN Number</label>
+                    <label><i class="fas fa-barcode"></i> HSN Number</label>
                     {{ form.hsn_number }}
                     {{ form.hsn_number.errors }}
                 </div>
 
-                <div class="form-group">
-                    <label>Active</label>
+                <div class="form-group checkbox-group">
                     {{ form.is_active }}
+                    <label><i class="fas fa-toggle-on"></i> Active</label>
                     {{ form.is_active.errors }}
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top:14px;">
-                <label>Description</label>
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Description</label>
                 {{ form.description }}
                 {{ form.description.errors }}
             </div>
 
-            <h3 class="section-title">Pack Sizes / Warehouse Stock</h3>
+            <!-- Pack Sizes Section -->
+            <h3 class="section-title">
+                <i class="fas fa-cubes"></i>
+                Pack Sizes / Warehouse Stock
+            </h3>
 
             {{ pack_formset.management_form }}
 
+            {% if pack_formset.non_form_errors %}
+                <div class="non-field-errors">
+                    {% for error in pack_formset.non_form_errors %}
+                        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div id="packEmptyNote" class="empty-inline-note">
+                <i class="fas fa-cube"></i>
+                No pack size added. Click <strong>+ Add Pack Size</strong> to add product pack and stock.
+            </div>
+
             <div id="packForms">
                 {% for pack_form in pack_formset %}
-                    <div class="inline-box">
+                    <div class="inline-box dynamic-form-box" data-form-type="pack">
+                        <div class="inline-box-title">
+                            <i class="fas fa-cube"></i>
+                            Pack Size
+                        </div>
+
+                        <button type="button" class="remove-inline-btn" onclick="removeFormBox(this)">
+                            <i class="fas fa-trash-alt"></i> Remove Pack
+                        </button>
+
                         {{ pack_form.id }}
+
+                        {% if pack_form.non_field_errors %}
+                            <div class="non-field-errors">
+                                {% for error in pack_form.non_field_errors %}
+                                    <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
                         <div class="form-grid">
                             {% for field in pack_form.visible_fields %}
-                                <div class="form-group">
-                                    <label>{{ field.label }}</label>
-                                    {{ field }}
-                                    {{ field.errors }}
-                                </div>
+                                {% if field.name == "DELETE" %}
+                                    <div class="hidden-delete-field">
+                                        {{ field }}
+                                    </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <label><i class="fas fa-cube"></i> {{ field.label }}</label>
+                                        {{ field }}
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
 
-            <button type="button" class="btn-light" onclick="addForm('packForms', 'id_packs-TOTAL_FORMS', 'inline-box')">
-                + Add Pack Size
+            <button type="button" class="btn-light" onclick="addPackForm()">
+                <i class="fas fa-plus-circle"></i> Add Pack Size
             </button>
 
-            <h3 class="section-title">Product Schemes</h3>
+            <!-- Schemes Section -->
+            <h3 class="section-title">
+                <i class="fas fa-gift"></i>
+                Product Schemes
+            </h3>
 
             {{ scheme_formset.management_form }}
 
+            {% if scheme_formset.non_form_errors %}
+                <div class="non-field-errors">
+                    {% for error in scheme_formset.non_form_errors %}
+                        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div id="schemeEmptyNote" class="empty-inline-note">
+                <i class="fas fa-gift"></i>
+                No scheme added. Click <strong>+ Add Scheme</strong> only when this product has a scheme.
+            </div>
+
             <div id="schemeForms">
                 {% for scheme_form in scheme_formset %}
-                    <div class="inline-box">
+                    <div class="inline-box dynamic-form-box" data-form-type="scheme">
+                        <div class="inline-box-title">
+                            <i class="fas fa-tag"></i>
+                            Product Scheme
+                        </div>
+
+                        <button type="button" class="remove-inline-btn" onclick="removeFormBox(this)">
+                            <i class="fas fa-trash-alt"></i> Remove Scheme
+                        </button>
+
                         {{ scheme_form.id }}
+
+                        {% if scheme_form.non_field_errors %}
+                            <div class="non-field-errors">
+                                {% for error in scheme_form.non_field_errors %}
+                                    <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
                         <div class="form-grid">
                             {% for field in scheme_form.visible_fields %}
-                                <div class="form-group">
-                                    <label>{{ field.label }}</label>
-                                    {{ field }}
-                                    {{ field.errors }}
-                                </div>
+                                {% if field.name == "DELETE" %}
+                                    <div class="hidden-delete-field">
+                                        {{ field }}
+                                    </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <label><i class="fas fa-tag"></i> {{ field.label }}</label>
+                                        {{ field }}
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
 
-            <button type="button" class="btn-light" onclick="addForm('schemeForms', 'id_schemes-TOTAL_FORMS', 'inline-box')">
-                + Add Scheme
+            <button type="button" class="btn-light" onclick="addSchemeForm()">
+                <i class="fas fa-plus-circle"></i> Add Scheme
             </button>
 
-            <div style="margin-top:24px;">
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="{% url 'product_list' %}" class="btn-danger">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
                 <button type="submit" class="btn-primary">
-                    {{ button_text|default:"Save Product" }}
+                    <i class="fas fa-save"></i> {{ button_text|default:"Save Product" }}
                 </button>
             </div>
         </form>
@@ -182,26 +659,237 @@
 </div>
 
 <script>
-function addForm(containerId, totalFormsId, boxClass) {
+// Get current form counts
+function getPackFormCount() {
+    return document.querySelectorAll('#packForms .dynamic-form-box').length;
+}
+
+function getSchemeFormCount() {
+    return document.querySelectorAll('#schemeForms .dynamic-form-box').length;
+}
+
+// Update empty note visibility
+function updateEmptyNote(containerId, noteId) {
+    const container = document.getElementById(containerId);
+    const note = document.getElementById(noteId);
+    
+    if (!container || !note) return;
+    
+    const visibleBoxes = Array.from(container.querySelectorAll('.dynamic-form-box')).filter(
+        box => box.style.display !== 'none'
+    );
+    
+    note.style.display = visibleBoxes.length === 0 ? 'block' : 'none';
+}
+
+// Renumber forms sequentially
+function renumberForms(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const boxes = container.querySelectorAll('.dynamic-form-box');
+    boxes.forEach((box, idx) => {
+        // Update all name and id attributes
+        box.querySelectorAll('[name], [id], [for]').forEach(el => {
+            ['name', 'id', 'for'].forEach(attr => {
+                if (el.hasAttribute(attr)) {
+                    let value = el.getAttribute(attr);
+                    value = value.replace(/-\d+-/g, '-' + idx + '-');
+                    value = value.replace(/_\d+_/g, '_' + idx + '_');
+                    value = value.replace(/\[\d+\]/g, '[' + idx + ']');
+                    el.setAttribute(attr, value);
+                }
+            });
+        });
+        
+        // Update data attribute
+        box.setAttribute('data-index', idx);
+    });
+}
+
+// Update total forms count
+function syncTotalFormsToRendered(containerId, totalFormsId) {
     const container = document.getElementById(containerId);
     const totalForms = document.getElementById(totalFormsId);
-    const currentCount = parseInt(totalForms.value);
-    const firstBox = container.querySelector("." + boxClass);
-    const newBox = firstBox.cloneNode(true);
+    
+    if (container && totalForms) {
+        const boxes = container.querySelectorAll('.dynamic-form-box');
+        totalForms.value = boxes.length;
+    }
+}
 
-    newBox.innerHTML = newBox.innerHTML.replaceAll("-0-", "-" + currentCount + "-");
-    newBox.innerHTML = newBox.innerHTML.replaceAll("_0_", "_" + currentCount + "_");
-
-    newBox.querySelectorAll("input, textarea, select").forEach(function(input) {
-        if (input.type === "checkbox") {
-            input.checked = false;
-        } else {
-            input.value = "";
+// Set default values for new form
+function setNewFormDefaults(box) {
+    box.querySelectorAll('input, textarea, select').forEach(function(input) {
+        if (input.type === 'checkbox') {
+            if (input.name && input.name.toLowerCase().includes('delete')) {
+                input.checked = false;
+            } else {
+                input.checked = true;
+            }
+        } else if (input.type !== 'hidden') {
+            input.value = '';
+        }
+        // Remove error messages
+        const errorDiv = input.nextElementSibling;
+        if (errorDiv && errorDiv.classList && errorDiv.classList.contains('errorlist')) {
+            errorDiv.remove();
         }
     });
-
-    container.appendChild(newBox);
-    totalForms.value = currentCount + 1;
 }
+
+// Add Pack Size Form
+function addPackForm() {
+    const container = document.getElementById('packForms');
+    const totalForms = document.getElementById('id_packs-TOTAL_FORMS');
+    const template = document.getElementById('packEmptyTemplate');
+    
+    if (!container || !totalForms || !template) {
+        alert("Pack form template not found.");
+        return;
+    }
+    
+    const index = parseInt(totalForms.value || "0");
+    let html = template.innerHTML;
+    
+    // Replace __prefix__ with current index
+    html = html.replaceAll('__prefix__', index);
+    
+    container.insertAdjacentHTML('beforeend', html);
+    
+    const boxes = container.querySelectorAll('.dynamic-form-box');
+    const newBox = boxes[boxes.length - 1];
+    
+    setNewFormDefaults(newBox);
+    
+    totalForms.value = index + 1;
+    
+    updateEmptyNote('packForms', 'packEmptyNote');
+    
+    // Add remove button event
+    const removeBtn = newBox.querySelector('.remove-inline-btn');
+    if (removeBtn) {
+        removeBtn.onclick = function() { removeFormBox(this); };
+    }
+}
+
+// Add Scheme Form
+function addSchemeForm() {
+    const container = document.getElementById('schemeForms');
+    const totalForms = document.getElementById('id_schemes-TOTAL_FORMS');
+    const template = document.getElementById('schemeEmptyTemplate');
+    
+    if (!container || !totalForms || !template) {
+        alert("Scheme form template not found.");
+        return;
+    }
+    
+    const index = parseInt(totalForms.value || "0");
+    let html = template.innerHTML;
+    
+    // Replace __prefix__ with current index
+    html = html.replaceAll('__prefix__', index);
+    
+    container.insertAdjacentHTML('beforeend', html);
+    
+    const boxes = container.querySelectorAll('.dynamic-form-box');
+    const newBox = boxes[boxes.length - 1];
+    
+    setNewFormDefaults(newBox);
+    
+    totalForms.value = index + 1;
+    
+    updateEmptyNote('schemeForms', 'schemeEmptyNote');
+    
+    // Add remove button event
+    const removeBtn = newBox.querySelector('.remove-inline-btn');
+    if (removeBtn) {
+        removeBtn.onclick = function() { removeFormBox(this); };
+    }
+}
+
+// Remove Form Box
+function removeFormBox(button) {
+    const box = button.closest('.dynamic-form-box');
+    const container = box.parentElement;
+    const containerId = container.id;
+    
+    let totalFormsId = "";
+    let noteId = "";
+    
+    if (containerId === "packForms") {
+        totalFormsId = "id_packs-TOTAL_FORMS";
+        noteId = "packEmptyNote";
+    } else if (containerId === "schemeForms") {
+        totalFormsId = "id_schemes-TOTAL_FORMS";
+        noteId = "schemeEmptyNote";
+    }
+    
+    // Check if this is an existing record (has id)
+    const idInput = box.querySelector("input[type='hidden'][name$='-id']");
+    const deleteCheckbox = box.querySelector("input[type='checkbox'][name$='-DELETE']");
+    
+    if (idInput && idInput.value && deleteCheckbox) {
+        // Existing record - mark for deletion and hide
+        deleteCheckbox.checked = true;
+        box.style.display = "none";
+    } else {
+        // New record - remove completely
+        box.remove();
+        renumberForms(containerId);
+        syncTotalFormsToRendered(containerId, totalFormsId);
+    }
+    
+    updateEmptyNote(containerId, noteId);
+}
+
+// Image preview functionality
+function initProductImagePreview() {
+    const imageInput = document.getElementById('id_image');
+    const previewImg = document.getElementById('productImagePreview');
+    const placeholder = document.getElementById('imagePreviewPlaceholder');
+    
+    if (!imageInput) return;
+    
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImg.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'flex';
+        }
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initProductImagePreview();
+    
+    // Set active checkbox to true if not set
+    const activeCheckbox = document.getElementById('id_is_active');
+    if (activeCheckbox && !activeCheckbox.checked) {
+        activeCheckbox.checked = true;
+    }
+    
+    // Sync form counts
+    syncTotalFormsToRendered('packForms', 'id_packs-TOTAL_FORMS');
+    syncTotalFormsToRendered('schemeForms', 'id_schemes-TOTAL_FORMS');
+    
+    // Initialize empty notes visibility
+    updateEmptyNote('packForms', 'packEmptyNote');
+    updateEmptyNote('schemeForms', 'schemeEmptyNote');
+    
+    // Initialize remove buttons for existing forms
+    document.querySelectorAll('#packForms .remove-inline-btn, #schemeForms .remove-inline-btn').forEach(btn => {
+        btn.onclick = function() { removeFormBox(this); };
+    });
+});
 </script>
 {% endblock %}

@@ -3,205 +3,527 @@
 
 <style>
 .visit-page {
-    padding: 18px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .visit-head {
-    max-width: 1400px;
-    margin: 0 auto 16px;
     background: linear-gradient(135deg, #0f172a, #2563eb);
     color: white;
-    border-radius: 24px;
-    padding: 18px;
+    border-radius: 28px;
+    padding: 24px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
     align-items: center;
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.15);
 }
 
 .visit-head h2 {
     margin: 0;
-    font-size: 25px;
+    font-size: 26px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.visit-head h2 i {
+    font-size: 28px;
+    color: #fbbf24;
+}
+
+.visit-head p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.9;
 }
 
 .btn {
     border: none;
-    border-radius: 14px;
-    padding: 11px 15px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-weight: 800;
     text-decoration: none;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    gap: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .btn-light { background: white; color: #0f172a; }
+.btn-light:hover { background: #f8fafc; }
+
 .btn-dark { background: #0f172a; color: white; }
+.btn-dark:hover { background: #1e293b; }
+
 .btn-blue { background: #2563eb; color: white; }
+.btn-blue:hover { background: #1d4ed8; }
 
 .stats {
-    max-width: 1400px;
-    margin: 0 auto 16px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .stat-card {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 20px;
-    padding: 15px;
-    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+    padding: 18px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.06);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(15,23,42,.1);
+    border-color: #84c341;
 }
 
 .stat-card span {
     display: block;
     color: #64748b;
-    font-size: 11px;
-    font-weight: 900;
+    font-size: 12px;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .stat-card strong {
     display: block;
-    margin-top: 6px;
+    margin-top: 8px;
     color: #0f172a;
-    font-size: 22px;
+    font-size: 28px;
     font-weight: 900;
 }
 
 .filter-card {
-    max-width: 1400px;
-    margin: 0 auto 16px;
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 20px;
-    padding: 14px;
-    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.06);
 }
 
 .filter-grid {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
-    gap: 10px;
+    grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr auto;
+    gap: 12px;
 }
 
 .form-control {
     width: 100%;
-    border: 1px solid #cbd5e1;
+    border: 2px solid #e2e8f0;
     background: #f8fafc;
     border-radius: 14px;
-    padding: 11px;
-    font-weight: 800;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
 }
 
+.form-control:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
+}
+
+/* Visit Grid - 3 columns desktop, 2 columns tablet, 1 column mobile */
 .visit-grid {
-    max-width: 1400px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    gap: 20px;
 }
 
 .visit-card {
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 22px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+    box-shadow: 0 8px 20px rgba(15,23,42,.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.visit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 35px rgba(15,23,42,.12);
+    border-color: #84c341;
 }
 
 .visit-img {
     width: 100%;
-    height: 250px;
+    height: 220px;
     object-fit: cover;
-    background: #f1f5f9;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
 }
 
 .visit-body {
-    padding: 14px;
+    padding: 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .visit-title {
     color: #0f172a;
     font-size: 18px;
     font-weight: 900;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.visit-meta {
-    margin-top: 8px;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.5;
+.visit-title i {
+    color: #84c341;
+    font-size: 16px;
 }
 
 .reason {
     display: inline-flex;
-    margin-top: 10px;
+    align-items: center;
+    gap: 5px;
     background: #eff6ff;
     color: #1d4ed8;
     border: 1px solid #bfdbfe;
     border-radius: 999px;
-    padding: 6px 10px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 800;
+    width: fit-content;
+    margin-bottom: 12px;
+}
+
+.reason i {
+    font-size: 10px;
+}
+
+.visit-meta {
+    margin-top: 4px;
+    color: #64748b;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.visit-meta strong {
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.visit-meta i {
+    width: 16px;
+    margin-right: 4px;
+    color: #84c341;
 }
 
 .card-actions {
-    margin-top: 12px;
+    margin-top: auto;
+    padding-top: 12px;
 }
 
-@media(max-width: 1000px) {
-    .visit-grid { grid-template-columns: repeat(2, 1fr); }
-    .filter-grid { grid-template-columns: 1fr; }
+.card-actions .btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 14px;
+    font-size: 12px;
 }
 
-@media(max-width: 600px) {
-    .visit-page { padding: 10px; }
-    .visit-grid { grid-template-columns: 1fr; }
-    .btn { width: 100%; }
+.empty-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 48px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 700;
+    grid-column: 1 / -1;
+}
+
+.empty-card i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    color: #cbd5e1;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+    .visit-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+}
+
+@media (max-width: 900px) {
+    .visit-page {
+        padding: 16px;
+    }
+    
+    .visit-head {
+        padding: 20px;
+        border-radius: 24px;
+    }
+    
+    .visit-head h2 {
+        font-size: 22px;
+    }
+    
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .filter-card {
+        padding: 16px;
+    }
+    
+    .stats {
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 14px;
+    }
+    
+    .stat-card strong {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .visit-page {
+        padding: 12px;
+    }
+    
+    .visit-head {
+        flex-direction: column;
+        text-align: center;
+        padding: 18px;
+    }
+    
+    .visit-head h2 {
+        font-size: 20px;
+        justify-content: center;
+    }
+    
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    /* 2 cards per row on mobile */
+    .visit-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .visit-img {
+        height: 160px;
+    }
+    
+    .visit-body {
+        padding: 12px;
+    }
+    
+    .visit-title {
+        font-size: 15px;
+    }
+    
+    .reason {
+        font-size: 9px;
+        padding: 4px 8px;
+        margin-bottom: 8px;
+    }
+    
+    .visit-meta {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+    
+    .visit-meta i {
+        width: 12px;
+        font-size: 9px;
+    }
+    
+    .btn {
+        font-size: 11px;
+        padding: 8px 14px;
+    }
+    
+    .card-actions .btn {
+        font-size: 11px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 550px) {
+    .visit-page {
+        padding: 10px;
+    }
+    
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+        text-align: center;
+    }
+    
+    .stat-card span {
+        font-size: 10px;
+    }
+    
+    .stat-card strong {
+        font-size: 20px;
+    }
+    
+    /* Keep 2 cards per row on small mobile */
+    .visit-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .visit-img {
+        height: 130px;
+    }
+    
+    .visit-body {
+        padding: 10px;
+    }
+    
+    .visit-title {
+        font-size: 13px;
+    }
+    
+    .visit-title i {
+        font-size: 12px;
+    }
+    
+    .reason {
+        font-size: 8px;
+        padding: 3px 6px;
+    }
+    
+    .reason i {
+        font-size: 7px;
+    }
+    
+    .visit-meta {
+        font-size: 9px;
+    }
+    
+    .visit-meta i {
+        font-size: 8px;
+    }
+    
+    .btn {
+        font-size: 10px;
+        padding: 7px 12px;
+    }
+    
+    .card-actions .btn {
+        font-size: 10px;
+        padding: 7px;
+    }
+}
+
+@media (max-width: 400px) {
+    .visit-grid {
+        gap: 8px;
+    }
+    
+    .visit-img {
+        height: 110px;
+    }
+    
+    .visit-body {
+        padding: 8px;
+    }
+    
+    .visit-title {
+        font-size: 12px;
+    }
+    
+    .visit-meta {
+        font-size: 8px;
+    }
+    
+    .btn {
+        font-size: 9px;
+        padding: 6px 10px;
+    }
+    
+    .card-actions .btn {
+        font-size: 9px;
+        padding: 6px;
+    }
 }
 </style>
 
 <div class="visit-page">
     <div class="visit-head">
         <div>
-            <h2>Dealer Visits</h2>
-            <div style="font-weight:800;color:#dbeafe;margin-top:5px;">
-                Dealer-wise visit photo proof with date, reason and GPS location.
-            </div>
+            <h2>
+                <i class="fas fa-map-marked-alt"></i>
+                Dealer Visits
+            </h2>
+            <p>
+                <i class="fas fa-camera"></i> Dealer-wise visit photo proof with date, reason and GPS location.
+            </p>
         </div>
 
         {% if role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
             <a href="{% url 'dealer_visit_create' %}" class="btn btn-light">
-                Add Dealer Visit
+                <i class="fas fa-plus-circle"></i> Add Dealer Visit
             </a>
         {% endif %}
     </div>
 
     <div class="stats">
         <div class="stat-card">
-            <span>Today Visits</span>
+            <span><i class="fas fa-calendar-day"></i> Today Visits</span>
             <strong>{{ today_count }}</strong>
         </div>
 
         <div class="stat-card">
-            <span>This Month Visits</span>
+            <span><i class="fas fa-calendar-alt"></i> This Month Visits</span>
             <strong>{{ month_count }}</strong>
         </div>
     </div>
 
     <div class="filter-card">
         <form method="get" class="filter-grid">
-            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search dealer, officer, reason">
+            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="🔍 Search dealer, officer, reason">
 
             <select name="dealer" class="form-control">
-                <option value="">All Dealers</option>
+                <option value="">📋 All Dealers</option>
                 {% for dealer in dealers %}
                     <option value="{{ dealer.id }}" {% if dealer_id == dealer.id|stringformat:"s" %}selected{% endif %}>
                         {{ dealer.firm_name }}
@@ -209,10 +531,12 @@
                 {% endfor %}
             </select>
 
-            <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
-            <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+            <input type="date" name="from_date" value="{{ from_date }}" class="form-control" placeholder="From Date">
+            <input type="date" name="to_date" value="{{ to_date }}" class="form-control" placeholder="To Date">
 
-            <button type="submit" class="btn btn-dark">Search</button>
+            <button type="submit" class="btn btn-dark">
+                <i class="fas fa-search"></i> Search
+            </button>
         </form>
     </div>
 
@@ -220,51 +544,65 @@
         {% for visit in visits %}
             <div class="visit-card">
                 {% if visit.stamped_image %}
-                    <img src="{{ visit.stamped_image.url }}" class="visit-img">
+                    <img src="{{ visit.stamped_image.url }}" class="visit-img" alt="Visit Image">
                 {% elif visit.visit_image %}
-                    <img src="{{ visit.visit_image.url }}" class="visit-img">
+                    <img src="{{ visit.visit_image.url }}" class="visit-img" alt="Visit Image">
+                {% else %}
+                    <div class="visit-img" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f1f5f9, #e2e8f0);">
+                        <i class="fas fa-camera" style="font-size: 48px; color: #cbd5e1;"></i>
+                    </div>
                 {% endif %}
 
                 <div class="visit-body">
                     <div class="visit-title">
+                        <i class="fas fa-store"></i>
                         {{ visit.dealer.firm_name }}
                     </div>
 
                     <div class="reason">
+                        <i class="fas fa-tag"></i>
                         {{ visit.get_reason_display }}
                     </div>
 
                     <div class="visit-meta">
-                        <strong>Sales Officer:</strong>
-                        {{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}<br>
-
-                        <strong>Date:</strong>
-                        {{ visit.visit_date|date:"d M Y" }},
-                        {{ visit.visit_time|time:"h:i A" }}<br>
-
-                        <strong>Location:</strong>
-                        {{ visit.latitude }}, {{ visit.longitude }}<br>
-
+                        <div><i class="fas fa-user-tie"></i> <strong>Sales Officer:</strong> {{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}</div>
+                        <div><i class="fas fa-calendar"></i> <strong>Date:</strong> {{ visit.visit_date|date:"d M Y" }}, {{ visit.visit_time|time:"h:i A" }}</div>
+                        <div><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ visit.latitude|default:"-" }}, {{ visit.longitude|default:"-" }}</div>
                         {% if visit.note %}
-                            <strong>Note:</strong> {{ visit.note|truncatechars:80 }}
+                            <div><i class="fas fa-sticky-note"></i> <strong>Note:</strong> {{ visit.note|truncatechars:60 }}</div>
                         {% endif %}
                     </div>
 
                     <div class="card-actions">
                         <a href="{% url 'dealer_visit_detail' visit.id %}" class="btn btn-blue">
-                            View Details
+                            <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <div class="visit-card">
-                <div class="visit-body">
-                    No dealer visits found.
-                </div>
+            <div class="empty-card">
+                <i class="fas fa-map-marker-alt"></i>
+                No dealer visits found.
+                <p style="margin-top: 12px; font-size: 12px;">Try adjusting your search filters or add a new visit.</p>
             </div>
         {% endfor %}
     </div>
 </div>
+
+<script>
+// Add smooth hover effects for cards
+document.querySelectorAll('.visit-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // Don't trigger if clicking on button
+        if (!e.target.closest('.btn')) {
+            const viewBtn = this.querySelector('.btn');
+            if (viewBtn) {
+                window.location.href = viewBtn.href;
+            }
+        }
+    });
+});
+</script>
 
 {% endblock %}

@@ -2,616 +2,864 @@
 {% block content %}
 
 <style>
-html {
-    scroll-behavior: smooth;
-}
-
 .credit-page {
-    padding: 18px;
+    min-height: 100vh;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
 }
 
-.credit-card {
-    max-width: 760px;
-    margin: 0 auto;
-    background:
-        radial-gradient(circle at top right, rgba(34,197,94,.14), transparent 32%),
-        linear-gradient(135deg, #f8fafc, #eef7f3);
-    border-radius: 30px;
-    padding: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 18px 45px rgba(15,23,42,.10);
-    animation: pageEnter .45s ease both;
-}
-
-@keyframes pageEnter {
-    from {
-        opacity: 0;
-        transform: translateY(18px) scale(.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.credit-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.credit-top h2 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 24px;
-    font-weight: 1000;
-}
-
-.help-text {
-    color: #2563eb;
-    font-weight: 900;
-}
-
-.dealer-name {
-    margin-top: 6px;
-    color: #64748b;
-    font-weight: 850;
-}
-
-.gauge-wrap {
-    margin: 22px auto 8px;
-    max-width: 560px;
-    text-align: center;
-}
-
-.gauge {
-    width: 100%;
+.credit-container {
     max-width: 520px;
-    height: 260px;
     margin: 0 auto;
+}
+
+/* Main Credit Card */
+.credit-card {
+    background: white;
+    border-radius: 32px;
+    padding: 28px 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.credit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.credit-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.credit-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #6c757d;
+    letter-spacing: 2px;
+}
+
+.credit-header h3 {
+    margin: 8px 0 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+/* Score Wrapper */
+.score-wrapper {
+    text-align: center;
+    margin-bottom: 25px;
     position: relative;
 }
 
-.gauge-arc {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 260px;
-    border-radius: 520px 520px 0 0;
-    background: conic-gradient(
-        from 270deg at 50% 100%,
-        #ef4444 0deg,
-        #fb923c 50deg,
-        #fde047 100deg,
-        #86efac 140deg,
-        #22c55e 180deg,
-        transparent 180deg
-    );
-    overflow: hidden;
-    animation: arcGlow 1.4s ease both;
+.score-circle-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
 }
 
-@keyframes arcGlow {
-    from {
-        filter: saturate(.6);
-        opacity: .6;
-    }
-    to {
-        filter: saturate(1.15);
-        opacity: 1;
-    }
+canvas {
+    width: 220px;
+    height: 220px;
+    display: block;
+    margin: 0 auto;
 }
 
-.gauge-arc::after {
-    content: "";
+.score-inner {
     position: absolute;
+    top: 50%;
     left: 50%;
-    bottom: 0;
-    width: 340px;
-    height: 170px;
-    transform: translateX(-50%);
-    background: #eef7f3;
-    border-radius: 340px 340px 0 0;
-}
-
-.gauge-needle {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 7px;
-    height: 145px;
-    background: #1f2937;
-    border-radius: 999px;
-    transform-origin: bottom center;
-    transform: translateX(-50%) rotate({{ credit_summary.needle_deg }}deg);
-    z-index: 5;
-    animation: needleMove 1.1s cubic-bezier(.2,.9,.2,1) both;
-}
-
-@keyframes needleMove {
-    from {
-        transform: translateX(-50%) rotate(-90deg);
-    }
-    to {
-        transform: translateX(-50%) rotate({{ credit_summary.needle_deg }}deg);
-    }
-}
-
-.gauge-center {
-    position: absolute;
-    left: 50%;
-    bottom: -10px;
-    width: 22px;
-    height: 22px;
-    background: #111827;
-    border-radius: 50%;
-    transform: translateX(-50%);
-    z-index: 6;
-}
-
-.score-content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 18px;
-    z-index: 8;
+    transform: translate(-50%, -50%);
     text-align: center;
+    width: 100%;
+}
+
+.score-number {
+    font-size: 52px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1;
+}
+
+.score-number small {
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
 }
 
 .score-change {
     display: inline-flex;
-    color: {% if credit_summary.change_points >= 0 %}#16a34a{% else %}#dc2626{% endif %};
-    font-weight: 1000;
-    font-size: 15px;
-    margin-bottom: 5px;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 30px;
+    margin-top: 6px;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 1.2s;
 }
 
-.score-number {
-    font-size: 70px;
-    font-weight: 1000;
-    color: #020617;
-    line-height: 1;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-change.up {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.score-change.down {
+    background: #ffebee;
+    color: #c62828;
 }
 
 .score-label {
-    margin-top: 8px;
-    color: #334155;
-    font-size: 16px;
-    font-weight: 850;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 6px;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 1.4s;
 }
 
-.gauge-minmax {
-    max-width: 520px;
-    margin: -22px auto 0;
+/* Score Label Colors */
+.score-label.excellent { color: #9c27b0; }
+.score-label.very-good { color: #2196f3; }
+.score-label.good { color: #84c341; }
+.score-label.fair { color: #ffc107; }
+.score-label.poor { color: #dc2626; }
+
+/* Range Container */
+.range-container {
+    margin: 20px 0;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 0.6s;
+}
+
+.range-bar {
+    display: flex;
+    height: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.range-fair {
+    flex: 1;
+    background: #ffc107;
+}
+
+.range-good {
+    flex: 1;
+    background: #84c341;
+}
+
+.range-very-good {
+    flex: 1;
+    background: #2196f3;
+}
+
+.range-excellent {
+    flex: 1;
+    background: #9c27b0;
+}
+
+.range-labels {
     display: flex;
     justify-content: space-between;
-    color: #94a3b8;
-    font-size: 22px;
-    font-weight: 900;
+    margin-bottom: 5px;
 }
 
-.summary-card {
-    margin-top: 18px;
-    background: white;
-    border-radius: 22px;
+.range-label {
+    text-align: center;
+    flex: 1;
+}
+
+.range-label .name {
+    font-size: 12px;
+    font-weight: 700;
+    display: block;
+}
+
+.range-label .score-range {
+    font-size: 9px;
+    color: #6c757d;
+    margin-top: 2px;
+    display: block;
+}
+
+.range-label.fair .name { color: #ffc107; }
+.range-label.good .name { color: #84c341; }
+.range-label.very-good .name { color: #2196f3; }
+.range-label.excellent .name { color: #9c27b0; }
+
+/* Pointer Container */
+.pointer-container {
+    position: relative;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+.pointer-track {
+    height: 3px;
+    background: #e0e0e0;
+    position: relative;
+    border-radius: 3px;
+}
+
+.pointer-arrow {
+    position: absolute;
+    top: -14px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid #333;
+    transform: translateX(-50%);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dealer Info */
+.dealer-info {
+    background: #f8f9fa;
+    border-radius: 20px;
     padding: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 26px rgba(15,23,42,.05);
+    margin: 20px 0;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 0.8s;
 }
 
-.summary-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.summary-head h3 {
+.dealer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
     margin: 0;
-    color: #0f172a;
-    font-size: 20px;
-    font-weight: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.view-details-link {
-    color: #0ea5e9;
-    font-weight: 1000;
-    text-decoration: none;
+.dealer-code {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 6px;
 }
 
-.summary-grid {
-    margin-top: 16px;
+/* Stats Grid */
+.stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
 }
 
-.summary-item {
-    padding: 4px 16px;
+.stat-card {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 16px;
+    text-align: center;
     text-decoration: none;
-    color: inherit;
-    border-radius: 18px;
-    transition: .22s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.summary-item:first-child {
-    border-right: 1px solid #e2e8f0;
-}
-
-.summary-item::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(34,197,94,.10));
-    opacity: 0;
-    transition: .22s ease;
-}
-
-.summary-item:hover {
-    transform: translateY(-3px);
-    background: #f8fafc;
-    box-shadow: 0 14px 30px rgba(15,23,42,.09);
-}
-
-.summary-item:hover::after {
-    opacity: 1;
-}
-
-.summary-item strong,
-.summary-item span {
-    position: relative;
-    z-index: 2;
-}
-
-.summary-item strong {
+    transition: all 0.3s ease;
+    cursor: pointer;
     display: block;
-    color: #0f172a;
-    font-size: 19px;
-    font-weight: 1000;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
 }
 
-.summary-item span {
+.stat-card:first-child {
+    animation-delay: 1s;
+}
+
+.stat-card:last-child {
+    animation-delay: 1.1s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    background: #ffffff;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 16px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 6px;
-    color: #334155;
-    font-size: 14px;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.stat-icon i {
+    font-size: 24px;
+    color: white;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 24px;
     font-weight: 800;
+    color: #1a1a2e;
 }
 
-.summary-item svg {
-    width: 17px;
-    height: 17px;
-    color: #2563eb;
+.stat-sub {
+    font-size: 10px;
+    color: #6c757d;
+    margin-top: 6px;
 }
 
+/* Note Box */
 .note-box {
-    margin-top: 14px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
+    background: #fff8e1;
     border-radius: 16px;
-    padding: 12px;
-    font-weight: 850;
-    line-height: 1.5;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    border: 1px solid #ffe082;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 1.2s;
 }
 
-.last-refresh {
-    margin-top: 14px;
+.note-box i {
+    font-size: 20px;
+    color: #ff8f00;
+}
+
+.note-box p {
+    margin: 0;
+    font-size: 12px;
+    color: #e65100;
+    font-weight: 500;
+}
+
+/* Footer */
+.credit-footer {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 850;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+    font-size: 11px;
+    color: #6c757d;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards 1.3s;
 }
 
-/* Smooth redirect animation */
+.credit-footer i {
+    margin-right: 4px;
+}
+
+/* Loader */
 .page-loader {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, .72);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(10px);
-    z-index: 99999;
+    z-index: 10000;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 18px;
 }
 
 .page-loader.show {
     display: flex;
+    animation: fadeIn 0.3s ease;
 }
 
-.loader-card {
-    width: 100%;
-    max-width: 380px;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.loader-content {
     background: white;
-    border-radius: 28px;
-    padding: 24px;
+    padding: 35px;
+    border-radius: 32px;
     text-align: center;
-    box-shadow: 0 30px 80px rgba(0,0,0,.30);
-    animation: loaderIn .28s ease both;
+    max-width: 300px;
+    animation: scaleIn 0.3s ease;
 }
 
-@keyframes loaderIn {
-    from {
-        opacity: 0;
-        transform: translateY(15px) scale(.94);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
-.loader-icon {
-    width: 78px;
-    height: 78px;
-    border-radius: 26px;
-    margin: 0 auto 14px;
-    background: linear-gradient(135deg, #2563eb, #16a34a);
-    color: white;
+.loader-spinner {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: pulseIcon 1s ease infinite;
+    margin: 0 auto 20px;
+    animation: spin 1s infinite;
 }
 
-@keyframes pulseIcon {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 14px 34px rgba(37,99,235,.24);
-    }
-    50% {
-        transform: scale(1.06);
-        box-shadow: 0 18px 44px rgba(22,163,74,.32);
-    }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.loader-icon svg {
-    width: 40px;
-    height: 40px;
+.loader-spinner i {
+    font-size: 28px;
+    color: white;
+    animation: counterSpin 1s infinite;
 }
 
-.loader-card h3 {
+@keyframes counterSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+.loader-content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.loader-content p {
     margin: 0;
-    color: #0f172a;
-    font-size: 21px;
-    font-weight: 1000;
-}
-
-.loader-card p {
-    margin: 8px 0 0;
-    color: #64748b;
+    color: #6c757d;
     font-size: 13px;
-    line-height: 1.5;
-    font-weight: 850;
 }
 
-.loader-line {
-    margin-top: 16px;
-    height: 8px;
-    background: #e2e8f0;
-    border-radius: 999px;
-    overflow: hidden;
-}
-
-.loader-line span {
-    display: block;
-    height: 100%;
-    width: 40%;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #2563eb, #16a34a);
-    animation: lineMove .85s ease infinite;
-}
-
-@keyframes lineMove {
-    0% {
-        transform: translateX(-110%);
-    }
-    100% {
-        transform: translateX(260%);
-    }
-}
-
-@media(max-width: 650px) {
+/* Responsive */
+@media (max-width: 550px) {
     .credit-page {
-        padding: 10px;
+        padding: 20px 15px;
     }
-
+    
     .credit-card {
-        border-radius: 24px;
+        padding: 20px;
+    }
+    
+    .credit-header h2 {
+        font-size: 16px;
+    }
+    
+    .credit-header h3 {
+        font-size: 18px;
+    }
+    
+    .score-circle-container {
+        width: 180px;
+        height: 180px;
+    }
+    
+    canvas {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .score-number {
+        font-size: 40px;
+    }
+    
+    .score-number small {
+        font-size: 13px;
+    }
+    
+    .range-label .name {
+        font-size: 10px;
+    }
+    
+    .range-label .score-range {
+        font-size: 8px;
+    }
+    
+    .stats-grid {
+        gap: 12px;
+    }
+    
+    .stat-value {
+        font-size: 18px;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .stat-icon i {
+        font-size: 18px;
+    }
+    
+    .credit-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .dealer-name {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .credit-card {
         padding: 16px;
     }
-
-    .gauge {
-        height: 210px;
+    
+    .score-circle-container {
+        width: 150px;
+        height: 150px;
     }
-
-    .gauge-arc {
-        height: 210px;
+    
+    canvas {
+        width: 150px;
+        height: 150px;
     }
-
-    .gauge-arc::after {
-        width: 250px;
-        height: 125px;
-    }
-
-    .gauge-needle {
-        height: 115px;
-    }
-
+    
     .score-number {
-        font-size: 54px;
+        font-size: 32px;
     }
-
-    .summary-grid {
+    
+    .stats-grid {
         grid-template-columns: 1fr;
-        gap: 10px;
     }
-
-    .summary-item:first-child {
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 14px;
-        margin-bottom: 4px;
+    
+    .range-labels {
+        flex-wrap: wrap;
+        gap: 8px;
     }
-
-    .last-refresh {
-        display: block;
-        line-height: 1.7;
+    
+    .range-label {
+        flex: auto;
+        min-width: 70px;
     }
 }
 </style>
 
 <div class="credit-page">
-    <div class="credit-card">
-        <div class="credit-top">
-            <div>
-                <h2>Your Credit Score</h2>
-                <div class="dealer-name">{{ dealer.firm_name }}</div>
+    <div class="credit-container">
+        <div class="credit-card">
+            <!-- Header -->
+            <div class="credit-header">
+                <h2>CREDIT SCORE</h2>
+                <h3>{{ dealer.firm_name }}</h3>
             </div>
 
-            <div class="help-text">Arvis Score</div>
-        </div>
-
-        <div class="gauge-wrap">
-            <div class="gauge">
-                <div class="gauge-arc"></div>
-                <div class="gauge-needle"></div>
-                <div class="gauge-center"></div>
-
-                <div class="score-content">
-                    <div class="score-change">
-                        {% if credit_summary.change_points >= 0 %}
-                            ↑ {{ credit_summary.change_points }} points
-                        {% else %}
-                            ↓ {{ credit_summary.change_points }} points
-                        {% endif %}
-                    </div>
-
-                    <div class="score-number">
-                        {{ credit_summary.score }}
-                    </div>
-
-                    <div class="score-label">
-                        Your credit score is {{ credit_summary.label }} ›
+            <!-- Score Circle Canvas -->
+            <div class="score-wrapper">
+                <div class="score-circle-container">
+                    <canvas id="scoreCanvas" width="220" height="220"></canvas>
+                    <div class="score-inner">
+                        <div class="score-number">
+                            <span id="scoreNumberDisplay">0</span><small>/900</small>
+                        </div>
+                        <div class="score-change {% if credit_summary.change_points >= 0 %}up{% else %}down{% endif %}">
+                            {% if credit_summary.change_points >= 0 %}
+                                <i class="fas fa-arrow-up"></i> +{{ credit_summary.change_points }}
+                            {% else %}
+                                <i class="fas fa-arrow-down"></i> {{ credit_summary.change_points }}
+                            {% endif %}
+                        </div>
+                        <div class="score-label {% if credit_summary.score >= 800 %}excellent{% elif credit_summary.score >= 740 %}very-good{% elif credit_summary.score >= 670 %}good{% elif credit_summary.score >= 580 %}fair{% else %}poor{% endif %}">
+                            {{ credit_summary.label }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="gauge-minmax">
-                <span>300</span>
-                <span>900</span>
+            <!-- Score Range Bars -->
+            <div class="range-container">
+                <div class="range-bar">
+                    <div class="range-fair"></div>
+                    <div class="range-good"></div>
+                    <div class="range-very-good"></div>
+                    <div class="range-excellent"></div>
+                </div>
+                <div class="range-labels">
+                    <div class="range-label fair">
+                        <span class="name">FAIR</span>
+                        <span class="score-range">580-669</span>
+                    </div>
+                    <div class="range-label good">
+                        <span class="name">GOOD</span>
+                        <span class="score-range">670-739</span>
+                    </div>
+                    <div class="range-label very-good">
+                        <span class="name">VERY GOOD</span>
+                        <span class="score-range">740-799</span>
+                    </div>
+                    <div class="range-label excellent">
+                        <span class="name">EXCELLENT</span>
+                        <span class="score-range">800-859</span>
+                    </div>
+                </div>
+                
+                <!-- Pointer Indicator -->
+                <div class="pointer-container">
+                    <div class="pointer-track"></div>
+                    <div class="pointer-arrow" id="pointerArrow"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="summary-card">
-            <div class="summary-head">
-                <h3>Credit Report Summary</h3>
+            <!-- Dealer Information -->
+            <div class="dealer-info">
+                <div class="dealer-name">
+                    <i class="fas fa-user-circle"></i> {{ dealer.owner_name|default:dealer.firm_name }}
+                </div>
+                <div class="dealer-code">
+                    <i class="fas fa-qrcode"></i> Dealer Code: {{ dealer.dealer_code|default:dealer.id }}
+                </div>
+            </div>
 
-                <a href="{% url 'dealer_invoice_list' %}?pending=1"
-                   class="view-details-link"
-                   onclick="smoothGoToInvoices(event)">
-                    View details
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <a href="{% url 'dealer_invoice_list' %}?pending=1" class="stat-card" onclick="smoothGoToInvoices(event)">
+                    <div class="stat-icon">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-label">Total Due</div>
+                    <div class="stat-value">
+                        {% if credit_summary.due_amount > 0 %}
+                            ₹{{ credit_summary.due_amount|floatformat:2 }}
+                        {% else %}
+                            ₹0
+                        {% endif %}
+                    </div>
+                    <div class="stat-sub">
+                        {% if credit_summary.due_amount > 0 %}
+                            <i class="fas fa-clock"></i> Payment Required
+                        {% else %}
+                            <i class="fas fa-check-circle"></i> No Dues
+                        {% endif %}
+                    </div>
+                </a>
+
+                <a href="{% url 'dealer_invoice_list' %}?pending=1" class="stat-card" onclick="smoothGoToInvoices(event)">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="stat-label">Pending Invoices</div>
+                    <div class="stat-value">{{ credit_summary.pending_invoice_count|default:"0" }}</div>
+                    <div class="stat-sub">
+                        <i class="fas fa-hourglass-half"></i> Awaiting Payment
+                    </div>
                 </a>
             </div>
 
-            <div class="summary-grid">
-                <a href="{% url 'dealer_invoice_list' %}?pending=1"
-                   class="summary-item"
-                   onclick="smoothGoToInvoices(event)">
-                    {% if credit_summary.due_amount > 0 %}
-                        <strong>₹{{ credit_summary.due_amount|floatformat:2 }}</strong>
-                        <span>
-                            Dues Pending
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </span>
-                    {% else %}
-                        <strong>No Dues</strong>
-                        <span>
-                            0 Overdue Payments
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'dealer_invoice_list' %}?pending=1"
-                   class="summary-item"
-                   onclick="smoothGoToInvoices(event)">
-                    <strong>{{ credit_summary.pending_invoice_count }}</strong>
-                    <span>
-                        Pending Invoices
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </span>
-                </a>
-            </div>
-        </div>
-
-        {% if credit_summary.note %}
+            <!-- Note Box -->
+            {% if credit_summary.note %}
             <div class="note-box">
-                <strong>Score Note:</strong> {{ credit_summary.note }}
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Note:</strong> {{ credit_summary.note }}</p>
             </div>
-        {% endif %}
+            {% endif %}
 
-        <div class="last-refresh">
-            <span>
-                Last refreshed on
-                {% if credit_summary.updated_at %}
-                    {{ credit_summary.updated_at|date:"d M Y" }}
-                {% else %}
-                    -
-                {% endif %}
-            </span>
-            <span>Powered by Arvis</span>
+            <!-- Footer -->
+            <div class="credit-footer">
+                <span>
+                    <i class="fas fa-sync-alt"></i> 
+                    Updated: {% if credit_summary.updated_at %}{{ credit_summary.updated_at|date:"d M Y" }}{% else %}-{% endif %}
+                </span>
+                <span>
+                    <i class="fas fa-chart-line"></i> 
+                    Powered by Arvis
+                </span>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="page-loader" id="invoiceLoader">
-    <div class="loader-card">
-        <div class="loader-icon">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M7 3h10v18H7z"/>
-                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4"/>
-                <path stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M17 8l3 3-3 3"/>
-            </svg>
+<!-- Loader Modal -->
+<div id="pageLoader" class="page-loader">
+    <div class="loader-content">
+        <div class="loader-spinner">
+            <i class="fas fa-file-invoice"></i>
         </div>
-
-        <h3>Opening Pending Invoices</h3>
-        <p>Please wait. We are taking you to your pending invoice dues.</p>
-
-        <div class="loader-line">
-            <span></span>
-        </div>
+        <h3>Opening Invoices</h3>
+        <p>Please wait while we redirect you...</p>
     </div>
 </div>
 
 <script>
+// Number counting animation
+function animateNumber(finalNumber, duration, elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const startNumber = 0;
+    const increment = finalNumber / (duration / 16);
+    let currentNumber = startNumber;
+    
+    const timer = setInterval(function() {
+        currentNumber += increment;
+        if (currentNumber >= finalNumber) {
+            element.textContent = Math.floor(finalNumber);
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(currentNumber);
+        }
+    }, 16);
+}
+
+// Draw the circular gauge chart with animation
+function drawScoreGauge(score, animate = true) {
+    const canvas = document.getElementById('scoreCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = 220;
+    const height = 220;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = 90;
+    const startAngle = -0.5 * Math.PI;
+    
+    const minScore = 300;
+    const maxScore = 900;
+    const finalPercentage = Math.min(100, Math.max(0, ((score - minScore) / (maxScore - minScore)) * 100));
+    
+    // Draw background circle
+    ctx.clearRect(0, 0, width, height);
+    
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = '#e9ecef';
+    ctx.lineWidth = 12;
+    ctx.stroke();
+    
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, '#ffc107');
+    gradient.addColorStop(0.33, '#84c341');
+    gradient.addColorStop(0.66, '#2196f3');
+    gradient.addColorStop(1, '#9c27b0');
+    
+    if (animate) {
+        // Animate the gauge
+        let currentPercentage = 0;
+        const stepTime = 16;
+        const totalSteps = 60;
+        const increment = finalPercentage / totalSteps;
+        
+        const gaugeInterval = setInterval(function() {
+            currentPercentage += increment;
+            if (currentPercentage >= finalPercentage) {
+                currentPercentage = finalPercentage;
+                clearInterval(gaugeInterval);
+            }
+            
+            const currentEndAngle = startAngle + (currentPercentage / 100) * (2 * Math.PI);
+            
+            // Redraw background and gauge
+            ctx.clearRect(0, 0, width, height);
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 12;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, currentEndAngle);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 15, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        }, stepTime);
+    } else {
+        const endAngle = startAngle + (finalPercentage / 100) * (2 * Math.PI);
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius - 15, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+    }
+}
+
+// Update pointer position
+function updatePointer(score) {
+    const pointer = document.getElementById('pointerArrow');
+    if (!pointer) return;
+    
+    const minScore = 300;
+    const maxScore = 900;
+    const percentage = ((score - minScore) / (maxScore - minScore)) * 100;
+    const clampedLeft = Math.min(96, Math.max(4, percentage));
+    
+    setTimeout(function() {
+        pointer.style.left = clampedLeft + '%';
+    }, 100);
+}
+
+// Smooth redirect
 function smoothGoToInvoices(event) {
     event.preventDefault();
-
-    const url = event.currentTarget.getAttribute("href");
-    const loader = document.getElementById("invoiceLoader");
-
+    const url = event.currentTarget.getAttribute('href');
+    const loader = document.getElementById('pageLoader');
+    
     if (loader) {
-        loader.classList.add("show");
+        loader.classList.add('show');
     }
-
+    
     setTimeout(function() {
         window.location.href = url;
-    }, 350);
+    }, 400);
 }
+
+// Initialize all animations on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const finalScore = {{ credit_summary.score|default:600 }};
+    
+    // Start number counting animation
+    animateNumber(finalScore, 1500, 'scoreNumberDisplay');
+    
+    // Start gauge animation
+    setTimeout(function() {
+        drawScoreGauge(finalScore, true);
+        updatePointer(finalScore);
+    }, 200);
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+    const score = {{ credit_summary.score|default:600 }};
+    updatePointer(score);
+});
 </script>
 
 {% endblock %}

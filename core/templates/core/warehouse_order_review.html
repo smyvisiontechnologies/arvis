@@ -341,9 +341,8 @@ function parseAnyDateValue(value) {
         return null;
     }
 
-    value = value.trim();
+    value = String(value).trim();
 
-    // YYYY-MM-DD
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
         return {
             year: parseInt(value.substring(0, 4), 10),
@@ -351,7 +350,6 @@ function parseAnyDateValue(value) {
         };
     }
 
-    // YYYY-MM
     if (/^\d{4}-\d{2}$/.test(value)) {
         return {
             year: parseInt(value.substring(0, 4), 10),
@@ -359,7 +357,6 @@ function parseAnyDateValue(value) {
         };
     }
 
-    // MM/YYYY
     if (/^\d{2}\/\d{4}$/.test(value)) {
         return {
             month: parseInt(value.substring(0, 2), 10),
@@ -376,16 +373,24 @@ function formatDisplayMonthYear(year, month) {
 
 function setPanelYear(wrapper, year) {
     wrapper.dataset.pickerYear = year;
+
     const yearBox = wrapper.querySelector(".picker-year");
+
     if (yearBox) {
         yearBox.textContent = year;
     }
+
     renderMonthButtons(wrapper);
 }
 
 function renderMonthButtons(wrapper) {
     const grid = wrapper.querySelector(".month-grid-picker");
     const input = wrapper.querySelector("input");
+
+    if (!grid || !input) {
+        return;
+    }
+
     const year = parseInt(wrapper.dataset.pickerYear || getCurrentYear(), 10);
     const selected = parseAnyDateValue(input.value);
 
@@ -403,10 +408,17 @@ function renderMonthButtons(wrapper) {
             btn.classList.add("active");
         }
 
-        btn.onclick = function() {
+        btn.addEventListener("click", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             input.value = formatDisplayMonthYear(year, month);
+
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
+
             wrapper.classList.remove("open");
-        };
+        });
 
         grid.appendChild(btn);
     });
@@ -419,8 +431,16 @@ function initMonthPicker(wrapper) {
         return;
     }
 
+    /*
+      IMPORTANT FIX:
+      Django DateInput/browser date input cannot show MM/YYYY.
+      So we force it to text while displaying.
+      On submit, it will be converted back to YYYY-MM-DD.
+    */
+    input.type = "text";
     input.setAttribute("readonly", "readonly");
     input.setAttribute("placeholder", "MM/YYYY");
+    input.setAttribute("autocomplete", "off");
 
     const parsed = parseAnyDateValue(input.value);
 
@@ -431,7 +451,15 @@ function initMonthPicker(wrapper) {
         setPanelYear(wrapper, getCurrentYear());
     }
 
-    input.addEventListener("click", function() {
+    input.addEventListener("click", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        openPickerWrapper(wrapper);
+    });
+
+    input.addEventListener("focus", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
         openPickerWrapper(wrapper);
     });
 }
@@ -444,7 +472,7 @@ function openPickerWrapper(wrapper) {
     });
 
     const input = wrapper.querySelector("input");
-    const parsed = parseAnyDateValue(input.value);
+    const parsed = input ? parseAnyDateValue(input.value) : null;
 
     if (parsed) {
         setPanelYear(wrapper, parsed.year);
@@ -452,7 +480,7 @@ function openPickerWrapper(wrapper) {
         setPanelYear(wrapper, getCurrentYear());
     }
 
-    wrapper.classList.toggle("open");
+    wrapper.classList.add("open");
 }
 
 function openCustomMonthPicker(button) {
@@ -465,7 +493,13 @@ function openCustomMonthPicker(button) {
 
 function changePickerYear(button, direction) {
     const wrapper = button.closest(".month-picker");
+
+    if (!wrapper) {
+        return;
+    }
+
     const currentYear = parseInt(wrapper.dataset.pickerYear || getCurrentYear(), 10);
+
     setPanelYear(wrapper, currentYear + direction);
 }
 

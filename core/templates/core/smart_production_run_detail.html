@@ -1,0 +1,218 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pd-page{padding:16px;max-width:1250px;margin:0 auto}
+.pd-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px}
+.pd-hero h2{margin:0;font-size:28px;font-weight:900}
+.pd-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+
+.pd-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+
+.pd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pd-box{background:#f8fafc;border:1px solid #e5e7eb;border-radius:16px;padding:14px}
+.pd-box span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.pd-box strong{display:block;color:#0f172a;font-size:20px;font-weight:900;margin-top:6px}
+.pd-box.green strong{color:#047857}
+.pd-box.red strong{color:#b91c1c}
+.pd-box.blue strong{color:#2563eb}
+.pd-box.orange strong{color:#d97706}
+
+.pd-title{margin:0 0 14px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+
+.pd-alert{padding:14px 16px;border-radius:18px;font-weight:900;line-height:1.6;margin-bottom:14px}
+.pd-alert.green{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.pd-alert.red{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.pd-alert.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+
+.pd-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:18px}
+.pd-table{width:100%;border-collapse:collapse;min-width:900px}
+.pd-table th,.pd-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;font-weight:800}
+.pd-table th{background:#f8fafc;color:#334155;font-weight:900}
+.text-right{text-align:right!important}
+
+.pd-btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.pd-btn{border:0;text-decoration:none;background:#f1f5f9;color:#0f172a;border-radius:14px;padding:11px 14px;font-weight:900}
+.pd-btn.dark{background:#07120d;color:white}
+.pd-btn.blue{background:#2563eb;color:white}
+
+@media(max-width:900px){
+    .pd-grid{grid-template-columns:1fr}
+    .pd-btn-row{display:grid}
+    .pd-btn{width:100%;text-align:center}
+}
+</style>
+
+<div class="pd-page">
+
+    <div class="pd-hero">
+        <h2>{{ run.product.name }} Production</h2>
+        <p>
+            {{ run.production_date|date:"d/m/Y" }}
+            |
+            Bulk Output: {{ run.output_qty|floatformat:3 }} {{ run.output_unit }}
+        </p>
+    </div>
+
+    <div class="pd-card">
+        <h3 class="pd-title">Output Matching Summary</h3>
+
+        {% if output_matched %}
+            <div class="pd-alert green">
+                ✅ Bulk output and packed output matched.
+                <br>
+                Bulk Output: {{ bulk_output_qty|floatformat:3 }} {{ run.output_unit }}
+                <br>
+                Packed Output: {{ packed_output_qty|floatformat:3 }} {{ run.output_unit }}
+            </div>
+        {% else %}
+            <div class="pd-alert red">
+                ❌ Bulk output and packed output not matched.
+                <br>
+                Bulk Output: {{ bulk_output_qty|floatformat:3 }} {{ run.output_unit }}
+                <br>
+                Packed Output: {{ packed_output_qty|floatformat:3 }} {{ run.output_unit }}
+                <br>
+                Difference: {{ output_difference|floatformat:3 }} {{ run.output_unit }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="pd-card">
+        <h3 class="pd-title">Cost Summary</h3>
+
+        <div class="pd-grid">
+            <div class="pd-box">
+                <span>Raw Cost</span>
+                <strong>₹ {{ run.total_raw_cost|floatformat:2 }}</strong>
+            </div>
+
+            <div class="pd-box">
+                <span>Packing Cost</span>
+                <strong>₹ {{ run.total_packing_cost|floatformat:2 }}</strong>
+            </div>
+
+            <div class="pd-box">
+                <span>Labour Cost</span>
+                <strong>₹ {{ run.labour_cost|default:0|floatformat:2 }}</strong>
+            </div>
+
+            <div class="pd-box">
+                <span>Other Cost</span>
+                <strong>₹ {{ run.other_cost|default:0|floatformat:2 }}</strong>
+            </div>
+
+            <div class="pd-box green">
+                <span>Total Cost</span>
+                <strong>₹ {{ run.total_cost|floatformat:2 }}</strong>
+            </div>
+
+            <div class="pd-box blue">
+                <span>Bulk Output</span>
+                <strong>{{ run.output_qty|floatformat:3 }} {{ run.output_unit }}</strong>
+            </div>
+
+            <div class="pd-box orange">
+                <span>Packed Output</span>
+                <strong>{{ packed_output_qty|floatformat:3 }} {{ run.output_unit }}</strong>
+            </div>
+
+            <div class="pd-box">
+                <span>Created By</span>
+                <strong>{{ run.created_by.get_full_name|default:run.created_by.username }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="pd-card">
+        <h3 class="pd-title">Output Packs Added</h3>
+
+        <div class="pd-table-wrap">
+            <table class="pd-table">
+                <thead>
+                    <tr>
+                        <th>Pack</th>
+                        <th class="text-right">Boxes Added</th>
+                        <th class="text-right">Units / Box</th>
+                        <th class="text-right">Packed Output</th>
+                        <th class="text-right">Cost / Box</th>
+                        <th class="text-right">Total Cost</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in output_rows %}
+                        <tr>
+                            <td>{{ item.pack_label }}</td>
+                            <td class="text-right">{{ item.row.output_boxes }}</td>
+                            <td class="text-right">{{ item.row.units_per_box }}</td>
+                            <td class="text-right">{{ item.packed_output_qty|floatformat:3 }} {{ run.output_unit }}</td>
+                            <td class="text-right">₹ {{ item.row.cost_per_box|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ item.row.total_cost|floatformat:2 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align:center;color:#64748b;font-weight:900;">
+                                No output packs added.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pd-card">
+        <h3 class="pd-title">Materials Used</h3>
+
+        <div class="pd-table-wrap">
+            <table class="pd-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Item</th>
+                        <th class="text-right">Used Qty</th>
+                        <th class="text-right">Available Before</th>
+                        <th class="text-right">Rate</th>
+                        <th class="text-right">Cost</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in run.materials.all %}
+                        <tr>
+                            <td>{{ row.get_material_type_display }}</td>
+                            <td>{{ row.inventory_item.name }}</td>
+                            <td class="text-right">{{ row.required_qty|floatformat:3 }} {{ row.unit }}</td>
+                            <td class="text-right">{{ row.available_before|floatformat:3 }} {{ row.unit }}</td>
+                            <td class="text-right">₹ {{ row.rate|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ row.cost|floatformat:2 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align:center;color:#64748b;font-weight:900;">
+                                No materials found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if run.note %}
+        <div class="pd-card">
+            <h3 class="pd-title">Production Note</h3>
+            <div class="pd-alert blue">{{ run.note }}</div>
+        </div>
+    {% endif %}
+
+    <div class="pd-btn-row">
+        <a href="{% url 'smart_production_run_list' %}" class="pd-btn">Back</a>
+        <a href="{% url 'smart_production_create' %}" class="pd-btn blue">New Production</a>
+        <a href="{% url 'purchase_stock_history' %}" class="pd-btn dark">Stock Usage History</a>
+    </div>
+
+</div>
+
+{% endblock %}

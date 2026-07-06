@@ -1,13 +1,152 @@
 {% extends "core/base.html" %}
 {% block content %}
 <style>
-.page{padding:18px}.head{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.05);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-h2{margin:0;color:#0f172a;font-size:24px;font-weight:900}.btn{background:#2563eb;color:white;text-decoration:none;border-radius:13px;padding:10px 13px;font-weight:900}
+.page{padding:18px}
+.head{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.05);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h2{margin:0;color:#0f172a;font-size:24px;font-weight:900}
+.btn{background:#2563eb;color:white;text-decoration:none;border-radius:13px;padding:10px 13px;font-weight:900;display:inline-block;text-align:center}
 .card{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
-.card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}.meta{margin-top:8px;color:#64748b;font-size:13px;font-weight:750;line-height:1.6}
+.card h3{margin:0;color:#0f172a;font-size:17px;font-weight:900}
+.meta{margin-top:8px;color:#64748b;font-size:13px;font-weight:750;line-height:1.6}
 .badge{display:inline-flex;margin-top:8px;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}
-.pending{background:#fffbeb;color:#b45309;border:1px solid #fde68a}.green{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}.red{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.pending{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.green{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.red{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
 .empty{background:white;border:1px solid #e2e8f0;border-radius:20px;padding:24px;text-align:center;color:#64748b;font-weight:800}
+
+/* ===== RESPONSIVE ENHANCEMENTS (no design changes, only layout adaptation) ===== */
+
+/* Tablet and medium screens */
+@media (max-width: 768px) {
+    .page {
+        padding: 14px;
+    }
+    .head {
+        padding: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    h2 {
+        font-size: 20px;
+    }
+    .btn {
+        padding: 8px 14px;
+        font-size: 14px;
+        width: 100%;
+    }
+    .card {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    .card h3 {
+        font-size: 16px;
+    }
+    .meta {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+    .badge {
+        font-size: 10px;
+        padding: 5px 9px;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 640px) {
+    .page {
+        padding: 12px;
+    }
+    .head {
+        padding: 12px;
+        gap: 10px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+    .btn {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    .card {
+        padding: 11px;
+    }
+    .card h3 {
+        font-size: 15px;
+    }
+    .meta {
+        font-size: 11px;
+        margin-top: 6px;
+    }
+    .badge {
+        font-size: 9px;
+        padding: 4px 8px;
+        margin-top: 6px;
+    }
+    .empty {
+        padding: 20px;
+        font-size: 13px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .page {
+        padding: 10px;
+    }
+    .head {
+        padding: 10px;
+    }
+    h2 {
+        font-size: 16px;
+    }
+    .btn {
+        font-size: 12px;
+        padding: 7px 10px;
+        border-radius: 11px;
+    }
+    .card {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 18px;
+    }
+    .card h3 {
+        font-size: 14px;
+    }
+    .meta {
+        font-size: 10px;
+        line-height: 1.45;
+    }
+    .badge {
+        font-size: 9px;
+        padding: 3px 7px;
+    }
+    .empty {
+        padding: 16px;
+        font-size: 12px;
+        border-radius: 18px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+    .page {
+        padding: 8px;
+    }
+    .head {
+        padding: 10px;
+    }
+    h2 {
+        font-size: 15px;
+    }
+    .btn {
+        font-size: 11px;
+        padding: 6px 8px;
+    }
+    .card h3 {
+        font-size: 13px;
+    }
+}
 </style>
 
 <div class="page">

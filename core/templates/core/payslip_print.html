@@ -108,34 +108,6 @@
             font-weight: 700;
         }
 
-        .status-cell {
-            width: 118px;
-            border-left: 1px solid #111827;
-            text-align: center;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .status-box {
-            display: inline-block;
-            border: 1px solid #111827;
-            padding: 5px 8px;
-            margin-top: 5px;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-        }
-
-        .released {
-            color: #047857;
-            border-color: #047857;
-        }
-
-        .draft {
-            color: #b45309;
-            border-color: #b45309;
-        }
-
         .title-row td {
             border-bottom: 1px solid #111827;
             padding: 8px;
@@ -257,7 +229,28 @@
             text-align: center;
             font-weight: 900;
             font-size: 12px;
-            width: 50%;
+            width: 100%;
+        }
+
+        .stamp-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .stamp-img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            display: block;
+            opacity: 0.85;
+        }
+
+        .signature-line {
+            width: 70%;
+            border-top: 1px solid #4b5563;
+            margin: 8px auto 4px;
         }
 
         .footer-note {
@@ -296,6 +289,13 @@
             border-color: #e2e8f0;
         }
 
+        .address-text {
+            font-size: 10px;
+            line-height: 1.35;
+            color: #4b5563;
+            margin-top: 3px;
+        }
+
         @media print {
             body {
                 background: white;
@@ -318,6 +318,10 @@
             .main-border {
                 border: 2px solid #111827;
             }
+
+            .stamp-img {
+                opacity: 1;
+            }
         }
 
         @media(max-width: 760px) {
@@ -339,10 +343,6 @@
                 width: 70px;
                 height: 58px;
             }
-
-            .status-cell {
-                width: 90px;
-            }
         }
     </style>
 </head>
@@ -350,14 +350,19 @@
 <body>
 
 <div class="print-actions">
-    <a href="javascript:history.back()" class="back-btn">Back</a>
-    <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+    <a href="{% url 'dashboard' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <button class="print-btn" onclick="window.print()">
+        <i class="fas fa-print"></i> Print / Save PDF
+    </button>
 </div>
 
 <div class="salary-page">
 
     <div class="main-border">
 
+        <!-- Company Header with Address -->
         <table class="company-table">
             <tr>
                 <td class="logo-cell">
@@ -370,18 +375,14 @@
                     </div>
 
                     <div class="company-details">
-                        Employee Salary Payslip<br>
-                        Salary, PF, insurance and statutory deduction details are shown below.
+                        <strong>📞 +91 78934 23282</strong> &nbsp;|&nbsp;
+                        <strong>✉️ arvisfertilizer@gmail.com</strong><br>
+                        <strong>GSTIN:</strong> 37AAZCA7327G1Z4 &nbsp;|&nbsp;
+                        <strong>CIN:</strong> U24100AP2020PTC123456<br>
+                        <div class="address-text">
+                            🏢 S.No. 282/A6, Near Port Road, Kakinada, Kakinada District, Andhra Pradesh - 533001
+                        </div>
                     </div>
-                </td>
-
-                <td class="status-cell">
-                    Status<br>
-                    {% if payslip.status == "RELEASED" %}
-                        <span class="status-box released">Released</span>
-                    {% else %}
-                        <span class="status-box draft">Draft</span>
-                    {% endif %}
                 </td>
             </tr>
         </table>
@@ -389,7 +390,7 @@
         <table class="title-row">
             <tr>
                 <td>
-                    Salary Payslip for {{ payslip.month_name }} {{ payslip.year }}
+                    Employee Salary Payslip for {{ payslip.month_name }} {{ payslip.year }}
                 </td>
             </tr>
         </table>
@@ -472,7 +473,7 @@
         </table>
 
         <div class="section-heading">
-            Bank Account Details
+            🏦 Bank Account Details
         </div>
 
         <table class="bank-table">
@@ -494,7 +495,7 @@
         </table>
 
         <div class="section-heading">
-            PF and Insurance Details
+            📋 PF and Insurance Details
         </div>
 
         <table class="pf-table">
@@ -502,9 +503,9 @@
                 <td class="label">PF Status</td>
                 <td class="value">
                     {% if payslip.employee_pf_uan_number or payslip.employee_pf_percentage or payslip.pf_deduction_amount %}
-                        <span class="yes-chip">Applicable</span>
+                        <span class="yes-chip">✓ Applicable</span>
                     {% else %}
-                        <span class="no-chip">Not Applicable</span>
+                        <span class="no-chip">✗ Not Applicable</span>
                     {% endif %}
                 </td>
 
@@ -524,9 +525,9 @@
                 <td class="label">Insurance Status</td>
                 <td class="value">
                     {% if payslip.employee_insurance_provider_name or payslip.employee_insurance_policy_number or payslip.insurance_deduction_amount %}
-                        <span class="yes-chip">Applicable</span>
+                        <span class="yes-chip">✓ Applicable</span>
                     {% else %}
-                        <span class="no-chip">Not Applicable</span>
+                        <span class="no-chip">✗ Not Applicable</span>
                     {% endif %}
                 </td>
 
@@ -544,16 +545,16 @@
         </table>
 
         <div class="section-heading">
-            Salary Earnings and Deductions
+            💰 Salary Earnings and Deductions
         </div>
 
         <table class="salary-table">
             <thead>
                 <tr>
                     <th style="width: 35%;">Earnings</th>
-                    <th style="width: 15%; text-align:right;">Amount</th>
+                    <th style="width: 15%; text-align:right;">Amount (₹)</th>
                     <th style="width: 35%;">Deductions</th>
-                    <th style="width: 15%; text-align:right;">Amount</th>
+                    <th style="width: 15%; text-align:right;">Amount (₹)</th>
                 </tr>
             </thead>
 
@@ -591,22 +592,22 @@
                 </tr>
 
                 <tr class="total-row">
-                    <td>Gross Salary</td>
-                    <td class="amount">₹{{ payslip.gross_salary|floatformat:2 }}</td>
+                    <td><strong>Gross Salary</strong></td>
+                    <td class="amount"><strong>₹{{ payslip.gross_salary|floatformat:2 }}</strong></td>
 
-                    <td>Total Deductions</td>
-                    <td class="amount">₹{{ payslip.total_deductions|floatformat:2 }}</td>
+                    <td><strong>Total Deductions</strong></td>
+                    <td class="amount"><strong>₹{{ payslip.total_deductions|floatformat:2 }}</strong></td>
                 </tr>
 
                 <tr class="net-row">
-                    <td colspan="3">Net Salary Payable</td>
-                    <td class="amount">₹{{ payslip.net_salary|floatformat:2 }}</td>
+                    <td colspan="3"><strong>💰 Net Salary Payable</strong></td>
+                    <td class="amount"><strong>₹{{ payslip.net_salary|floatformat:2 }}</strong></td>
                 </tr>
             </tbody>
         </table>
 
         <div class="note-box">
-            <b>Note:</b>
+            <strong>📌 Note:</strong>
             This payslip includes salary, PF, insurance and other salary deductions only.
             TA/DA, travel allowance, public vehicle bills, dealer visit claims and field reimbursements
             are processed separately and are not included in this payslip.
@@ -614,19 +615,21 @@
 
         {% if payslip.remarks %}
             <div class="remarks-box">
-                <b>Remarks:</b><br>
+                <strong>📝 Remarks:</strong><br>
                 {{ payslip.remarks }}
             </div>
         {% endif %}
 
+        <!-- Signature Table with Only Stamp and Authorized Signatory -->
         <table class="signature-table">
             <tr>
                 <td>
-                    Employee Signature
-                </td>
-
-                <td>
-                    Authorised Signature
+                    <div class="stamp-wrap">
+                        <img src="{% static 'images/stamp.png' %}" class="stamp-img" alt="Company Stamp">
+                    </div>
+                    <div class="signature-line"></div>
+                    <div><strong>Authorized Signatory</strong></div>
+                    <div class="muted" style="font-size: 9px;">(For Arvis Fertilizers &amp; Chemicals Pvt. Ltd.)</div>
                 </td>
             </tr>
         </table>
@@ -634,11 +637,27 @@
     </div>
 
     <div class="footer-note">
-        This is a system-generated salary payslip from Arvis OMS Payroll System.<br>
-        © {% now "Y" %} Arvis Fertilizers &amp; Chemicals Pvt. Ltd.
+        🔒 This is a system-generated salary payslip from Arvis OMS Payroll System.<br>
+        © {% now "Y" %} Arvis Fertilizers &amp; Chemicals Pvt. Ltd. | All Rights Reserved
     </div>
 
 </div>
+
+<script>
+// Auto-format date fields on page load
+document.addEventListener("DOMContentLoaded", function() {
+    const dateFields = document.querySelectorAll('.date-format');
+    dateFields.forEach(function(field) {
+        const dateValue = field.textContent.trim();
+        if (dateValue && dateValue.match(/^\d{4}-\d{2}-\d{2}/)) {
+            const parts = dateValue.split('-');
+            if (parts.length === 3) {
+                field.textContent = parts[2] + '/' + parts[1] + '/' + parts[0];
+            }
+        }
+    });
+});
+</script>
 
 </body>
 </html>

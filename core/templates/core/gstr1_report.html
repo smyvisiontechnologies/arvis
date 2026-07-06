@@ -1,0 +1,129 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.gst-page{padding:16px;max-width:1350px;margin:0 auto}
+.gst-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:26px;padding:24px;margin-bottom:16px}
+.gst-hero h2{margin:0;font-size:28px;font-weight:900}
+.gst-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.gst-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.gst-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center}
+.gst-btn.green{background:#16a34a}.gst-btn.blue{background:#2563eb}.gst-btn.light{background:#f1f5f9;color:#0f172a}
+.gst-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.gst-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.gst-card span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.gst-card strong{display:block;color:#0f172a;font-size:24px;font-weight:900;margin-top:8px}
+.gst-card.green strong{color:#047857}
+.gst-card.blue strong{color:#2563eb}
+.gst-card.orange strong{color:#d97706}
+.gst-filter{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.gst-filter form{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:10px;align-items:end}
+.gst-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.gst-table-wrap{overflow:auto;background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.gst-table{width:100%;border-collapse:collapse;min-width:1150px}
+.gst-table th,.gst-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.gst-table th{background:#f8fafc;font-weight:900;color:#334155}
+.gst-table td{font-weight:800;color:#0f172a}
+.text-right{text-align:right!important}
+.gst-empty{background:white;border:1px dashed #cbd5e1;border-radius:22px;padding:28px;text-align:center;color:#64748b;font-weight:900}
+@media(max-width:900px){.gst-grid{grid-template-columns:1fr}.gst-filter form{grid-template-columns:1fr}.gst-actions{display:grid}.gst-btn{justify-content:center}}
+</style>
+
+<div class="gst-page">
+
+    <div class="gst-hero">
+        <h2>GSTR-1 Sales GST Report</h2>
+        <p>Shows only sales invoices released with GSTR-1 code: Arvis.</p>
+
+        <div class="gst-actions">
+            <a href="{% url 'dealer_invoice_list' %}" class="gst-btn light">Back to Invoices</a>
+            <a href="{% url 'purchase_dashboard' %}" class="gst-btn blue">Purchase Dashboard</a>
+        </div>
+    </div>
+
+    <div class="gst-grid">
+        <div class="gst-card orange">
+            <span>Total Taxable Amount</span>
+            <strong>₹ {{ taxable_total|floatformat:2 }}</strong>
+        </div>
+
+        <div class="gst-card blue">
+            <span>Total GST Amount</span>
+            <strong>₹ {{ gst_total|floatformat:2 }}</strong>
+        </div>
+
+        <div class="gst-card green">
+            <span>Total Invoice Amount</span>
+            <strong>₹ {{ invoice_total|floatformat:2 }}</strong>
+        </div>
+    </div>
+
+    <div class="gst-filter">
+        <form method="get">
+            <div class="gst-field">
+                <label>Search Invoice / Dealer / GST</label>
+                <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Invoice no, dealer, GST number...">
+            </div>
+
+            <div class="gst-field">
+                <label>From Date</label>
+                <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+            </div>
+
+            <div class="gst-field">
+                <label>To Date</label>
+                <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+            </div>
+
+            <button type="submit" class="gst-btn green">Search</button>
+        </form>
+    </div>
+
+    {% if invoices %}
+        <div class="gst-table-wrap">
+            <table class="gst-table">
+                <thead>
+                    <tr>
+                        <th>Invoice Date</th>
+                        <th>Invoice Number</th>
+                        <th>Dealer / Party</th>
+                        <th>GST Number</th>
+                        <th>GSTR-1 Code</th>
+                        <th class="text-right">Taxable Amount</th>
+                        <th class="text-right">GST Amount</th>
+                        <th class="text-right">Invoice Total</th>
+                        <th>Added At</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for invoice in invoices %}
+                        <tr>
+                            <td>{{ invoice.invoice_date|date:"d/m/Y" }}</td>
+                            <td>{{ invoice.invoice_number }}</td>
+                            <td>{{ invoice.order.dealer.firm_name }}</td>
+                            <td>{{ invoice.order.dealer.gst_number|default:"-" }}</td>
+                            <td>{{ invoice.gstr1_code|default:"-" }}</td>
+                            <td class="text-right">₹ {{ invoice.subtotal_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ invoice.gst_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ invoice.total_amount|floatformat:2 }}</td>
+                            <td>{{ invoice.gstr1_added_at|date:"d/m/Y h:i A"|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" class="gst-btn blue" target="_blank">
+                                    View Bill
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="gst-empty">No sales invoices added to GSTR-1 report.</div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

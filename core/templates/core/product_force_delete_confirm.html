@@ -1,0 +1,196 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.delete-page{
+    max-width:900px;
+    margin:0 auto;
+    padding:18px;
+}
+.delete-card{
+    background:white;
+    border:1px solid #fecaca;
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 14px 34px rgba(15,23,42,.10);
+}
+.delete-hero{
+    background:linear-gradient(135deg,#7f1d1d,#dc2626);
+    color:white;
+    border-radius:22px;
+    padding:22px;
+    margin-bottom:16px;
+}
+.delete-hero h2{
+    margin:0;
+    font-size:28px;
+    font-weight:900;
+}
+.delete-hero p{
+    margin:8px 0 0;
+    color:#fee2e2;
+    font-weight:800;
+}
+.delete-warning{
+    background:#fef2f2;
+    color:#991b1b;
+    border:1px solid #fecaca;
+    border-radius:18px;
+    padding:15px;
+    font-weight:900;
+    line-height:1.6;
+    margin-bottom:16px;
+}
+.delete-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:16px;
+}
+.delete-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:13px;
+}
+.delete-box span{
+    display:block;
+    color:#64748b;
+    font-size:12px;
+    font-weight:900;
+}
+.delete-box strong{
+    display:block;
+    color:#0f172a;
+    font-size:22px;
+    font-weight:900;
+    margin-top:5px;
+}
+.delete-form label{
+    display:block;
+    color:#0f172a;
+    font-weight:900;
+    margin-bottom:8px;
+}
+.delete-form input{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:14px;
+    padding:13px;
+    font-weight:900;
+    margin-bottom:14px;
+}
+.delete-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.btn-delete{
+    border:0;
+    background:#dc2626;
+    color:white;
+    border-radius:14px;
+    padding:12px 16px;
+    font-weight:900;
+    cursor:pointer;
+}
+.btn-back{
+    text-decoration:none;
+    background:#f1f5f9;
+    color:#0f172a;
+    border-radius:14px;
+    padding:12px 16px;
+    font-weight:900;
+}
+@media(max-width:700px){
+    .delete-grid{grid-template-columns:1fr}
+    .delete-actions{display:grid}
+    .btn-delete,.btn-back{width:100%;text-align:center}
+}
+</style>
+
+<div class="delete-page">
+    <div class="delete-card">
+
+        <div class="delete-hero">
+            <h2>Force Delete Product</h2>
+            <p>{{ product.name }}</p>
+        </div>
+
+        <div class="delete-warning">
+            This will permanently delete the product and remove linked cart items, order item rows, production records, repacking records, and pack sizes related to this product.
+        </div>
+
+        <div class="delete-grid">
+            <div class="delete-box">
+                <span>Pack Sizes</span>
+                <strong>{{ delete_summary.pack_count }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Cart Items</span>
+                <strong>{{ delete_summary.cart_items }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Order Item Rows</span>
+                <strong>{{ delete_summary.order_items }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Sales Return Items</span>
+                <strong>{{ delete_summary.sales_return_items|add:delete_summary.sales_return_order_items }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Old Production Recipes</span>
+                <strong>{{ delete_summary.old_production_recipes }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Old Production Batches</span>
+                <strong>{{ delete_summary.old_production_batches }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Repacking Batches</span>
+                <strong>{{ delete_summary.repacking_batches }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Smart Production Runs</span>
+                <strong>{{ delete_summary.smart_production_runs }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Smart Production Outputs</span>
+                <strong>{{ delete_summary.smart_production_outputs }}</strong>
+            </div>
+
+            <div class="delete-box">
+                <span>Smart Formulas</span>
+                <strong>{{ delete_summary.smart_formulas }}</strong>
+            </div>
+        </div>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+
+            <label>Type DELETE to confirm</label>
+            <input type="text" name="confirm_text" placeholder="DELETE" autocomplete="off">
+
+            <div class="delete-actions">
+                <button type="submit" class="btn-delete">
+                    Yes, Force Delete Product
+                </button>
+
+                <a href="{% url 'product_list' %}" class="btn-back">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

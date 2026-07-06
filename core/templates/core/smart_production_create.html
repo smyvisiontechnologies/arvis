@@ -1,0 +1,791 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.sp-page{padding:16px;max-width:1350px;margin:0 auto}
+.sp-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px}
+.sp-hero h2{margin:0;font-size:28px;font-weight:900}
+.sp-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+
+.sp-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.sp-title{margin:0 0 14px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+
+.sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sp-cost-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.sp-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
+
+.sp-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:18px;margin-bottom:14px}
+.sp-table{width:100%;border-collapse:collapse;min-width:900px}
+.sp-table th,.sp-table td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;font-weight:800}
+.sp-table th{background:#f8fafc;color:#334155;font-weight:900}
+.text-right{text-align:right!important}
+
+.sp-alert{padding:12px 14px;border-radius:16px;font-weight:900;margin-bottom:12px;line-height:1.6}
+.sp-alert.red{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.sp-alert.green{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.sp-alert.orange{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.sp-alert.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+
+.sp-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.sp-summary-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:14px}
+.sp-summary-card span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.sp-summary-card strong{display:block;color:#0f172a;font-size:19px;font-weight:900;margin-top:6px}
+
+.sp-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.sp-btn{border:0;text-decoration:none;border-radius:14px;padding:11px 14px;font-weight:900;background:#07120d;color:white;cursor:pointer}
+.sp-btn.green{background:#16a34a}
+.sp-btn.blue{background:#2563eb}
+.sp-btn.light{background:#f1f5f9;color:#0f172a}
+.sp-btn:disabled{background:#94a3b8!important;cursor:not-allowed;opacity:.75}
+
+.search-select-wrap{position:relative}
+.native-search-select{display:none!important}
+.search-select-input{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:900}
+.search-select-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:white;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 18px 45px rgba(15,23,42,.18);max-height:260px;overflow:auto;z-index:9999;padding:6px}
+.search-select-list.show{display:block}
+.search-select-option{padding:10px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:900}
+.search-select-option:hover{background:#ecfdf5;color:#047857}
+
+@media(max-width:900px){
+    .sp-grid{grid-template-columns:1fr}
+    .sp-cost-grid{grid-template-columns:1fr}
+    .sp-summary-grid{grid-template-columns:1fr}
+    .sp-actions{display:grid}
+    .sp-btn{width:100%}
+}
+</style>
+
+<div class="sp-page">
+    <div class="sp-hero">
+        <h2>Smart Production / Packaging</h2>
+        <p>
+            Select formula, enter bulk output quantity and output boxes.
+            System will check packed output matching, raw material, packing material, shortage and full production cost.
+        </p>
+    </div>
+
+    <form method="post" id="smartProductionForm">
+        {% csrf_token %}
+
+        <div class="sp-card">
+            <h3 class="sp-title">Production Details</h3>
+
+            <div class="sp-grid">
+                <div class="sp-field">
+                    <label>Product Formula</label>
+                    {{ form.formula }}
+                    {{ form.formula.errors }}
+                </div>
+
+                <div class="sp-field">
+                    <label>Bulk Output Qty</label>
+                    {{ form.output_qty }}
+                    {{ form.output_qty.errors }}
+                </div>
+
+                <div class="sp-field">
+                    <label>Production Date</label>
+                    {{ form.production_date }}
+                    {{ form.production_date.errors }}
+                </div>
+            </div>
+
+            <div class="sp-cost-grid" style="margin-top:12px;">
+                <div class="sp-field">
+                    <label>Labour Cost</label>
+                    <input type="number"
+                           name="labour_cost"
+                           id="id_labour_cost"
+                           value="{{ request.POST.labour_cost|default:'0' }}"
+                           class="form-control"
+                           step="0.01"
+                           min="0"
+                           placeholder="Example: 500">
+                </div>
+
+                <div class="sp-field">
+                    <label>Other Cost</label>
+                    <input type="number"
+                           name="other_cost"
+                           id="id_other_cost"
+                           value="{{ request.POST.other_cost|default:'0' }}"
+                           class="form-control"
+                           step="0.01"
+                           min="0"
+                           placeholder="Electricity / rent / extra cost">
+                </div>
+            </div>
+
+            <div class="sp-field" style="margin-top:12px;">
+                <label>Note</label>
+                {{ form.note }}
+                {{ form.note.errors }}
+            </div>
+        </div>
+
+        <div class="sp-card">
+            <h3 class="sp-title">Output Packing</h3>
+            <div id="packBoxesArea">
+                <div class="sp-alert red">Select product formula first.</div>
+            </div>
+        </div>
+
+        <div class="sp-card">
+            <h3 class="sp-title">Auto Calculation Preview</h3>
+            <div id="calcArea">
+                <div class="sp-alert red">Enter output quantity and packaging boxes to see calculation.</div>
+            </div>
+        </div>
+
+        <div class="sp-actions">
+            <a href="{% url 'product_formula_list' %}" class="sp-btn light">Formula Master</a>
+            <a href="{% url 'smart_production_run_list' %}" class="sp-btn blue">Production History</a>
+            <button type="submit" class="sp-btn green" id="createProductionBtn" disabled>
+                Create Production
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+const FORMULA_DATA = JSON.parse('{{ formulas_json|escapejs }}');
+
+let CAN_CREATE_PRODUCTION = false;
+let LAST_ERROR_MESSAGE = "Please complete production details.";
+
+function toNum(v){
+    return parseFloat(v || "0") || 0;
+}
+
+function money(v){
+    return "₹ " + (toNum(v)).toFixed(2);
+}
+
+function qty(v){
+    return (toNum(v)).toFixed(3);
+}
+
+function cleanNumber(v){
+    const n = toNum(v);
+    if (Math.abs(n - Math.round(n)) < 0.000001) {
+        return String(Math.round(n));
+    }
+    return String(n);
+}
+
+function normalizeUnit(unit){
+    unit = String(unit || "").trim().toUpperCase();
+
+    if(unit === "LTR" || unit === "LT" || unit === "L"){
+        return "LITRE";
+    }
+
+    if(unit === "LITER"){
+        return "LITRE";
+    }
+
+    if(unit === "KGS"){
+        return "KG";
+    }
+
+    if(unit === "G" || unit === "GM"){
+        return "GRAM";
+    }
+
+    return unit;
+}
+
+function displayUnit(unit){
+    unit = normalizeUnit(unit);
+
+    if(unit === "LITRE"){
+        return "Litre";
+    }
+
+    if(unit === "ML"){
+        return "ML";
+    }
+
+    if(unit === "KG"){
+        return "KG";
+    }
+
+    if(unit === "GRAM"){
+        return "Gram";
+    }
+
+    return unit;
+}
+
+function getPackingNameFromLabel(label){
+    label = String(label || "");
+
+    let name = "";
+
+    if(label.includes(" in 1 ")){
+        name = label.split(" in 1 ").pop().trim();
+    }
+
+    if(!name){
+        name = "Piece";
+    }
+
+    name = name.toLowerCase();
+
+    if(name === "bottle"){
+        return "Bottles";
+    }
+
+    if(name === "bag"){
+        return "Bags";
+    }
+
+    if(name === "packet"){
+        return "Packets";
+    }
+
+    if(name === "piece"){
+        return "Pieces";
+    }
+
+    if(name === "carton"){
+        return "Cartons";
+    }
+
+    if(name === "box"){
+        return "Boxes";
+    }
+
+    return name.charAt(0).toUpperCase() + name.slice(1) + "s";
+}
+
+function cleanPackLabel(pack){
+    const packSize = cleanNumber(pack.pack_size);
+    const unit = displayUnit(pack.unit);
+    const packingName = getPackingNameFromLabel(pack.label);
+    const unitsPerBox = cleanNumber(pack.units_per_box);
+
+    return `${packSize} ${unit} | ${unitsPerBox} ${packingName} in 1 Box`;
+}
+
+function convertPackOutputQty(pack, boxes, targetUnit){
+    boxes = toNum(boxes);
+
+    const packSize = toNum(pack.pack_size);
+    const unitsPerBox = toNum(pack.units_per_box);
+
+    let outputQty = packSize * unitsPerBox * boxes;
+
+    const sourceUnit = normalizeUnit(pack.unit);
+    targetUnit = normalizeUnit(targetUnit);
+
+    if(sourceUnit === targetUnit){
+        return outputQty;
+    }
+
+    if(sourceUnit === "ML" && targetUnit === "LITRE"){
+        return outputQty / 1000;
+    }
+
+    if(sourceUnit === "LITRE" && targetUnit === "ML"){
+        return outputQty * 1000;
+    }
+
+    if(sourceUnit === "GRAM" && targetUnit === "KG"){
+        return outputQty / 1000;
+    }
+
+    if(sourceUnit === "KG" && targetUnit === "GRAM"){
+        return outputQty * 1000;
+    }
+
+    return outputQty;
+}
+
+function isOutputMatched(bulkQty, packedQty){
+    return Math.abs(toNum(bulkQty) - toNum(packedQty)) < 0.0005;
+}
+
+function setCreateButton(canCreate, message){
+    CAN_CREATE_PRODUCTION = canCreate;
+    LAST_ERROR_MESSAGE = message || "";
+
+    const btn = document.getElementById("createProductionBtn");
+
+    if(btn){
+        btn.disabled = !canCreate;
+    }
+}
+
+function makeSearchableSelect(select){
+    if(!select || select.dataset.searchReady === "1"){
+        return;
+    }
+
+    select.dataset.searchReady = "1";
+    select.classList.add("native-search-select");
+
+    const wrap = document.createElement("div");
+    wrap.className = "search-select-wrap";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "search-select-input";
+    input.placeholder = "Search product name...";
+
+    const list = document.createElement("div");
+    list.className = "search-select-list";
+
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(input);
+    wrap.appendChild(list);
+    wrap.appendChild(select);
+
+    function selectedText(){
+        const opt = select.options[select.selectedIndex];
+        return opt && opt.value ? opt.text.trim() : "";
+    }
+
+    function render(q){
+        const text = (q || "").toLowerCase();
+        list.innerHTML = "";
+
+        Array.from(select.options).forEach(function(opt){
+            if(!opt.value){
+                return;
+            }
+
+            if(text && !(opt.text + " " + opt.value).toLowerCase().includes(text)){
+                return;
+            }
+
+            const div = document.createElement("div");
+            div.className = "search-select-option";
+            div.textContent = opt.text;
+
+            div.onclick = function(){
+                select.value = opt.value;
+                input.value = opt.text;
+                list.classList.remove("show");
+                select.dispatchEvent(new Event("change", {bubbles:true}));
+            };
+
+            list.appendChild(div);
+        });
+    }
+
+    input.value = selectedText();
+
+    input.addEventListener("focus", function(){
+        render("");
+        list.classList.add("show");
+        input.select();
+    });
+
+    input.addEventListener("input", function(){
+        render(input.value);
+        list.classList.add("show");
+    });
+
+    document.addEventListener("click", function(e){
+        if(!wrap.contains(e.target)){
+            list.classList.remove("show");
+            input.value = selectedText();
+        }
+    });
+}
+
+function selectedFormula(){
+    const select = document.getElementById("id_formula");
+
+    if(!select){
+        return null;
+    }
+
+    const id = select.value;
+
+    return FORMULA_DATA[id] || null;
+}
+
+function renderPackBoxes(){
+    const f = selectedFormula();
+    const area = document.getElementById("packBoxesArea");
+
+    setCreateButton(false, "Enter output packing details.");
+
+    if(!f){
+        area.innerHTML = '<div class="sp-alert red">Select product formula first.</div>';
+        return;
+    }
+
+    let html = '<div class="sp-grid">';
+
+    f.packs.forEach(function(p){
+        const label = cleanPackLabel(p);
+
+        html += `
+            <div class="sp-field">
+                <label>${label}</label>
+                <input type="number"
+                       min="0"
+                       step="1"
+                       value="0"
+                       class="form-control pack-box-input"
+                       name="pack_${p.pack_id}_boxes"
+                       data-pack-id="${p.pack_id}"
+                       placeholder="How many boxes?">
+
+                <div style="font-size:12px;color:#64748b;font-weight:800;margin-top:5px;">
+                    Current stock: ${p.current_stock_boxes} boxes
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    area.innerHTML = html;
+
+    document.querySelectorAll(".pack-box-input").forEach(function(inp){
+        inp.addEventListener("input", renderCalculation);
+    });
+}
+
+function renderCalculation(){
+    const f = selectedFormula();
+    const outputQty = toNum(document.getElementById("id_output_qty").value);
+    const labourCost = toNum(document.getElementById("id_labour_cost").value);
+    const otherCost = toNum(document.getElementById("id_other_cost").value);
+    const area = document.getElementById("calcArea");
+
+    setCreateButton(false, "Calculation pending.");
+
+    if(!f || outputQty <= 0){
+        area.innerHTML = '<div class="sp-alert red">Select formula and enter bulk output quantity.</div>';
+        setCreateButton(false, "Select formula and enter bulk output quantity.");
+        return;
+    }
+
+    const outputUnit = displayUnit(f.base_output_unit);
+    const factor = outputQty / toNum(f.base_output_qty);
+
+    let shortage = false;
+    let rawCost = 0;
+    let packCost = 0;
+    let totalBoxes = 0;
+    let packedOutputQty = 0;
+
+    let html = '';
+
+    html += '<h3 class="sp-title">Output Match Checking</h3>';
+
+    html += '<div class="sp-table-wrap">';
+    html += '<table class="sp-table">';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th>Pack</th>';
+    html += '<th class="text-right">Boxes</th>';
+    html += '<th class="text-right">Units / Box</th>';
+    html += '<th class="text-right">Pack Size</th>';
+    html += '<th class="text-right">Packed Output</th>';
+    html += '</tr>';
+    html += '</thead>';
+    html += '<tbody>';
+
+    f.packs.forEach(function(p){
+        const input = document.querySelector(`input[data-pack-id="${p.pack_id}"]`);
+        const boxes = toNum(input ? input.value : 0);
+
+        if(boxes <= 0){
+            return;
+        }
+
+        const packOutput = convertPackOutputQty(p, boxes, f.base_output_unit);
+
+        packedOutputQty += packOutput;
+        totalBoxes += boxes;
+
+        html += `<tr>
+            <td>${cleanPackLabel(p)}</td>
+            <td class="text-right">${cleanNumber(boxes)}</td>
+            <td class="text-right">${cleanNumber(p.units_per_box)}</td>
+            <td class="text-right">${cleanNumber(p.pack_size)} ${displayUnit(p.unit)}</td>
+            <td class="text-right">${qty(packOutput)} ${outputUnit}</td>
+        </tr>`;
+    });
+
+    if(totalBoxes <= 0){
+        html += `<tr>
+            <td colspan="5" style="text-align:center;color:#b91c1c;font-weight:900;">
+                Please enter at least one output box quantity.
+            </td>
+        </tr>`;
+    }
+
+    html += '</tbody></table></div>';
+
+    const matched = isOutputMatched(outputQty, packedOutputQty);
+    const difference = packedOutputQty - outputQty;
+
+    if(totalBoxes <= 0){
+        html += `<div class="sp-alert red">
+            ❌ Output boxes required. Enter how many boxes you are producing.
+        </div>`;
+    } else if(matched){
+        html += `<div class="sp-alert green">
+            ✅ Output matched.
+            <br>Bulk Output: ${qty(outputQty)} ${outputUnit}
+            <br>Packed Output: ${qty(packedOutputQty)} ${outputUnit}
+        </div>`;
+    } else {
+        html += `<div class="sp-alert red">
+            ❌ Bulk output and packed output not matching.
+            <br>Bulk Output: ${qty(outputQty)} ${outputUnit}
+            <br>Packed Output: ${qty(packedOutputQty)} ${outputUnit}
+            <br>Difference: ${qty(difference)} ${outputUnit}
+            <br>Production cannot be created until both are same.
+        </div>`;
+    }
+
+    html += '<h3 class="sp-title" style="margin-top:16px;">Raw Material Required</h3>';
+    html += '<div class="sp-table-wrap">';
+    html += '<table class="sp-table">';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th>Item</th>';
+    html += '<th>Required</th>';
+    html += '<th>Available</th>';
+    html += '<th class="text-right">Rate</th>';
+    html += '<th class="text-right">Cost</th>';
+    html += '<th>Status</th>';
+    html += '</tr>';
+    html += '</thead>';
+    html += '<tbody>';
+
+    f.raw_materials.forEach(function(r){
+        const req = toNum(r.base_qty) * factor;
+        const stock = toNum(r.stock);
+        const rate = toNum(r.rate);
+        const cost = req * rate;
+
+        rawCost += cost;
+
+        const ok = stock >= req;
+
+        if(!ok){
+            shortage = true;
+        }
+
+        html += `<tr>
+            <td>${r.item_name}</td>
+            <td>${qty(req)} ${r.unit}</td>
+            <td>${qty(stock)} ${r.unit}</td>
+            <td class="text-right">${money(rate)}</td>
+            <td class="text-right">${money(cost)}</td>
+            <td>${ok ? '<span style="color:#047857;font-weight:900;">OK</span>' : '<span style="color:#b91c1c;font-weight:900;">LOW STOCK</span>'}</td>
+        </tr>`;
+    });
+
+    html += '</tbody></table></div>';
+
+    html += '<h3 class="sp-title" style="margin-top:16px;">Packing Material Required</h3>';
+    html += '<div class="sp-table-wrap">';
+    html += '<table class="sp-table">';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th>Pack</th>';
+    html += '<th>Material</th>';
+    html += '<th>Required</th>';
+    html += '<th>Available</th>';
+    html += '<th class="text-right">Rate</th>';
+    html += '<th class="text-right">Cost</th>';
+    html += '<th>Status</th>';
+    html += '</tr>';
+    html += '</thead>';
+    html += '<tbody>';
+
+    let packingRows = 0;
+
+    f.pack_materials.forEach(function(m){
+        const input = document.querySelector(`input[data-pack-id="${m.pack_id}"]`);
+        const boxes = toNum(input ? input.value : 0);
+
+        if(boxes <= 0){
+            return;
+        }
+
+        const pack = f.packs.find(p => String(p.pack_id) === String(m.pack_id));
+        const unitsPerBox = pack ? toNum(pack.units_per_box) : 1;
+        const packLabel = pack ? cleanPackLabel(pack) : m.pack_label;
+
+        let req = 0;
+
+        if(m.usage_basis === "PER_BOX"){
+            req = boxes * toNum(m.qty_required);
+        }else{
+            req = boxes * unitsPerBox * toNum(m.qty_required);
+        }
+
+        const stock = toNum(m.stock);
+        const rate = toNum(m.rate);
+        const cost = req * rate;
+
+        packCost += cost;
+        packingRows += 1;
+
+        const ok = stock >= req;
+
+        if(!ok){
+            shortage = true;
+        }
+
+        html += `<tr>
+            <td>${packLabel}</td>
+            <td>${m.item_name}</td>
+            <td>${qty(req)} ${m.unit}</td>
+            <td>${qty(stock)} ${m.unit}</td>
+            <td class="text-right">${money(rate)}</td>
+            <td class="text-right">${money(cost)}</td>
+            <td>${ok ? '<span style="color:#047857;font-weight:900;">OK</span>' : '<span style="color:#b91c1c;font-weight:900;">LOW STOCK</span>'}</td>
+        </tr>`;
+    });
+
+    if(packingRows <= 0){
+        html += `<tr>
+            <td colspan="7" style="text-align:center;color:#64748b;font-weight:900;">
+                No packing material calculated. Enter output box quantity.
+            </td>
+        </tr>`;
+    }
+
+    html += '</tbody></table></div>';
+
+    const totalCost = rawCost + packCost + labourCost + otherCost;
+    const costPerBox = totalBoxes > 0 ? totalCost / totalBoxes : 0;
+    const costPerOutputUnit = outputQty > 0 ? totalCost / outputQty : 0;
+
+    html += '<h3 class="sp-title" style="margin-top:16px;">Cost Summary</h3>';
+
+    html += `<div class="sp-summary-grid">
+        <div class="sp-summary-card">
+            <span>Raw Cost</span>
+            <strong>${money(rawCost)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Packing Cost</span>
+            <strong>${money(packCost)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Labour Cost</span>
+            <strong>${money(labourCost)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Other Cost</span>
+            <strong>${money(otherCost)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Total Production Cost</span>
+            <strong>${money(totalCost)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Total Output Boxes</span>
+            <strong>${cleanNumber(totalBoxes)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Cost / Box</span>
+            <strong>${money(costPerBox)}</strong>
+        </div>
+
+        <div class="sp-summary-card">
+            <span>Cost / ${outputUnit}</span>
+            <strong>${money(costPerOutputUnit)}</strong>
+        </div>
+    </div>`;
+
+    if(shortage){
+        html += `<div class="sp-alert red" style="margin-top:14px;">
+            ❌ Stock is not enough. Reduce output quantity / boxes or purchase missing materials.
+        </div>`;
+    } else if(!matched){
+        html += `<div class="sp-alert red" style="margin-top:14px;">
+            ❌ Packed output is not equal to bulk output. Create Production button is disabled.
+        </div>`;
+    } else if(totalBoxes <= 0){
+        html += `<div class="sp-alert red" style="margin-top:14px;">
+            ❌ Enter output boxes.
+        </div>`;
+    } else {
+        html += `<div class="sp-alert green" style="margin-top:14px;">
+            ✅ Stock available and packed output matched. You can create production.
+        </div>`;
+    }
+
+    area.innerHTML = html;
+
+    if(shortage){
+        setCreateButton(false, "Stock is not enough. Please purchase material or reduce production.");
+    } else if(totalBoxes <= 0){
+        setCreateButton(false, "Please enter output boxes.");
+    } else if(!matched){
+        setCreateButton(false, "Bulk output and packed output are not matching.");
+    } else {
+        setCreateButton(true, "");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    makeSearchableSelect(document.getElementById("id_formula"));
+
+    const formulaInput = document.getElementById("id_formula");
+    const outputInput = document.getElementById("id_output_qty");
+    const labourInput = document.getElementById("id_labour_cost");
+    const otherInput = document.getElementById("id_other_cost");
+    const form = document.getElementById("smartProductionForm");
+
+    if(formulaInput){
+        formulaInput.addEventListener("change", function(){
+            renderPackBoxes();
+            renderCalculation();
+        });
+    }
+
+    if(outputInput){
+        outputInput.addEventListener("input", renderCalculation);
+    }
+
+    if(labourInput){
+        labourInput.addEventListener("input", renderCalculation);
+    }
+
+    if(otherInput){
+        otherInput.addEventListener("input", renderCalculation);
+    }
+
+    if(form){
+        form.addEventListener("submit", function(e){
+            renderCalculation();
+
+            if(!CAN_CREATE_PRODUCTION){
+                e.preventDefault();
+                alert(LAST_ERROR_MESSAGE || "Production cannot be created. Please check output matching and stock.");
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    renderPackBoxes();
+    renderCalculation();
+});
+</script>
+
+{% endblock %}

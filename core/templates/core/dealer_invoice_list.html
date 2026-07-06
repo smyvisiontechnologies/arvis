@@ -1,9 +1,26 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<!-- Add Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 .page {
     padding: 18px;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
 }
 
 .page-head {
@@ -18,6 +35,7 @@
     gap: 14px;
     align-items: center;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .page-head h2 {
@@ -25,6 +43,11 @@
     color: #0f172a;
     font-size: 24px;
     font-weight: 900;
+}
+
+.page-head h2 i {
+    margin-right: 10px;
+    color: #2563eb;
 }
 
 .page-head p {
@@ -48,6 +71,7 @@
     padding: 12px 14px;
     font-weight: 800;
     outline: none;
+    box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -55,11 +79,13 @@
     background: #ffffff;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
+
 .filter-strip {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 14px;
+    width: 100%;
 }
 
 .filter-btn {
@@ -72,6 +98,12 @@
     font-weight: 900;
     cursor: pointer;
     box-shadow: 0 5px 14px rgba(15, 23, 42, 0.04);
+    white-space: nowrap;
+}
+
+.filter-btn i {
+    margin-right: 6px;
+    font-size: 11px;
 }
 
 .filter-btn.active {
@@ -115,6 +147,7 @@
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .quick-count-card span {
@@ -123,18 +156,25 @@
     font-weight: 900;
 }
 
+.quick-count-card span i {
+    margin-right: 6px;
+}
+
 .quick-count-card strong {
     color: #0f172a;
     font-size: 14px;
     font-weight: 900;
 }
+
 /* DESKTOP TABLE */
 .desktop-table-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 22px;
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
 }
 
 .table-wrap {
@@ -145,7 +185,7 @@
 .invoice-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1120px;
+    min-width: 1000px;
 }
 
 .invoice-table th {
@@ -157,6 +197,11 @@
     padding: 13px 12px;
     border-bottom: 1px solid #e2e8f0;
     white-space: nowrap;
+}
+
+.invoice-table th i {
+    margin-right: 6px;
+    font-size: 11px;
 }
 
 .invoice-table td {
@@ -219,6 +264,11 @@
     white-space: nowrap;
 }
 
+.badge i {
+    margin-right: 4px;
+    font-size: 9px;
+}
+
 .badge.green {
     background: #ecfdf5;
     color: #047857;
@@ -237,9 +287,15 @@
     border: 1px solid #bfdbfe;
 }
 
+.badge.paid {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
 /* ACTION BUTTONS */
 .action-cell {
-    min-width: 220px;
+    min-width: 180px;
 }
 
 .action-row {
@@ -264,9 +320,8 @@
     cursor: pointer;
 }
 
-.btn svg {
-    width: 14px;
-    height: 14px;
+.btn i {
+    font-size: 12px;
     margin-right: 5px;
 }
 
@@ -296,6 +351,10 @@
     justify-content: center;
     font-weight: 900;
     font-size: 20px;
+}
+
+.dots-btn i {
+    font-size: 18px;
 }
 
 .dots-btn:hover {
@@ -346,6 +405,11 @@
     font-weight: 900;
 }
 
+.action-popup-head h3 i {
+    margin-right: 6px;
+    color: #2563eb;
+}
+
 .action-popup-head p {
     margin: 4px 0 0;
     color: #64748b;
@@ -364,6 +428,10 @@
     font-size: 22px;
     font-weight: 900;
     cursor: pointer;
+}
+
+.popup-close i {
+    font-size: 18px;
 }
 
 .popup-close:hover {
@@ -396,9 +464,9 @@
     border-color: #bfdbfe;
 }
 
-.popup-link svg {
+.popup-link i {
     width: 18px;
-    height: 18px;
+    font-size: 16px;
     flex: 0 0 auto;
 }
 
@@ -417,6 +485,8 @@
 /* MOBILE CARDS */
 .mobile-list {
     display: none;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .invoice-mobile-card {
@@ -426,6 +496,8 @@
     padding: 13px;
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
     margin-bottom: 10px;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .mobile-top {
@@ -433,6 +505,7 @@
     justify-content: space-between;
     gap: 10px;
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .mobile-top h3 {
@@ -441,6 +514,13 @@
     font-size: 15px;
     font-weight: 900;
     line-height: 1.3;
+    word-break: break-word;
+}
+
+.mobile-top h3 i {
+    margin-right: 5px;
+    color: #2563eb;
+    font-size: 13px;
 }
 
 .mobile-meta {
@@ -449,6 +529,12 @@
     font-size: 11.5px;
     font-weight: 750;
     line-height: 1.45;
+    word-break: break-word;
+}
+
+.mobile-meta i {
+    margin-right: 3px;
+    width: 12px;
 }
 
 .mobile-amount {
@@ -492,12 +578,18 @@
     font-weight: 900;
 }
 
+.mobile-money span i {
+    margin-right: 3px;
+    font-size: 8px;
+}
+
 .mobile-money strong {
     display: block;
     margin-top: 3px;
     color: #0f172a;
     font-size: 12px;
     font-weight: 900;
+    word-break: break-word;
 }
 
 .mobile-money.paid {
@@ -526,26 +618,33 @@
 }
 
 .mobile-actions-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr 44px;
+    display: flex;
     gap: 7px;
     margin-top: 11px;
     padding-top: 11px;
     border-top: 1px dashed #cbd5e1;
-}
-
-.mobile-actions-main.dealer-only-actions {
-    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
 }
 
 .mobile-actions-main .btn {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     padding: 10px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mobile-actions-main .btn i {
+    margin-right: 3px;
+    font-size: 11px;
 }
 
 .mobile-actions-main .dots-btn {
     width: 44px;
     height: 38px;
+    flex: 0 0 44px;
 }
 
 .empty-card {
@@ -557,6 +656,14 @@
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
     font-weight: 800;
     text-align: center;
+    width: 100%;
+}
+
+.empty-card i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+    color: #cbd5e1;
 }
 
 .no-results {
@@ -568,15 +675,24 @@
     text-align: center;
     color: #64748b;
     font-weight: 800;
+    width: 100%;
 }
 
+.no-results i {
+    font-size: 42px;
+    margin-bottom: 10px;
+    display: block;
+    color: #cbd5e1;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
 @media(max-width: 900px) {
     .summary-strip {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media(max-width: 760px) {
+@media(max-width: 768px) {
     .page {
         padding: 12px;
     }
@@ -587,12 +703,33 @@
     }
 
     .page-head h2 {
-        font-size: 21px;
+        font-size: 20px;
+    }
+    
+    .page-head p {
+        font-size: 11px;
     }
 
     .search-box {
         min-width: 100%;
         max-width: 100%;
+    }
+    
+    .search-input {
+        font-size: 14px;
+    }
+
+    .filter-strip {
+        gap: 6px;
+    }
+    
+    .filter-btn {
+        padding: 7px 10px;
+        font-size: 10px;
+    }
+    
+    .filter-btn i {
+        font-size: 10px;
     }
 
     .summary-strip {
@@ -634,30 +771,131 @@
     }
 }
 
-@media(max-width: 430px) {
-    .summary-strip {
-        grid-template-columns: 1fr 1fr;
-    }
-
+@media(max-width: 600px) {
     .mobile-money-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .mobile-actions-main {
-        grid-template-columns: 1fr 1fr 42px;
-    }
-
-    .mobile-actions-main.dealer-only-actions {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .mobile-top {
-        display: grid;
         grid-template-columns: 1fr;
+        gap: 6px;
     }
-
+    
+    .mobile-money {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+    }
+    
+    .mobile-money span {
+        font-size: 11px;
+    }
+    
+    .mobile-money strong {
+        font-size: 13px;
+        margin-top: 0;
+    }
+    
+    .mobile-actions-main {
+        flex-wrap: wrap;
+    }
+    
+    .mobile-actions-main .btn {
+        flex: 1 1 auto;
+        min-width: calc(33% - 5px);
+        font-size: 10px;
+        padding: 8px 5px;
+    }
+    
+    .mobile-actions-main .btn i {
+        font-size: 10px;
+        margin-right: 2px;
+    }
+    
+    .mobile-actions-main .dots-btn {
+        width: 40px;
+        flex: 0 0 40px;
+    }
+    
+    .mobile-top {
+        flex-direction: column;
+    }
+    
     .mobile-amount {
         text-align: left;
+        width: 100%;
+    }
+    
+    .mobile-badges {
+        gap: 5px;
+    }
+    
+    .badge {
+        font-size: 9px;
+        padding: 4px 6px;
+    }
+}
+
+@media(max-width: 480px) {
+    .page {
+        padding: 8px;
+    }
+    
+    .invoice-mobile-card {
+        padding: 10px;
+    }
+    
+    .mobile-actions-main .btn {
+        font-size: 9px;
+        padding: 7px 4px;
+    }
+    
+    .mobile-actions-main .btn i {
+        font-size: 9px;
+    }
+    
+    .mobile-actions-main .dots-btn {
+        width: 36px;
+        flex: 0 0 36px;
+        height: 34px;
+    }
+    
+    .mobile-actions-main .dots-btn i {
+        font-size: 14px;
+    }
+}
+
+/* For very small screens - Accountant/Admin specific */
+@media(max-width: 420px) {
+    .mobile-actions-main {
+        gap: 5px;
+    }
+    
+    .mobile-actions-main .btn {
+        font-size: 8.5px;
+        padding: 6px 3px;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+    
+    .mobile-actions-main .btn i {
+        font-size: 8px;
+        margin-right: 2px;
+    }
+    
+    .badge {
+        font-size: 8px;
+        padding: 3px 5px;
+    }
+    
+    .badge i {
+        font-size: 7px;
+    }
+    
+    .mobile-money strong {
+        font-size: 11px;
+    }
+    
+    .mobile-money span {
+        font-size: 9px;
     }
 }
 </style>
@@ -666,16 +904,16 @@
 
     <div class="page-head">
         <div>
-            <h2>Invoices</h2>
+            <h2><i class="fas fa-file-invoice"></i> Invoices</h2>
             <p>
                 {% if role == "DEALER" %}
-                    Dealer invoice copies and pending balance
+                    <i class="fas fa-user-tag"></i> Your invoice copies and payment status
                 {% elif role == "WAREHOUSE_MANAGER" %}
-                    Company and transporter copies for dispatch
+                    <i class="fas fa-warehouse"></i> Company and transporter copies for dispatch
                 {% elif role == "ACCOUNTANT" %}
-                    Released invoices, payments, Convert to Sales and pending balances
+                    <i class="fas fa-calculator"></i> Released invoices, payments, Convert to Sales and pending balances
                 {% else %}
-                    Invoice records
+                    <i class="fas fa-file-alt"></i> Invoice records
                 {% endif %}
             </p>
         </div>
@@ -684,35 +922,35 @@
             <input type="text"
                    class="search-input"
                    id="invoiceSearch"
-                   placeholder="Search invoice, dealer, date, amount..."
+                   placeholder="🔍 Search invoice, date, amount..."
                    onkeyup="filterInvoices()">
         </div>
     </div>
 
     <div class="quick-count-card">
-    <span>Total Invoices: <strong>{{ invoices|length }}</strong></span>
+    <span><i class="fas fa-chart-line"></i> Total Invoices: <strong>{{ invoices|length }}</strong></span>
 </div>
 
 <div class="filter-strip">
     <button type="button" class="filter-btn pending active" data-filter="pending" onclick="setInvoiceFilter('pending', this)">
-        Pending
+        <i class="fas fa-clock"></i> Pending
     </button>
 
     <button type="button" class="filter-btn" data-filter="all" onclick="setInvoiceFilter('all', this)">
-        All
+        <i class="fas fa-list"></i> All
     </button>
 
     <button type="button" class="filter-btn green" data-filter="paid" onclick="setInvoiceFilter('paid', this)">
-        Paid / No Balance
+        <i class="fas fa-check-circle"></i> Paid
     </button>
 
     {% if role == "ACCOUNTANT" or role == "ADMIN" %}
         <button type="button" class="filter-btn" data-filter="pending-conversion" onclick="setInvoiceFilter('pending-conversion', this)">
-            Pending Conversion
+            <i class="fas fa-exchange-alt"></i> Pending Conversion
         </button>
 
         <button type="button" class="filter-btn green" data-filter="converted" onclick="setInvoiceFilter('converted', this)">
-            Converted to Sales
+            <i class="fas fa-check-double"></i> Converted to Sales
         </button>
     {% endif %}
 </div>
@@ -725,13 +963,15 @@
                 <table class="invoice-table">
                     <thead>
                         <tr>
-                            <th>Invoice</th>
-                            <th>Dealer</th>
-                            <th>Date / Status</th>
-                            <th>Invoice Amount</th>
-                            <th>Received</th>
-                            <th>Pending</th>
-                            <th>Action</th>
+                            <th><i class="fas fa-hashtag"></i> Invoice</th>
+                            {% if role != "DEALER" %}
+                                <th><i class="fas fa-store"></i> Dealer</th>
+                            {% endif %}
+                            <th><i class="fas fa-calendar-alt"></i> Date / Status</th>
+                            <th>₹ Invoice Amount</th>
+                            <th><i class="fas fa-hand-holding-usd"></i> {% if role == "DEALER" %}Paid{% else %}Received{% endif %}</th>
+                            <th><i class="fas fa-exclamation-triangle"></i> {% if role == "DEALER" %}To Be Paid{% else %}Pending{% endif %}</th>
+                            <th><i class="fas fa-cogs"></i> Action</th>
                         </tr>
                     </thead>
 
@@ -743,22 +983,24 @@
                                 data-paid="{% if invoice.balance_amount > 0 %}no{% else %}yes{% endif %}"
                                 data-converted="{% if invoice.is_converted_to_sales %}yes{% else %}no{% endif %}">
                                 <td>
-                                    <div class="invoice-no">{{ invoice.invoice_number }}</div>
-                                    <div class="sub-text">Order #{{ invoice.order.id }}</div>
+                                    <div class="invoice-no"><i class="fas fa-receipt"></i> {{ invoice.invoice_number }}</div>
+                                    <div class="sub-text"><i class="fas fa-shopping-cart"></i> Order #{{ invoice.order.id }}</div>
                                 </td>
+                                
+                                {% if role != "DEALER" %}
+                                    <td>
+                                        <b><i class="fas fa-building"></i> {{ invoice.order.dealer.firm_name }}</b>
+                                        <div class="sub-text">
+                                            <i class="fas fa-phone-alt"></i> {{ invoice.order.dealer.phone|default:"" }}
+                                        </div>
+                                    </td>
+                                {% endif %}
 
                                 <td>
-                                    <b>{{ invoice.order.dealer.firm_name }}</b>
-                                    <div class="sub-text">
-                                        {{ invoice.order.dealer.phone|default:"" }}
-                                    </div>
-                                </td>
-
-                                <td>
-                                    {{ invoice.invoice_date|date:"d M Y" }}
+                                    <i class="far fa-calendar-alt"></i> {{ invoice.invoice_date|date:"d M Y" }}
                                     <div class="sub-text">
                                         {% if invoice.order.status %}
-                                            {{ invoice.order.get_status_display }}
+                                            <i class="fas fa-tag"></i> {{ invoice.order.get_status_display }}
                                         {% else %}
                                             -
                                         {% endif %}
@@ -766,80 +1008,77 @@
 
                                     {% if invoice.last_payment_date %}
                                         <div class="sub-text">
-                                            Last Payment: {{ invoice.last_payment_date|date:"d M Y" }}
+                                            <i class="fas fa-credit-card"></i> Last Payment: {{ invoice.last_payment_date|date:"d M Y" }}
                                         </div>
                                     {% endif %}
-                                </td>
+                                 </td>
 
                                 <td>
                                     <div class="amount-main">
+                                        ₹ 
                                         {% if invoice.final_payable_amount %}
-                                            ₹{{ invoice.final_payable_amount }}
+                                            {{ invoice.final_payable_amount }}
                                         {% else %}
-                                            ₹{{ invoice.total_amount }}
+                                            {{ invoice.total_amount }}
                                         {% endif %}
                                     </div>
 
                                     <div class="sub-text">
-                                        Original: ₹{{ invoice.total_amount }}
+                                        <i class="fas fa-file-invoice-dollar"></i> Original: ₹{{ invoice.total_amount }}
                                     </div>
 
                                     {% if invoice.discount_amount %}
                                         <div class="sub-text">
-                                            Discount: ₹{{ invoice.discount_amount }}
+                                            <i class="fas fa-percent"></i> Discount: ₹{{ invoice.discount_amount }}
                                         </div>
                                     {% endif %}
-                                </td>
+                                 </td>
 
-                                <td>
-                                    <span class="amount-green">₹{{ invoice.paid_amount }}</span>
-                                </td>
-
-                                <td>
-                                    {% if invoice.balance_amount > 0 %}
-                                        <span class="amount-orange">₹{{ invoice.balance_amount }}</span>
-                                        <div class="badge orange" style="margin-top:5px;">Pending</div>
+                                 <td>
+                                    {% if role == "DEALER" %}
+                                        <span class="amount-green">₹ {{ invoice.paid_amount }}</span>
+                                        {% if invoice.paid_amount > 0 %}
+                                            <div class="badge paid" style="margin-top:5px;"><i class="fas fa-check-circle"></i> Paid</div>
+                                        {% endif %}
                                     {% else %}
-                                        <span class="badge green">Paid / No Balance</span>
+                                        <span class="amount-green">₹ {{ invoice.paid_amount }}</span>
                                     {% endif %}
-                                </td>
+                                 </td>
+
+                                 <td>
+                                    {% if invoice.balance_amount > 0 %}
+                                        <span class="amount-orange">₹ {{ invoice.balance_amount }}</span>
+                                        <div class="badge orange" style="margin-top:5px;"><i class="fas fa-hourglass-half"></i> {% if role == "DEALER" %}To Pay{% else %}Pending{% endif %}</div>
+                                    {% else %}
+                                        {% if role == "DEALER" %}
+                                            <span class="badge green"><i class="fas fa-check-circle"></i> Fully Paid</span>
+                                        {% else %}
+                                            <span class="badge green"><i class="fas fa-check-circle"></i> Paid / No Balance</span>
+                                        {% endif %}
+                                    {% endif %}
+                                 </td>
 
                                 <td class="action-cell">
                                     <div class="action-row">
                                         {% if role == "DEALER" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn dealer">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                    <path stroke-width="2" d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z"/>
-                                                </svg>
+                                                <i class="fas fa-eye"></i>
                                                 View
                                             </a>
 
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
-                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
-                                                </svg>
+                                                <i class="fas fa-print"></i>
                                                 Print
                                             </a>
                                         {% else %}
                                         {% if role == "WAREHOUSE_MANAGER" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="btn print">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
-                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
-                                                </svg>
+                                                <i class="fas fa-print"></i>
                                                 Print
                                             </a>
                                         {% else %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-width="2" d="M6 9V2h12v7"/>
-                                                    <path stroke-width="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                                    <path stroke-width="2" d="M6 14h12v8H6z"/>
-                                                </svg>
+                                                <i class="fas fa-print"></i>
                                                 Print
                                             </a>
                                         {% endif %}
@@ -847,10 +1086,7 @@
                                         <a href="https://wa.me/91{{ invoice.order.dealer.phone }}?text=Invoice%20Copy%20-%20{{ invoice.invoice_number }}%0ADealer:%20{{ invoice.order.dealer.firm_name|urlencode }}%0AAmount:%20{% if invoice.final_payable_amount %}₹{{ invoice.final_payable_amount }}{% else %}₹{{ invoice.total_amount }}{% endif %}%0AOpen:%20{{ request.scheme }}://{{ request.get_host }}{% url 'dealer_invoice_print' invoice.id 'DEALER' %}"
                                            target="_blank"
                                            class="btn share">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.45A8.5 8.5 0 1 1 21 11.5z"/>
-                                                <path stroke-width="2" d="M9 9.5c.4 2 2 3.6 4 4l1.2-1.2"/>
-                                            </svg>
+                                            <i class="fab fa-whatsapp"></i>
                                             Share
                                         </a>
 
@@ -858,7 +1094,7 @@
                                             <button type="button"
                                                     class="dots-btn"
                                                     onclick="openActionPopup('popup-desktop-{{ invoice.id }}')">
-                                                ⋮
+                                                <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                         </div>
                                         {% endif %}
@@ -866,13 +1102,13 @@
 
                                     {% if role == "ACCOUNTANT" or role == "ADMIN" %}
                                         {% if invoice.is_converted_to_sales %}
-                                            <div class="badge green" style="margin-top:7px;">Converted to Sales</div>
+                                            <div class="badge green" style="margin-top:7px;"><i class="fas fa-check-double"></i> Converted to Sales</div>
                                         {% else %}
-                                            <div class="badge orange" style="margin-top:7px;">Pending Conversion</div>
+                                            <div class="badge orange" style="margin-top:7px;"><i class="fas fa-sync-alt"></i> Pending Conversion</div>
                                         {% endif %}
                                     {% endif %}
-                                </td>
-                            </tr>
+                                 </td>
+                             </tr>
 
                             {% if role != "DEALER" %}
                             <!-- DESKTOP POPUP -->
@@ -880,58 +1116,58 @@
                                 <div class="action-popup-card">
                                     <div class="action-popup-head">
                                         <div>
-                                            <h3>{{ invoice.invoice_number }}</h3>
-                                            <p>{{ invoice.order.dealer.firm_name }} | Order #{{ invoice.order.id }}</p>
+                                            <h3><i class="fas fa-file-invoice"></i> {{ invoice.invoice_number }}</h3>
+                                            <p><i class="fas fa-store"></i> {{ invoice.order.dealer.firm_name }} | <i class="fas fa-shopping-cart"></i> Order #{{ invoice.order.id }}</p>
                                         </div>
 
                                         <button type="button"
                                                 class="popup-close"
                                                 onclick="closeActionPopup('popup-desktop-{{ invoice.id }}')">
-                                            ×
+                                            <i class="fas fa-times"></i>
                                         </button>
                                     </div>
 
                                     <div class="action-popup-body">
                                         {% if role == "DEALER" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                                Dealer Copy
+                                                <i class="fas fa-user"></i> Dealer Copy
                                             </a>
 
                                         {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                                Dealer Copy
+                                                <i class="fas fa-user"></i> Dealer Copy
                                             </a>
 
                                         {% elif role == "WAREHOUSE_MANAGER" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
-                                                Company Copy
+                                                <i class="fas fa-building"></i> Company Copy
                                             </a>
 
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
-                                                Transport Copy
+                                                <i class="fas fa-truck"></i> Transport Copy
                                             </a>
 
                                         {% elif role == "ACCOUNTANT" or role == "ADMIN" %}
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                                Dealer Copy
+                                                <i class="fas fa-user"></i> Dealer Copy
                                             </a>
 
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
-                                                Company Copy
+                                                <i class="fas fa-building"></i> Company Copy
                                             </a>
 
                                             <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
-                                                Transport Copy
+                                                <i class="fas fa-truck"></i> Transport Copy
                                             </a>
 
                                             <div class="popup-divider"></div>
 
                                             <a href="{% url 'convert_invoice_to_sales' invoice.id %}" class="popup-link purple">
-                                                Convert to Sales
+                                                <i class="fas fa-exchange-alt"></i> Convert to Sales
                                             </a>
 
                                             <a href="{% url 'invoice_edit_history' invoice.id %}" class="popup-link dark">
-                                                Invoice Edit History
+                                                <i class="fas fa-history"></i> Invoice Edit History
                                             </a>
                                         {% endif %}
                                     </div>
@@ -955,20 +1191,19 @@
 
                     <div class="mobile-top">
                         <div>
-                            <h3>{{ invoice.invoice_number }}</h3>
+                            <h3><i class="fas fa-receipt"></i> {{ invoice.invoice_number }}</h3>
 
                             <div class="mobile-meta">
-                                Dealer: <b>{{ invoice.order.dealer.firm_name }}</b><br>
-                                Date: {{ invoice.invoice_date|date:"d M Y" }}<br>
-                                Order #{{ invoice.order.id }}
+                                <i class="fas fa-calendar-alt"></i> Date: {{ invoice.invoice_date|date:"d M Y" }}<br>
+                                <i class="fas fa-shopping-cart"></i> Order #{{ invoice.order.id }}
                                 {% if invoice.order.status %}
-                                    · {{ invoice.order.get_status_display }}
+                                    · <i class="fas fa-tag"></i> {{ invoice.order.get_status_display }}
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="mobile-amount">
-                            <span>Payable</span>
+                            <span>₹ Payable</span>
                             <strong>
                                 {% if invoice.final_payable_amount %}
                                     ₹{{ invoice.final_payable_amount }}
@@ -981,68 +1216,74 @@
 
                     <div class="mobile-money-grid">
                         <div class="mobile-money">
-                            <span>Original</span>
+                            <span><i class="fas fa-file-invoice-dollar"></i> Original</span>
                             <strong>₹{{ invoice.total_amount }}</strong>
                         </div>
 
                         <div class="mobile-money paid">
-                            <span>Received</span>
+                            <span><i class="fas fa-hand-holding-usd"></i> {% if role == "DEALER" %}Paid{% else %}Received{% endif %}</span>
                             <strong>₹{{ invoice.paid_amount }}</strong>
                         </div>
 
                         <div class="mobile-money balance">
-                            <span>Pending</span>
+                            <span><i class="fas fa-exclamation-circle"></i> {% if role == "DEALER" %}To Pay{% else %}Pending{% endif %}</span>
                             <strong>₹{{ invoice.balance_amount }}</strong>
                         </div>
                     </div>
 
                     <div class="mobile-badges">
                         {% if invoice.balance_amount > 0 %}
-                            <span class="badge orange">Balance Pending</span>
+                            <span class="badge orange"><i class="fas fa-hourglass-half"></i> {% if role == "DEALER" %}To Pay{% else %}Pending{% endif %}</span>
                         {% else %}
-                            <span class="badge green">Paid / No Balance</span>
+                            <span class="badge green"><i class="fas fa-check-circle"></i> {% if role == "DEALER" %}Fully Paid{% else %}Paid{% endif %}</span>
                         {% endif %}
 
-                        {% if invoice.is_converted_to_sales %}
-                            <span class="badge green">Converted to Sales</span>
-                        {% else %}
-                            {% if role == "ACCOUNTANT" or role == "ADMIN" %}
-                                <span class="badge orange">Pending Conversion</span>
+                        {% if role == "ACCOUNTANT" or role == "ADMIN" %}
+                            {% if invoice.is_converted_to_sales %}
+                                <span class="badge green"><i class="fas fa-check-double"></i> Converted</span>
+                            {% else %}
+                                <span class="badge orange"><i class="fas fa-sync-alt"></i> Pending Conv.</span>
                             {% endif %}
                         {% endif %}
                     </div>
 
-                    <div class="mobile-actions-main {% if role == 'DEALER' %}dealer-only-actions{% endif %}">
+                    <div class="mobile-actions-main">
                         {% if role == "DEALER" %}
                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn dealer">
-                                View
+                                <i class="fas fa-eye"></i> View
                             </a>
 
                             <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
-                                Print
+                                <i class="fas fa-print"></i> Print
                             </a>
+                        {% elif role == "WAREHOUSE_MANAGER" %}
+                            <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="btn print">
+                                <i class="fas fa-print"></i> Print
+                            </a>
+                            
+                            <div class="dots-wrap">
+                                <button type="button"
+                                        class="dots-btn"
+                                        onclick="openActionPopup('popup-mobile-{{ invoice.id }}')">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
                         {% else %}
-                            {% if role == "WAREHOUSE_MANAGER" %}
-                                <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="btn print">
-                                    Print
-                                </a>
-                            {% else %}
-                                <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
-                                    Print
-                                </a>
-                            {% endif %}
+                            <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="btn print">
+                                <i class="fas fa-print"></i> Print
+                            </a>
 
                             <a href="https://wa.me/91{{ invoice.order.dealer.phone }}?text=Invoice%20Copy%20-%20{{ invoice.invoice_number }}%0ADealer:%20{{ invoice.order.dealer.firm_name|urlencode }}%0AAmount:%20{% if invoice.final_payable_amount %}₹{{ invoice.final_payable_amount }}{% else %}₹{{ invoice.total_amount }}{% endif %}%0AOpen:%20{{ request.scheme }}://{{ request.get_host }}{% url 'dealer_invoice_print' invoice.id 'DEALER' %}"
                                target="_blank"
                                class="btn share">
-                                Share
+                                <i class="fab fa-whatsapp"></i> Share
                             </a>
 
                             <div class="dots-wrap">
                                 <button type="button"
                                         class="dots-btn"
                                         onclick="openActionPopup('popup-mobile-{{ invoice.id }}')">
-                                    ⋮
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </button>
                             </div>
                         {% endif %}
@@ -1055,58 +1296,58 @@
                     <div class="action-popup-card">
                         <div class="action-popup-head">
                             <div>
-                                <h3>{{ invoice.invoice_number }}</h3>
-                                <p>{{ invoice.order.dealer.firm_name }} | Order #{{ invoice.order.id }}</p>
+                                <h3><i class="fas fa-file-invoice"></i> {{ invoice.invoice_number }}</h3>
+                                <p><i class="fas fa-store"></i> {{ invoice.order.dealer.firm_name }} | <i class="fas fa-shopping-cart"></i> Order #{{ invoice.order.id }}</p>
                             </div>
 
                             <button type="button"
                                     class="popup-close"
                                     onclick="closeActionPopup('popup-mobile-{{ invoice.id }}')">
-                                ×
+                                <i class="fas fa-times"></i>
                             </button>
                         </div>
 
                         <div class="action-popup-body">
                             {% if role == "DEALER" %}
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                    Dealer Copy
+                                    <i class="fas fa-user"></i> Dealer Copy
                                 </a>
 
                             {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" %}
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                    Dealer Copy
+                                    <i class="fas fa-user"></i> Dealer Copy
                                 </a>
 
                             {% elif role == "WAREHOUSE_MANAGER" %}
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
-                                    Company Copy
+                                    <i class="fas fa-building"></i> Company Copy
                                 </a>
 
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
-                                    Transport Copy
+                                    <i class="fas fa-truck"></i> Transport Copy
                                 </a>
 
                             {% elif role == "ACCOUNTANT" or role == "ADMIN" %}
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'DEALER' %}" target="_blank" class="popup-link blue">
-                                    Dealer Copy
+                                    <i class="fas fa-user"></i> Dealer Copy
                                 </a>
 
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}" target="_blank" class="popup-link green">
-                                    Company Copy
+                                    <i class="fas fa-building"></i> Company Copy
                                 </a>
 
                                 <a href="{% url 'dealer_invoice_print' invoice.id 'TRANSPORTER' %}" target="_blank" class="popup-link orange">
-                                    Transport Copy
+                                    <i class="fas fa-truck"></i> Transport Copy
                                 </a>
 
                                 <div class="popup-divider"></div>
 
                                 <a href="{% url 'convert_invoice_to_sales' invoice.id %}" class="popup-link purple">
-                                    Convert to Sales
+                                    <i class="fas fa-exchange-alt"></i> Convert to Sales
                                 </a>
 
                                 <a href="{% url 'invoice_edit_history' invoice.id %}" class="popup-link dark">
-                                    Invoice Edit History
+                                    <i class="fas fa-history"></i> Edit History
                                 </a>
                             {% endif %}
                         </div>
@@ -1117,11 +1358,13 @@
         </div>
 
         <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
             No invoices matched your search.
         </div>
 
     {% else %}
         <div class="empty-card">
+            <i class="fas fa-inbox"></i>
             No invoices found.
         </div>
     {% endif %}

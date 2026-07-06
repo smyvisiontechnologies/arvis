@@ -3,45 +3,71 @@
 
 <style>
 .visit-page {
-    padding: 14px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
 .visit-card {
-    max-width: 980px;
+    max-width: 1200px;
     margin: 0 auto;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 24px;
-    padding: 16px;
-    box-shadow: 0 12px 30px rgba(15,23,42,.08);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
 }
 
 .visit-card h2 {
     margin: 0;
     color: #0f172a;
-    font-size: 24px;
-    font-weight: 1000;
+    font-size: 26px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.visit-card h2 i {
+    color: #84c341;
+    font-size: 26px;
 }
 
 .visit-card p {
     color: #64748b;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.5;
+    margin-top: 8px;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: 1.2fr .8fr .8fr;
-    gap: 12px;
-    margin-top: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.field {
+    margin-bottom: 0;
+}
+
+.field.full-width {
+    grid-column: 1 / -1;
 }
 
 .field label {
     display: block;
     color: #334155;
-    font-size: 13px;
-    font-weight: 900;
-    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field label i {
+    margin-right: 5px;
+    color: #84c341;
 }
 
 .form-control,
@@ -49,109 +75,116 @@
 .field select,
 .field textarea {
     width: 100%;
-    padding: 12px 13px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    font-weight: 800;
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    font-weight: 600;
     background: #f8fafc;
+    transition: all 0.3s ease;
+    font-size: 14px;
 }
 
-.note-field {
-    grid-column: 1 / -1;
+.form-control:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
 }
 
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Camera Container */
 .camera-wrap {
-    margin-top: 16px;
-    background: #020617;
-    border-radius: 22px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, #1e1e2f, #2d2d44);
+    border-radius: 24px;
     overflow: hidden;
     position: relative;
-    border: 1px solid #1e293b;
+    border: 2px solid #e5e7eb;
 }
 
 #cameraVideo,
 #capturedPreview {
     width: 100%;
-    height: 680px;
+    height: auto;
+    max-height: 70vh;
     object-fit: cover;
     display: block;
-    background: #020617;
+    background: #0f172a;
 }
 
+#capturedPreview {
+    cursor: pointer;
+}
+
+/* GPS Stamp Overlay */
 .gps-stamp {
     position: absolute;
-    left: 20px;
-    right: 20px;
-    bottom: 22px;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
     display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 14px;
-    align-items: end;
+    grid-template-columns: 200px 1fr;
+    gap: 12px;
+    align-items: stretch;
     pointer-events: none;
 }
 
 .map-box {
-    height: 172px;
-    border-radius: 8px;
+    height: 140px;
+    border-radius: 12px;
     overflow: hidden;
-    background:
-        linear-gradient(135deg, rgba(59,130,246,.35), rgba(34,197,94,.35)),
-        repeating-linear-gradient(45deg, rgba(255,255,255,.10) 0 8px, transparent 8px 16px);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(34, 197, 94, 0.3));
     position: relative;
-    border: 1px solid rgba(255,255,255,.25);
-}
-
-.map-box::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        linear-gradient(90deg, rgba(255,255,255,.20) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,.20) 1px, transparent 1px);
-    background-size: 38px 38px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .map-pin {
     position: absolute;
     left: 50%;
-    top: 48%;
-    transform: translate(-50%, -100%);
-    width: 36px;
-    height: 36px;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
     background: #ec4899;
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
-    box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .map-pin::after {
     content: "";
     position: absolute;
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: #7c3aed;
-    top: 11px;
-    left: 11px;
+    top: 12px;
+    left: 12px;
 }
 
 .google-text {
     position: absolute;
     left: 12px;
-    bottom: 10px;
+    bottom: 8px;
     color: white;
-    font-size: 25px;
-    font-weight: 900;
-    text-shadow: 0 2px 5px rgba(0,0,0,.45);
+    font-size: 20px;
+    font-weight: 800;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .stamp-panel {
-    min-height: 172px;
-    background: rgba(0,0,0,.66);
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
     color: white;
-    padding: 16px 20px;
-    position: relative;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -159,54 +192,52 @@
 
 .stamp-top {
     position: absolute;
-    right: 14px;
-    top: 10px;
-    background: rgba(255,255,255,.10);
+    right: 12px;
+    top: 8px;
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 8px;
-    padding: 7px 10px;
-    font-size: 14px;
-    font-weight: 900;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    pointer-events: none;
 }
 
 .stamp-dealer {
-    font-size: 33px;
-    font-weight: 900;
-    line-height: 1.15;
-    letter-spacing: 1px;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 4px;
 }
 
 .stamp-address {
-    margin-top: 8px;
-    font-size: 21px;
-    line-height: 1.28;
-    color: #f8fafc;
-    font-weight: 700;
+    font-size: 11px;
+    line-height: 1.3;
+    color: #e2e8f0;
+    margin-bottom: 6px;
 }
 
 .stamp-latlong {
-    margin-top: 6px;
-    font-size: 19px;
-    color: #f8fafc;
-    font-weight: 800;
+    font-size: 10px;
+    color: #cbd5e1;
+    margin-bottom: 4px;
 }
 
 .stamp-date {
-    margin-top: 4px;
-    font-size: 19px;
-    color: #f8fafc;
-    font-weight: 800;
+    font-size: 10px;
+    color: #94a3b8;
 }
 
+/* GPS Verify Box */
 .gps-verify-box {
-    margin-top: 12px;
-    padding: 12px 14px;
+    margin-top: 16px;
+    padding: 12px 16px;
     border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
     background: #eff6ff;
     color: #1d4ed8;
     border: 1px solid #bfdbfe;
-    font-size: 13px;
-    font-weight: 900;
-    line-height: 1.5;
 }
 
 .gps-verify-box.success {
@@ -221,106 +252,182 @@
     border-color: #fecaca;
 }
 
+.gps-verify-box i {
+    margin-right: 6px;
+}
+
+/* Button Row */
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 20px;
+    justify-content: center;
 }
 
 .btn {
     border: none;
-    border-radius: 15px;
-    padding: 12px 16px;
+    border-radius: 40px;
+    padding: 10px 20px;
     color: white;
-    font-weight: 900;
+    font-weight: 800;
     cursor: pointer;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    transition: all 0.3s ease;
 }
 
-.btn.green { background: #16a34a; }
-.btn.blue { background: #2563eb; }
-.btn.orange { background: #d97706; }
-.btn.dark { background: #0f172a; }
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn.green { background: linear-gradient(135deg, #16a34a, #059669); }
+.btn.blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.btn.orange { background: linear-gradient(135deg, #d97706, #b45309); }
+.btn.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
 
 .hidden {
     display: none !important;
 }
 
-@media(max-width: 760px) {
-    .visit-page {
-        padding: 8px;
-    }
-
-    .visit-card {
-        padding: 12px;
-        border-radius: 18px;
-    }
-
+/* Responsive */
+@media (max-width: 900px) {
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 14px;
     }
+    
+    .gps-stamp {
+        grid-template-columns: 1fr;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+    }
+    
+    .map-box {
+        height: 100px;
+    }
+    
+    .stamp-panel {
+        padding: 10px 12px;
+    }
+    
+    .stamp-dealer {
+        font-size: 14px;
+    }
+    
+    .stamp-address {
+        font-size: 9px;
+    }
+    
+    .stamp-latlong,
+    .stamp-date {
+        font-size: 8px;
+    }
+}
 
+@media (max-width: 768px) {
+    .visit-page {
+        padding: 16px;
+    }
+    
+    .visit-card {
+        padding: 20px;
+        border-radius: 24px;
+    }
+    
+    .visit-card h2 {
+        font-size: 22px;
+    }
+    
+    .btn-row {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+    
+    .camera-wrap {
+        border-radius: 20px;
+    }
+    
     #cameraVideo,
     #capturedPreview {
-        height: 520px;
+        max-height: 50vh;
     }
+}
 
+@media (max-width: 550px) {
+    .visit-page {
+        padding: 12px;
+    }
+    
+    .visit-card {
+        padding: 16px;
+        border-radius: 20px;
+    }
+    
+    .form-control,
+    .field input,
+    .field select,
+    .field textarea {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
     .gps-stamp {
-        left: 10px;
-        right: 10px;
-        bottom: 12px;
-        grid-template-columns: 115px 1fr;
-        gap: 7px;
+        position: relative;
+        margin-top: 12px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0;
     }
-
-    .map-box {
-        height: 105px;
+    
+    .camera-wrap {
+        position: relative;
     }
-
-    .google-text {
-        font-size: 16px;
-    }
-
-    .stamp-panel {
-        min-height: 105px;
-        padding: 9px 11px;
-    }
-
+    
     .stamp-top {
         display: none;
     }
+}
 
-    .stamp-dealer {
-        font-size: 17px;
+@media (max-width: 480px) {
+    .visit-card h2 {
+        font-size: 20px;
     }
-
-    .stamp-address {
+    
+    .visit-card p {
         font-size: 12px;
-        margin-top: 4px;
     }
-
-    .stamp-latlong,
-    .stamp-date {
+    
+    .gps-verify-box {
         font-size: 11px;
-    }
-
-    .btn-row {
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-
-    .btn {
-        width: 100%;
+        padding: 10px 12px;
     }
 }
 </style>
 
 <div class="visit-page">
     <div class="visit-card">
-        <h2>Dealer Visit</h2>
+        <h2>
+            <i class="fas fa-map-marked-alt"></i>
+            Dealer Visit
+        </h2>
         <p>
-            Select dealer and capture photo. The image will be saved with dealer name, address, date, time and GPS location.
+            <i class="fas fa-camera"></i> Select dealer and capture photo. The image will be saved with dealer name, address, date, time and GPS location.
         </p>
 
         <form method="post" id="dealerVisitForm">
@@ -333,36 +440,36 @@
 
             <div class="form-grid">
                 <div class="field">
-                    <label>Dealer</label>
+                    <label><i class="fas fa-store"></i> Dealer</label>
                     {{ form.dealer }}
                     {{ form.dealer.errors }}
                 </div>
 
                 <div class="field">
-                    <label>Visit Date</label>
+                    <label><i class="fas fa-calendar-alt"></i> Visit Date</label>
                     {{ form.visit_date }}
                     {{ form.visit_date.errors }}
                 </div>
 
-                <div class="field">
-                    <label>Reason</label>
+                <div class="field full-width">
+                    <label><i class="fas fa-tag"></i> Reason</label>
                     {{ form.reason }}
                     {{ form.reason.errors }}
                 </div>
 
-                <div class="field note-field">
-                    <label>Visit Note</label>
+                <div class="field full-width">
+                    <label><i class="fas fa-sticky-note"></i> Visit Note</label>
                     {{ form.note }}
                     {{ form.note.errors }}
                 </div>
             </div>
 
             <div class="gps-verify-box" id="gpsVerifyBox">
-                GPS verification waiting. Select dealer and allow location permission.
+                <i class="fas fa-map-marker-alt"></i> GPS verification waiting. Select dealer and allow location permission.
             </div>
 
             <div class="camera-wrap">
-                <video id="cameraVideo" autoplay playsinline></video>
+                <video id="cameraVideo" autoplay playsinline muted></video>
                 <img id="capturedPreview" class="hidden" alt="Captured Photo">
 
                 <div class="gps-stamp" id="liveStamp">
@@ -384,10 +491,18 @@
             <canvas id="captureCanvas" class="hidden"></canvas>
 
             <div class="btn-row">
-                <button type="button" class="btn blue" onclick="openCamera()">Open Camera</button>
-                <button type="button" class="btn orange" onclick="capturePhoto()">Capture Photo</button>
-                <button type="button" class="btn green" onclick="submitDealerVisit()">Save Dealer Visit</button>
-                <a href="{% url 'dealer_visit_list' %}" class="btn dark">Back</a>
+                <button type="button" class="btn blue" onclick="openCamera()">
+                    <i class="fas fa-camera"></i> Open Camera
+                </button>
+                <button type="button" class="btn orange" onclick="capturePhoto()">
+                    <i class="fas fa-camera-retro"></i> Capture Photo
+                </button>
+                <button type="button" class="btn green" onclick="submitDealerVisit()">
+                    <i class="fas fa-save"></i> Save Dealer Visit
+                </button>
+                <a href="{% url 'dealer_visit_list' %}" class="btn dark">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
         </form>
     </div>
@@ -437,7 +552,7 @@ function formatDateTime() {
         hour12: true
     });
 
-    return dayName + ", " + datePart + " " + timePart + " GMT +05:30";
+    return `${dayName}, ${datePart} ${timePart} GMT +05:30`;
 }
 
 function updateLiveStamp() {
@@ -448,29 +563,22 @@ function updateLiveStamp() {
 
     const latText = currentLatitude ? Number(currentLatitude).toFixed(6) : "--";
     const longText = currentLongitude ? Number(currentLongitude).toFixed(6) : "--";
+    const accuracyText = currentGpsAccuracy ? ` | Acc: ${Math.round(Number(currentGpsAccuracy))}m` : "";
 
-    const accuracyText = currentGpsAccuracy ? "  Accuracy " + Math.round(Number(currentGpsAccuracy)) + "m" : "";
-
-    document.getElementById("stampLatLong").textContent =
-        "Lat " + latText + "°  Long " + longText + "°" + accuracyText;
-
-    document.getElementById("stampDate").textContent = formatDateTime();
+    document.getElementById("stampLatLong").innerHTML = `<i class="fas fa-location-dot"></i> Lat ${latText}° | Long ${longText}°${accuracyText}`;
+    document.getElementById("stampDate").innerHTML = `<i class="far fa-calendar-alt"></i> ${formatDateTime()}`;
 }
 
 function showGpsStatus(message, type) {
     const box = document.getElementById("gpsVerifyBox");
 
-    if (!box) {
-        return;
-    }
+    if (!box) return;
 
     box.classList.remove("success", "error");
+    if (type) box.classList.add(type);
 
-    if (type) {
-        box.classList.add(type);
-    }
-
-    box.innerHTML = message;
+    const icon = type === "success" ? '<i class="fas fa-check-circle"></i>' : (type === "error" ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-info-circle"></i>');
+    box.innerHTML = icon + " " + message;
 }
 
 function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
@@ -480,17 +588,14 @@ function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
     lon2 = Number(lon2);
 
     const earthRadius = 6371000;
-    const toRad = function(value) {
-        return value * Math.PI / 180;
-    };
+    const toRad = (value) => value * Math.PI / 180;
 
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
 
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -526,31 +631,23 @@ function validateDealerLocation(showAlert) {
     const accuracy = Number(currentGpsAccuracy || 9999);
 
     if (accuracy > MAX_GPS_ACCURACY) {
-        const msg = "GPS accuracy is weak (" + Math.round(accuracy) + " meters). Please stand outside/near dealer shop and capture again.";
+        const msg = `GPS accuracy is weak (${Math.round(accuracy)} meters). Please stand outside/near dealer shop and capture again.`;
         showGpsStatus(msg, "error");
         if (showAlert) alert(msg);
         return false;
     }
 
     const allowedRadius = Number(data.visit_radius_meters || 15);
-    const distance = calculateDistanceMeters(
-        data.latitude,
-        data.longitude,
-        currentLatitude,
-        currentLongitude
-    );
+    const distance = calculateDistanceMeters(data.latitude, data.longitude, currentLatitude, currentLongitude);
 
     if (distance > allowedRadius) {
-        const msg = "Visit rejected. You are " + distance.toFixed(2) + " meters away from selected dealer. Allowed only within " + allowedRadius + " meters. Please go to correct dealer shop and capture again.";
+        const msg = `Visit rejected. You are ${distance.toFixed(2)} meters away from selected dealer. Allowed only within ${allowedRadius} meters. Please go to correct dealer shop and capture again.`;
         showGpsStatus(msg, "error");
         if (showAlert) alert(msg);
         return false;
     }
 
-    showGpsStatus(
-        "GPS verified successfully. Distance from dealer: " + distance.toFixed(2) + " meters. Accuracy: " + Math.round(accuracy) + " meters.",
-        "success"
-    );
+    showGpsStatus(`✓ GPS verified successfully. Distance from dealer: ${distance.toFixed(2)} meters. Accuracy: ${Math.round(accuracy)} meters.`, "success");
     return true;
 }
 
@@ -622,7 +719,6 @@ function openCamera() {
     });
 }
 
-
 function drawRoundRect(ctx, x, y, width, height, radius) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -655,7 +751,6 @@ function drawTextFit(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
     }
 
     lines.push(line.trim());
-
     lines = lines.slice(0, maxLines);
 
     lines.forEach(function(l, index) {
@@ -699,18 +794,18 @@ function capturePhoto() {
     const H = canvas.height;
 
     const margin = Math.round(W * 0.025);
-    const stampHeight = Math.round(H * 0.20);
+    const stampHeight = Math.round(H * 0.18);
     const bottom = H - margin;
     const top = bottom - stampHeight;
 
-    const mapWidth = Math.round(W * 0.27);
+    const mapWidth = Math.round(W * 0.25);
     const gap = Math.round(W * 0.014);
     const panelX = margin + mapWidth + gap;
     const panelW = W - panelX - margin;
 
     ctx.save();
 
-    ctx.globalAlpha = 0.72;
+    ctx.globalAlpha = 0.85;
     ctx.fillStyle = "#111827";
 
     drawRoundRect(ctx, margin, top, mapWidth, stampHeight, 8);
@@ -721,64 +816,33 @@ function capturePhoto() {
 
     ctx.globalAlpha = 1;
 
-    ctx.fillStyle = "#375a7f";
+    ctx.fillStyle = "#2d4a7c";
     ctx.fillRect(margin, top, mapWidth, stampHeight);
 
-    ctx.strokeStyle = "rgba(255,255,255,.28)";
-    ctx.lineWidth = 2;
-
-    for (let gx = margin; gx < margin + mapWidth; gx += 42) {
-        ctx.beginPath();
-        ctx.moveTo(gx, top);
-        ctx.lineTo(gx + 50, top + stampHeight);
-        ctx.stroke();
-    }
-
-    for (let gy = top; gy < top + stampHeight; gy += 34) {
-        ctx.beginPath();
-        ctx.moveTo(margin, gy);
-        ctx.lineTo(margin + mapWidth, gy + 20);
-        ctx.stroke();
-    }
-
-    const pinX = margin + mapWidth / 2;
-    const pinY = top + stampHeight / 2;
-
-    ctx.fillStyle = "#ec4899";
-    ctx.beginPath();
-    ctx.arc(pinX, pinY, 24, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#7c3aed";
-    ctx.beginPath();
-    ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
-    ctx.fill();
-
     ctx.fillStyle = "white";
-    ctx.font = "bold " + Math.round(W * 0.027) + "px Arial";
+    ctx.font = "bold " + Math.round(W * 0.028) + "px Arial";
     ctx.fillText("Google", margin + 18, top + stampHeight - 18);
 
     ctx.fillStyle = "white";
-    ctx.font = "bold " + Math.round(W * 0.034) + "px Arial";
-    ctx.fillText(data.name || "Dealer", panelX + 22, top + 45);
+    ctx.font = "bold " + Math.round(W * 0.032) + "px Arial";
+    ctx.fillText(data.name || "Dealer", panelX + 18, top + 38);
 
-    ctx.font = "600 " + Math.round(W * 0.020) + "px Arial";
+    ctx.font = "600 " + Math.round(W * 0.019) + "px Arial";
     ctx.fillStyle = "#f8fafc";
-    drawTextFit(ctx, data.address || "-", panelX + 22, top + 82, panelW - 44, Math.round(W * 0.024), 2);
+    drawTextFit(ctx, data.address || "-", panelX + 18, top + 68, panelW - 36, Math.round(W * 0.022), 2);
 
-    ctx.font = "bold " + Math.round(W * 0.019) + "px Arial";
-    ctx.fillStyle = "#f8fafc";
+    ctx.font = "bold " + Math.round(W * 0.016) + "px Arial";
+    ctx.fillStyle = "#e2e8f0";
 
     const latText = currentLatitude ? Number(currentLatitude).toFixed(6) : "--";
     const longText = currentLongitude ? Number(currentLongitude).toFixed(6) : "--";
+    const accText = currentGpsAccuracy ? ` | Acc: ${Math.round(Number(currentGpsAccuracy))}m` : "";
+    ctx.fillText(`📍 ${latText}° | ${longText}°${accText}`, panelX + 18, top + stampHeight - 38);
+    ctx.fillText(`📅 ${formatDateTime()}`, panelX + 18, top + stampHeight - 14);
 
-    const accText = currentGpsAccuracy ? "  Accuracy " + Math.round(Number(currentGpsAccuracy)) + "m" : "";
-    ctx.fillText("Lat " + latText + "°  Long " + longText + "°" + accText, panelX + 22, top + stampHeight - 48);
-    ctx.fillText(formatDateTime(), panelX + 22, top + stampHeight - 18);
-
-    ctx.font = "bold " + Math.round(W * 0.014) + "px Arial";
-    ctx.fillStyle = "#e5e7eb";
-    ctx.fillText("Dealer Visit Camera", panelX + panelW - 210, top + 30);
+    ctx.font = "bold " + Math.round(W * 0.012) + "px Arial";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.fillText("Dealer Visit Camera", panelX + panelW - 130, top + 22);
 
     ctx.restore();
 
@@ -790,8 +854,6 @@ function capturePhoto() {
     video.classList.add("hidden");
     preview.classList.remove("hidden");
 
-    // Important: hide live HTML stamp after capture.
-    // Otherwise it appears again on top of already stamped photo.
     if (liveStamp) {
         liveStamp.classList.add("hidden");
     }
@@ -802,7 +864,6 @@ function capturePhoto() {
         });
     }
 }
-
 
 function submitDealerVisit() {
     const dealer = document.getElementById("id_dealer");

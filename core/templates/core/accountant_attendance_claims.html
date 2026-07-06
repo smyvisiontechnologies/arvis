@@ -2,113 +2,831 @@
 
 {% block content %}
 <style>
-.page { padding: 18px; }
-
-.head, .card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
-.head { margin-bottom: 14px; }
+.head {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
 
 .head h2 {
     margin: 0;
     color: #0f172a;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.table-wrap {
-    overflow-x: auto;
+.head h2 i {
+    color: #84c341;
+    font-size: 24px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 850px;
+.head p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 13px;
 }
 
-th {
-    background: #f8fafc;
+/* Summary Grid */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.summary-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.summary-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.summary-box span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-box strong {
+    display: block;
+    margin-top: 8px;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.summary-box.green strong { color: #059669; }
+.summary-box.blue strong { color: #2563eb; }
+.summary-box.orange strong { color: #d97706; }
+
+/* Filter Card */
+.filter-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.filter-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.field label {
+    display: block;
     color: #334155;
     font-size: 12px;
-    font-weight: 900;
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    font-weight: 800;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-td {
-    padding: 12px;
-    border-bottom: 1px solid #edf2f7;
-    font-size: 13px;
-    font-weight: 800;
+.field label i {
+    margin-right: 4px;
+    color: #84c341;
+}
+
+.form-control {
+    width: 100%;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-weight: 600;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
 }
 
 .btn {
-    background: #2563eb;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
+    border: none;
     text-decoration: none;
-    border-radius: 12px;
-    padding: 9px 12px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-weight: 800;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.empty {
-    color: #64748b;
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.btn.green { background: linear-gradient(135deg, #16a34a, #059669); }
+
+/* Claim Cards Grid */
+.claims-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.claim-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.claim-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    border-color: #84c341;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 16px;
     font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-header h3 i {
+    color: #84c341;
+    font-size: 18px;
+}
+
+.card-header .email {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.period-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+/* Stats Row */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.stat-item {
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.stat-item span {
+    display: block;
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.total-amount {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.total-amount span {
+    font-size: 12px;
+    color: #047857;
+    font-weight: 700;
+}
+
+.total-amount strong {
+    font-size: 22px;
+    font-weight: 800;
+    color: #059669;
+}
+
+/* Details Section */
+.details-section {
+    margin-bottom: 16px;
+}
+
+.details-section summary {
+    cursor: pointer;
+    color: #2563eb;
+    font-weight: 800;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+}
+
+.details-section summary i {
+    font-size: 11px;
+}
+
+.details-section summary:hover {
+    color: #1d4ed8;
+}
+
+.details-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.detail-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-date {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.hr-name {
+    font-size: 10px;
+    color: #1d4ed8;
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.detail-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 11px;
+}
+
+.detail-stats span {
+    color: #64748b;
+}
+
+.detail-stats strong {
+    color: #0f172a;
+    font-weight: 800;
+}
+
+/* Release Form */
+.release-form {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+}
+
+.release-form textarea {
+    width: 100%;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 12px;
+    resize: vertical;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+
+.release-form textarea:focus {
+    outline: none;
+    border-color: #84c341;
+}
+
+.release-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 16px;
+    font-weight: 800;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.release-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+}
+
+/* Empty State */
+.empty {
+    background: white;
+    padding: 48px;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 700;
+    text-align: center;
+    grid-column: 1 / -1;
+}
+
+.empty i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    color: #cbd5e1;
+}
+
+/* Recent Releases Section */
+.recent-title {
+    margin: 24px 0 16px;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recent-title i {
+    color: #84c341;
+}
+
+.recent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
+}
+
+.recent-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px;
+    transition: all 0.2s ease;
+}
+
+.recent-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.recent-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.recent-employee {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.recent-amount {
+    font-weight: 800;
+    color: #059669;
+    font-size: 16px;
+}
+
+.recent-period {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.recent-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.recent-stats strong {
+    color: #0f172a;
+}
+
+.recent-footer {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #eef2f7;
+    font-size: 10px;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .filter-form {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .claims-grid {
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    
+    .head {
+        padding: 16px 18px;
+        border-radius: 24px;
+    }
+    
+    .head h2 {
+        font-size: 20px;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .filter-form {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .filter-card {
+        padding: 16px;
+    }
+    
+    .claims-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .recent-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    .head {
+        padding: 14px 16px;
+        border-radius: 20px;
+    }
+    
+    .head h2 {
+        font-size: 18px;
+    }
+    
+    .summary-box strong {
+        font-size: 24px;
+    }
+    
+    .claim-card {
+        border-radius: 16px;
+    }
+    
+    .card-header {
+        padding: 12px;
+    }
+    
+    .card-body {
+        padding: 12px;
+    }
+    
+    .total-amount strong {
+        font-size: 18px;
+    }
+    
+    .detail-stats {
+        flex-direction: column;
+        gap: 4px;
+    }
 }
 </style>
 
 <div class="page">
+
     <div class="head">
-        <h2>TA/DA Fund Release</h2>
+        <h2>
+            <i class="fas fa-money-bill-wave"></i>
+            TA/DA Fund Release
+        </h2>
+        <p>
+            <i class="fas fa-clock"></i> Release HR approved TA/DA claims employee-wise for monthly, 15 days, or custom date range.
+        </p>
     </div>
 
-    <div class="card">
-        {% if records %}
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Date</th>
-                            <th>KM</th>
-                            <th>TA</th>
-                            <th>DA</th>
-                            <th>Total</th>
-                            <th>HR Approved By</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+    <div class="summary-grid">
+        <div class="summary-box green">
+            <span><i class="fas fa-rupee-sign"></i> Total Pending Amount</span>
+            <strong>₹{{ total_pending_amount|floatformat:2 }}</strong>
+        </div>
 
-                    <tbody>
-                        {% for record in records %}
-                            <tr>
-                                <td>{{ record.employee.get_full_name|default:record.employee.username }}</td>
-                                <td>{{ record.attendance_date|date:"d M Y" }}</td>
-                                <td>{{ record.manager_approved_km }} KM</td>
-                                <td>₹{{ record.ta_amount }}</td>
-                                <td>₹{{ record.da_amount }}</td>
-                                <td>₹{{ record.total_claim_amount }}</td>
-                                <td>{{ record.hr_approved_by.get_full_name|default:record.hr_approved_by.username }}</td>
-                                <td>
-                                    <a href="{% url 'accountant_release_attendance_claim' record.id %}" class="btn">
-                                        Release
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="summary-box blue">
+            <span><i class="fas fa-calendar-alt"></i> Total Pending Days</span>
+            <strong>{{ total_pending_days }}</strong>
+        </div>
+
+        <div class="summary-box orange">
+            <span><i class="fas fa-calendar-range"></i> Selected Date Range</span>
+            <strong>{{ from_date|date:"d M" }} - {{ to_date|date:"d M Y" }}</strong>
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <div class="field">
+                <label><i class="fas fa-chart-line"></i> Period</label>
+                <select name="period" class="form-control" onchange="toggleCustomDates(this.value)">
+                    <option value="THIS_MONTH" {% if period == "THIS_MONTH" %}selected{% endif %}>This Month</option>
+                    <option value="LAST_15" {% if period == "LAST_15" %}selected{% endif %}>Last 15 Days</option>
+                    <option value="LAST_MONTH" {% if period == "LAST_MONTH" %}selected{% endif %}>Last Month</option>
+                    <option value="CUSTOM" {% if period == "CUSTOM" %}selected{% endif %}>Custom Dates</option>
+                </select>
             </div>
-        {% else %}
-            <div class="empty">No claims pending for fund release.</div>
-        {% endif %}
+
+            <div class="field">
+                <label><i class="fas fa-user"></i> Employee</label>
+                <select name="employee" class="form-control">
+                    <option value="">All Employees</option>
+                    {% for emp in employees %}
+                        <option value="{{ emp.id }}" {% if employee_id|stringformat:"s" == emp.id|stringformat:"s" %}selected{% endif %}>
+                            {{ emp.get_full_name|default:emp.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field custom-date-field">
+                <label><i class="fas fa-calendar-alt"></i> From Date</label>
+                <input type="date" name="from_date" value="{{ from_date|date:'Y-m-d' }}" class="form-control">
+            </div>
+
+            <div class="field custom-date-field">
+                <label><i class="fas fa-calendar-alt"></i> To Date</label>
+                <input type="date" name="to_date" value="{{ to_date|date:'Y-m-d' }}" class="form-control">
+            </div>
+
+            <button type="submit" class="btn">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
     </div>
+
+    <!-- Claim Cards Grid (Desktop + Mobile) -->
+    {% if rows %}
+        <div class="claims-grid">
+            {% for row in rows %}
+                <div class="claim-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-user-circle"></i>
+                            {{ row.employee.get_full_name|default:row.employee.username }}
+                        </h3>
+                        <div class="email">{{ row.employee.email }}</div>
+                        <div class="period-badge">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ row.first_date|date:"d M Y" }} - {{ row.last_date|date:"d M Y" }}
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Stats Row -->
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span><i class="fas fa-calendar-day"></i> Days</span>
+                                <strong>{{ row.claim_days }}</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span><i class="fas fa-road"></i> Total KM</span>
+                                <strong>{{ row.total_km|floatformat:1 }}</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span><i class="fas fa-rupee-sign"></i> TA</span>
+                                <strong>₹{{ row.total_ta|floatformat:0 }}</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span><i class="fas fa-coffee"></i> DA</span>
+                                <strong>₹{{ row.total_da|floatformat:0 }}</strong>
+                            </div>
+                        </div>
+
+                        <!-- Total Amount -->
+                        <div class="total-amount">
+                            <span><i class="fas fa-calculator"></i> Total Release Amount:</span>
+                            <strong>₹{{ row.total_amount|floatformat:2 }}</strong>
+                        </div>
+
+                        <!-- Daily Details (Expandable) -->
+                        <details class="details-section">
+                            <summary>
+                                <i class="fas fa-eye"></i> View {{ row.claim_days }} day(s) HR Approved Details
+                            </summary>
+                            <div class="details-list">
+                                {% for record in row.records %}
+                                    <div class="detail-item">
+                                        <div class="detail-date">
+                                            <span><i class="fas fa-calendar-alt"></i> {{ record.attendance_date|date:"d M Y" }}</span>
+                                            <span class="hr-name">
+                                                <i class="fas fa-user-check"></i> {{ record.hr_approved_by.get_full_name|default:record.hr_approved_by.username }}
+                                            </span>
+                                        </div>
+                                        <div class="detail-stats">
+                                            <span><i class="fas fa-road"></i> KM: <strong>{{ record.manager_approved_km|floatformat:1 }}</strong></span>
+                                            <span><i class="fas fa-rupee-sign"></i> TA: <strong>₹{{ record.ta_amount|floatformat:0 }}</strong></span>
+                                            <span><i class="fas fa-coffee"></i> DA: <strong>₹{{ record.da_amount|floatformat:0 }}</strong></span>
+                                            <span><strong>Total: ₹{{ record.total_claim_amount|floatformat:0 }}</strong></span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </details>
+
+                        <!-- Release Form -->
+                        <form method="post"
+                              action="{% url 'accountant_bulk_release_attendance_claims' %}"
+                              class="release-form"
+                              onsubmit="return confirm('Release TA/DA amount for this employee and selected date range?');">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="employee_id" value="{{ row.employee.id }}">
+                            <input type="hidden" name="from_date" value="{{ from_date|date:'Y-m-d' }}">
+                            <input type="hidden" name="to_date" value="{{ to_date|date:'Y-m-d' }}">
+
+                            <textarea name="release_remarks" placeholder="Release remarks (optional)"></textarea>
+
+                            <button type="submit" class="release-btn">
+                                <i class="fas fa-check-circle"></i> Release ₹{{ row.total_amount|floatformat:2 }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <i class="fas fa-inbox"></i>
+            No HR approved TA/DA claims pending for selected date range.
+        </div>
+    {% endif %}
+
+    <!-- Recent Releases Section -->
+    <h3 class="recent-title">
+        <i class="fas fa-history"></i>
+        Recent TA/DA Releases
+    </h3>
+
+    {% if recent_batches %}
+        <div class="recent-grid">
+            {% for batch in recent_batches %}
+                <div class="recent-card">
+                    <div class="recent-card-header">
+                        <span class="recent-employee">
+                            <i class="fas fa-user-circle"></i> {{ batch.employee.get_full_name|default:batch.employee.username }}
+                        </span>
+                        <span class="recent-amount">₹{{ batch.total_released_amount|floatformat:2 }}</span>
+                    </div>
+                    <div class="recent-period">
+                        <i class="fas fa-calendar-alt"></i> {{ batch.from_date|date:"d M Y" }} - {{ batch.to_date|date:"d M Y" }}
+                    </div>
+                    <div class="recent-stats">
+                        <span><i class="fas fa-road"></i> {{ batch.total_km|floatformat:1 }} KM</span>
+                        <span><i class="fas fa-rupee-sign"></i> TA: ₹{{ batch.total_ta_amount|floatformat:0 }}</span>
+                        <span><i class="fas fa-coffee"></i> DA: ₹{{ batch.total_da_amount|floatformat:0 }}</span>
+                    </div>
+                    <div class="recent-footer">
+                        <span><i class="fas fa-user-check"></i> Released by: {{ batch.released_by.get_full_name|default:batch.released_by.username }}</span>
+                        <span><i class="fas fa-clock"></i> {{ batch.released_at|date:"d M Y h:i A" }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <i class="fas fa-history"></i>
+            No release history yet.
+        </div>
+    {% endif %}
 </div>
+
+<script>
+function toggleCustomDates(value) {
+    const fields = document.querySelectorAll(".custom-date-field");
+
+    fields.forEach(function(field) {
+        if (value === "CUSTOM") {
+            field.style.display = "block";
+        } else {
+            field.style.display = "none";
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const periodSelect = document.querySelector("select[name='period']");
+
+    if (periodSelect) {
+        toggleCustomDates(periodSelect.value);
+    }
+});
+</script>
 {% endblock %}

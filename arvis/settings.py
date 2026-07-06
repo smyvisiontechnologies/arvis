@@ -113,10 +113,15 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-# settings.py
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -147,5 +152,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://5e98-2409-4091-8055-de09-f062-968f-c617-6454.ngrok-free.app",
+    "https://4f76-2409-4091-8055-de08-6088-6619-be6d-24db.ngrok-free.app",
 ]

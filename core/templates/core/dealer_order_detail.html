@@ -4,6 +4,8 @@
 <style>
 .page {
     padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .order-card {
@@ -12,13 +14,13 @@
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
-    margin-bottom: 18px;
+    margin-bottom: 24px;
 }
 
 .order-card-head {
     background: linear-gradient(180deg, #f8fafc, #f1f5f9);
     border-bottom: 1px solid #e5e7eb;
-    padding: 18px 20px;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,9 +38,14 @@
     margin: 0;
 }
 
+.order-no i {
+    font-size: 24px;
+    color: #6366f1;
+}
+
 .order-no span {
     color: #6366f1;
-    font-size: 30px;
+    font-size: 24px;
     font-weight: 900;
 }
 
@@ -46,104 +53,122 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 7px 14px;
-    border-radius: 999px;
+    padding: 7px 16px;
+    border-radius: 40px;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 800;
     white-space: nowrap;
+}
+
+.status-pill i {
+    font-size: 11px;
 }
 
 .status-pill.green {
     background: #dcfce7;
     color: #16a34a;
+    border: 1px solid #bbf7d0;
 }
 
 .status-pill.blue {
     background: #dbeafe;
     color: #2563eb;
+    border: 1px solid #bfdbfe;
 }
 
 .status-pill.orange {
     background: #ffedd5;
     color: #ea580c;
+    border: 1px solid #fed7aa;
 }
 
 .status-pill.red {
     background: #fee2e2;
     color: #dc2626;
+    border: 1px solid #fecaca;
 }
 
 .status-pill.gray {
     background: #f1f5f9;
     color: #475569;
+    border: 1px solid #e2e8f0;
 }
 
-.status-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: currentColor;
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 900;
+.status-pill.purple {
+    background: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
 }
 
 .order-body {
-    padding: 20px;
+    padding: 24px;
 }
 
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .info-box {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 13px;
+    padding: 14px 16px;
+}
+
+.info-box i {
+    font-size: 14px;
+    color: #84c341;
+    margin-right: 6px;
 }
 
 .info-box span {
     display: block;
     color: #64748b;
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
 }
 
 .info-box strong {
     display: block;
-    margin-top: 5px;
     color: #0f172a;
     font-size: 15px;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 .tracker-box {
     background: #f8fafc;
-    border-radius: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
     padding: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 0;
 }
 
 .tracker-title {
-    margin: 0 0 15px;
-    font-size: 17px;
+    margin: 0 0 16px;
+    font-size: 16px;
     font-weight: 900;
     color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tracker-title i {
+    font-size: 16px;
+    color: #84c341;
 }
 
 .tracker-step {
-    display: grid;
-    grid-template-columns: 38px 1fr;
-    gap: 13px;
+    display: flex;
+    gap: 14px;
     position: relative;
-    padding-bottom: 18px;
+    padding-bottom: 20px;
 }
 
 .tracker-step:last-child {
@@ -154,7 +179,7 @@
     content: "";
     position: absolute;
     left: 18px;
-    top: 38px;
+    top: 36px;
     bottom: 0;
     width: 2px;
     background: #cbd5e1;
@@ -169,17 +194,22 @@
 }
 
 .step-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: #cbd5e1;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 900;
     z-index: 2;
+    flex-shrink: 0;
+}
+
+.step-icon i {
+    font-size: 14px;
 }
 
 .tracker-step.done .step-icon {
@@ -188,87 +218,127 @@
 
 .tracker-step.active .step-icon {
     background: #2563eb;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
 }
 
 .tracker-step.rejected .step-icon {
     background: #dc2626;
 }
 
+.step-content {
+    flex: 1;
+}
+
 .step-title {
     color: #1f2937;
-    font-size: 16px;
-    font-weight: 900;
-    line-height: 1.2;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
 }
 
 .step-text {
     color: #64748b;
-    font-size: 13px;
-    font-weight: 700;
-    margin-top: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
     line-height: 1.4;
 }
 
+.step-text i {
+    font-size: 10px;
+    margin-right: 4px;
+}
+
 .reject-box {
-    margin-top: 14px;
+    margin-top: 16px;
     background: #fef2f2;
     border: 1px solid #fecaca;
-    color: #b91c1c;
-    padding: 12px;
     border-radius: 14px;
-    font-weight: 800;
-    font-size: 13px;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #b91c1c;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reject-box i {
+    font-size: 16px;
 }
 
 .card {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 24px;
     box-shadow: 0 10px 24px rgba(15,23,42,.06);
-    margin-bottom: 16px;
+    margin-bottom: 24px;
 }
 
 .card h3 {
-    margin: 0 0 14px;
+    margin: 0 0 20px;
     font-size: 18px;
     font-weight: 900;
     color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* EASY ITEM CARDS - NO TABLE */
+.card h3 i {
+    font-size: 18px;
+    color: #84c341;
+}
+
+/* Minimal Items Grid - Like Cart Style */
 .items-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .item-card {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 12px 16px;
 }
 
-.item-top {
-    display: grid;
-    grid-template-columns: 76px 1fr;
-    gap: 12px;
-    padding: 13px;
+.item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.item-info {
+    display: flex;
     align-items: center;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 14px;
+    flex: 2;
+    min-width: 200px;
 }
 
 .item-img {
-    width: 76px;
-    height: 76px;
-    border-radius: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     background: linear-gradient(135deg, #ecfdf5, #eff6ff);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .item-img img {
@@ -279,346 +349,473 @@
 }
 
 .item-letter {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 900;
-    color: #16a34a;
+    color: #84c341;
+}
+
+.item-name-section {
+    flex: 1;
 }
 
 .item-name {
     color: #0f172a;
-    font-size: 16px;
-    font-weight: 900;
-    line-height: 1.25;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.3;
 }
 
 .item-pack {
     display: inline-flex;
-    margin-top: 6px;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
     background: #dcfce7;
     color: #15803d;
-    padding: 5px 9px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 900;
-}
-
-.item-details {
-    padding: 13px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.simple-box {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 15px;
-    padding: 12px;
-}
-
-.simple-box span {
-    display: block;
-    color: #64748b;
-    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 40px;
+    font-size: 9px;
     font-weight: 800;
 }
 
-.simple-box strong {
+.item-pack i {
+    font-size: 8px;
+}
+
+.item-quantity {
+    min-width: 80px;
+    text-align: center;
+}
+
+.item-quantity span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.item-quantity strong {
     display: block;
     color: #0f172a;
     font-size: 16px;
-    font-weight: 900;
-    margin-top: 5px;
-}
-
-.simple-box.amount-box {
-    grid-column: 1 / -1;
-    background: #07120d;
-    color: white;
-}
-
-.simple-box.amount-box span {
-    color: #cbd5e1;
-}
-
-.simple-box.amount-box strong {
-    color: white;
-    font-size: 20px;
-}
-
-.staff-details {
-    grid-column: 1 / -1;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    border-radius: 15px;
-    padding: 12px;
-}
-
-.staff-details-title {
-    color: #92400e;
-    font-size: 12px;
-    font-weight: 900;
-    margin-bottom: 8px;
-}
-
-.staff-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-}
-
-.staff-box {
-    background: white;
-    border: 1px solid #fed7aa;
-    border-radius: 12px;
-    padding: 8px;
-}
-
-.staff-box span {
-    display: block;
-    color: #92400e;
-    font-size: 10px;
     font-weight: 800;
+    margin-top: 2px;
 }
 
-.staff-box strong {
+.item-total {
+    min-width: 100px;
+    text-align: right;
+}
+
+.item-total span {
     display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.item-total strong {
+    display: block;
+    color: #059669;
+    font-size: 16px;
+    font-weight: 800;
+    margin-top: 2px;
+}
+
+.staff-badge {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 4px 8px;
+    margin-top: 8px;
+    width: 100%;
+    display: none;
+}
+
+.staff-badge.show {
+    display: block;
+}
+
+.staff-badge-inner {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.staff-badge-item {
+    font-size: 10px;
+    color: #92400e;
+}
+
+.staff-badge-item strong {
     color: #111827;
-    font-size: 12px;
-    font-weight: 900;
-    margin-top: 3px;
+    font-weight: 800;
 }
 
 .total-row {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .total-box {
     background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 14px 18px;
-    min-width: 240px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 14px 24px;
+    text-align: right;
 }
 
 .total-box span {
     display: block;
     color: #64748b;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .total-box strong {
     display: block;
-    color: #07120d;
-    font-size: 24px;
+    color: #059669;
+    font-size: 26px;
     font-weight: 900;
-    margin-top: 4px;
-}
-
-.actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    margin-top: 6px;
 }
 
 .btn {
     text-decoration: none;
-    padding: 10px 13px;
-    border-radius: 13px;
-    font-weight: 900;
-    background: #07120d;
-    color: white;
-    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
 }
 
-.btn.green { background:#16a34a; }
-.btn.red { background:#dc2626; }
-.btn.blue { background:#00a8e8; }
-.btn.gold { background:#b9792c; }
+.btn i {
+    font-size: 12px;
+}
 
-@media(max-width:700px){
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn.blue {
+    background: #0f172a;
+    color: white;
+}
+
+.btn.green {
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+}
+
+.btn.red {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+}
+
+.btn.gold {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: white;
+}
+
+.btn.call {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+}
+
+.btn.cart {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+/* Actions Section */
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .page {
+        padding: 16px;
+    }
+    
+    .item-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .item-info {
+        flex: auto;
+    }
+    
+    .item-quantity, .item-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .item-quantity {
+        min-width: auto;
+    }
+    
+    .item-total {
+        min-width: auto;
+    }
+    
+    .staff-badge.show {
+        display: block;
+    }
+}
+
+@media (max-width: 700px) {
     .page {
         padding: 12px;
     }
 
     .order-card-head {
-        padding: 15px;
+        padding: 14px 16px;
     }
 
     .order-no {
-        font-size: 17px;
+        font-size: 16px;
     }
-
+    
+    .order-no i {
+        font-size: 18px;
+    }
+    
     .order-no span {
-        font-size: 24px;
-    }
-
-    .order-body {
-        padding: 15px;
-    }
-
-    .tracker-box {
-        padding: 15px;
-        border-radius: 18px;
-    }
-
-    .tracker-step {
-        grid-template-columns: 34px 1fr;
-        gap: 11px;
-    }
-
-    .step-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .tracker-step::before {
-        left: 16px;
-        top: 34px;
-    }
-
-    .step-title {
-        font-size: 14px;
-    }
-
-    .step-text {
-        font-size: 12px;
-    }
-
-    .card {
-        padding: 14px;
-        border-radius: 18px;
-    }
-
-    .items-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .item-top {
-        grid-template-columns: 66px 1fr;
-        padding: 11px;
-    }
-
-    .item-img {
-        width: 66px;
-        height: 66px;
-        border-radius: 14px;
-    }
-
-    .item-name {
-        font-size: 15px;
-    }
-
-    .item-details {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        padding: 11px;
-    }
-
-    .simple-box {
-        padding: 10px;
-    }
-
-    .simple-box span {
-        font-size: 10px;
-    }
-
-    .simple-box strong {
-        font-size: 14px;
-    }
-
-    .simple-box.amount-box strong {
         font-size: 18px;
     }
 
-    .staff-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .status-pill {
+        padding: 4px 12px;
+        font-size: 10px;
     }
 
-    .actions {
-        display: grid;
+    .order-body {
+        padding: 16px;
+    }
+
+    .info-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
     }
 
-    .btn {
-        text-align: center;
+    .tracker-box {
+        padding: 16px;
+    }
+
+    .tracker-step {
+        gap: 12px;
+        padding-bottom: 16px;
+    }
+    
+    .tracker-step::before {
+        left: 16px;
+        top: 32px;
+    }
+
+    .step-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .step-icon i {
+        font-size: 12px;
+    }
+
+    .step-title {
+        font-size: 13px;
+    }
+
+    .step-text {
+        font-size: 11px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .card h3 {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
+    .item-card {
+        padding: 10px 12px;
+    }
+    
+    .item-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .item-letter {
+        font-size: 18px;
+    }
+    
+    .item-name {
+        font-size: 13px;
+    }
+
+    .item-quantity strong {
+        font-size: 14px;
+    }
+    
+    .item-total strong {
+        font-size: 14px;
     }
 
     .total-row {
-        justify-content: stretch;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .total-box {
+        text-align: center;
+        padding: 12px 20px;
+        width: 100%;
+    }
+    
+    .total-box strong {
+        font-size: 22px;
     }
 
-    .total-box {
+    .actions {
+        flex-direction: column;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
         width: 100%;
+    }
+
+    .btn {
+        justify-content: center;
+        padding: 8px 16px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-no {
+        font-size: 14px;
+    }
+    
+    .order-no i {
+        font-size: 16px;
+    }
+    
+    .order-no span {
+        font-size: 16px;
+    }
+    
+    .staff-badge-inner {
+        flex-direction: column;
+        gap: 6px;
     }
 }
 </style>
 
 <div class="page">
 
+    <!-- Order Header Card -->
     <div class="order-card">
         <div class="order-card-head">
             <h2 class="order-no">
-                <span>#</span>
-                ORD-{{ order.placed_at|date:"Ymd" }}{{ order.id }}
+                <i class="fas fa-receipt"></i>
+                <span>#ORD-{{ order.placed_at|date:"Ymd" }}{{ order.id }}</span>
             </h2>
 
             {% if order.status == "DELIVERED" %}
                 <div class="status-pill green">
-                    <span class="status-dot">✓</span>
-                    DELIVERED
+                    <i class="fas fa-check-circle"></i> DELIVERED
                 </div>
             {% elif order.status == "REJECTED" %}
                 <div class="status-pill red">
-                    <span class="status-dot">×</span>
-                    REJECTED
+                    <i class="fas fa-times-circle"></i> REJECTED
                 </div>
             {% elif order.status == "DISPATCHED" %}
                 <div class="status-pill orange">
-                    <span class="status-dot">✓</span>
-                    DISPATCHED
+                    <i class="fas fa-truck"></i> DISPATCHED
                 </div>
             {% elif order.status == "DISPATCH_PENDING" %}
                 <div class="status-pill orange">
-                    <span class="status-dot">•</span>
-                    DISPATCH PENDING
+                    <i class="fas fa-box"></i> DISPATCH PENDING
                 </div>
             {% elif order.status == "ACCOUNTANT_INVOICE_REVIEW" %}
-                <div class="status-pill blue">
-                    <span class="status-dot">•</span>
-                    INVOICE REVIEW
+                <div class="status-pill purple">
+                    <i class="fas fa-file-invoice"></i> INVOICE REVIEW
                 </div>
             {% elif order.status == "WAREHOUSE_REVIEW" %}
+                <div class="status-pill purple">
+                    <i class="fas fa-warehouse"></i> WAREHOUSE REVIEW
+                </div>
+            {% elif order.status == "ASM_APPROVAL" %}
                 <div class="status-pill blue">
-                    <span class="status-dot">•</span>
-                    WAREHOUSE REVIEW
+                    <i class="fas fa-user-tie"></i> ASM APPROVAL
+                </div>
+            {% elif order.status == "SALES_APPROVAL" %}
+                <div class="status-pill blue">
+                    <i class="fas fa-user-check"></i> SALES APPROVAL
+                </div>
+            {% elif order.status == "ACCOUNTANT_ORDER_APPROVAL" %}
+                <div class="status-pill blue">
+                    <i class="fas fa-calculator"></i> ACCOUNTANT APPROVAL
                 </div>
             {% else %}
                 <div class="status-pill gray">
-                    <span class="status-dot">•</span>
-                    PROCESSING
+                    <i class="fas fa-spinner"></i> PROCESSING
                 </div>
             {% endif %}
         </div>
 
         <div class="order-body">
             <div class="info-grid">
-                <div class="info-box">
-                    <span>Dealer</span>
-                    <strong>{{ order.dealer.firm_name }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Placed Date</span>
-                    <strong>{{ order.placed_at|date:"d M Y, h:i A" }}</strong>
-                </div>
+        
 
                 {% if role != "DEALER" %}
                     <div class="info-box">
+                        <i class="fas fa-store"></i>
+                        <span>Dealer</span>
+                        <strong>{{ order.dealer.firm_name }}</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-calendar"></i>
+                        <span>Placed Date</span>
+                        <strong>{{ order.placed_at|date:"d M Y, h:i A" }}</strong>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-flag"></i>
                         <span>Dealer Flag</span>
                         <strong>{{ order.get_dealer_flag_display }}</strong>
                     </div>
@@ -626,41 +823,37 @@
 
                 {% if order.invoice %}
                     <div class="info-box">
+                        <i class="fas fa-file-invoice"></i>
                         <span>Invoice No.</span>
                         <strong>{{ order.invoice.invoice_number }}</strong>
                     </div>
                 {% endif %}
-
             </div>
 
+            <!-- Tracker -->
             <div class="tracker-box">
-                <h3 class="tracker-title">Order Tracking</h3>
+                <div class="tracker-title">
+                    <i class="fas fa-chart-line"></i>
+                    Order Tracking
+                </div>
 
                 <div class="tracker-step done">
-                    <div class="step-icon">✓</div>
-                    <div>
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div class="step-content">
                         <div class="step-title">Order Placed</div>
                         <div class="step-text">
-                            Your order has been placed successfully.
-                            {% if order.placed_at %}
-                                <br>{{ order.placed_at|date:"d M Y, h:i A" }}
-                            {% endif %}
+                            <i class="fas fa-clock"></i> {{ order.placed_at|date:"d M Y, h:i A" }}
                         </div>
                     </div>
                 </div>
 
                 <div class="tracker-step {% if order.status == 'REJECTED' %}rejected{% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}done{% else %}active{% endif %}">
                     <div class="step-icon">
-                        {% if order.status == "REJECTED" %}
-                            ×
-                        {% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}
-                            ✓
-                        {% else %}
-                            •
-                        {% endif %}
+                        {% if order.status == "REJECTED" %}<i class="fas fa-times"></i>
+                        {% elif order.sales_approved_at or order.asm_approved_at or order.rsm_approved_at or order.accountant_order_approved_at or order.warehouse_reviewed_at or order.invoice_released_at or order.dispatched_at or order.delivered_at %}<i class="fas fa-check"></i>
+                        {% else %}<i class="fas fa-cogs"></i>{% endif %}
                     </div>
-
-                    <div>
+                    <div class="step-content">
                         <div class="step-title">Processing</div>
                         <div class="step-text">
                             {% if order.status == "REJECTED" %}
@@ -676,15 +869,14 @@
 
                 <div class="tracker-step {% if order.dispatched_at or order.delivered_at %}done{% elif order.status == 'DISPATCH_PENDING' %}active{% endif %}">
                     <div class="step-icon">
-                        {% if order.dispatched_at or order.delivered_at %}✓{% else %}•{% endif %}
+                        {% if order.dispatched_at or order.delivered_at %}<i class="fas fa-check"></i>
+                        {% else %}<i class="fas fa-truck"></i>{% endif %}
                     </div>
-
-                    <div>
+                    <div class="step-content">
                         <div class="step-title">Dispatched</div>
                         <div class="step-text">
                             {% if order.dispatched_at %}
-                                Your order has been dispatched.
-                                <br>{{ order.dispatched_at|date:"d M Y, h:i A" }}
+                                <i class="fas fa-clock"></i> {{ order.dispatched_at|date:"d M Y, h:i A" }}
                             {% elif order.status == "DISPATCH_PENDING" %}
                                 Dispatch is pending from warehouse.
                             {% else %}
@@ -695,16 +887,12 @@
                 </div>
 
                 <div class="tracker-step {% if order.delivered_at %}done{% elif order.status == 'DISPATCHED' %}active{% endif %}">
-                    <div class="step-icon">
-                        {% if order.delivered_at %}✓{% else %}•{% endif %}
-                    </div>
-
-                    <div>
+                    <div class="step-icon"><i class="fas fa-home"></i></div>
+                    <div class="step-content">
                         <div class="step-title">Delivered</div>
                         <div class="step-text">
                             {% if order.delivered_at %}
-                                Order delivered successfully.
-                                <br>{{ order.delivered_at|date:"d M Y, h:i A" }}
+                                <i class="fas fa-clock"></i> {{ order.delivered_at|date:"d M Y, h:i A" }}
                             {% elif order.status == "DISPATCHED" %}
                                 Waiting for dealer delivery acceptance.
                             {% else %}
@@ -716,100 +904,68 @@
 
                 {% if order.status == "REJECTED" %}
                     <div class="reject-box">
-                        Rejected Reason:
-                        {{ order.rejection_reason|default:"No reason added." }}
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Rejected Reason: {{ order.rejection_reason|default:"No reason added." }}
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
+    <!-- Products Card - Minimal Like Cart -->
     <div class="card">
-        <h3>Ordered Products</h3>
+        <h3>
+            <i class="fas fa-shopping-cart"></i>
+            Ordered Products
+        </h3>
 
         <div class="items-grid">
             {% for item in order.items.all %}
                 <div class="item-card">
-                    <div class="item-top">
+                    <div class="item-info">
                         <div class="item-img">
                             {% if item.product_pack.product.image %}
                                 <img src="{{ item.product_pack.product.image.url }}" alt="{{ item.product_name }}">
                             {% else %}
                                 <div class="item-letter">
-                                    {{ item.product_name|first|upper }}
+                                    <i class="fas fa-seedling"></i>
                                 </div>
                             {% endif %}
                         </div>
-
-                        <div>
+                        <div class="item-name-section">
                             <div class="item-name">{{ item.product_name }}</div>
-                            <div class="item-pack">{{ item.pack_label }}</div>
-                        </div>
-                    </div>
-
-                    <div class="item-details">
-                        <div class="simple-box">
-                            <span>No. of Boxes</span>
-                            <strong>{{ item.quantity_boxes }}</strong>
-                        </div>
-
-                        <div class="simple-box">
-                            <span>Total Quantity</span>
-                            <strong>{{ item.total_units }} {{ item.unit_name }}</strong>
-                        </div>
-
-                        <div class="simple-box">
-                            <span>Pack Size</span>
-                            <strong>{{ item.pack_label }}</strong>
-                        </div>
-
-                        <div class="simple-box">
-                            <span>Price</span>
-                            <strong>₹{{ item.price_per_unit }}</strong>
-                        </div>
-
-                        <div class="simple-box amount-box">
-                            <span>Total Amount</span>
-                            <strong>₹{{ item.total_amount }}</strong>
-                        </div>
-
-                        {% if role != "DEALER" %}
-                            <div class="staff-details">
-                                <div class="staff-details-title">
-                                    Invoice / Warehouse Details
-                                </div>
-
-                                <div class="staff-grid">
-                                    <div class="staff-box">
-                                        <span>HSN</span>
-                                        <strong>{{ item.hsn_code|default:"-" }}</strong>
-                                    </div>
-
-                                    <div class="staff-box">
-                                        <span>Batch</span>
-                                        <strong>{{ item.batch_no|default:"-" }}</strong>
-                                    </div>
-
-                                    <div class="staff-box">
-                                        <span>MFG</span>
-                                        <strong>{{ item.mfg_date|default:"-" }}</strong>
-                                    </div>
-
-                                    <div class="staff-box">
-                                        <span>EXP</span>
-                                        <strong>{{ item.expiry_date|default:"-" }}</strong>
-                                    </div>
-                                </div>
+                            <div class="item-pack">
+                                <i class="fas fa-cube"></i> {{ item.pack_label }}
                             </div>
-                        {% endif %}
+                        </div>
                     </div>
+
+                    <div class="item-quantity">
+                        <span><i class="fas fa-box"></i> Qty</span>
+                        <strong>{{ item.quantity_boxes }} Boxes</strong>
+                    </div>
+
+                    <div class="item-total">
+                        <span><i class="fas fa-rupee-sign"></i> Amount</span>
+                        <strong>₹{{ item.total_amount }}</strong>
+                    </div>
+
+                    {% if role != "DEALER" %}
+                        <div class="staff-badge show">
+                            <div class="staff-badge-inner">
+                                <div class="staff-badge-item"><strong>HSN:</strong> {{ item.hsn_code|default:"-" }}</div>
+                                <div class="staff-badge-item"><strong>Batch:</strong> {{ item.batch_no|default:"-" }}</div>
+                                <div class="staff-badge-item"><strong>MFG:</strong> {{ item.mfg_date|default:"-" }}</div>
+                                <div class="staff-badge-item"><strong>EXP:</strong> {{ item.expiry_date|default:"-" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% empty %}
                 <div class="item-card">
-                    <div class="item-details">
-                        <div class="simple-box amount-box">
-                            <span>No products found</span>
-                            <strong>-</strong>
+                    <div class="item-info">
+                        <div class="item-name-section">
+                            <div class="item-name">No products found</div>
                         </div>
                     </div>
                 </div>
@@ -818,72 +974,87 @@
 
         <div class="total-row">
             <div class="total-box">
-                <span>Order Total</span>
+                <span><i class="fas fa-rupee-sign"></i> Order Total</span>
                 <strong>₹{{ order.total_amount }}</strong>
             </div>
         </div>
     </div>
 
+    <!-- Actions Card -->
     <div class="card">
-        <h3>Actions</h3>
+        <h3>
+            <i class="fas fa-bolt"></i>
+            Actions
+        </h3>
 
         <div class="actions">
             <a href="{% url 'dealer_order_list' %}" class="btn blue">
-                Back
+                <i class="fas fa-arrow-left"></i> Back
             </a>
 
+            {% if role == "DEALER" %}
+                <div class="action-buttons">
+                    <a href="{% url 'dealer_products' %}" class="btn cart">
+                        <i class="fas fa-shopping-cart"></i> Buy More
+                    </a>
+                    <button onclick="makeCall('8500352005')" class="btn call">
+                        <i class="fas fa-headset"></i> Customer Care
+                    </button>
+                </div>
+            {% endif %}
+
             {% if permissions.can_approve %}
-                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green">
-                    Approve
+                <a href="{% url 'dealer_order_approve' order.id %}" class="btn green" onclick="return confirm('Approve this order?')">
+                    <i class="fas fa-check-circle"></i> Approve
                 </a>
             {% endif %}
 
             {% if permissions.can_reject %}
-                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red">
-                    Reject
+                <a href="{% url 'dealer_order_reject' order.id %}" class="btn red" onclick="return confirm('Reject this order?')">
+                    <i class="fas fa-times-circle"></i> Reject
                 </a>
             {% endif %}
 
             {% if permissions.can_warehouse_review %}
                 <a href="{% url 'warehouse_order_review' order.id %}" class="btn green">
-                    Warehouse Review
+                    <i class="fas fa-warehouse"></i> Warehouse Review
                 </a>
             {% endif %}
 
             {% if permissions.can_accountant_invoice_review %}
                 <a href="{% url 'accountant_invoice_review' order.id %}" class="btn green">
-                    Invoice Review
+                    <i class="fas fa-file-invoice"></i> Invoice Review
                 </a>
             {% endif %}
 
             {% if permissions.can_dispatch %}
                 <a href="{% url 'warehouse_dispatch_order' order.id %}" class="btn green">
-                    Dispatch Order
+                    <i class="fas fa-truck"></i> Dispatch Order
                 </a>
             {% endif %}
 
             {% if permissions.can_accept_delivery %}
-                <a href="{% url 'dealer_accept_delivery' order.id %}" class="btn green">
-                    Accept Delivery
+                <a href="{% url 'dealer_accept_delivery' order.id %}" class="btn green" onclick="return confirm('Accept delivery?')">
+                    <i class="fas fa-check-double"></i> Accept Delivery
                 </a>
             {% endif %}
 
             {% if order.invoice %}
                 {% if permissions.can_view_dealer_copy %}
-                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'DEALER' %}" class="btn">
-                        Dealer Copy
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'DEALER' %}" target="_blank" class="btn blue">
+                        <i class="fas fa-print"></i> Dealer Copy
                     </a>
                 {% endif %}
 
                 {% if permissions.can_view_company_copy %}
-                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'COMPANY' %}" class="btn green">
-                        Company Copy
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'COMPANY' %}" target="_blank" class="btn green">
+                        <i class="fas fa-building"></i> Company Copy
                     </a>
                 {% endif %}
 
                 {% if permissions.can_view_transporter_copy %}
-                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'TRANSPORTER' %}" class="btn gold">
-                        Transporter Copy
+                    <a href="{% url 'dealer_invoice_print' order.invoice.id 'TRANSPORTER' %}" target="_blank" class="btn gold">
+                        <i class="fas fa-truck-fast"></i> Transporter Copy
                     </a>
                 {% endif %}
             {% endif %}
@@ -891,4 +1062,12 @@
     </div>
 
 </div>
+
+<script>
+function makeCall(phoneNumber) {
+    if (phoneNumber) {
+        window.location.href = 'tel:' + phoneNumber;
+    }
+}
+</script>
 {% endblock %}

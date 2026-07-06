@@ -2,235 +2,612 @@
 
 {% block content %}
 <style>
-.page { padding: 18px; }
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
 
 .card {
-    max-width: 850px;
+    max-width: 900px;
     margin: 0 auto;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 24px;
-    padding: 18px;
-    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
 }
 
 h2 {
     margin: 0;
     color: #0f172a;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.meta {
+h2 i {
+    color: #84c341;
+    font-size: 24px;
+}
+
+/* Compact Meta */
+.meta-compact {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-item i {
+    color: #84c341;
+    font-size: 14px;
+}
+
+.meta-item span {
     color: #64748b;
-    font-weight: 750;
-    line-height: 1.6;
-    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 700;
 }
 
+.meta-item strong {
+    color: #0f172a;
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+/* Info Grid - 3 columns desktop, 2 columns mobile */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    margin-top: 14px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
 .info {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 15px;
-    padding: 12px;
+    border-radius: 14px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+.info:hover {
+    border-color: #84c341;
+    background: #fefce8;
 }
 
 .info span {
     display: block;
     color: #64748b;
-    font-size: 11px;
-    font-weight: 900;
+    font-size: 10px;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+}
+
+.info span i {
+    font-size: 9px;
+    margin-right: 3px;
 }
 
 .info strong {
     display: block;
-    margin-top: 5px;
     color: #0f172a;
-    font-weight: 900;
+    font-size: 15px;
+    font-weight: 800;
 }
 
+.info.total {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.info.total strong {
+    color: #059669;
+    font-size: 16px;
+}
+
+.info.travel {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.info.travel strong {
+    color: #1d4ed8;
+}
+
+/* Location Row */
+.location-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.location-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px 12px;
+}
+
+.location-box span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.location-box span i {
+    margin-right: 4px;
+}
+
+.location-box a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.location-box a:hover {
+    text-decoration: underline;
+}
+
+/* Image Grid - Compact */
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-    gap: 10px;
-    margin-top: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
 .image-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 10px;
+    border-radius: 14px;
+    padding: 8px;
+    text-align: center;
+}
+
+.image-box strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
 }
 
 .image-box img {
     width: 100%;
-    height: 170px;
+    height: 100px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
+.image-box a {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.image-box a:hover {
+    text-decoration: underline;
+}
+
+/* Form Fields - Compact */
 .field {
-    margin-top: 14px;
+    margin-bottom: 14px;
 }
 
 .field label {
     display: block;
     color: #334155;
-    font-size: 13px;
-    font-weight: 900;
-    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field label i {
+    margin-right: 5px;
+    color: #84c341;
 }
 
 .field input,
 .field textarea {
     width: 100%;
-    padding: 12px;
+    padding: 10px 12px;
     border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    font-weight: 800;
+    border: 2px solid #e5e7eb;
+    font-weight: 600;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    font-size: 13px;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+    list-style: none;
+    padding-left: 0;
 }
 
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .btn {
     border: none;
-    border-radius: 14px;
-    padding: 12px 16px;
+    border-radius: 40px;
+    padding: 10px 20px;
     color: white;
-    font-weight: 900;
+    font-weight: 800;
     text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 13px;
+}
+
+.btn i {
+    font-size: 13px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn.green { background: linear-gradient(135deg, #16a34a, #059669); }
+.btn.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+
+/* Image Modal */
+.image-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 
-.btn.green { background: #16a34a; }
-.btn.dark { background: #0f172a; }
+.image-modal.active {
+    display: flex;
+}
 
-@media(max-width: 650px) {
-    .page { padding: 12px; }
-    .btn-row { display: grid; grid-template-columns: 1fr; }
-    .btn { text-align: center; }
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.modal-close:hover {
+    opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 18px;
+        border-radius: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .meta-compact {
+        padding: 10px 12px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* 2 columns on tablet/mobile */
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .location-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+    
+    .btn-row {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    .card {
+        padding: 14px;
+        border-radius: 20px;
+    }
+    
+    h2 {
+        font-size: 18px;
+    }
+    
+    .meta-item {
+        font-size: 11px;
+    }
+    
+    /* 2 columns on mobile - reduces width consumption */
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .info {
+        padding: 8px 10px;
+    }
+    
+    .info strong {
+        font-size: 13px;
+    }
+    
+    .info.total strong {
+        font-size: 14px;
+    }
+    
+    .field input,
+    .field textarea {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    .image-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
 }
 </style>
 
 <div class="page">
     <div class="card">
-        <h2>Review Attendance Claim</h2>
+        <h2>
+            <i class="fas fa-clipboard-list"></i>
+            Review Attendance Claim
+        </h2>
 
-        <div class="meta">
-            Employee: <b>{{ attendance.employee.get_full_name|default:attendance.employee.username }}</b><br>
-            Date: {{ attendance.attendance_date|date:"d M Y" }}<br>
-            Vehicle: {{ attendance.get_vehicle_type_display }}
+        <!-- Compact Meta Section -->
+        <div class="meta-compact">
+            <div class="meta-item">
+                <i class="fas fa-user"></i>
+                <span>Employee:</span>
+                <strong>{{ attendance.employee.get_full_name|default:attendance.employee.username }}</strong>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Date:</span>
+                <strong>{{ attendance.attendance_date|date:"d M Y" }}</strong>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-car"></i>
+                <span>Vehicle:</span>
+                <strong>{{ attendance.get_vehicle_type_display }}</strong>
+            </div>
         </div>
 
+        <!-- Info Grid - 3 columns desktop, 2 columns mobile -->
         <div class="info-grid">
-            <div class="info">
-                <span>System Tracked KM</span>
-                <strong>{{ attendance.system_distance_km }} KM</strong>
+            <div class="info travel">
+                <span><i class="fas fa-road"></i> System KM</span>
+                <strong>{{ attendance.system_distance_km|floatformat:1 }} KM</strong>
             </div>
 
             <div class="info">
-                <span>Current Approved KM</span>
-                <strong>{{ attendance.manager_approved_km }} KM</strong>
+                <span><i class="fas fa-check-circle"></i> Approved KM</span>
+                <strong>{{ attendance.manager_approved_km|floatformat:1 }} KM</strong>
             </div>
 
             <div class="info">
-                <span>TA Rate</span>
-                <strong>₹{{ attendance.ta_rate_per_km }}/KM</strong>
+                <span><i class="fas fa-tachometer-alt"></i> TA Rate</span>
+                <strong>₹{{ attendance.ta_rate_per_km|floatformat:2 }}/KM</strong>
             </div>
 
             <div class="info">
-                <span>TA Amount</span>
-                <strong>₹{{ attendance.ta_amount }}</strong>
+                <span><i class="fas fa-rupee-sign"></i> TA Amount</span>
+                <strong>₹{{ attendance.ta_amount|floatformat:0 }}</strong>
             </div>
 
             <div class="info">
-                <span>DA Amount</span>
-                <strong>₹{{ attendance.da_amount }}</strong>
+                <span><i class="fas fa-coffee"></i> DA Amount</span>
+                <strong>₹{{ attendance.da_amount|floatformat:0 }}</strong>
             </div>
 
-            <div class="info">
-                <span>Total Claim</span>
-                <strong>₹{{ attendance.total_claim_amount }}</strong>
-            </div>
-        </div>
-
-        <div class="info-grid">
-            <div class="info">
-                <span>Clock In Location</span>
-                <strong>
-                    <a target="_blank" href="https://www.google.com/maps?q={{ attendance.clock_in_latitude }},{{ attendance.clock_in_longitude }}">
-                        Open Map
-                    </a>
-                </strong>
-            </div>
-
-            <div class="info">
-                <span>Clock Out Location</span>
-                <strong>
-                    <a target="_blank" href="https://www.google.com/maps?q={{ attendance.clock_out_latitude }},{{ attendance.clock_out_longitude }}">
-                        Open Map
-                    </a>
-                </strong>
+            <div class="info total">
+                <span><i class="fas fa-calculator"></i> Total Claim</span>
+                <strong>₹{{ attendance.total_claim_amount|floatformat:0 }}</strong>
             </div>
         </div>
 
+        <!-- Location Row -->
+        <div class="location-row">
+            <div class="location-box">
+                <span><i class="fas fa-map-marker-alt"></i> Clock In Location</span>
+                <a href="https://www.google.com/maps?q={{ attendance.clock_in_latitude }},{{ attendance.clock_in_longitude }}" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View on Map
+                </a>
+            </div>
+
+            <div class="location-box">
+                <span><i class="fas fa-map-marker-alt"></i> Clock Out Location</span>
+                <a href="https://www.google.com/maps?q={{ attendance.clock_out_latitude }},{{ attendance.clock_out_longitude }}" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View on Map
+                </a>
+            </div>
+        </div>
+
+        <!-- Images Section -->
+        {% if attendance.dealer_visit_image_1 or attendance.dealer_visit_image_2 or attendance.public_vehicle_bill %}
         <div class="image-grid">
             {% if attendance.dealer_visit_image_1 %}
                 <div class="image-box">
-                    <strong>Dealer Visit Image 1</strong>
-                    <img src="{{ attendance.dealer_visit_image_1.url }}" alt="Dealer Visit 1">
+                    <strong><i class="fas fa-store"></i> Dealer Visit 1</strong>
+                    <img src="{{ attendance.dealer_visit_image_1.url }}" alt="Dealer Visit 1" onclick="openImageModal(this.src)">
                 </div>
             {% endif %}
 
             {% if attendance.dealer_visit_image_2 %}
                 <div class="image-box">
-                    <strong>Dealer Visit Image 2</strong>
-                    <img src="{{ attendance.dealer_visit_image_2.url }}" alt="Dealer Visit 2">
+                    <strong><i class="fas fa-store"></i> Dealer Visit 2</strong>
+                    <img src="{{ attendance.dealer_visit_image_2.url }}" alt="Dealer Visit 2" onclick="openImageModal(this.src)">
                 </div>
             {% endif %}
 
             {% if attendance.public_vehicle_bill %}
                 <div class="image-box">
-                    <strong>Public Vehicle Bill</strong><br>
-                    <a href="{{ attendance.public_vehicle_bill.url }}" target="_blank">View Bill</a>
+                    <strong><i class="fas fa-file-invoice"></i> Public Vehicle Bill</strong>
+                    <a href="{{ attendance.public_vehicle_bill.url }}" target="_blank">
+                        <i class="fas fa-download"></i> View Bill
+                    </a>
                 </div>
             {% endif %}
         </div>
+        {% endif %}
 
+        <!-- Approval Form -->
         <form method="post">
             {% csrf_token %}
 
             <div class="field">
-                <label>Manager Approved KM</label>
+                <label><i class="fas fa-edit"></i> Manager Approved KM</label>
                 {{ form.manager_approved_km }}
                 {{ form.manager_approved_km.errors }}
             </div>
 
             <div class="field">
-                <label>Manager Remarks</label>
+                <label><i class="fas fa-comment"></i> Manager Remarks</label>
                 {{ form.manager_remarks }}
                 {{ form.manager_remarks.errors }}
             </div>
 
             <div class="btn-row">
-                <button type="submit" class="btn green">Approve & Send to HR</button>
-                <a href="{% url 'manager_attendance_approvals' %}" class="btn dark">Back</a>
+                <button type="submit" class="btn green">
+                    <i class="fas fa-check-circle"></i> Approve & Send to HR
+                </button>
+                <a href="{% url 'manager_attendance_approvals' %}" class="btn dark">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <button class="modal-close" onclick="closeImageModal()">&times;</button>
+    <img id="modalImage" src="" alt="Full Size Image">
+</div>
+
+<script>
+function openImageModal(src) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = src;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+</script>
 {% endblock %}

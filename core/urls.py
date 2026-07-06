@@ -131,6 +131,9 @@ urlpatterns = [
             views.product_edit,
             name="product_edit",
         ),
+    path("products/<int:product_id>/deactivate/", views.product_deactivate, name="product_deactivate"),
+    path("products/<int:product_id>/force-delete/", views.product_force_delete, name="product_force_delete"),
+    path('dealer/product/<int:product_id>/', views.dealer_product_detail, name='dealer_product_detail'),
 
     path("dealer/products/", views.dealer_products, name="dealer_products"),
     path("dealer/cart/", views.dealer_cart, name="dealer_cart"),
@@ -282,6 +285,11 @@ path("hr/attendance/<int:attendance_id>/approve/", views.hr_approve_attendance, 
 
 path("accountant/attendance/claims/", views.accountant_attendance_claims, name="accountant_attendance_claims"),
 path("accountant/attendance/<int:attendance_id>/release/", views.accountant_release_attendance_claim, name="accountant_release_attendance_claim"),
+path(
+    "attendance/accountant-claims/bulk-release/",
+    views.accountant_bulk_release_attendance_claims,
+    name="accountant_bulk_release_attendance_claims"
+),
 
 path("employee/leaves/", views.employee_leave_list, name="employee_leave_list"),
 path("employee/leaves/apply/", views.employee_leave_request_create, name="employee_leave_request_create"),
@@ -404,4 +412,22 @@ path("purchase/entry/<int:bill_id>/history/", views.purchase_entry_history, name
 path("products/stock-transfer/", views.product_stock_transfer_list, name="product_stock_transfer_list"),
 path("products/stock-transfer/create/", views.product_stock_transfer_create, name="product_stock_transfer_create"),
 path("purchase/stock-history/", views.purchase_stock_history, name="purchase_stock_history"),
+path("purchase/formulas/", views.product_formula_list, name="product_formula_list"),
+path("purchase/formulas/create/", views.product_formula_create, name="product_formula_create"),
+path("purchase/formulas/<int:formula_id>/edit/", views.product_formula_edit, name="product_formula_edit"),
+
+path("purchase/smart-production/", views.smart_production_create, name="smart_production_create"),
+path("purchase/smart-production/runs/", views.smart_production_run_list, name="smart_production_run_list"),
+path("purchase/smart-production/runs/<int:run_id>/", views.smart_production_run_detail, name="smart_production_run_detail"),
+path("gst/gstr2b/", views.gstr2b_report, name="gstr2b_report"),
+path("gst/gstr1/", views.gstr1_report, name="gstr1_report"),
+path("gst/gstr3b/", views.gstr3b_report, name="gstr3b_report"),
+# Add this in urls.py if not already added:
+
+path(
+    "pending-action-badges/",
+    views.pending_action_badges_api,
+    name="pending_action_badges_api"
+),
+
 ]

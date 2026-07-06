@@ -2,80 +2,396 @@
 {% block content %}
 
 <style>
-.sh-page{padding:16px;max-width:1350px;margin:0 auto}
-.sh-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 18px 46px rgba(15,23,42,.18)}
-.sh-hero h2{margin:0;font-size:28px;font-weight:900}
-.sh-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
-.sh-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.sh-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
-.sh-btn.green{background:#16a34a}.sh-btn.blue{background:#2563eb}.sh-btn.light{background:#f1f5f9;color:#0f172a}
-.sh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.sh-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
-.sh-card span{display:block;color:#64748b;font-size:12px;font-weight:900}
-.sh-card strong{display:block;color:#0f172a;font-size:24px;font-weight:900;margin-top:8px}
-.sh-card.green strong{color:#16a34a}
-.sh-card.red strong{color:#dc2626}
-.sh-card.orange strong{color:#d97706}
-.sh-form-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
-.sh-filter{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:10px;align-items:end}
-.sh-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
-.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
-.form-control:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.12)}
-.sh-section-title{margin:0 0 12px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
-.sh-table-wrap{overflow:auto;background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
-.sh-table{width:100%;border-collapse:collapse;min-width:1000px}
-.sh-table th,.sh-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
-.sh-table th{background:#f8fafc;font-weight:900;color:#334155}
-.sh-table td{font-weight:800;color:#0f172a}
-.text-right{text-align:right!important}
-.badge{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900}
-.badge.purchase{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
-.badge.used{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
-.badge.returned{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
-.stock-ok{color:#16a34a;font-weight:900}
-.stock-low{color:#dc2626;font-weight:900}
-.sh-empty{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:24px;text-align:center;color:#64748b;font-weight:900}
-@media(max-width:950px){.sh-grid{grid-template-columns:repeat(2,1fr)}.sh-filter{grid-template-columns:1fr}}
-@media(max-width:600px){.sh-page{padding:10px}.sh-grid{grid-template-columns:1fr}.sh-hero{padding:18px;border-radius:20px}.sh-actions{display:grid;grid-template-columns:1fr}.sh-btn{justify-content:center}}
+.sh-page{
+    padding:16px;
+    max-width:1350px;
+    margin:0 auto;
+    background:#f8fafc;
+}
+
+.sh-hero{
+    background:#07120d;
+    color:white;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:16px;
+    border:1px solid #123020;
+}
+
+.sh-hero-head{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.sh-hero-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#16a34a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.sh-hero-icon svg{
+    width:25px;
+    height:25px;
+}
+
+.sh-hero h2{
+    margin:0;
+    font-size:26px;
+    font-weight:900;
+    line-height:1.2;
+}
+
+.sh-hero p{
+    margin:7px 0 0;
+    color:#dcfce7;
+    font-size:13px;
+    font-weight:700;
+}
+
+.sh-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+}
+
+.sh-btn{
+    border:0;
+    text-decoration:none;
+    border-radius:11px;
+    padding:10px 13px;
+    font-size:13px;
+    font-weight:900;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    background:#07120d;
+    color:white;
+    white-space:nowrap;
+}
+
+.sh-btn svg{
+    width:16px;
+    height:16px;
+    flex:0 0 auto;
+}
+
+.sh-btn.green{
+    background:#16a34a;
+    color:white;
+}
+
+.sh-btn.blue{
+    background:#2563eb;
+    color:white;
+}
+
+.sh-btn.light{
+    background:#f1f5f9;
+    color:#0f172a;
+    border:1px solid #e2e8f0;
+}
+
+.sh-form-card{
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:16px;
+}
+
+.sh-section-title{
+    margin:0 0 14px;
+    padding:0 0 12px;
+    border-bottom:1px solid #e2e8f0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#0f172a;
+    font-size:18px;
+    font-weight:900;
+}
+
+.sh-section-title span{
+    width:36px;
+    height:36px;
+    border-radius:12px;
+    background:#ecfdf5;
+    color:#047857;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.sh-section-title.blue span{
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.sh-section-title.orange span{
+    background:#fff7ed;
+    color:#c2410c;
+}
+
+.sh-section-title svg{
+    width:20px;
+    height:20px;
+}
+
+.sh-filter{
+    display:grid;
+    grid-template-columns:1.5fr .8fr .8fr auto;
+    gap:10px;
+    align-items:end;
+}
+
+.sh-field label{
+    display:block;
+    font-size:12px;
+    font-weight:900;
+    color:#334155;
+    margin-bottom:6px;
+}
+
+.form-control{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    padding:10px 11px;
+    min-height:42px;
+    font-weight:800;
+    background:white;
+    color:#0f172a;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#16a34a;
+}
+
+.sh-table-wrap{
+    overflow:auto;
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+}
+
+.sh-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1000px;
+}
+
+.sh-table th{
+    background:#07120d;
+    color:white;
+    font-size:12px;
+    font-weight:900;
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid #123020;
+    white-space:nowrap;
+}
+
+.sh-table th:first-child{
+    border-top-left-radius:14px;
+}
+
+.sh-table th:last-child{
+    border-top-right-radius:14px;
+}
+
+.sh-table td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+    font-size:13px;
+    font-weight:800;
+    color:#0f172a;
+    white-space:nowrap;
+}
+
+.sh-table tbody tr:nth-child(even){
+    background:#f8fafc;
+}
+
+.text-right{
+    text-align:right!important;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.badge.purchase{
+    background:#ecfdf5;
+    color:#047857;
+    border:1px solid #bbf7d0;
+}
+
+.badge.used{
+    background:#fff7ed;
+    color:#c2410c;
+    border:1px solid #fed7aa;
+}
+
+.badge.returned{
+    background:#fef2f2;
+    color:#b91c1c;
+    border:1px solid #fecaca;
+}
+
+.stock-ok{
+    color:#16a34a;
+    font-weight:900;
+}
+
+.stock-low{
+    color:#dc2626;
+    font-weight:900;
+}
+
+.sh-empty{
+    background:#f8fafc;
+    border:1px dashed #cbd5e1;
+    border-radius:16px;
+    padding:26px;
+    text-align:center;
+    color:#64748b;
+    font-weight:900;
+}
+
+@media(max-width:950px){
+    .sh-filter{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+    .sh-page{
+        padding:10px;
+    }
+
+    .sh-hero{
+        padding:17px;
+        border-radius:15px;
+    }
+
+    .sh-hero h2{
+        font-size:22px;
+    }
+
+    .sh-hero-head{
+        align-items:flex-start;
+    }
+
+    .sh-hero-icon{
+        width:42px;
+        height:42px;
+        border-radius:12px;
+    }
+
+    .sh-actions{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .sh-btn{
+        width:100%;
+    }
+
+    .sh-form-card{
+        padding:13px;
+        border-radius:15px;
+    }
+
+    .sh-section-title{
+        font-size:16px;
+    }
+}
 </style>
 
 <div class="sh-page">
 
     <div class="sh-hero">
-        <h2>Stock Usage History</h2>
-        <p>Track purchased quantity, used production quantity, returned quantity and current remaining stock.</p>
+        <div class="sh-hero-head">
+            <div class="sh-hero-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4 8 4 8-4z"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l8 4 8-4"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 17l8 4 8-4"/>
+                </svg>
+            </div>
+            <div>
+                <h2>Stock Usage History</h2>
+                <p>Track purchased quantity, used production quantity, returned quantity and current remaining stock.</p>
+            </div>
+        </div>
 
+        {% with role=request.user.profile.role %}
         <div class="sh-actions">
-            <a href="{% url 'purchase_dashboard' %}" class="sh-btn light">Back to Purchase</a>
-            <a href="{% url 'purchase_entry_create' %}" class="sh-btn green">+ Purchase Entry</a>
-            <a href="{% url 'production_make_product_create' %}" class="sh-btn blue">Production / Repacking</a>
-        </div>
-    </div>
+            <a href="{% url 'purchase_dashboard' %}" class="sh-btn light">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+                </svg>
+                Back to Purchase
+            </a>
 
-    <div class="sh-grid">
-        <div class="sh-card green">
-            <span>Total Purchased</span>
-            <strong>{{ total_purchased|floatformat:3 }}</strong>
-        </div>
+            {% if request.user.is_superuser or role == "ADMIN" or role == "INVENTORY_MANAGER" or role == "ACCOUNTANT" %}
+                <a href="{% url 'purchase_entry_create' %}" class="sh-btn green">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Purchase Entry
+                </a>
+            {% endif %}
 
-        <div class="sh-card orange">
-            <span>Total Used</span>
-            <strong>{{ total_used|floatformat:3 }}</strong>
-        </div>
+            {% if request.user.is_superuser or role == "ADMIN" or role == "INVENTORY_MANAGER" %}
+                <a href="{% url 'smart_production_create' %}" class="sh-btn blue">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M13 3L4 14h7l-1 7 9-12h-7l1-6z"/>
+                    </svg>
+                    Smart Production
+                </a>
 
-        <div class="sh-card red">
-            <span>Total Returned</span>
-            <strong>{{ total_returned|floatformat:3 }}</strong>
+                <a href="{% url 'smart_production_run_list' %}" class="sh-btn light">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7"/>
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v6h6"/>
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/>
+                    </svg>
+                    Production History
+                </a>
+            {% endif %}
         </div>
-
-        <div class="sh-card green">
-            <span>Current Remaining</span>
-            <strong>{{ total_remaining|floatformat:3 }}</strong>
-        </div>
+        {% endwith %}
     </div>
 
     <div class="sh-form-card">
-        <h3 class="sh-section-title">Filter</h3>
+        <h3 class="sh-section-title">
+            <span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M7 12h10M10 18h4"/>
+                </svg>
+            </span>
+            Filter Stock History
+        </h3>
 
         <form method="get" class="sh-filter">
             <div class="sh-field">
@@ -93,12 +409,26 @@
                 <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
             </div>
 
-            <button type="submit" class="sh-btn green">Search</button>
+            <button type="submit" class="sh-btn green">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" stroke-width="2"/>
+                    <path stroke-width="2" stroke-linecap="round" d="M20 20l-3.5-3.5"/>
+                </svg>
+                Search
+            </button>
         </form>
     </div>
 
     <div class="sh-form-card">
-        <h3 class="sh-section-title">Current Stock Summary</h3>
+        <h3 class="sh-section-title blue">
+            <span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4 8 4 8-4z"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l8 4 8-4"/>
+                </svg>
+            </span>
+            Current Stock Summary
+        </h3>
 
         {% if summary_rows %}
             <div class="sh-table-wrap">
@@ -144,7 +474,16 @@
     </div>
 
     <div class="sh-form-card">
-        <h3 class="sh-section-title">Full Movement History</h3>
+        <h3 class="sh-section-title orange">
+            <span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v6h6"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/>
+                </svg>
+            </span>
+            Full Movement History
+        </h3>
 
         {% if movements %}
             <div class="sh-table-wrap">
@@ -160,6 +499,8 @@
                             <th class="text-right">In Qty</th>
                             <th class="text-right">Out Qty</th>
                             <th>Unit</th>
+                            <th class="text-right">Rate</th>
+                            <th class="text-right">Cost</th>
                             <th>Note</th>
                         </tr>
                     </thead>
@@ -186,6 +527,8 @@
                                 <td class="text-right">{{ m.in_qty|floatformat:3 }}</td>
                                 <td class="text-right">{{ m.out_qty|floatformat:3 }}</td>
                                 <td>{{ m.unit }}</td>
+                                <td class="text-right">₹ {{ m.rate|default:0|floatformat:2 }}</td>
+                                <td class="text-right">₹ {{ m.cost|default:0|floatformat:2 }}</td>
                                 <td>{{ m.note }}</td>
                             </tr>
                         {% endfor %}

@@ -2,163 +2,536 @@
 
 {% block content %}
 <style>
-.page { padding: 18px; }
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
 
 .head {
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 16px;
-    margin-bottom: 14px;
-    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+    border-radius: 28px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
 }
 
 .head h2 {
     margin: 0;
     color: #0f172a;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.head h2 i {
+    color: #84c341;
+    font-size: 24px;
 }
 
 .head p {
+    margin: 6px 0 0;
     color: #64748b;
-    font-weight: 750;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.stat-pill {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stat-pill i {
+    font-size: 14px;
+    color: #84c341;
+}
+
+.stat-pill span {
+    color: #64748b;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.stat-pill strong {
+    color: #0f172a;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+/* Grid */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
 }
 
 .card {
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 15px;
-    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+    border-color: #84c341;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .card h3 {
     margin: 0;
     color: #0f172a;
-    font-size: 17px;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.meta {
-    margin-top: 8px;
+.card h3 i {
+    color: #84c341;
+    font-size: 14px;
+}
+
+.employee-role {
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 3px 8px;
+    border-radius: 40px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Compact Meta */
+.meta-compact {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.meta-chip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
     color: #64748b;
-    font-size: 13px;
-    font-weight: 750;
-    line-height: 1.6;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
+.meta-chip i {
+    font-size: 10px;
+    color: #84c341;
+}
+
+.meta-chip strong {
+    color: #0f172a;
+    font-weight: 800;
+    margin-left: 3px;
+}
+
+/* Compact Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .info {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 8px 6px;
+    text-align: center;
+    transition: all 0.2s ease;
 }
 
 .info span {
     display: block;
     color: #64748b;
-    font-size: 10px;
-    font-weight: 900;
+    font-size: 9px;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+}
+
+.info span i {
+    font-size: 8px;
+    margin-right: 2px;
 }
 
 .info strong {
     display: block;
-    margin-top: 4px;
     color: #0f172a;
-    font-weight: 900;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.info.total {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.info.total strong {
+    color: #059669;
+}
+
+.info.travel {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.info.travel strong {
+    color: #1d4ed8;
+}
+
+/* Button */
+.btn-row {
+    display: flex;
+    gap: 10px;
 }
 
 .btn {
     display: inline-flex;
-    margin-top: 12px;
-    background: #2563eb;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     text-decoration: none;
-    border-radius: 14px;
-    padding: 11px 14px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 8px 16px;
+    font-weight: 800;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.btn i {
+    font-size: 12px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .empty {
     background: white;
-    padding: 24px;
-    border-radius: 20px;
+    padding: 40px;
+    border-radius: 24px;
     border: 1px solid #e2e8f0;
     color: #64748b;
-    font-weight: 800;
+    font-weight: 700;
+    text-align: center;
+    grid-column: 1 / -1;
 }
 
-@media(max-width: 600px) {
-    .page { padding: 12px; }
-    .grid { grid-template-columns: 1fr; }
-    .info-grid { grid-template-columns: 1fr; }
-    .btn { width: 100%; justify-content: center; }
+.empty i {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+    color: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 14px;
+    }
+    
+    .head {
+        padding: 16px 18px;
+        border-radius: 24px;
+    }
+    
+    .head h2 {
+        font-size: 20px;
+    }
+    
+    .head h2 i {
+        font-size: 20px;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+    
+    .card h3 {
+        font-size: 15px;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+    
+    .info {
+        padding: 6px 4px;
+    }
+    
+    .info strong {
+        font-size: 12px;
+    }
+    
+    .info span {
+        font-size: 8px;
+    }
+    
+    .btn {
+        padding: 7px 14px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    .head {
+        padding: 14px 16px;
+        border-radius: 20px;
+    }
+    
+    .head h2 {
+        font-size: 18px;
+    }
+    
+    .head p {
+        font-size: 12px;
+    }
+    
+    .stats-bar {
+        gap: 8px;
+    }
+    
+    .stat-pill {
+        padding: 6px 12px;
+    }
+    
+    .stat-pill i {
+        font-size: 12px;
+    }
+    
+    .stat-pill span {
+        font-size: 11px;
+    }
+    
+    .card {
+        padding: 12px;
+        border-radius: 16px;
+    }
+    
+    .card-header {
+        margin-bottom: 8px;
+    }
+    
+    .card h3 {
+        font-size: 14px;
+    }
+    
+    .employee-role {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+    
+    .meta-compact {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .meta-chip {
+        padding: 3px 8px;
+        font-size: 10px;
+    }
+    
+    .info-grid {
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+    
+    .info {
+        padding: 5px 3px;
+    }
+    
+    .info strong {
+        font-size: 11px;
+    }
+    
+    .info span {
+        font-size: 7px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+    
+    .btn i {
+        font-size: 10px;
+    }
+    
+    .empty {
+        padding: 30px 20px;
+    }
+    
+    .empty i {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 400px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .meta-compact {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .meta-chip {
+        width: fit-content;
+    }
 }
 </style>
 
 <div class="page">
     <div class="head">
-        <h2>Attendance Approvals</h2>
-        <p>Review employee travel KM, dealer visits, TA/DA amount and approve to HR.</p>
+        <h2>
+            <i class="fas fa-user-check"></i>
+            Attendance Approvals
+        </h2>
+        <p>
+            <i class="fas fa-clipboard-list"></i> Review employee travel KM, dealer visits, TA/DA amount and approve to HR.
+        </p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-pill">
+            <i class="fas fa-clock"></i>
+            <span>Pending:</span>
+            <strong>{{ records|length }}</strong>
+        </div>
+        <div class="stat-pill">
+            <i class="fas fa-car"></i>
+            <span>Vehicle:</span>
+            <strong>Bike/Car/Public</strong>
+        </div>
     </div>
 
     {% if records %}
         <div class="grid">
             {% for record in records %}
                 <div class="card">
-                    <h3>{{ record.employee.get_full_name|default:record.employee.username }}</h3>
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-user-circle"></i>
+                            {{ record.employee.get_full_name|default:record.employee.username }}
+                        </h3>
+                        <span class="employee-role">
+                            {% if record.employee.profile %}
+                                {{ record.employee.profile.get_role_display|truncatechars:15 }}
+                            {% else %}
+                                Employee
+                            {% endif %}
+                        </span>
+                    </div>
 
-                    <div class="meta">
-                        Date: {{ record.attendance_date|date:"d M Y" }}<br>
-                        Vehicle: {{ record.get_vehicle_type_display }}<br>
-                        Dealers Connected: {{ record.dealers_connected_count }}
+                    <div class="meta-compact">
+                        <span class="meta-chip">
+                            <i class="fas fa-calendar-alt"></i> {{ record.attendance_date|date:"d M Y" }}
+                        </span>
+                        <span class="meta-chip">
+                            <i class="fas fa-car"></i> {{ record.get_vehicle_type_display }}
+                        </span>
                     </div>
 
                     <div class="info-grid">
-                        <div class="info">
-                            <span>Tracked KM</span>
-                            <strong>{{ record.system_distance_km }} KM</strong>
+                        <div class="info travel">
+                            <span><i class="fas fa-road"></i> KM</span>
+                            <strong>{{ record.system_distance_km|floatformat:1 }}</strong>
                         </div>
 
                         <div class="info">
-                            <span>TA</span>
-                            <strong>₹{{ record.ta_amount }}</strong>
+                            <span><i class="fas fa-rupee-sign"></i> TA</span>
+                            <strong>₹{{ record.ta_amount|floatformat:0 }}</strong>
                         </div>
 
                         <div class="info">
-                            <span>DA</span>
-                            <strong>₹{{ record.da_amount }}</strong>
+                            <span><i class="fas fa-coffee"></i> DA</span>
+                            <strong>₹{{ record.da_amount|floatformat:0 }}</strong>
                         </div>
 
-                        <div class="info">
-                            <span>Total</span>
-                            <strong>₹{{ record.total_claim_amount }}</strong>
+                        <div class="info total">
+                            <span><i class="fas fa-calculator"></i> Total</span>
+                            <strong>₹{{ record.total_claim_amount|floatformat:0 }}</strong>
                         </div>
                     </div>
 
-                    <a href="{% url 'manager_approve_attendance' record.id %}" class="btn">
-                        Review & Approve
-                    </a>
+                    <div class="btn-row">
+                        <a href="{% url 'manager_approve_attendance' record.id %}" class="btn">
+                            <i class="fas fa-check-circle"></i> Review & Approve
+                        </a>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="empty">No pending attendance claims.</div>
+        <div class="empty">
+            <i class="fas fa-check-circle"></i>
+            No pending attendance claims.
+        </div>
     {% endif %}
 </div>
 {% endblock %}

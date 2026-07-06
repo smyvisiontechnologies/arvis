@@ -1,46 +1,381 @@
 {% extends "core/base.html" %}
-
 {% block content %}
-<div style="padding:24px;">
-    <div style="background:white;border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08);">
-        <h2>Farmer Meeting Requests</h2>
 
-        <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;">
-                <thead>
-                    <tr style="background:#f8fafc;">
-                        <th style="padding:12px;text-align:left;">Title</th>
-                        <th style="padding:12px;text-align:left;">Location</th>
-                        <th style="padding:12px;text-align:left;">Date</th>
-                        <th style="padding:12px;text-align:left;">Farmers</th>
-                        <th style="padding:12px;text-align:left;">Status</th>
-                        <th style="padding:12px;text-align:left;">Action</th>
-                    </tr>
-                </thead>
+<style>
+.fm-page{padding:16px;max-width:1350px;margin:0 auto}
+.fm-hero{
+    background:
+        radial-gradient(circle at 15% 20%, rgba(34,197,94,.25), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(37,99,235,.22), transparent 32%),
+        linear-gradient(135deg,#07120d,#123020);
+    color:white;
+    border-radius:28px;
+    padding:24px;
+    margin-bottom:16px;
+    box-shadow:0 18px 46px rgba(15,23,42,.18);
+}
+.fm-hero h2{margin:0;font-size:28px;font-weight:900}
+.fm-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.fm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.fm-btn{
+    border:0;
+    text-decoration:none;
+    background:#07120d;
+    color:white;
+    border-radius:14px;
+    padding:11px 14px;
+    font-weight:900;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+.fm-btn.green{background:#16a34a}
+.fm-btn.blue{background:#2563eb}
+.fm-btn.red{background:#dc2626}
+.fm-btn.light{background:#f1f5f9;color:#0f172a}
 
-                <tbody>
-                    {% for meet in farmer_meets %}
-                        <tr style="border-bottom:1px solid #e5e7eb;">
-                            <td style="padding:12px;">{{ meet.title }}</td>
-                            <td style="padding:12px;">{{ meet.location }}</td>
-                            <td style="padding:12px;">{{ meet.meeting_date }}</td>
-                            <td style="padding:12px;">{{ meet.expected_farmer_count }}</td>
-                            <td style="padding:12px;">{{ meet.get_approval_status_display }}</td>
-                            <td style="padding:12px;">
-                                <a href="{% url 'farmer_meet_detail' meet.id %}" style="background:#2563eb;color:white;padding:8px 12px;border-radius:10px;text-decoration:none;">
-                                    View
-                                </a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6" style="padding:12px;">No farmer meeting requests found.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+.fm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.fm-stat{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+.fm-stat span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.fm-stat strong{display:block;color:#0f172a;font-size:26px;font-weight:900;margin-top:7px}
+.fm-stat.green strong{color:#047857}
+.fm-stat.blue strong{color:#2563eb}
+.fm-stat.orange strong{color:#d97706}
+
+.fm-filter{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:14px;
+    margin-bottom:16px;
+    box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+.fm-filter form{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.fm-field label{display:block;color:#334155;font-size:13px;font-weight:900;margin-bottom:7px}
+.form-control{
+    border:1px solid #cbd5e1;
+    border-radius:14px;
+    padding:11px 12px;
+    font-weight:800;
+    background:white;
+}
+
+.fm-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fm-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(15,23,42,.07);
+}
+.fm-card-top{
+    padding:16px;
+    background:linear-gradient(135deg,#f8fafc,#ffffff);
+    border-bottom:1px solid #e5e7eb;
+}
+.fm-title{margin:0;color:#0f172a;font-size:18px;font-weight:900;line-height:1.25}
+.fm-location{margin:7px 0 0;color:#64748b;font-size:13px;font-weight:800;line-height:1.35}
+
+.fm-date-box{
+    margin-top:13px;
+    background:#07120d;
+    color:white;
+    border-radius:18px;
+    padding:13px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:10px;
+    align-items:center;
+}
+.fm-date-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:#16a34a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+.fm-date-box span{display:block;color:#bbf7d0;font-size:11px;font-weight:900;text-transform:uppercase}
+.fm-date-box strong{display:block;font-size:17px;font-weight:900;margin-top:2px}
+
+.fm-body{padding:15px}
+.fm-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px}
+.fm-info{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    padding:10px;
+}
+.fm-info span{display:block;color:#64748b;font-size:10px;font-weight:900;text-transform:uppercase}
+.fm-info strong{display:block;color:#0f172a;font-size:13px;font-weight:900;margin-top:4px;line-height:1.25}
+
+.fm-status{
+    display:inline-flex;
+    border-radius:999px;
+    padding:7px 10px;
+    font-size:11px;
+    font-weight:900;
+}
+.fm-status.pending{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.fm-status.forwarded{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.fm-status.approved{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.fm-status.rejected{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+
+.fm-schedule-alert{
+    margin-top:12px;
+    padding:12px;
+    border-radius:16px;
+    font-size:12px;
+    font-weight:900;
+    line-height:1.5;
+}
+.fm-schedule-alert.good{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0}
+.fm-schedule-alert.wait{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.fm-schedule-alert.old{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}
+
+.fm-description{
+    color:#475569;
+    font-size:12px;
+    font-weight:800;
+    line-height:1.5;
+    margin:11px 0 0;
+}
+
+.fm-card-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    padding:0 15px 15px;
+}
+.fm-empty{
+    background:white;
+    border:1px dashed #cbd5e1;
+    border-radius:24px;
+    padding:30px;
+    text-align:center;
+    color:#64748b;
+    font-weight:900;
+}
+
+@media(max-width:1050px){
+    .fm-card-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+    .fm-page{padding:10px}
+    .fm-hero{padding:18px;border-radius:22px}
+    .fm-grid{grid-template-columns:1fr}
+    .fm-card-grid{grid-template-columns:1fr}
+    .fm-filter form{display:grid;grid-template-columns:1fr}
+    .fm-btn,.form-control{width:100%}
+    .fm-info-grid{grid-template-columns:1fr}
+}
+</style>
+
+<div class="fm-page">
+
+    <div class="fm-hero">
+        <h2>Farmer Meet Requests</h2>
+        <p>View pending approvals and approved meeting schedules with date, location, MDO, Sales Officer and ASM details.</p>
+
+        <div class="fm-actions">
+            {% if role == "DEVELOPMENT_OFFICER" %}
+                <a href="{% url 'farmer_meet_create' %}" class="fm-btn green">
+                    + Create Farmer Meet
+                </a>
+            {% endif %}
+
+            <a href="{% url 'dashboard' %}" class="fm-btn light">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="fm-grid">
+        <div class="fm-stat orange">
+            <span>Pending / Forwarded</span>
+            <strong>{{ pending_count|default:0 }}</strong>
         </div>
 
+        <div class="fm-stat green">
+            <span>Total Approved</span>
+            <strong>{{ approved_count|default:0 }}</strong>
+        </div>
+
+        <div class="fm-stat blue">
+            <span>Upcoming Approved Visits</span>
+            <strong>{{ upcoming_approved_count|default:0 }}</strong>
+        </div>
     </div>
+
+    <div class="fm-filter">
+        <form method="get">
+            <div class="fm-field">
+                <label>Status</label>
+                <select name="status" class="form-control">
+                    <option value="ALL" {% if status_filter == "ALL" %}selected{% endif %}>All Requests</option>
+                    <option value="PENDING_SALES_OFFICER" {% if status_filter == "PENDING_SALES_OFFICER" %}selected{% endif %}>Pending Sales Officer</option>
+                    <option value="PENDING_ASM" {% if status_filter == "PENDING_ASM" %}selected{% endif %}>Pending ASM</option>
+                    <option value="PENDING_REGIONAL_MANAGER" {% if status_filter == "PENDING_REGIONAL_MANAGER" %}selected{% endif %}>Pending Regional Manager</option>
+                    <option value="PENDING_STATE_HEAD" {% if status_filter == "PENDING_STATE_HEAD" %}selected{% endif %}>Pending State Head</option>
+                    <option value="APPROVED" {% if status_filter == "APPROVED" %}selected{% endif %}>Approved / Scheduled</option>
+                    <option value="REJECTED" {% if status_filter == "REJECTED" %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+
+            <button type="submit" class="fm-btn blue">Apply</button>
+            <a href="{% url 'farmer_meet_list' %}" class="fm-btn light">Reset</a>
+        </form>
+    </div>
+
+    {% if farmer_meets %}
+        <div class="fm-card-grid">
+            {% for meet in farmer_meets %}
+                <div class="fm-card">
+                    <div class="fm-card-top">
+                        <h3 class="fm-title">{{ meet.title }}</h3>
+                        <p class="fm-location">📍 {{ meet.location }}</p>
+
+                        <div class="fm-date-box">
+                            <div class="fm-date-icon">📅</div>
+                            <div>
+                                <span>Meet / Visit Date</span>
+                                <strong>{{ meet.meeting_date|date:"d M Y" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fm-body">
+                        <div class="fm-info-grid">
+                            <div class="fm-info">
+                                <span>Farmers</span>
+                                <strong>{{ meet.expected_farmer_count }}</strong>
+                            </div>
+
+                            <div class="fm-info">
+                                <span>Status</span>
+                                <strong>
+                                    <span class="fm-status {{ meet.status_class|default:'pending' }}">
+                                        {% if meet.status_text %}
+                                            {{ meet.status_text }}
+                                        {% else %}
+                                            {{ meet.get_approval_status_display }}
+                                        {% endif %}
+                                    </span>
+                                </strong>
+                            </div>
+
+                            <div class="fm-info">
+                                <span>MDO</span>
+                                <strong>
+                                    {% if meet.created_by_mdo %}
+                                        {{ meet.created_by_mdo.get_full_name|default:meet.created_by_mdo.username }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="fm-info">
+                                <span>Sales Officer</span>
+                                <strong>
+                                    {% if meet.sales_officer %}
+                                        {{ meet.sales_officer.get_full_name|default:meet.sales_officer.username }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="fm-info">
+                                <span>ASM</span>
+                                <strong>
+                                    {% if meet.asm %}
+                                        {{ meet.asm.get_full_name|default:meet.asm.username }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="fm-info">
+                                <span>Regional / State</span>
+                                <strong>
+                                    {% if meet.regional_manager %}
+                                        {{ meet.regional_manager.get_full_name|default:meet.regional_manager.username }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                    /
+
+                                    {% if meet.state_head %}
+                                        {{ meet.state_head.get_full_name|default:meet.state_head.username }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+
+                        {% if meet.approval_status == "APPROVED" %}
+                            <div class="fm-schedule-alert good">
+                                ✅ Approved. Team can visit on {{ meet.meeting_date|date:"d M Y" }}.
+                            </div>
+                        {% elif meet.approval_status == "REJECTED" %}
+                            <div class="fm-schedule-alert old">
+                                ❌ Rejected. This meeting will not be scheduled.
+                            </div>
+                        {% else %}
+                            <div class="fm-schedule-alert wait">
+                                ⏳ Waiting for approval. Meeting date requested: {{ meet.meeting_date|date:"d M Y" }}.
+                            </div>
+                        {% endif %}
+
+                        {% if meet.description %}
+                            <p class="fm-description">
+                                {{ meet.description|truncatechars:120 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="fm-card-actions">
+                        <a href="{% url 'farmer_meet_detail' meet.id %}" class="fm-btn light">
+                            View Details
+                        </a>
+
+                        {% if meet.can_approve_now %}
+                            <form method="post"
+                                  action="{% url 'farmer_meet_approve' meet.id %}"
+                                  onsubmit="return confirm('Approve this farmer meet request?');">
+                                {% csrf_token %}
+                                <button type="submit" class="fm-btn green">
+                                    Approve
+                                </button>
+                            </form>
+
+                            <a href="{% url 'farmer_meet_detail' meet.id %}" class="fm-btn red">
+                                Reject / Review
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="fm-empty">
+            No farmer meet requests found.
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}

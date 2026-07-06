@@ -3,73 +3,98 @@
 {% block content %}
 <style>
 .dealer-form-page {
-    padding: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
 .dealer-card {
     background: white;
-    border-radius: 24px;
-    padding: 22px;
+    border-radius: 28px;
+    padding: 28px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .form-header {
     display: flex;
     justify-content: space-between;
-    gap: 14px;
+    gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
 }
 
 .form-header h2 {
     margin: 0;
-    font-size: 26px;
+    font-size: 28px;
     color: #0f172a;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-header h2 i {
+    color: #84c341;
+    font-size: 28px;
 }
 
 .form-header p {
     color: #64748b;
-    margin: 8px 0 0;
+    margin: 6px 0 0;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .note-box {
-    background: #ecfdf5;
-    border: 1px solid #bbf7d0;
-    color: #047857;
-    padding: 12px 14px;
-    border-radius: 16px;
-    font-weight: 800;
-    margin-bottom: 18px;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 14px 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
     line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.note-box i {
+    font-size: 20px;
 }
 
 .main-layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 18px;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
     align-items: start;
 }
 
+/* Image Card */
 .image-card {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    padding: 14px;
+    border-radius: 24px;
+    padding: 20px;
     position: sticky;
-    top: 90px;
+    top: 100px;
+    transition: all 0.3s ease;
+}
+
+.image-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .image-preview {
     width: 100%;
-    height: 245px;
+    aspect-ratio: 1 / 1;
     border-radius: 20px;
     overflow: hidden;
-    background: linear-gradient(135deg, #07120d, #123020);
-    border: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border: 2px solid #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,47 +109,55 @@
 .image-fallback {
     color: white;
     text-align: center;
+    padding: 20px;
 }
 
-.image-fallback svg {
-    width: 58px;
-    height: 58px;
-    margin-bottom: 10px;
+.image-fallback i {
+    font-size: 58px;
+    margin-bottom: 12px;
+    display: block;
+    color: #84c341;
 }
 
 .image-fallback strong {
     display: block;
     font-size: 15px;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 .image-fallback span {
     display: block;
     font-size: 12px;
-    margin-top: 5px;
-    color: #d1fae5;
-    font-weight: 700;
+    margin-top: 6px;
+    color: #94a3b8;
+    font-weight: 600;
 }
 
 .file-upload-btn {
-    margin-top: 12px;
+    margin-top: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
+    gap: 8px;
     width: 100%;
-    background: #07120d;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
-    padding: 12px 14px;
-    border-radius: 14px;
+    padding: 12px 16px;
+    border-radius: 40px;
     cursor: pointer;
-    font-weight: 900;
+    font-weight: 800;
     font-size: 13px;
+    transition: all 0.3s ease;
+    border: none;
 }
 
-.file-upload-btn svg {
-    width: 17px;
-    height: 17px;
+.file-upload-btn i {
+    font-size: 14px;
+}
+
+.file-upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .hidden-file-input {
@@ -132,34 +165,54 @@
 }
 
 .image-help {
-    margin-top: 10px;
+    margin-top: 12px;
     color: #64748b;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     line-height: 1.5;
+    text-align: center;
 }
 
+/* Form Sections */
 .form-section {
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    padding: 16px;
-    margin-bottom: 14px;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border-color: #84c341;
 }
 
 .section-title {
-    margin: 0 0 14px;
-    font-size: 17px;
+    margin: 0 0 18px;
+    font-size: 18px;
     color: #0f172a;
-    font-weight: 900;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 10px;
+    font-weight: 800;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: #84c341;
+    font-size: 18px;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.form-group {
+    margin-bottom: 0;
 }
 
 .form-group.full {
@@ -168,121 +221,164 @@
 
 .form-group label {
     display: block;
-    font-weight: 900;
-    margin-bottom: 7px;
+    font-weight: 800;
+    margin-bottom: 8px;
     color: #334155;
-    font-size: 13px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group label i {
+    margin-right: 5px;
+    color: #84c341;
+    font-size: 11px;
 }
 
 .form-control {
     width: 100%;
     padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    background: white;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    background: #f8fafc;
     color: #0f172a;
-    font-weight: 700;
+    font-weight: 600;
     outline: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
 }
 
 .form-control:focus {
-    border-color: #16a34a;
-    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
 }
 
 .form-control:disabled,
 .form-control[readonly] {
     background: #f1f5f9;
-    color: #475569;
+    color: #64748b;
     cursor: not-allowed;
 }
 
 textarea.form-control {
-    min-height: 95px;
+    min-height: 80px;
     resize: vertical;
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    cursor: pointer;
 }
 
 .errorlist {
     color: #dc2626;
-    font-size: 12px;
-    margin: 6px 0 0;
-    padding-left: 18px;
-    font-weight: 800;
+    font-size: 11px;
+    margin-top: 6px;
+    padding-left: 0;
+    list-style: none;
+    font-weight: 700;
 }
 
 .error-text {
     color: #dc2626;
-    font-size: 12px;
+    font-size: 11px;
     margin-top: 6px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .manager-box {
     background: #eff6ff;
     border: 1px solid #bfdbfe;
     color: #1d4ed8;
-    padding: 12px 14px;
+    padding: 12px 16px;
     border-radius: 16px;
-    font-weight: 800;
-    margin-top: 12px;
+    font-weight: 700;
+    margin-top: 16px;
     line-height: 1.5;
-    font-size: 13px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.manager-box i {
+    font-size: 18px;
 }
 
 .action-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 24px;
+    justify-content: flex-end;
 }
 
 .btn-primary {
-    background: #16a34a;
+    background: linear-gradient(135deg, #16a34a, #059669);
     color: white;
-    border: 0;
-    padding: 13px 18px;
-    border-radius: 14px;
-    font-weight: 900;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 800;
     cursor: pointer;
     font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
 }
 
 .btn-light {
     background: #f1f5f9;
     color: #0f172a;
     text-decoration: none;
-    padding: 13px 18px;
-    border-radius: 14px;
-    font-weight: 900;
-    display: inline-block;
-    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
 }
 
+.btn-light:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
 
+/* GPS Capture Box */
 .gps-capture-box {
     grid-column: 1 / -1;
-    background:
-        radial-gradient(circle at top right, rgba(34,197,94,.14), transparent 34%),
-        linear-gradient(135deg, #f8fafc, #ecfdf5);
+    background: linear-gradient(135deg, #f8fafc, #ecfdf5);
     border: 1px solid #bbf7d0;
-    border-radius: 18px;
-    padding: 14px;
+    border-radius: 20px;
+    padding: 18px;
 }
 
 .gps-capture-head {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .gps-capture-head strong {
     display: block;
     color: #064e3b;
     font-size: 15px;
-    font-weight: 1000;
+    font-weight: 800;
 }
 
 .gps-capture-head span {
@@ -290,35 +386,36 @@ textarea.form-control {
     color: #047857;
     margin-top: 4px;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.45;
 }
 
 .gps-capture-btn {
-    border: 0;
+    border: none;
     background: linear-gradient(135deg, #16a34a, #059669);
     color: white;
-    padding: 11px 15px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 1000;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 12px 24px rgba(22,163,74,.22);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .gps-capture-btn:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
 }
 
 .gps-status {
-    margin-top: 12px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 16px;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 700;
     line-height: 1.55;
     display: none;
 }
@@ -327,77 +424,165 @@ textarea.form-control {
     display: block;
     background: #ecfdf5;
     color: #047857;
-    border-color: #bbf7d0;
+    border: 1px solid #bbf7d0;
 }
 
 .gps-status.error {
     display: block;
     background: #fef2f2;
     color: #b91c1c;
-    border-color: #fecaca;
+    border: 1px solid #fecaca;
 }
 
 .gps-status.info {
     display: block;
     background: #eff6ff;
     color: #1d4ed8;
-    border-color: #bfdbfe;
+    border: 1px solid #bfdbfe;
 }
 
-@media(max-width: 950px) {
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 900px) {
     .main-layout {
         grid-template-columns: 1fr;
     }
 
     .image-card {
         position: static;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     .image-preview {
-        height: 220px;
+        aspect-ratio: 4 / 3;
     }
 }
 
-@media(max-width: 700px) {
+@media (max-width: 768px) {
     .dealer-form-page {
-        padding: 12px;
+        padding: 16px;
     }
 
     .dealer-card {
-        padding: 14px;
-        border-radius: 18px;
+        padding: 20px;
+        border-radius: 24px;
     }
 
     .form-header h2 {
-        font-size: 21px;
+        font-size: 22px;
+    }
+
+    .form-header h2 i {
+        font-size: 22px;
     }
 
     .form-section {
-        padding: 13px;
-        border-radius: 18px;
+        padding: 16px;
+        border-radius: 20px;
     }
 
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 14px;
     }
 
     .form-group.full {
         grid-column: auto;
     }
 
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 14px;
+    }
+
+    .image-card {
+        max-width: 100%;
+    }
+
     .image-preview {
-        height: 190px;
+        aspect-ratio: 1 / 1;
+        max-height: 250px;
     }
 
     .action-row {
-        display: grid;
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .btn-primary,
     .btn-light {
         width: 100%;
-        text-align: center;
+        justify-content: center;
+    }
+
+    .gps-capture-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .gps-capture-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .dealer-form-page {
+        padding: 12px;
+    }
+
+    .dealer-card {
+        padding: 16px;
+        border-radius: 20px;
+    }
+
+    .form-header h2 {
+        font-size: 20px;
+    }
+
+    .form-section {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+
+    .form-control {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .note-box {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    .note-box i {
+        font-size: 16px;
+    }
+
+    .image-preview {
+        max-height: 200px;
+    }
+
+    .file-upload-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .btn-primary,
+    .btn-light {
+        padding: 10px 20px;
+        font-size: 13px;
     }
 }
 </style>
@@ -407,14 +592,17 @@ textarea.form-control {
 
         <div class="form-header">
             <div>
-                <h2>{{ title }}</h2>
-                <p>Dealer KYC, dealer ID, manager, cheque deposit, and yearly target.</p>
+                <h2>
+                    <i class="fas fa-store"></i>
+                    {{ title }}
+                </h2>
+                <p><i class="fas fa-file-alt"></i> Dealer KYC, dealer ID, manager, cheque deposit, and yearly target.</p>
             </div>
         </div>
 
         <div class="note-box">
-            Select dealer manager / sales officer. Concerned ASM will be assigned automatically based on the selected Sales Officer's manager.
-            Deposit mode is cheque only and default deposit amount is ₹15,000.
+            <i class="fas fa-info-circle"></i>
+            <span>Select dealer manager / sales officer. Concerned ASM will be assigned automatically based on the selected Sales Officer's manager. Deposit mode is cheque only and default deposit amount is ₹15,000.</span>
         </div>
 
         <form method="post" enctype="multipart/form-data">
@@ -422,18 +610,14 @@ textarea.form-control {
 
             <div class="main-layout">
 
+                <!-- Image Section -->
                 <div class="image-card">
                     <div class="image-preview" id="dealerImagePreview">
                         {% if dealer and dealer.dealer_image %}
                             <img src="{{ dealer.dealer_image.url }}" alt="{{ dealer.firm_name|default:'Dealer image' }}">
                         {% else %}
                             <div class="image-fallback" id="dealerImageFallback">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16"/>
-                                    <path stroke-width="2" d="M14 14l1.5-1.5a2 2 0 0 1 2.8 0L21 15"/>
-                                    <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/>
-                                    <circle cx="8.5" cy="9.5" r="1.5" stroke-width="2"/>
-                                </svg>
+                                <i class="fas fa-store"></i>
                                 <strong>Dealer Image</strong>
                                 <span>Upload dealer photo or firm photo</span>
                             </div>
@@ -441,11 +625,7 @@ textarea.form-control {
                     </div>
 
                     <label class="file-upload-btn" for="dealerImageInput">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 16V4"/>
-                            <path stroke-width="2" d="M7 9l5-5 5 5"/>
-                            <path stroke-width="2" d="M4 20h16"/>
-                        </svg>
+                        <i class="fas fa-upload"></i>
                         Choose / Change Image
                     </label>
 
@@ -456,7 +636,7 @@ textarea.form-control {
                            accept="image/*">
 
                     <div class="image-help">
-                        The selected image will be shown here directly. No file link will be shown to the user.
+                        <i class="fas fa-info-circle"></i> The selected image will be shown here directly. No file link will be shown to the user.
                     </div>
 
                     {% if form.dealer_image.errors %}
@@ -464,15 +644,20 @@ textarea.form-control {
                     {% endif %}
                 </div>
 
+                <!-- Form Fields -->
                 <div>
 
+                    <!-- Dealer ID & Manager Section -->
                     <div class="form-section">
-                        <h3 class="section-title">Dealer ID & Manager</h3>
+                        <h3 class="section-title">
+                            <i class="fas fa-id-card"></i>
+                            Dealer ID & Manager
+                        </h3>
 
                         <div class="form-grid">
                             {% if form.dealer_code %}
                                 <div class="form-group">
-                                    <label>Dealer ID</label>
+                                    <label><i class="fas fa-barcode"></i> Dealer ID</label>
                                     {{ form.dealer_code }}
                                     {{ form.dealer_code.errors }}
                                 </div>
@@ -480,7 +665,7 @@ textarea.form-control {
 
                             {% if form.created_by_sales_officer %}
                                 <div class="form-group">
-                                    <label>Dealer Manager / Sales Officer</label>
+                                    <label><i class="fas fa-user-tie"></i> Dealer Manager / Sales Officer</label>
                                     {{ form.created_by_sales_officer }}
                                     {{ form.created_by_sales_officer.errors }}
                                 </div>
@@ -488,82 +673,91 @@ textarea.form-control {
                         </div>
 
                         <div class="manager-box">
-                            Dealer ID can be entered manually like <b>DLR00001</b>. If it is left empty, system will create it automatically after saving.
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Dealer ID can be entered manually like <strong>DLR00001</strong>. If it is left empty, system will create it automatically after saving.</span>
                         </div>
                     </div>
 
+                    <!-- Owner Details Section -->
                     <div class="form-section">
-                        <h3 class="section-title">Dealer Owner Details</h3>
+                        <h3 class="section-title">
+                            <i class="fas fa-user"></i>
+                            Dealer Owner Details
+                        </h3>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Owner Name</label>
+                                <label><i class="fas fa-user"></i> Owner Name</label>
                                 {{ form.owner_name }}
                                 {{ form.owner_name.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Owner Email / Login Email</label>
+                                <label><i class="fas fa-envelope"></i> Owner Email / Login Email</label>
                                 {{ form.email }}
                                 {{ form.email.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Phone Number</label>
+                                <label><i class="fas fa-phone"></i> Phone Number</label>
                                 {{ form.phone }}
                                 {{ form.phone.errors }}
                             </div>
 
                             <div class="form-group full">
-                                <label>Owner Address</label>
+                                <label><i class="fas fa-location-dot"></i> Owner Address</label>
                                 {{ form.owner_address }}
                                 {{ form.owner_address.errors }}
                             </div>
                         </div>
                     </div>
 
+                    <!-- Firm Details Section -->
                     <div class="form-section">
-                        <h3 class="section-title">Firm Details</h3>
+                        <h3 class="section-title">
+                            <i class="fas fa-building"></i>
+                            Firm Details
+                        </h3>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Firm Name</label>
+                                <label><i class="fas fa-store"></i> Firm Name</label>
                                 {{ form.firm_name }}
                                 {{ form.firm_name.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>GST Number</label>
+                                <label><i class="fas fa-file-invoice"></i> GST Number</label>
                                 {{ form.gst_number }}
                                 {{ form.gst_number.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>State</label>
+                                <label><i class="fas fa-map-pin"></i> State</label>
                                 {{ form.state }}
                                 {{ form.state.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>District</label>
+                                <label><i class="fas fa-map-marker-alt"></i> District</label>
                                 {{ form.district }}
                                 {{ form.district.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Firm Type</label>
+                                <label><i class="fas fa-tag"></i> Firm Type</label>
                                 {{ form.firm_type }}
                                 {{ form.firm_type.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>License Number Optional</label>
+                                <label><i class="fas fa-id-card"></i> License Number Optional</label>
                                 {{ form.license_number }}
                                 {{ form.license_number.errors }}
                             </div>
 
                             <div class="form-group full">
-                                <label>Firm Address</label>
+                                <label><i class="fas fa-location-dot"></i> Firm Address</label>
                                 {{ form.firm_address }}
                                 {{ form.firm_address.errors }}
                             </div>
@@ -572,7 +766,7 @@ textarea.form-control {
                                 <div class="gps-capture-box">
                                     <div class="gps-capture-head">
                                         <div>
-                                            <strong>Dealer Shop Exact GPS Location</strong>
+                                            <strong><i class="fas fa-map-marker-alt"></i> Dealer Shop Exact GPS Location</strong>
                                             <span>
                                                 Stand at the dealer shop. This location will be used to verify Sales Officer dealer visits.
                                                 Visit will be accepted only when the Sales Officer is at this saved location.
@@ -580,14 +774,14 @@ textarea.form-control {
                                         </div>
 
                                         <button type="button" class="gps-capture-btn" onclick="captureDealerLocation(false)">
-                                            📍 Re-Capture GPS
+                                            <i class="fas fa-location-dot"></i> Re-Capture GPS
                                         </button>
                                     </div>
 
                                     <div class="form-grid">
                                         {% if form.latitude %}
                                             <div class="form-group">
-                                                <label>Dealer Latitude</label>
+                                                <label><i class="fas fa-arrow-up"></i> Dealer Latitude</label>
                                                 {{ form.latitude }}
                                                 {{ form.latitude.errors }}
                                             </div>
@@ -595,7 +789,7 @@ textarea.form-control {
 
                                         {% if form.longitude %}
                                             <div class="form-group">
-                                                <label>Dealer Longitude</label>
+                                                <label><i class="fas fa-arrow-right"></i> Dealer Longitude</label>
                                                 {{ form.longitude }}
                                                 {{ form.longitude.errors }}
                                             </div>
@@ -603,7 +797,7 @@ textarea.form-control {
 
                                         {% if form.location_accuracy_meters %}
                                             <div class="form-group">
-                                                <label>GPS Accuracy Meter</label>
+                                                <label><i class="fas fa-chart-line"></i> GPS Accuracy Meter</label>
                                                 {{ form.location_accuracy_meters }}
                                                 {{ form.location_accuracy_meters.errors }}
                                             </div>
@@ -611,7 +805,7 @@ textarea.form-control {
 
                                         {% if form.visit_radius_meters %}
                                             <div class="form-group">
-                                                <label>Allowed Visit Radius Meter</label>
+                                                <label><i class="fas fa-circle"></i> Allowed Visit Radius Meter</label>
                                                 {{ form.visit_radius_meters }}
                                                 {{ form.visit_radius_meters.errors }}
                                             </div>
@@ -624,49 +818,57 @@ textarea.form-control {
                         </div>
                     </div>
 
+                    <!-- Deposit Details Section -->
                     <div class="form-section">
-                        <h3 class="section-title">Deposit Details</h3>
+                        <h3 class="section-title">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Deposit Details
+                        </h3>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Deposit Amount</label>
+                                <label><i class="fas fa-rupee-sign"></i> Deposit Amount</label>
                                 {{ form.deposit_amount }}
                                 {{ form.deposit_amount.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Deposit Mode</label>
+                                <label><i class="fas fa-credit-card"></i> Deposit Mode</label>
                                 {{ form.deposit_mode }}
                                 {{ form.deposit_mode.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Cheque Number</label>
+                                <label><i class="fas fa-money-bill"></i> Cheque Number</label>
                                 {{ form.cheque_number }}
                                 {{ form.cheque_number.errors }}
                             </div>
                         </div>
                     </div>
 
+                    <!-- Business Target Section -->
                     <div class="form-section">
-                        <h3 class="section-title">Business Target & Login</h3>
+                        <h3 class="section-title">
+                            <i class="fas fa-chart-line"></i>
+                            Business Target & Login
+                        </h3>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Dealer Flag</label>
+                                <label><i class="fas fa-flag"></i> Dealer Flag</label>
                                 {{ form.flag }}
                                 {{ form.flag.errors }}
                             </div>
 
                             <div class="form-group">
-                                <label>Yearly Target Amount</label>
+                                <label><i class="fas fa-bullseye"></i> Yearly Target Amount</label>
                                 {{ form.yearly_target_amount }}
                                 {{ form.yearly_target_amount.errors }}
                             </div>
 
                             {% if form.achieved_amount %}
                                 <div class="form-group">
-                                    <label>Achieved Amount</label>
+                                    <label><i class="fas fa-trophy"></i> Achieved Amount</label>
                                     {{ form.achieved_amount }}
                                     {{ form.achieved_amount.errors }}
                                 </div>
@@ -674,7 +876,7 @@ textarea.form-control {
 
                             {% if form.password %}
                                 <div class="form-group">
-                                    <label>Password</label>
+                                    <label><i class="fas fa-key"></i> Password</label>
                                     {{ form.password }}
                                     {{ form.password.errors }}
                                 </div>
@@ -684,11 +886,11 @@ textarea.form-control {
 
                     <div class="action-row">
                         <button type="submit" class="btn-primary">
-                            {{ button_text|default:"Save Dealer" }}
+                            <i class="fas fa-save"></i> {{ button_text|default:"Save Dealer" }}
                         </button>
 
                         <a href="{% url 'dealer_list' %}" class="btn-light">
-                            Back
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
 

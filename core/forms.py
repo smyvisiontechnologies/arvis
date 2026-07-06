@@ -238,6 +238,7 @@ class EmployeeForm(forms.ModelForm):
             "work_sunday",
 
             # TA / DA
+            "tada_applicable",
             "bike_ta_per_km",
             "car_ta_per_km",
             "daily_da_amount",
@@ -389,6 +390,9 @@ class EmployeeForm(forms.ModelForm):
             "work_friday": forms.CheckboxInput(attrs={"class": "work-check"}),
             "work_saturday": forms.CheckboxInput(attrs={"class": "work-check"}),
             "work_sunday": forms.CheckboxInput(attrs={"class": "work-check"}),
+            "tada_applicable": forms.CheckboxInput(attrs={
+                "class": "tada-toggle",
+            }),
 
             "bike_ta_per_km": forms.NumberInput(attrs={
                 "class": "form-control",
@@ -1331,11 +1335,11 @@ class FarmerMeetCreateForm(forms.ModelForm):
         ]
 
         widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control"}),
-            "location": forms.TextInput(attrs={"class": "form-control"}),
+            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter meeting title"}),
+            "location": forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter location"}),
             "meeting_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
-            "expected_farmer_count": forms.NumberInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "expected_farmer_count": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Number of farmers"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Meeting description"}),
             "sales_officer": forms.Select(attrs={"class": "form-control"}),
             "asm": forms.Select(attrs={"class": "form-control"}),
             "regional_manager": forms.Select(attrs={"class": "form-control"}),
@@ -1345,13 +1349,22 @@ class FarmerMeetCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Get querysets with active users
         self.fields["sales_officer"].queryset = sales_officers().filter(is_active=True)
         self.fields["asm"].queryset = users_by_role("ASM").filter(is_active=True)
         self.fields["regional_manager"].queryset = users_by_role("REGIONAL_MANAGER").filter(is_active=True)
         self.fields["state_head"].queryset = users_by_role("STATE_HEAD").filter(is_active=True)
 
+        # Make Regional Manager and State Head optional
         self.fields["regional_manager"].required = False
         self.fields["state_head"].required = False
+
+        # Customize label display - show full name instead of email
+        for field_name in ["sales_officer", "asm", "regional_manager", "state_head"]:
+            self.fields[field_name].label_from_instance = lambda user: user.get_full_name() or user.username
+
+        # Add help text
+        self.fields["expected_farmer_count"].help_text = "If >50, Regional Manager required. If >100, State Head required."
 
     def clean(self):
         cleaned_data = super().clean()
@@ -1367,8 +1380,8 @@ class FarmerMeetCreateForm(forms.ModelForm):
             self.add_error("state_head", "State Head is required when farmers are more than 100.")
 
         return cleaned_data
-
-
+        
+        
 class FarmerMeetRejectForm(forms.Form):
     rejection_reason = forms.CharField(
         widget=forms.Textarea(attrs={
@@ -1455,6 +1468,7 @@ class ProductForm(forms.ModelForm):
         fields = [
             "category",
             "name",
+            "technical_name",
             "image",
             "hsn_number",
             "description",
@@ -1467,7 +1481,14 @@ class ProductForm(forms.ModelForm):
                 "class": "form-control",
                 "placeholder": "Example: Crystal Topper 77"
             }),
-            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "technical_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Example: Zinc EDTA / Boron 20% / Calcium Nitrate"
+            }),
+            "image": forms.FileInput(attrs={
+    "class": "form-control",
+    "accept": "image/*"
+}),
             "hsn_number": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "HSN Number"
@@ -1537,7 +1558,7 @@ ProductPackSizeFormSet = inlineformset_factory(
     Product,
     ProductPackSize,
     form=ProductPackSizeForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -1638,7 +1659,7 @@ ProductSchemeFormSet = inlineformset_factory(
     Product,
     ProductScheme,
     form=ProductSchemeForm,
-    extra=1,
+    extra=0,
     can_delete=True,
     validate_min=False,
 )
@@ -1807,10 +1828,20 @@ class AccountantInvoiceReleaseForm(forms.Form):
         })
     )
 
+    gstr1_code = forms.CharField(
+        required=False,
+        label="GSTR-1 Code",
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "id_gstr1_code",
+            "placeholder": "Enter code"
+        })
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields["financial_year"].choices = get_financial_year_choices()
+        
 
 
 class DealerDispatchForm(forms.ModelForm):
@@ -2312,6 +2343,16 @@ class SalesReturnCreditNoteForm(forms.ModelForm):
         self.fields["return_date"].initial = timezone.localdate()
 
 class EmployeeClockOutForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.tada_applicable = kwargs.pop("tada_applicable", True)
+        super().__init__(*args, **kwargs)
+
+        if not self.tada_applicable:
+            self.fields["vehicle_type"].required = False
+            self.fields["clock_out_odometer_reading"].required = False
+            self.fields["public_vehicle_amount"].required = False
+            self.fields["public_vehicle_bill"].required = False
+
     class Meta:
         model = EmployeeAttendance
         fields = [
@@ -2340,12 +2381,15 @@ class EmployeeClockOutForm(forms.ModelForm):
             }),
             "public_vehicle_bill": forms.FileInput(attrs={
                 "class": "form-control",
-                "accept": "image/*,.pdf",
+                "accept": "image/*,pdf",
             }),
         }
 
     def clean(self):
         cleaned = super().clean()
+
+        if not self.tada_applicable:
+            return cleaned
 
         vehicle_type = cleaned.get("vehicle_type")
         clock_out_odometer = cleaned.get("clock_out_odometer_reading")
@@ -2376,7 +2420,7 @@ class EmployeeClockOutForm(forms.ModelForm):
                 )
 
         return cleaned
-        
+       
 
 
 class ManagerAttendanceApprovalForm(forms.ModelForm):
@@ -2826,6 +2870,13 @@ class SimplePurchaseEntryForm(forms.Form):
         widget=forms.DateInput(attrs={
             "class": "form-control",
             "type": "date"
+        })
+    )
+    add_to_gstr2b = forms.BooleanField(
+        required=False,
+        label="Add this bill to GSTR-2B Report",
+        widget=forms.CheckboxInput(attrs={
+            "class": "gstr2b-checkbox"
         })
     )
 
@@ -3334,7 +3385,7 @@ ProductPackSizeFormSet = inlineformset_factory(
     Product,
     ProductPackSize,
     form=ProductPackSizeForm,
-    extra=1,
+    extra=0,
     can_delete=True,
 )
 
@@ -3443,3 +3494,318 @@ class ProductStockTransferForm(forms.Form):
         return cleaned
 
 
+# ==========================================================
+# SMART PRODUCTION FORMULA - FORMS
+# ==========================================================
+# ==========================================================
+# SMART PRODUCTION FORMULA - FORMS
+# ==========================================================
+
+from decimal import Decimal
+from django import forms
+from django.forms import formset_factory
+
+from .models import (
+    Product,
+    ProductPackSize,
+    InventoryItem,
+    ProductProductionFormula,
+    ProductFormulaRawMaterial,
+    ProductFormulaPackMaterial,
+)
+
+
+def clean_formula_pack_number(value):
+    try:
+        value = Decimal(str(value))
+        if value == value.to_integral_value():
+            return str(int(value))
+        return str(value)
+    except Exception:
+        return str(value)
+
+
+class SmartProductChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Product dropdown: only product name, no product id
+        return obj.name
+
+
+class FormulaRawMaterialChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Raw Material dropdown: name + stock only, no SKU
+        stock = getattr(obj, "stock_quantity", 0)
+        unit = getattr(obj, "stock_unit", "")
+        return f"{obj.name} | Stock: {stock} {unit}"
+
+
+class FormulaPackingMaterialChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Packing Material dropdown: name + stock only, no SKU
+        stock = getattr(obj, "stock_quantity", 0)
+        unit = getattr(obj, "stock_unit", "")
+        return f"{obj.name} | Stock: {stock} {unit}"
+
+
+class ProductFormulaPackChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Product Pack dropdown: product + pack size only, no warehouse
+        product_name = obj.product.name if getattr(obj, "product", None) else ""
+
+        pack_size = clean_formula_pack_number(getattr(obj, "pack_size", ""))
+
+        if hasattr(obj, "get_unit_display"):
+            unit = obj.get_unit_display()
+        else:
+            unit = getattr(obj, "unit", "")
+
+        return f"{product_name} - {pack_size} {unit}".strip()
+
+
+class ProductFormulaForm(forms.ModelForm):
+    product = SmartProductChoiceField(
+        queryset=Product.objects.none(),
+        required=True,
+        empty_label="Select product",
+        widget=forms.Select(attrs={
+            "class": "form-control",
+            "id": "id_product"
+        })
+    )
+
+    class Meta:
+        model = ProductProductionFormula
+        fields = [
+            "product",
+            "base_output_qty",
+            "base_output_unit",
+            "note",
+            "is_active",
+        ]
+
+        widgets = {
+            "base_output_qty": forms.NumberInput(attrs={
+                "class": "form-control",
+                "step": "0.001",
+                "placeholder": "Example: 100"
+            }),
+            "base_output_unit": forms.Select(attrs={
+                "class": "form-control"
+            }),
+            "note": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 3,
+                "placeholder": "Formula note optional"
+            }),
+            "is_active": forms.CheckboxInput(attrs={
+                "class": "form-check-input"
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        editing_instance = kwargs.get("instance")
+        super().__init__(*args, **kwargs)
+
+        qs = Product.objects.filter(
+            is_active=True
+        ).order_by("name")
+
+        if not editing_instance:
+            used_ids = ProductProductionFormula.objects.values_list(
+                "product_id",
+                flat=True
+            )
+            qs = qs.exclude(id__in=used_ids)
+
+        self.fields["product"].queryset = qs
+
+
+class ProductFormulaRawMaterialForm(forms.Form):
+    inventory_item = FormulaRawMaterialChoiceField(
+        queryset=InventoryItem.objects.none(),
+        required=False,
+        empty_label="Select raw material",
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    quantity_required = forms.DecimalField(
+        required=False,
+        max_digits=14,
+        decimal_places=3,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "step": "0.001",
+            "placeholder": "Example: 36"
+        })
+    )
+
+    unit = forms.ChoiceField(
+        required=False,
+        choices=PURCHASE_UNIT_CHOICES,
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    DELETE = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Only raw material should come here
+        self.fields["inventory_item"].queryset = InventoryItem.objects.filter(
+            is_active=True,
+            item_type="RAW_MATERIAL"
+        ).order_by("name")
+
+
+ProductFormulaRawMaterialFormSet = formset_factory(
+    ProductFormulaRawMaterialForm,
+    extra=0,
+    can_delete=False
+)
+
+
+class ProductFormulaPackMaterialForm(forms.Form):
+    product_pack = ProductFormulaPackChoiceField(
+        queryset=ProductPackSize.objects.none(),
+        required=False,
+        empty_label="Select product pack",
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    inventory_item = FormulaPackingMaterialChoiceField(
+        queryset=InventoryItem.objects.none(),
+        required=False,
+        empty_label="Select packing material",
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    usage_basis = forms.ChoiceField(
+        required=False,
+        choices=ProductFormulaPackMaterial.USAGE_BASIS_CHOICES,
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    quantity_required = forms.DecimalField(
+        required=False,
+        max_digits=14,
+        decimal_places=3,
+        initial=Decimal("1.000"),
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "step": "0.001",
+            "placeholder": "Example: 1"
+        })
+    )
+
+    unit = forms.ChoiceField(
+        required=False,
+        choices=PURCHASE_UNIT_CHOICES,
+        widget=forms.Select(attrs={
+            "class": "form-control"
+        })
+    )
+
+    DELETE = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        product = kwargs.pop("product", None)
+
+        # This line fixes your error
+        packing_material_queryset = kwargs.pop("packing_material_queryset", None)
+
+        super().__init__(*args, **kwargs)
+
+        if packing_material_queryset is not None:
+            self.fields["inventory_item"].queryset = packing_material_queryset
+        else:
+            self.fields["inventory_item"].queryset = InventoryItem.objects.filter(
+                is_active=True,
+                item_type="PACKING_MATERIAL"
+            ).order_by("name")
+
+        if product:
+            self.fields["product_pack"].queryset = ProductPackSize.objects.filter(
+                product=product,
+                is_active=True
+            ).select_related("product").order_by("pack_size")
+        else:
+            self.fields["product_pack"].queryset = ProductPackSize.objects.none()
+
+ProductFormulaPackMaterialFormSet = formset_factory(
+    ProductFormulaPackMaterialForm,
+    extra=0,
+    can_delete=False
+)
+
+
+
+class SmartProductionFormulaChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Show only product name in Smart Production dropdown
+        if obj.product:
+            return obj.product.name
+        return "Product Formula"
+
+
+class SmartProductionRunForm(forms.Form):
+    formula = SmartProductionFormulaChoiceField(
+        queryset=ProductProductionFormula.objects.none(),
+        required=True,
+        empty_label="Select product",
+        widget=forms.Select(attrs={
+            "class": "form-control",
+            "id": "id_formula"
+        })
+    )
+
+    output_qty = forms.DecimalField(
+        required=True,
+        max_digits=14,
+        decimal_places=3,
+        min_value=Decimal("0.001"),
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "step": "0.001",
+            "placeholder": "Example: 100",
+            "id": "id_output_qty"
+        })
+    )
+
+    production_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={
+            "class": "form-control",
+            "type": "date"
+        })
+    )
+
+    note = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            "class": "form-control",
+            "rows": 3,
+            "placeholder": "Production note optional"
+        })
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["formula"].queryset = ProductProductionFormula.objects.select_related(
+            "product"
+        ).filter(
+            is_active=True
+        ).order_by("product__name")
+
+        
+        

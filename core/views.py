@@ -1045,6 +1045,129 @@ def dashboard(request):
     dealer_points_summary = None
 
     # =====================
+    # DEALER PRODUCT DATA (for dealer dashboard)
+    # =====================
+    top_selling_products = []
+    categories = []
+    top_searched_products = []
+    promoted_products = []
+    products_count = 0
+    categories_count = 0
+    farmers_count = 0
+    my_orders_count = 0
+
+    if role == "DEALER" and dealer:
+        from django.db.models import Sum, Count, Q, F
+        from django.db.models.functions import Coalesce
+        
+        # Get all active products
+        all_products = Product.objects.filter(is_active=True)
+        products_count = all_products.count()
+        
+        # Get categories with product count
+        categories_list = ProductCategory.objects.filter(is_active=True)
+        categories = []
+        for cat in categories_list:
+            cat.product_count = Product.objects.filter(category=cat, is_active=True).count()
+            categories.append(cat)
+        categories_count = categories_list.count()
+        
+        # Farmers count for this dealer
+        farmers_count = FarmerData.objects.filter(dealer=dealer).count()
+        
+        # Top Selling Products (based on order item quantities)
+        # Get pack sizes with highest total quantity sold
+        top_packs = ProductPackSize.objects.filter(
+            product__is_active=True
+        ).annotate(
+            total_sold=Coalesce(Sum('order_items__quantity_boxes'), 0)
+        ).filter(total_sold__gt=0).order_by('-total_sold')[:20]
+        
+        # Get unique products from these packs
+        product_ids = set()
+        top_selling_products_list = []
+        for pack in top_packs:
+            if pack.product.id not in product_ids and pack.product.is_active:
+                product_ids.add(pack.product.id)
+                top_selling_products_list.append(pack.product)
+        
+        if top_selling_products_list:
+            top_selling_products = top_selling_products_list[:10]
+        else:
+            # Fallback: show featured products or random products
+            top_selling_products = list(all_products.order_by('-id')[:10])
+        
+        # Top Searched Products - based on cart additions
+        # Get pack sizes with most cart items
+        top_cart_packs = ProductPackSize.objects.filter(
+            product__is_active=True
+        ).annotate(
+            cart_count=Count('cart_items', distinct=True),
+            order_count=Count('order_items', distinct=True)
+        ).order_by('-cart_count', '-order_count')[:10]
+        
+        product_ids_searched = set()
+        top_searched_list = []
+        for pack in top_cart_packs:
+            if pack.product.id not in product_ids_searched and pack.product.is_active:
+                product_ids_searched.add(pack.product.id)
+                top_searched_list.append(pack.product)
+        
+        if top_searched_list:
+            top_searched_products = top_searched_list[:5]
+        else:
+            top_searched_products = list(all_products.order_by('-id')[:5])
+        
+        # Add search_count attribute
+        for idx, product in enumerate(top_searched_products):
+            product.search_count = (idx + 1) * 5 + 10  # Dummy data
+        
+        # Promoted Products (products with active schemes)
+        promoted_by_scheme = Product.objects.filter(
+            is_active=True,
+            schemes__is_active=True
+        ).distinct()[:6]
+        
+        if promoted_by_scheme.exists():
+            promoted_products = list(promoted_by_scheme)
+        else:
+            # If no schemes, show products with pack sizes that have MRP > sale price
+            # Get pack sizes with discount - using mrp_per_unit instead of mrp_price
+            discounted_packs = ProductPackSize.objects.filter(
+                product__is_active=True,
+                mrp_per_unit__gt=F('sale_price_per_unit')
+            ).select_related('product').distinct()[:10]
+            
+            product_ids_promo = set()
+            promo_list = []
+            for pack in discounted_packs:
+                if pack.product.id not in product_ids_promo and pack.product.is_active:
+                    product_ids_promo.add(pack.product.id)
+                    promo_list.append(pack.product)
+            
+            if promo_list:
+                promoted_products = promo_list[:6]
+            else:
+                promoted_products = list(all_products.order_by('-id')[:6])
+        
+        # Calculate discount percentages for promoted products
+        for product in promoted_products:
+            first_pack = product.pack_sizes.first()
+            if first_pack:
+                if first_pack.mrp_per_unit and first_pack.mrp_per_unit > 0:
+                    product.discount_percentage = int(
+                        ((first_pack.mrp_per_unit - first_pack.sale_price_per_unit) / first_pack.mrp_per_unit) * 100
+                    )
+                else:
+                    product.discount_percentage = 0
+                product.discounted_price = first_pack.sale_price_per_unit
+                product.original_price = first_pack.mrp_per_unit
+            else:
+                product.discount_percentage = 0
+                product.discounted_price = 0
+                product.original_price = 0
+
+    # =====================
     # COMMON LINKS
     # =====================
     dashboard_links.append(
@@ -1308,7 +1431,7 @@ def dashboard(request):
             balance_points = total_earned_points - redeemed_points
             point_value = Decimal(balance_points) * setting.rupees_per_point
 
-            farmers_count = FarmerData.objects.filter(
+            farmers_count_local = FarmerData.objects.filter(
                 dealer=dealer
             ).count()
 
@@ -1333,7 +1456,7 @@ def dashboard(request):
                 "total_earned_points": total_earned_points,
                 "redeemed_points": redeemed_points,
                 "point_value": point_value,
-                "farmers_count": farmers_count,
+                "farmers_count": farmers_count_local,
                 "pending_redemptions": pending_redemptions,
                 "farmer_points": setting.farmer_points,
                 "rupees_per_point": setting.rupees_per_point,
@@ -1376,6 +1499,18 @@ def dashboard(request):
                 "View sales return credit notes shared by company.",
                 "sales_return_credit_note_list",
                 "return",
+            ),
+            add_link(
+                "My Points & Redemption",
+                "Check your points balance and redeem rewards.",
+                "dealer_points_dashboard",
+                "star",
+            ),
+            add_link(
+                "Farmer Data Upload",
+                "Upload farmer data to earn reward points.",
+                "dealer_farmer_data",
+                "farmers",
             ),
         ]
 
@@ -2170,6 +2305,16 @@ def dashboard(request):
             "recent_pending_invoices": recent_pending_invoices,
             "dealer_points_summary": dealer_points_summary,
 
+            # New data for dealer product sections
+            "top_selling_products": top_selling_products,
+            "categories": categories,
+            "top_searched_products": top_searched_products,
+            "promoted_products": promoted_products,
+            "products_count": products_count,
+            "categories_count": categories_count,
+            "farmers_count": farmers_count,
+            "my_orders_count": my_orders_count,
+
             "pending_manager_attendance_count": pending_manager_attendance_count,
             "pending_manager_leave_count": pending_manager_leave_count,
             "pending_hr_attendance_count": pending_hr_attendance_count,
@@ -2177,7 +2322,8 @@ def dashboard(request):
         }
     )
 
-    
+
+   
 @login_required
 def my_profile(request):
     profile = get_or_create_profile(request.user)
@@ -2782,63 +2928,195 @@ def farmer_meet_create(request):
         }
     )
 
+def farmer_meet_role_can_act(user, farmer_meet):
+    role = get_user_role(user)
+
+    if farmer_meet.approval_status in ["APPROVED", "REJECTED"]:
+        return False
+
+    if user.is_superuser or role == "ADMIN":
+        return True
+
+    if role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
+        return (
+            farmer_meet.sales_officer_id == user.id and
+            farmer_meet.approval_status == "PENDING_SALES_OFFICER"
+        )
+
+    if role == "ASM":
+        return (
+            farmer_meet.asm_id == user.id and
+            farmer_meet.approval_status == "PENDING_ASM"
+        )
+
+    if role == "REGIONAL_MANAGER":
+        return (
+            farmer_meet.regional_manager_id == user.id and
+            farmer_meet.approval_status == "PENDING_REGIONAL_MANAGER"
+        )
+
+    if role == "STATE_HEAD":
+        return (
+            farmer_meet.state_head_id == user.id and
+            farmer_meet.approval_status == "PENDING_STATE_HEAD"
+        )
+
+    return False
+
+
+def farmer_meet_user_can_view(user, farmer_meet):
+    role = get_user_role(user)
+
+    if user.is_superuser or role == "ADMIN":
+        return True
+
+    if role == "DEVELOPMENT_OFFICER":
+        return farmer_meet.created_by_mdo_id == user.id
+
+    if role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
+        return farmer_meet.sales_officer_id == user.id
+
+    if role == "ASM":
+        return farmer_meet.asm_id == user.id
+
+    if role == "REGIONAL_MANAGER":
+        return farmer_meet.regional_manager_id == user.id
+
+    if role == "STATE_HEAD":
+        return farmer_meet.state_head_id == user.id
+
+    return False
+
+
+def prepare_farmer_meet_ui(farmer_meet, user):
+    farmer_meet.can_approve_now = farmer_meet_role_can_act(user, farmer_meet)
+
+    if farmer_meet.approval_status == "APPROVED":
+        farmer_meet.status_class = "approved"
+        farmer_meet.status_text = "Approved / Visit Scheduled"
+
+    elif farmer_meet.approval_status == "REJECTED":
+        farmer_meet.status_class = "rejected"
+        farmer_meet.status_text = "Rejected"
+
+    elif farmer_meet.approval_status == "PENDING_SALES_OFFICER":
+        farmer_meet.status_class = "pending"
+        farmer_meet.status_text = "Pending Sales Officer"
+
+    elif farmer_meet.approval_status == "PENDING_ASM":
+        farmer_meet.status_class = "pending"
+        farmer_meet.status_text = "Pending ASM"
+
+    elif farmer_meet.approval_status == "PENDING_REGIONAL_MANAGER":
+        farmer_meet.status_class = "forwarded"
+        farmer_meet.status_text = "Pending Regional Manager"
+
+    elif farmer_meet.approval_status == "PENDING_STATE_HEAD":
+        farmer_meet.status_class = "forwarded"
+        farmer_meet.status_text = "Pending State Head"
+
+    else:
+        farmer_meet.status_class = "pending"
+        farmer_meet.status_text = farmer_meet.approval_status
+
+    return farmer_meet
+
+
 
 @login_required
 def farmer_meet_list(request):
     role = get_user_role(request.user)
+    status_filter = request.GET.get("status", "ALL").strip()
+
+    farmer_meets = FarmerMeetRequest.objects.select_related(
+        "created_by_mdo",
+        "sales_officer",
+        "asm",
+        "regional_manager",
+        "state_head",
+        "rejected_by",
+    )
 
     if role == "DEVELOPMENT_OFFICER":
-        farmer_meets = FarmerMeetRequest.objects.filter(created_by_mdo=request.user)
+        farmer_meets = farmer_meets.filter(created_by_mdo=request.user)
 
     elif role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
-        farmer_meets = FarmerMeetRequest.objects.filter(
-            sales_officer=request.user,
-            approval_status="PENDING_SALES_OFFICER"
-        )
+        farmer_meets = farmer_meets.filter(sales_officer=request.user)
 
     elif role == "ASM":
-        farmer_meets = FarmerMeetRequest.objects.filter(
-            asm=request.user,
-            approval_status="PENDING_ASM"
-        )
+        farmer_meets = farmer_meets.filter(asm=request.user)
 
     elif role == "REGIONAL_MANAGER":
-        farmer_meets = FarmerMeetRequest.objects.filter(
-            regional_manager=request.user,
-            approval_status="PENDING_REGIONAL_MANAGER"
-        )
+        farmer_meets = farmer_meets.filter(regional_manager=request.user)
 
     elif role == "STATE_HEAD":
-        farmer_meets = FarmerMeetRequest.objects.filter(
-            state_head=request.user,
-            approval_status="PENDING_STATE_HEAD"
-        )
+        farmer_meets = farmer_meets.filter(state_head=request.user)
 
     elif request.user.is_superuser or role == "ADMIN":
-        farmer_meets = FarmerMeetRequest.objects.all()
+        farmer_meets = farmer_meets.all()
 
     else:
         messages.error(request, "You do not have permission.")
         return redirect("dashboard")
 
+    if status_filter and status_filter != "ALL":
+        farmer_meets = farmer_meets.filter(approval_status=status_filter)
+
+    farmer_meets = farmer_meets.order_by("meeting_date", "-id")
+
+    farmer_meet_list_data = []
+
+    for meet in farmer_meets:
+        farmer_meet_list_data.append(
+            prepare_farmer_meet_ui(meet, request.user)
+        )
+
+    pending_count = farmer_meets.exclude(
+        approval_status__in=["APPROVED", "REJECTED"]
+    ).count()
+
+    approved_count = farmer_meets.filter(
+        approval_status="APPROVED"
+    ).count()
+
     return render(
         request,
         "core/farmer_meet_list.html",
         {
-            "farmer_meets": farmer_meets,
+            "farmer_meets": farmer_meet_list_data,
+            "role": role,
+            "status_filter": status_filter,
+            "pending_count": pending_count,
+            "approved_count": approved_count,
         }
     )
 
-
 @login_required
 def farmer_meet_detail(request, meet_id):
-    farmer_meet = get_object_or_404(FarmerMeetRequest, id=meet_id)
+    farmer_meet = get_object_or_404(
+        FarmerMeetRequest.objects.select_related(
+            "created_by_mdo",
+            "sales_officer",
+            "asm",
+            "regional_manager",
+            "state_head",
+            "rejected_by",
+        ).prefetch_related("approval_history"),
+        id=meet_id
+    )
+
+    if not farmer_meet_user_can_view(request.user, farmer_meet):
+        messages.error(request, "You do not have permission to view this farmer meet.")
+        return redirect("farmer_meet_list")
+
+    farmer_meet = prepare_farmer_meet_ui(farmer_meet, request.user)
 
     return render(
         request,
         "core/farmer_meet_detail.html",
         {
             "farmer_meet": farmer_meet,
+            "can_approve_now": farmer_meet.can_approve_now,
             "reject_form": FarmerMeetRejectForm(),
         }
     )
@@ -2848,28 +3126,13 @@ def farmer_meet_detail(request, meet_id):
 @transaction.atomic
 def farmer_meet_approve(request, meet_id):
     farmer_meet = get_object_or_404(FarmerMeetRequest, id=meet_id)
-    role = get_user_role(request.user)
 
-    allowed = False
+    if request.method != "POST":
+        return redirect("farmer_meet_detail", meet_id=farmer_meet.id)
 
-    if role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
-        allowed = farmer_meet.sales_officer == request.user and farmer_meet.approval_status == "PENDING_SALES_OFFICER"
-
-    elif role == "ASM":
-        allowed = farmer_meet.asm == request.user and farmer_meet.approval_status == "PENDING_ASM"
-
-    elif role == "REGIONAL_MANAGER":
-        allowed = farmer_meet.regional_manager == request.user and farmer_meet.approval_status == "PENDING_REGIONAL_MANAGER"
-
-    elif role == "STATE_HEAD":
-        allowed = farmer_meet.state_head == request.user and farmer_meet.approval_status == "PENDING_STATE_HEAD"
-
-    elif request.user.is_superuser or role == "ADMIN":
-        allowed = True
-
-    if not allowed:
-        messages.error(request, "You cannot approve this request.")
-        return redirect("farmer_meet_list")
+    if not farmer_meet_role_can_act(request.user, farmer_meet):
+        messages.error(request, "You cannot approve this request now.")
+        return redirect("farmer_meet_detail", meet_id=farmer_meet.id)
 
     old_status = farmer_meet.approval_status
     farmer_meet.approval_status = farmer_meet.get_next_status_after_approval()
@@ -2890,6 +3153,13 @@ def farmer_meet_approve(request, meet_id):
 def farmer_meet_reject(request, meet_id):
     farmer_meet = get_object_or_404(FarmerMeetRequest, id=meet_id)
 
+    if request.method != "POST":
+        return redirect("farmer_meet_detail", meet_id=farmer_meet.id)
+
+    if not farmer_meet_role_can_act(request.user, farmer_meet):
+        messages.error(request, "You cannot reject this request now.")
+        return redirect("farmer_meet_detail", meet_id=farmer_meet.id)
+
     form = FarmerMeetRejectForm(request.POST)
 
     if form.is_valid():
@@ -2899,7 +3169,12 @@ def farmer_meet_reject(request, meet_id):
         farmer_meet.rejected_by = request.user
         farmer_meet.rejected_at = timezone.now()
         farmer_meet.rejection_reason = reason
-        farmer_meet.save()
+        farmer_meet.save(update_fields=[
+            "approval_status",
+            "rejected_by",
+            "rejected_at",
+            "rejection_reason",
+        ])
 
         FarmerMeetApprovalHistory.objects.create(
             farmer_meet=farmer_meet,
@@ -2914,6 +3189,7 @@ def farmer_meet_reject(request, meet_id):
     messages.error(request, "Rejection reason is required.")
     return redirect("farmer_meet_detail", meet_id=farmer_meet.id)
 
+    
 import re
 
 from django.contrib import messages
@@ -3519,7 +3795,59 @@ def product_list(request):
         }
     )
 
-    
+
+@login_required
+def dealer_product_detail(request, product_id):
+    role = get_user_role(request.user)
+
+    if role != "DEALER":
+        messages.error(request, "Only dealers can access product catalogue.")
+        return redirect("dashboard")
+
+    dealer = Dealer.objects.filter(
+        user=request.user,
+        approval_status="APPROVED",
+        is_active=True
+    ).first()
+
+    if not dealer:
+        messages.error(request, "Your dealer profile is not approved yet.")
+        return redirect("dashboard")
+
+    product = get_object_or_404(
+        Product.objects.filter(
+            is_active=True,
+            pack_sizes__is_active=True,
+            pack_sizes__stock_boxes__gt=0
+        ).select_related(
+            "category"
+        ).prefetch_related(
+            Prefetch(
+                "pack_sizes",
+                queryset=ProductPackSize.objects.filter(
+                    is_active=True,
+                    stock_boxes__gt=0
+                ).select_related("warehouse")
+            ),
+            Prefetch(
+                "schemes",
+                queryset=ProductScheme.objects.filter(is_active=True)
+            ),
+            "category__payment_rules"
+        ).distinct(),
+        id=product_id
+    )
+
+    return render(
+        request,
+        "core/dealer_product_detail.html",
+        {
+            "product": product,
+            "dealer": dealer,
+        }
+    )
+
+
 @login_required
 @role_required(["ADMIN"])
 @transaction.atomic
@@ -3546,8 +3874,52 @@ def product_edit(request, product_id):
         )
 
         if form.is_valid() and pack_formset.is_valid() and scheme_formset.is_valid():
-            form.save()
-            pack_formset.save()
+            product = form.save()
+
+            # Save edited/new pack sizes safely
+            pack_instances = pack_formset.save(commit=False)
+
+            for pack in pack_instances:
+                pack.product = product
+                pack.save()
+
+            # Safe delete handling for old pack sizes
+            for pack in pack_formset.deleted_objects:
+                used_reasons = []
+
+                if hasattr(pack, "production_recipes") and pack.production_recipes.exists():
+                    used_reasons.append("Production Recipe")
+
+                if hasattr(pack, "production_outputs") and pack.production_outputs.exists():
+                    used_reasons.append("Production Batch")
+
+                if hasattr(pack, "repacking_outputs") and pack.repacking_outputs.exists():
+                    used_reasons.append("Repacking Batch")
+
+                if used_reasons:
+                    # Do not delete linked pack size. Just deactivate if field exists.
+                    if hasattr(pack, "is_active"):
+                        pack.is_active = False
+                        pack.save(update_fields=["is_active"])
+
+                        messages.warning(
+                            request,
+                            f"Pack size '{pack}' is already used in {', '.join(used_reasons)}. "
+                            f"So it was not deleted, only deactivated."
+                        )
+                    else:
+                        messages.warning(
+                            request,
+                            f"Pack size '{pack}' is already used in {', '.join(used_reasons)}. "
+                            f"So it cannot be deleted."
+                        )
+                else:
+                    pack.delete()
+
+            if hasattr(pack_formset, "save_m2m"):
+                pack_formset.save_m2m()
+
+            scheme_formset.instance = product
             scheme_formset.save()
 
             messages.success(request, "Product updated successfully.")
@@ -3555,11 +3927,6 @@ def product_edit(request, product_id):
 
         else:
             messages.error(request, "Please correct the errors below.")
-
-            print("PRODUCT FORM ERRORS:", form.errors)
-            print("PACK FORMSET ERRORS:", pack_formset.errors)
-            print("SCHEME FORMSET ERRORS:", scheme_formset.errors)
-            print("FILES:", request.FILES)
 
     else:
         form = ProductForm(instance=product)
@@ -3583,9 +3950,109 @@ def product_edit(request, product_id):
             "scheme_formset": scheme_formset,
             "title": "Edit Product",
             "button_text": "Update Product",
+            "product": product,
         }
     )
 
+@login_required
+@role_required(["ADMIN"])
+@transaction.atomic
+def product_deactivate(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method != "POST":
+        return redirect("product_list")
+
+    product.is_active = False
+    product.save(update_fields=["is_active"])
+
+    product.pack_sizes.update(is_active=False)
+
+    messages.success(request, f"{product.name} deactivated successfully.")
+    return redirect("product_list")
+
+
+@login_required
+@role_required(["ADMIN"])
+def product_force_delete(request, product_id):
+    product = get_object_or_404(
+        Product.objects.prefetch_related("pack_sizes"),
+        id=product_id
+    )
+
+    packs = list(product.pack_sizes.all())
+
+    delete_summary = {
+        "pack_count": len(packs),
+        "cart_items": DealerCartItem.objects.filter(product_pack__in=packs).count(),
+        "order_items": DealerOrderItem.objects.filter(product_pack__in=packs).count(),
+        "sales_return_items": SalesReturnCreditNoteItem.objects.filter(product_pack__in=packs).count(),
+        "sales_return_order_items": SalesReturnCreditNoteItem.objects.filter(order_item__product_pack__in=packs).count(),
+        "old_production_recipes": ProductionRecipe.objects.filter(output_product_pack__in=packs).count(),
+        "old_production_batches": ProductionBatch.objects.filter(output_product_pack__in=packs).count(),
+        "repacking_batches": RepackingBatch.objects.filter(destination_product_pack__in=packs).count(),
+        "smart_production_runs": ProductProductionRun.objects.filter(product=product).count(),
+        "smart_production_outputs": ProductProductionRunOutputPack.objects.filter(product_pack__in=packs).count(),
+        "smart_formulas": ProductProductionFormula.objects.filter(product=product).count(),
+    }
+
+    if request.method == "POST":
+        confirm_text = (request.POST.get("confirm_text") or "").strip().upper()
+
+        if confirm_text != "DELETE":
+            messages.error(request, "Please type DELETE to confirm product delete.")
+            return redirect("product_force_delete", product_id=product.id)
+
+        try:
+            with transaction.atomic():
+                packs = list(product.pack_sizes.select_for_update().all())
+
+                # 1. Remove cart items
+                DealerCartItem.objects.filter(product_pack__in=packs).delete()
+
+                # 2. Remove sales return item links before order items
+                SalesReturnCreditNoteItem.objects.filter(product_pack__in=packs).delete()
+                SalesReturnCreditNoteItem.objects.filter(order_item__product_pack__in=packs).delete()
+
+                # 3. Remove dealer order items using this product pack
+                DealerOrderItem.objects.filter(product_pack__in=packs).delete()
+
+                # 4. Remove smart production output rows
+                ProductProductionRunOutputPack.objects.filter(product_pack__in=packs).delete()
+
+                # 5. Remove smart production runs/formulas for this product
+                ProductProductionRun.objects.filter(product=product).delete()
+                ProductProductionFormula.objects.filter(product=product).delete()
+
+                # 6. Remove old production/repacking references
+                ProductionBatch.objects.filter(output_product_pack__in=packs).delete()
+                RepackingBatch.objects.filter(destination_product_pack__in=packs).delete()
+                ProductionRecipe.objects.filter(output_product_pack__in=packs).delete()
+
+                # 7. Delete pack sizes
+                product.pack_sizes.all().delete()
+
+                product_name = product.name
+
+                # 8. Delete product
+                product.delete()
+
+            messages.success(request, f"{product_name} deleted successfully.")
+            return redirect("product_list")
+
+        except ProtectedError as error:
+            messages.error(request, f"Product could not be deleted because it is still protected: {error}")
+            return redirect("product_force_delete", product_id=product.id)
+
+        except Exception as error:
+            messages.error(request, f"Product could not be deleted: {error}")
+            return redirect("product_force_delete", product_id=product.id)
+
+    return render(request, "core/product_force_delete_confirm.html", {
+        "product": product,
+        "delete_summary": delete_summary,
+    })
+    
 
 @login_required
 def dealer_products(request):
@@ -4391,6 +4858,13 @@ def accountant_invoice_review(request, order_id):
 
             invoice_number = sequence.next_invoice_number()
 
+            gstr1_code = release_form.cleaned_data.get("gstr1_code") or ""
+            gstr1_code = str(gstr1_code).strip()
+
+            gstr1_code_key = gstr1_code.replace(" ", "").upper()
+
+            add_to_gstr1 = gstr1_code_key == "ARVIS"
+
             invoice = DealerInvoice.objects.create(
                 order=order,
                 financial_year=fy,
@@ -4402,13 +4876,28 @@ def accountant_invoice_review(request, order_id):
                 total_amount=order.total_amount,
                 pending_amount=order.total_amount,
                 released_by=request.user,
+
+                # GSTR-1 logic
+                gstr1_code=gstr1_code,
+                add_to_gstr1=add_to_gstr1,
+                gstr1_added_at=timezone.now() if add_to_gstr1 else None,
             )
 
             order.status = "DISPATCH_PENDING"
             order.invoice_released_at = timezone.now()
             order.save()
 
-            log_order_action(order, request.user, "INVOICE_RELEASED", f"Invoice {invoice.invoice_number} released.")
+            if add_to_gstr1:
+                gstr_note = "Added to GSTR-1 report."
+            else:
+                gstr_note = "Not added to GSTR-1 report."
+
+            log_order_action(
+                order,
+                request.user,
+                "INVOICE_RELEASED",
+                f"Invoice {invoice.invoice_number} released. {gstr_note}"
+            )
 
             messages.success(request, f"Invoice released: {invoice.invoice_number}")
             return redirect("dealer_invoice_print", invoice_id=invoice.id, copy_type="COMPANY")
@@ -4426,6 +4915,7 @@ def accountant_invoice_review(request, order_id):
             "release_form": release_form,
         }
     )
+
 
 
 @login_required
@@ -5988,44 +6478,139 @@ def accounts_dashboard(request):
         messages.error(request, "Only Admin or Accountant can access accounts.")
         return redirect("dashboard")
 
+    today = timezone.localdate()
+    period = request.GET.get("period", "this_month")
+
+    def month_range(any_date):
+        start = any_date.replace(day=1)
+
+        if start.month == 12:
+            end = date(start.year + 1, 1, 1) - timedelta(days=1)
+        else:
+            end = date(start.year, start.month + 1, 1) - timedelta(days=1)
+
+        return start, end
+
+    def financial_year_start(any_date):
+        if any_date.month >= 4:
+            return date(any_date.year, 4, 1)
+
+        return date(any_date.year - 1, 4, 1)
+
+    fy_start = financial_year_start(today)
+
+    if period == "this_month":
+        start_date, end_date = month_range(today)
+        title = "This Month"
+
+    elif period == "last_month":
+        first_day_this_month = today.replace(day=1)
+        last_month_day = first_day_this_month - timedelta(days=1)
+        start_date, end_date = month_range(last_month_day)
+        title = "Last Month"
+
+    elif period == "this_year":
+        start_date = fy_start
+        end_date = date(fy_start.year + 1, 3, 31)
+        title = f"Financial Year {fy_start.year}-{str(fy_start.year + 1)[-2:]}"
+
+    elif period == "last_year":
+        start_date = date(fy_start.year - 1, 4, 1)
+        end_date = date(fy_start.year, 3, 31)
+        title = f"Last Financial Year {start_date.year}-{str(end_date.year)[-2:]}"
+
+    elif period == "q1":
+        start_date = date(fy_start.year, 4, 1)
+        end_date = date(fy_start.year, 6, 30)
+        title = "Q1 - April to June"
+
+    elif period == "q2":
+        start_date = date(fy_start.year, 7, 1)
+        end_date = date(fy_start.year, 9, 30)
+        title = "Q2 - July to September"
+
+    elif period == "q3":
+        start_date = date(fy_start.year, 10, 1)
+        end_date = date(fy_start.year, 12, 31)
+        title = "Q3 - October to December"
+
+    elif period == "q4":
+        start_date = date(fy_start.year + 1, 1, 1)
+        end_date = date(fy_start.year + 1, 3, 31)
+        title = "Q4 - January to March"
+
+    elif period == "custom":
+        start_value = request.GET.get("start_date")
+        end_value = request.GET.get("end_date")
+
+        try:
+            start_date = date.fromisoformat(start_value)
+            end_date = date.fromisoformat(end_value)
+        except Exception:
+            start_date, end_date = month_range(today)
+
+        title = "Custom Range"
+
+    else:
+        period = "this_month"
+        start_date, end_date = month_range(today)
+        title = "This Month"
+
     accounts = CompanyAccount.objects.order_by("account_name")
 
     total_balance = accounts.aggregate(
         total=Sum("current_balance")
-    )["total"] or 0
+    )["total"] or Decimal("0.00")
 
-    total_payment_in = CompanyPaymentIn.objects.aggregate(
-        total=Sum("amount")
-    )["total"] or 0
-
-    total_payment_out = CompanyPaymentOut.objects.aggregate(
-        total=Sum("amount")
-    )["total"] or 0
-
-    recent_ins = CompanyPaymentIn.objects.select_related(
+    payment_ins = CompanyPaymentIn.objects.select_related(
         "account",
         "dealer",
         "created_by",
-    ).order_by("-payment_date", "-created_at")[:10]
+    ).filter(
+        payment_date__gte=start_date,
+        payment_date__lte=end_date,
+    ).order_by("-payment_date", "-created_at")
 
-    recent_outs = CompanyPaymentOut.objects.select_related(
+    payment_outs = CompanyPaymentOut.objects.select_related(
         "account",
         "created_by",
-    ).order_by("-payment_date", "-created_at")[:10]
+    ).filter(
+        payment_date__gte=start_date,
+        payment_date__lte=end_date,
+    ).order_by("-payment_date", "-created_at")
+
+    total_payment_in = payment_ins.aggregate(
+        total=Sum("amount")
+    )["total"] or Decimal("0.00")
+
+    total_payment_out = payment_outs.aggregate(
+        total=Sum("amount")
+    )["total"] or Decimal("0.00")
+
+    net_cash_flow = total_payment_in - total_payment_out
 
     return render(
         request,
         "core/accounts_dashboard.html",
         {
             "accounts": accounts,
+
+            "period": period,
+            "start_date": start_date,
+            "end_date": end_date,
+            "title": title,
+
             "total_balance": total_balance,
             "total_payment_in": total_payment_in,
             "total_payment_out": total_payment_out,
-            "recent_ins": recent_ins,
-            "recent_outs": recent_outs,
+            "net_cash_flow": net_cash_flow,
+
+            "recent_ins": payment_ins,
+            "recent_outs": payment_outs,
         }
     )
 
+    
 
 @login_required
 def company_account_create(request):
@@ -7228,6 +7813,9 @@ def can_accountant_admin(user):
 
 @login_required
 def employee_attendance_dashboard(request):
+    profile = getattr(request.user, "profile", None)
+    tada_applicable = getattr(profile, "tada_applicable", True)
+
     today = timezone.localdate()
 
     my_open_attendance = EmployeeAttendance.objects.filter(
@@ -7247,17 +7835,22 @@ def employee_attendance_dashboard(request):
         attendance_date__month=today.month
     )
 
-    monthly_km = my_month_records.aggregate(
-        total=Sum("manager_approved_km")
-    )["total"] or Decimal("0.00")
+    if tada_applicable:
+        monthly_km = my_month_records.aggregate(
+            total=Sum("manager_approved_km")
+        )["total"] or Decimal("0.00")
 
-    monthly_ta = my_month_records.aggregate(
-        total=Sum("ta_amount")
-    )["total"] or Decimal("0.00")
+        monthly_ta = my_month_records.aggregate(
+            total=Sum("ta_amount")
+        )["total"] or Decimal("0.00")
 
-    monthly_da = my_month_records.aggregate(
-        total=Sum("da_amount")
-    )["total"] or Decimal("0.00")
+        monthly_da = my_month_records.aggregate(
+            total=Sum("da_amount")
+        )["total"] or Decimal("0.00")
+    else:
+        monthly_km = Decimal("0.00")
+        monthly_ta = Decimal("0.00")
+        monthly_da = Decimal("0.00")
 
     pending_manager_count = 0
     pending_hr_count = 0
@@ -7288,13 +7881,91 @@ def employee_attendance_dashboard(request):
             "monthly_da": monthly_da,
             "pending_manager_count": pending_manager_count,
             "pending_hr_count": pending_hr_count,
+            "tada_applicable": tada_applicable,
         }
     )
 
 
+
+@login_required
+def employee_attendance_dashboard(request):
+    profile = getattr(request.user, "profile", None)
+    tada_applicable = getattr(profile, "tada_applicable", True)
+
+    today = timezone.localdate()
+
+    my_open_attendance = EmployeeAttendance.objects.filter(
+        employee=request.user,
+        attendance_date=today,
+        clock_out_at__isnull=True
+    ).first()
+
+    my_today_attendance = EmployeeAttendance.objects.filter(
+        employee=request.user,
+        attendance_date=today
+    ).first()
+
+    my_month_records = EmployeeAttendance.objects.filter(
+        employee=request.user,
+        attendance_date__year=today.year,
+        attendance_date__month=today.month
+    )
+
+    if tada_applicable:
+        monthly_km = my_month_records.aggregate(
+            total=Sum("manager_approved_km")
+        )["total"] or Decimal("0.00")
+
+        monthly_ta = my_month_records.aggregate(
+            total=Sum("ta_amount")
+        )["total"] or Decimal("0.00")
+
+        monthly_da = my_month_records.aggregate(
+            total=Sum("da_amount")
+        )["total"] or Decimal("0.00")
+    else:
+        monthly_km = Decimal("0.00")
+        monthly_ta = Decimal("0.00")
+        monthly_da = Decimal("0.00")
+
+    pending_manager_count = 0
+    pending_hr_count = 0
+
+    manager_subordinates = UserProfile.objects.filter(
+        manager=request.user
+    ).values_list("user_id", flat=True)
+
+    if manager_subordinates:
+        pending_manager_count = EmployeeAttendance.objects.filter(
+            employee_id__in=manager_subordinates,
+            status="PENDING_MANAGER"
+        ).count()
+
+    if can_hr(request.user):
+        pending_hr_count = EmployeeAttendance.objects.filter(
+            status="MANAGER_APPROVED"
+        ).count()
+
+    return render(
+        request,
+        "core/employee_attendance_dashboard.html",
+        {
+            "my_open_attendance": my_open_attendance,
+            "my_today_attendance": my_today_attendance,
+            "monthly_km": monthly_km,
+            "monthly_ta": monthly_ta,
+            "monthly_da": monthly_da,
+            "pending_manager_count": pending_manager_count,
+            "pending_hr_count": pending_hr_count,
+            "tada_applicable": tada_applicable,
+        }
+    )
+
 @login_required
 def employee_clock_in(request):
     today = timezone.localdate()
+    profile = getattr(request.user, "profile", None)
+    tada_applicable = getattr(profile, "tada_applicable", True)
 
     existing_open = EmployeeAttendance.objects.filter(
         employee=request.user,
@@ -7303,7 +7974,7 @@ def employee_clock_in(request):
     ).first()
 
     if existing_open:
-        messages.warning(request, "You are already clocked in. GPS tracking is active.")
+        messages.warning(request, "You are already clocked in.")
         return redirect("employee_attendance_dashboard")
 
     existing_today = EmployeeAttendance.objects.filter(
@@ -7324,26 +7995,30 @@ def employee_clock_in(request):
             messages.error(request, "Location is required for clock-in.")
             return redirect("employee_attendance_dashboard")
 
-        if not odometer:
-            messages.error(request, "Starting odometer reading is required.")
-            return redirect("employee_attendance_dashboard")
+        if "can_employee_clockin_today" in globals():
+            if not can_employee_clockin_today(request.user, today):
+                messages.error(
+                    request,
+                    "Today is not your working day. Please request extra working day approval from your manager before clock-in."
+                )
+                return redirect("employee_attendance_dashboard")
 
-        try:
-            odometer = Decimal(str(odometer))
-        except Exception:
-            messages.error(request, "Please enter a valid starting odometer reading.")
-            return redirect("employee_attendance_dashboard")
+        clock_in_odometer = None
 
-        if odometer < 0:
-            messages.error(request, "Starting odometer cannot be negative.")
-            return redirect("employee_attendance_dashboard")
+        if tada_applicable:
+            if not odometer:
+                messages.error(request, "Starting odometer reading is required.")
+                return redirect("employee_attendance_dashboard")
 
-        if not can_employee_clockin_today(request.user, today):
-            messages.error(
-                request,
-                "Today is not your working day. Please request extra working day approval from your manager before clock-in."
-            )
-            return redirect("employee_attendance_dashboard")
+            try:
+                clock_in_odometer = Decimal(str(odometer))
+            except Exception:
+                messages.error(request, "Please enter a valid starting odometer reading.")
+                return redirect("employee_attendance_dashboard")
+
+            if clock_in_odometer < 0:
+                messages.error(request, "Starting odometer cannot be negative.")
+                return redirect("employee_attendance_dashboard")
 
         attendance = EmployeeAttendance.objects.create(
             employee=request.user,
@@ -7351,7 +8026,7 @@ def employee_clock_in(request):
             clock_in_at=timezone.now(),
             clock_in_latitude=latitude,
             clock_in_longitude=longitude,
-            clock_in_odometer_reading=odometer,
+            clock_in_odometer_reading=clock_in_odometer,
             status="CLOCKED_IN",
         )
 
@@ -7361,15 +8036,18 @@ def employee_clock_in(request):
             longitude=longitude
         )
 
-        messages.success(
-            request,
-            "Clock-in successful. Location and starting odometer saved."
-        )
+        messages.success(request, "Clock-in completed successfully.")
         return redirect("employee_attendance_dashboard")
 
-    return redirect("employee_attendance_dashboard")
+    return render(
+        request,
+        "core/employee_clock_in.html",
+        {
+            "tada_applicable": tada_applicable,
+        }
+    )
 
-
+    
 @login_required
 def employee_gps_ping(request):
     if request.method != "POST":
@@ -7401,31 +8079,34 @@ def employee_gps_ping(request):
 
 @login_required
 def employee_clock_out(request):
+    profile = getattr(request.user, "profile", None)
+    tada_applicable = getattr(profile, "tada_applicable", True)
+
     attendance = EmployeeAttendance.objects.filter(
         employee=request.user,
-        clock_out_at__isnull=True,
-        status="CLOCKED_IN"
-    ).first()
+        clock_out_at__isnull=True
+    ).order_by("-clock_in_at").first()
 
     if not attendance:
         messages.error(request, "No active clock-in found.")
         return redirect("employee_attendance_dashboard")
 
     if request.method == "POST":
-        form = EmployeeClockOutForm(
-            request.POST,
-            request.FILES,
-            instance=attendance
-        )
-
         latitude = request.POST.get("latitude")
         longitude = request.POST.get("longitude")
 
-        if form.is_valid():
-            if not latitude or not longitude:
-                messages.error(request, "Location is required for clock-out.")
-                return redirect("employee_clock_out")
+        if not latitude or not longitude:
+            messages.error(request, "Location is required for clock-out.")
+            return redirect("employee_clock_out")
 
+        form = EmployeeClockOutForm(
+            request.POST,
+            request.FILES,
+            instance=attendance,
+            tada_applicable=tada_applicable
+        )
+
+        if form.is_valid():
             attendance = form.save(commit=False)
 
             attendance.clock_out_at = timezone.now()
@@ -7438,7 +8119,23 @@ def employee_clock_out(request):
                 longitude=longitude
             )
 
-            profile = getattr(request.user, "profile", None)
+            if not tada_applicable:
+                attendance.vehicle_type = None
+                attendance.clock_out_odometer_reading = None
+                attendance.public_vehicle_amount = Decimal("0.00")
+                attendance.public_vehicle_bill = None
+                attendance.system_distance_km = Decimal("0.00")
+                attendance.manager_approved_km = Decimal("0.00")
+                attendance.ta_rate_per_km = Decimal("0.00")
+                attendance.ta_amount = Decimal("0.00")
+                attendance.da_amount = Decimal("0.00")
+                attendance.total_claim_amount = Decimal("0.00")
+                attendance.dealers_connected_count = 0
+                attendance.status = "ATTENDANCE_DONE"
+                attendance.save()
+
+                messages.success(request, "Clock-out completed successfully.")
+                return redirect("employee_attendance_dashboard")
 
             start_odometer = attendance.clock_in_odometer_reading or Decimal("0.00")
             end_odometer = attendance.clock_out_odometer_reading or Decimal("0.00")
@@ -7487,12 +8184,15 @@ def employee_clock_out(request):
 
             messages.success(
                 request,
-                "Clock-out completed. KM calculated from odometer and sent for manager approval."
+                "Clock-out completed. TA/DA claim sent for manager approval."
             )
             return redirect("employee_attendance_dashboard")
 
     else:
-        form = EmployeeClockOutForm(instance=attendance)
+        form = EmployeeClockOutForm(
+            instance=attendance,
+            tada_applicable=tada_applicable
+        )
 
     return render(
         request,
@@ -7500,6 +8200,7 @@ def employee_clock_out(request):
         {
             "form": form,
             "attendance": attendance,
+            "tada_applicable": tada_applicable,
         }
     )
     
@@ -7673,21 +8374,194 @@ def accountant_attendance_claims(request):
         messages.error(request, "Only Accountant/Admin can view claims.")
         return redirect("dashboard")
 
+    today = timezone.localdate()
+
+    period = request.GET.get("period", "THIS_MONTH")
+    employee_id = request.GET.get("employee", "").strip()
+
+    if period == "LAST_15":
+        from_date = today - timedelta(days=14)
+        to_date = today
+
+    elif period == "LAST_MONTH":
+        first_day_this_month = today.replace(day=1)
+        last_day_last_month = first_day_this_month - timedelta(days=1)
+        from_date = last_day_last_month.replace(day=1)
+        to_date = last_day_last_month
+
+    elif period == "CUSTOM":
+        from_date = parse_date(request.GET.get("from_date") or "")
+        to_date = parse_date(request.GET.get("to_date") or "")
+
+        if not from_date:
+            from_date = today.replace(day=1)
+
+        if not to_date:
+            to_date = today
+
+    else:
+        period = "THIS_MONTH"
+        from_date = today.replace(day=1)
+        to_date = today
+
     records = EmployeeAttendance.objects.select_related(
         "employee",
         "employee__profile",
         "hr_approved_by"
     ).filter(
-        status="HR_APPROVED"
+        status="HR_APPROVED",
+        attendance_date__gte=from_date,
+        attendance_date__lte=to_date,
+    ).order_by(
+        "employee__first_name",
+        "employee__username",
+        "attendance_date"
     )
+
+    if employee_id:
+        records = records.filter(employee_id=employee_id)
+
+    employee_map = {}
+
+    for record in records:
+        emp = record.employee
+
+        if emp.id not in employee_map:
+            employee_map[emp.id] = {
+                "employee": emp,
+                "records": [],
+                "claim_days": 0,
+                "total_km": Decimal("0.00"),
+                "total_ta": Decimal("0.00"),
+                "total_da": Decimal("0.00"),
+                "total_amount": Decimal("0.00"),
+                "first_date": record.attendance_date,
+                "last_date": record.attendance_date,
+            }
+
+        row = employee_map[emp.id]
+
+        row["records"].append(record)
+        row["claim_days"] += 1
+        row["total_km"] += Decimal(str(record.manager_approved_km or 0))
+        row["total_ta"] += Decimal(str(record.ta_amount or 0))
+        row["total_da"] += Decimal(str(record.da_amount or 0))
+        row["total_amount"] += Decimal(str(record.total_claim_amount or 0))
+
+        if record.attendance_date < row["first_date"]:
+            row["first_date"] = record.attendance_date
+
+        if record.attendance_date > row["last_date"]:
+            row["last_date"] = record.attendance_date
+
+    rows = list(employee_map.values())
+
+    total_pending_amount = sum(row["total_amount"] for row in rows)
+    total_pending_days = sum(row["claim_days"] for row in rows)
+
+    employees = User.objects.filter(
+        attendance_records__status="HR_APPROVED"
+    ).distinct().order_by("first_name", "username")
+
+    recent_batches = EmployeeTadaFundReleaseBatch.objects.select_related(
+        "employee",
+        "released_by"
+    ).order_by("-released_at", "-id")[:20]
 
     return render(
         request,
         "core/accountant_attendance_claims.html",
         {
-            "records": records,
+            "rows": rows,
+            "employees": employees,
+            "employee_id": employee_id,
+            "period": period,
+            "from_date": from_date,
+            "to_date": to_date,
+            "total_pending_amount": total_pending_amount,
+            "total_pending_days": total_pending_days,
+            "recent_batches": recent_batches,
         }
     )
+
+@login_required
+@transaction.atomic
+def accountant_bulk_release_attendance_claims(request):
+    if not can_accountant_admin(request.user):
+        messages.error(request, "Only Accountant/Admin can release funds.")
+        return redirect("dashboard")
+
+    if request.method != "POST":
+        return redirect("accountant_attendance_claims")
+
+    employee_id = request.POST.get("employee_id")
+    from_date = parse_date(request.POST.get("from_date") or "")
+    to_date = parse_date(request.POST.get("to_date") or "")
+    remarks = request.POST.get("release_remarks", "").strip()
+
+    if not employee_id or not from_date or not to_date:
+        messages.error(request, "Employee and date range are required.")
+        return redirect("accountant_attendance_claims")
+
+    records = EmployeeAttendance.objects.select_for_update().select_related(
+        "employee"
+    ).filter(
+        employee_id=employee_id,
+        status="HR_APPROVED",
+        attendance_date__gte=from_date,
+        attendance_date__lte=to_date,
+    ).order_by("attendance_date")
+
+    if not records.exists():
+        messages.error(request, "No HR approved TA/DA claims found for this employee and date range.")
+        return redirect("accountant_attendance_claims")
+
+    total_km = Decimal("0.00")
+    total_ta = Decimal("0.00")
+    total_da = Decimal("0.00")
+    total_amount = Decimal("0.00")
+
+    record_list = list(records)
+
+    for record in record_list:
+        total_km += Decimal(str(record.manager_approved_km or 0))
+        total_ta += Decimal(str(record.ta_amount or 0))
+        total_da += Decimal(str(record.da_amount or 0))
+        total_amount += Decimal(str(record.total_claim_amount or 0))
+
+    batch = EmployeeTadaFundReleaseBatch.objects.create(
+        employee_id=employee_id,
+        from_date=from_date,
+        to_date=to_date,
+        total_km=total_km,
+        total_ta_amount=total_ta,
+        total_da_amount=total_da,
+        total_released_amount=total_amount,
+        released_by=request.user,
+        released_at=timezone.now(),
+        remarks=remarks,
+    )
+
+    batch.attendance_records.set(record_list)
+
+    for record in record_list:
+        record.released_by = request.user
+        record.released_at = timezone.now()
+        record.release_remarks = remarks
+        record.status = "RELEASED"
+        record.save(update_fields=[
+            "released_by",
+            "released_at",
+            "release_remarks",
+            "status",
+        ])
+
+    messages.success(
+        request,
+        f"Released ₹{total_amount} TA/DA for {len(record_list)} day(s)."
+    )
+
+    return redirect("accountant_attendance_claims")
 
 
 @login_required
@@ -9107,10 +9981,6 @@ def employee_leave_balance(request):
             "chart_values": chart_values,
         }
     )
-
-
-
-
 
 
 def is_asset_manager_user(user):
@@ -10993,46 +11863,25 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .models import (
-    PurchaseParty,
-    PurchaseType,
-    InventoryItem,
-    PurchaseBill,
-    PurchaseBillItem,
-    PurchasePaymentOut,
-    PurchaseReturnOrder,
-    PurchaseReturnItem,
-    ProductionRecipe,
-    ProductionRecipeItem,
-    ProductionBatch,
-)
-
-from .forms import (
-    SimplePurchaseEntryForm,
-    SimplePurchaseItemFormSet,
-    SimplePaymentOutForm,
-    SimplePurchaseReturnForm,
-    SimpleReturnItemFormSet,
-    SimpleMakeProductForm,
-    SimpleMakeProductItemFormSet,
-)
 
 
 # ----------------------------------------------------------
 # COMMON PERMISSION
 # ----------------------------------------------------------
-
 def purchase_user_allowed(user):
-    if not user or not user.is_authenticated:
-        return False
-
     if user.is_superuser:
         return True
 
     profile = getattr(user, "profile", None)
-    role = profile.role if profile else ""
 
-    return role in ["ADMIN", "INVENTORY_MANAGER"]
+    if not profile:
+        return False
+
+    return profile.role in [
+        "ADMIN",
+        "INVENTORY_MANAGER",
+        "ACCOUNTANT",
+    ]
 
 
 def purchase_permission_check(request):
@@ -11163,24 +12012,242 @@ def build_purchase_formset_initial(bill):
     return initial_rows
 
 
-def get_valid_purchase_item_rows(formset):
-    valid_rows = []
+from django.db.models import Sum, Q
 
-    for item_form in formset:
-        if item_form.cleaned_data.get("DELETE"):
-            continue
 
-        item = item_form.cleaned_data.get("item")
-        new_item_name = (item_form.cleaned_data.get("new_item_name") or "").strip()
-        quantity = item_form.cleaned_data.get("quantity")
+def gst_report_permission_check(request):
+    if not request.user.is_authenticated:
+        return False
 
-        if not item and not new_item_name and not quantity:
-            continue
+    if request.user.is_superuser:
+        return True
 
-        valid_rows.append(item_form.cleaned_data)
+    profile = getattr(request.user, "profile", None)
 
-    return valid_rows
+    if not profile:
+        return False
 
+    return profile.role in ["ADMIN", "ACCOUNTANT", "INVENTORY_MANAGER"]
+
+
+def gstr2b_report(request):
+    if not gst_report_permission_check(request):
+        return redirect("dashboard")
+
+    search = (request.GET.get("q") or "").strip()
+    from_date = (request.GET.get("from_date") or "").strip()
+    to_date = (request.GET.get("to_date") or "").strip()
+
+    bills = PurchaseBill.objects.select_related(
+        "party",
+        "created_by",
+    ).filter(
+        add_to_gstr2b=True
+    ).order_by("-bill_date", "-id")
+
+    if search:
+        bills = bills.filter(
+            Q(bill_number__icontains=search) |
+            Q(party__party_name__icontains=search) |
+            Q(party__gst_number__icontains=search)
+        )
+
+    if from_date:
+        bills = bills.filter(bill_date__gte=from_date)
+
+    if to_date:
+        bills = bills.filter(bill_date__lte=to_date)
+
+    totals = bills.aggregate(
+        taxable_total=Sum("subtotal_amount"),
+        gst_total=Sum("gst_amount"),
+        bill_total=Sum("total_amount"),
+    )
+
+    return render(request, "core/gstr2b_report.html", {
+        "bills": bills,
+        "search": search,
+        "from_date": from_date,
+        "to_date": to_date,
+        "taxable_total": totals["taxable_total"] or Decimal("0.00"),
+        "gst_total": totals["gst_total"] or Decimal("0.00"),
+        "bill_total": totals["bill_total"] or Decimal("0.00"),
+    })
+
+from django.db.models import Sum, Q
+from decimal import Decimal
+
+
+def gst_sales_report_permission_check(request):
+    if not request.user.is_authenticated:
+        return False
+
+    if request.user.is_superuser:
+        return True
+
+    profile = getattr(request.user, "profile", None)
+
+    if not profile:
+        return False
+
+    return profile.role in ["ADMIN", "ACCOUNTANT"]
+
+
+def gstr1_report(request):
+    if not gst_sales_report_permission_check(request):
+        return redirect("dashboard")
+
+    search = (request.GET.get("q") or "").strip()
+    from_date = (request.GET.get("from_date") or "").strip()
+    to_date = (request.GET.get("to_date") or "").strip()
+
+    invoices = DealerInvoice.objects.select_related(
+        "order",
+        "order__dealer",
+        "released_by",
+    ).filter(
+        add_to_gstr1=True
+    ).order_by("-invoice_date", "-id")
+
+    if search:
+        invoices = invoices.filter(
+            Q(invoice_number__icontains=search) |
+            Q(order__dealer__firm_name__icontains=search) |
+            Q(order__dealer__owner_name__icontains=search) |
+            Q(order__dealer__gst_number__icontains=search)
+        )
+
+    if from_date:
+        invoices = invoices.filter(invoice_date__gte=from_date)
+
+    if to_date:
+        invoices = invoices.filter(invoice_date__lte=to_date)
+
+    totals = invoices.aggregate(
+        taxable_total=Sum("subtotal_amount"),
+        gst_total=Sum("gst_amount"),
+        invoice_total=Sum("total_amount"),
+    )
+
+    return render(request, "core/gstr1_report.html", {
+        "invoices": invoices,
+        "search": search,
+        "from_date": from_date,
+        "to_date": to_date,
+        "taxable_total": totals["taxable_total"] or Decimal("0.00"),
+        "gst_total": totals["gst_total"] or Decimal("0.00"),
+        "invoice_total": totals["invoice_total"] or Decimal("0.00"),
+    })
+
+
+
+from decimal import Decimal
+from django.db.models import Sum, Q
+from django.shortcuts import render, redirect
+
+
+def gstr3b_report(request):
+    if not gst_sales_report_permission_check(request):
+        return redirect("dashboard")
+
+    search = (request.GET.get("q") or "").strip()
+    from_date = (request.GET.get("from_date") or "").strip()
+    to_date = (request.GET.get("to_date") or "").strip()
+
+    sales_invoices = DealerInvoice.objects.select_related(
+        "order",
+        "order__dealer",
+        "released_by",
+    ).filter(
+        add_to_gstr1=True
+    ).order_by("-invoice_date", "-id")
+
+    purchase_bills = PurchaseBill.objects.select_related(
+        "party",
+        "created_by",
+    ).filter(
+        add_to_gstr2b=True
+    ).order_by("-bill_date", "-id")
+
+    if from_date:
+        sales_invoices = sales_invoices.filter(invoice_date__gte=from_date)
+        purchase_bills = purchase_bills.filter(bill_date__gte=from_date)
+
+    if to_date:
+        sales_invoices = sales_invoices.filter(invoice_date__lte=to_date)
+        purchase_bills = purchase_bills.filter(bill_date__lte=to_date)
+
+    if search:
+        sales_invoices = sales_invoices.filter(
+            Q(invoice_number__icontains=search) |
+            Q(order__dealer__firm_name__icontains=search) |
+            Q(order__dealer__gst_number__icontains=search)
+        )
+
+        purchase_bills = purchase_bills.filter(
+            Q(bill_number__icontains=search) |
+            Q(party__party_name__icontains=search) |
+            Q(party__gst_number__icontains=search)
+        )
+
+    sales_totals = sales_invoices.aggregate(
+        taxable_total=Sum("subtotal_amount"),
+        gst_total=Sum("gst_amount"),
+        invoice_total=Sum("total_amount"),
+    )
+
+    purchase_totals = purchase_bills.aggregate(
+        taxable_total=Sum("subtotal_amount"),
+        gst_total=Sum("gst_amount"),
+        bill_total=Sum("total_amount"),
+    )
+
+    output_taxable = sales_totals["taxable_total"] or Decimal("0.00")
+    output_gst = sales_totals["gst_total"] or Decimal("0.00")
+    output_total = sales_totals["invoice_total"] or Decimal("0.00")
+
+    input_taxable = purchase_totals["taxable_total"] or Decimal("0.00")
+    input_gst = purchase_totals["gst_total"] or Decimal("0.00")
+    input_total = purchase_totals["bill_total"] or Decimal("0.00")
+
+    gst_payable = output_gst - input_gst
+
+    if gst_payable > 0:
+        payable_amount = gst_payable
+        credit_carried_forward = Decimal("0.00")
+        result_status = "PAYABLE"
+    elif gst_payable < 0:
+        payable_amount = Decimal("0.00")
+        credit_carried_forward = abs(gst_payable)
+        result_status = "CREDIT"
+    else:
+        payable_amount = Decimal("0.00")
+        credit_carried_forward = Decimal("0.00")
+        result_status = "NIL"
+
+    return render(request, "core/gstr3b_report.html", {
+        "sales_invoices": sales_invoices,
+        "purchase_bills": purchase_bills,
+
+        "search": search,
+        "from_date": from_date,
+        "to_date": to_date,
+
+        "output_taxable": output_taxable,
+        "output_gst": output_gst,
+        "output_total": output_total,
+
+        "input_taxable": input_taxable,
+        "input_gst": input_gst,
+        "input_total": input_total,
+
+        "gst_payable": gst_payable,
+        "payable_amount": payable_amount,
+        "credit_carried_forward": credit_carried_forward,
+        "result_status": result_status,
+    })
+
+    
 
 # ----------------------------------------------------------
 # DASHBOARD WITH FILTERS, TOTALS, THREE DOTS
@@ -11296,11 +12363,15 @@ def purchase_entry_create(request):
                 purchase_type = get_or_create_simple_purchase_type(form)
                 is_asset_bill = is_asset_purchase_type(purchase_type)
 
+                add_to_gstr2b = form.cleaned_data.get("add_to_gstr2b", False)
+
                 bill = PurchaseBill.objects.create(
                     bill_number=form.cleaned_data["bill_number"],
                     bill_date=form.cleaned_data["bill_date"],
                     party=party,
                     note=form.cleaned_data.get("note"),
+                    add_to_gstr2b=add_to_gstr2b,
+                    gstr2b_added_at=timezone.now() if add_to_gstr2b else None,
                     created_by=request.user,
                 )
 
@@ -12027,186 +13098,6 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 
-def purchase_stock_history(request):
-    if not purchase_permission_check(request):
-        return redirect("dashboard")
-
-    search = (request.GET.get("q") or "").strip()
-    from_date = (request.GET.get("from_date") or "").strip()
-    to_date = (request.GET.get("to_date") or "").strip()
-
-    inventory_items = InventoryItem.objects.filter(is_active=True).order_by("name")
-
-    if search:
-        inventory_items = inventory_items.filter(
-            Q(name__icontains=search) |
-            Q(sku_code__icontains=search) |
-            Q(purchase_type__name__icontains=search)
-        )
-
-    item_ids = list(inventory_items.values_list("id", flat=True))
-
-    # Summary rows
-    summary_rows = []
-
-    for item in inventory_items:
-        purchased_qty = PurchaseBillItem.objects.filter(
-            inventory_item=item
-        ).aggregate(total=Sum("quantity"))["total"] or Decimal("0.000")
-
-        returned_qty = PurchaseReturnItem.objects.filter(
-            inventory_item=item
-        ).aggregate(total=Sum("quantity"))["total"] or Decimal("0.000")
-
-        used_qty = Decimal("0.000")
-
-        recipe_items = ProductionRecipeItem.objects.select_related(
-            "recipe",
-            "inventory_item",
-        ).filter(
-            inventory_item=item
-        )
-
-        for recipe_item in recipe_items:
-            used_qty += recipe_item.quantity_required or Decimal("0.000")
-
-        current_stock = item.stock_quantity or Decimal("0.000")
-
-        summary_rows.append({
-            "item": item,
-            "purchased_qty": purchased_qty,
-            "used_qty": used_qty,
-            "returned_qty": returned_qty,
-            "current_stock": current_stock,
-        })
-
-    # Movement history
-    movements = []
-
-    purchase_items = PurchaseBillItem.objects.select_related(
-        "bill",
-        "bill__party",
-        "inventory_item",
-    ).filter(
-        inventory_item_id__in=item_ids
-    )
-
-    if from_date:
-        purchase_items = purchase_items.filter(bill__bill_date__gte=from_date)
-
-    if to_date:
-        purchase_items = purchase_items.filter(bill__bill_date__lte=to_date)
-
-    for item in purchase_items:
-        movements.append({
-            "date": item.bill.bill_date,
-            "item_name": item.inventory_item.name,
-            "sku": item.inventory_item.sku_code,
-            "type": "PURCHASED",
-            "reference": item.bill.bill_number or f"Bill #{item.bill.id}",
-            "party": item.bill.party.party_name if item.bill.party else "-",
-            "in_qty": item.quantity or Decimal("0.000"),
-            "out_qty": Decimal("0.000"),
-            "unit": item.unit,
-            "note": "Stock added from purchase bill",
-        })
-
-    return_items = PurchaseReturnItem.objects.select_related(
-        "purchase_return",
-        "purchase_return__party",
-        "purchase_return__bill",
-        "inventory_item",
-    ).filter(
-        inventory_item_id__in=item_ids
-    )
-
-    if from_date:
-        return_items = return_items.filter(purchase_return__return_date__gte=from_date)
-
-    if to_date:
-        return_items = return_items.filter(purchase_return__return_date__lte=to_date)
-
-    for item in return_items:
-        movements.append({
-            "date": item.purchase_return.return_date,
-            "item_name": item.inventory_item.name,
-            "sku": item.inventory_item.sku_code,
-            "type": "RETURNED",
-            "reference": item.purchase_return.debit_note_number or f"Return #{item.purchase_return.id}",
-            "party": item.purchase_return.party.party_name if item.purchase_return.party else "-",
-            "in_qty": Decimal("0.000"),
-            "out_qty": item.quantity or Decimal("0.000"),
-            "unit": item.unit,
-            "note": item.purchase_return.reason or "Purchase return / debit note",
-        })
-
-    production_batches = ProductionBatch.objects.select_related(
-        "recipe",
-        "output_product_pack",
-        "output_product_pack__product",
-        "created_by",
-    ).order_by("-production_date", "-id")
-
-    if from_date:
-        production_batches = production_batches.filter(production_date__gte=from_date)
-
-    if to_date:
-        production_batches = production_batches.filter(production_date__lte=to_date)
-
-    batch_by_recipe_id = {}
-
-    for batch in production_batches:
-        batch_by_recipe_id[batch.recipe_id] = batch
-
-    production_recipe_items = ProductionRecipeItem.objects.select_related(
-        "recipe",
-        "inventory_item",
-    ).filter(
-        recipe_id__in=batch_by_recipe_id.keys(),
-        inventory_item_id__in=item_ids,
-    )
-
-    for item in production_recipe_items:
-        batch = batch_by_recipe_id.get(item.recipe_id)
-
-        if not batch:
-            continue
-
-        output_name = "-"
-        if batch.output_product_pack and batch.output_product_pack.product:
-            output_name = batch.output_product_pack.product.name
-
-        movements.append({
-            "date": batch.production_date,
-            "item_name": item.inventory_item.name,
-            "sku": item.inventory_item.sku_code,
-            "type": "USED",
-            "reference": f"Production #{batch.id}",
-            "party": output_name,
-            "in_qty": Decimal("0.000"),
-            "out_qty": item.quantity_required or Decimal("0.000"),
-            "unit": item.unit,
-            "note": f"Used to make {output_name}",
-        })
-
-    movements.sort(key=lambda x: x["date"], reverse=True)
-
-    total_purchased = sum([row["purchased_qty"] for row in summary_rows], Decimal("0.000"))
-    total_used = sum([row["used_qty"] for row in summary_rows], Decimal("0.000"))
-    total_returned = sum([row["returned_qty"] for row in summary_rows], Decimal("0.000"))
-    total_remaining = sum([row["current_stock"] for row in summary_rows], Decimal("0.000"))
-
-    return render(request, "core/purchase_stock_history.html", {
-        "summary_rows": summary_rows,
-        "movements": movements,
-        "search": search,
-        "from_date": from_date,
-        "to_date": to_date,
-        "total_purchased": total_purchased,
-        "total_used": total_used,
-        "total_returned": total_returned,
-        "total_remaining": total_remaining,
-    })
 
 
 
@@ -12463,18 +13354,18 @@ def purchase_entry_edit(request, bill_id):
         formset = SimplePurchaseItemFormSet(request.POST, prefix="items")
 
         if form.is_valid() and formset.is_valid():
-            valid_rows = get_valid_purchase_item_rows(formset)
-
-            if not valid_rows:
-                messages.error(request, "Please add at least one purchase item.")
-                return render(request, "core/purchase_entry_form.html", {
-                    "form": form,
-                    "formset": formset,
-                    "title": f"View/Edit Purchase Entry - {bill.bill_number}",
-                    "editing_bill": bill,
-                })
-
             try:
+                valid_rows = get_valid_purchase_item_rows(formset)
+
+                if not valid_rows:
+                    messages.error(request, "Please add at least one purchase item.")
+                    return render(request, "core/purchase_entry_form.html", {
+                        "form": form,
+                        "formset": formset,
+                        "title": f"View/Edit Purchase Entry - {bill.bill_number}",
+                        "editing_bill": bill,
+                    })
+
                 with transaction.atomic():
                     bill_locked = PurchaseBill.objects.select_for_update().get(id=bill.id)
 
@@ -12495,12 +13386,25 @@ def purchase_entry_edit(request, bill_id):
                     party = get_or_create_simple_purchase_party(form)
                     purchase_type = get_or_create_simple_purchase_type(form)
 
+                    add_to_gstr2b = form.cleaned_data.get("add_to_gstr2b", False)
+
                     bill_locked.party = party
                     bill_locked.bill_number = form.cleaned_data["bill_number"]
                     bill_locked.bill_date = form.cleaned_data["bill_date"]
                     bill_locked.note = form.cleaned_data.get("note")
+
+                    # GSTR-2B option
+                    bill_locked.add_to_gstr2b = add_to_gstr2b
+
+                    if add_to_gstr2b and not bill_locked.gstr2b_added_at:
+                        bill_locked.gstr2b_added_at = timezone.now()
+
+                    if not add_to_gstr2b:
+                        bill_locked.gstr2b_added_at = None
+
                     bill_locked.save()
 
+                    # Delete old bill items and create new edited items
                     bill_locked.items.all().delete()
 
                     is_asset_bill = False
@@ -12526,6 +13430,7 @@ def purchase_entry_edit(request, bill_id):
                             gst_percent=row.get("gst_percent") or Decimal("0.00"),
                         )
 
+                    # Recalculate taxable, GST, total, balance
                     bill_locked.recalculate_totals()
 
                     if is_asset_bill:
@@ -12549,6 +13454,9 @@ def purchase_entry_edit(request, bill_id):
             "bill_number": bill.bill_number,
             "bill_date": bill.bill_date,
             "note": bill.note,
+
+            # GSTR-2B checked status while editing
+            "add_to_gstr2b": getattr(bill, "add_to_gstr2b", False),
         }
 
         if existing_purchase_type:
@@ -12698,4 +13606,1923 @@ def create_assets_from_purchase_row(row, bill, request_user):
         created_count += 1
 
     return created_count
+
+# ==========================================================
+# SMART PRODUCTION FORMULA - VIEWS
+# ==========================================================
+
+from decimal import Decimal, ROUND_HALF_UP
+
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+
+
+def smart_decimal(value, default="0.000"):
+    try:
+        if value is None or value == "":
+            return Decimal(default)
+        return Decimal(str(value))
+    except Exception:
+        return Decimal(default)
+
+
+def q2(value):
+    return smart_decimal(value, "0.00").quantize(
+        Decimal("0.01"),
+        rounding=ROUND_HALF_UP
+    )
+
+
+def q3(value):
+    return smart_decimal(value, "0.000").quantize(
+        Decimal("0.001"),
+        rounding=ROUND_HALF_UP
+    )
+
+
+def smart_production_allowed(user):
+    if user.is_superuser:
+        return True
+
+    profile = getattr(user, "profile", None)
+
+    if not profile:
+        return False
+
+    return profile.role in [
+        "ADMIN",
+        "INVENTORY_MANAGER",
+    ]
+
+
+def smart_production_check(request):
+    if not smart_production_allowed(request.user):
+        messages.error(
+            request,
+            "Only Admin or Inventory Manager can access production."
+        )
+        return False
+
+    return True
+
+
+def inventory_rate(item):
+    return q2(getattr(item, "average_purchase_price", 0) or 0)
+
+
+def reduce_inventory_item_stock(item, qty):
+    qty = q3(qty)
+    current = q3(getattr(item, "stock_quantity", 0) or 0)
+
+    if current < qty:
+        raise ValidationError(
+            f"{item.name} stock not enough. Available {current}, Required {qty}"
+        )
+
+    item.stock_quantity = current - qty
+    item.save(update_fields=["stock_quantity"])
+
+
+def add_product_pack_boxes(pack, boxes):
+    boxes = int(boxes or 0)
+
+    if boxes <= 0:
+        return
+
+    pack.stock_boxes = int(pack.stock_boxes or 0) + boxes
+    pack.save(update_fields=["stock_boxes"])
+
+
+def get_formula_initial_raw(formula):
+    rows = []
+
+    for item in formula.raw_materials.select_related("inventory_item").all():
+        rows.append({
+            "inventory_item": item.inventory_item,
+            "quantity_required": item.quantity_required,
+            "unit": item.unit,
+        })
+
+    if not rows:
+        rows.append({})
+
+    return rows
+
+
+def get_formula_initial_pack(formula):
+    rows = []
+
+    for item in formula.pack_materials.select_related(
+        "product_pack",
+        "inventory_item"
+    ).all():
+        rows.append({
+            "product_pack": item.product_pack,
+            "inventory_item": item.inventory_item,
+            "usage_basis": item.usage_basis,
+            "quantity_required": item.quantity_required,
+            "unit": item.unit,
+        })
+
+    if not rows:
+        rows.append({})
+
+    return rows
+
+
+def get_formula_screen_packing_materials(formula=None):
+    """
+    Shows all packing-like materials in quick checkbox list and validates them in form.
+    It includes:
+    - item_type = PACKING_MATERIAL
+    - common packing names like Bottle, Cap, Label, Outer Box, Box, Carton, Pouch, Bag
+    - existing formula packing items while editing
+    """
+
+    packing_name_filter = (
+        Q(name__icontains="bottle") |
+        Q(name__icontains="cap") |
+        Q(name__icontains="label") |
+        Q(name__icontains="outer") |
+        Q(name__icontains="box") |
+        Q(name__icontains="carton") |
+        Q(name__icontains="pouch") |
+        Q(name__icontains="bag") |
+        Q(name__icontains="sticker")
+    )
+
+    qs = InventoryItem.objects.filter(
+        Q(is_active=True, item_type="PACKING_MATERIAL") |
+        Q(is_active=True) & packing_name_filter
+    )
+
+    if formula:
+        existing_ids = formula.pack_materials.values_list(
+            "inventory_item_id",
+            flat=True
+        )
+
+        qs = InventoryItem.objects.filter(
+            Q(id__in=existing_ids) |
+            Q(is_active=True, item_type="PACKING_MATERIAL") |
+            Q(is_active=True) & packing_name_filter
+        )
+
+    return qs.distinct().order_by("name")
+    
+
+def product_formula_list(request):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    formulas = ProductProductionFormula.objects.select_related(
+        "product"
+    ).prefetch_related(
+        "raw_materials",
+        "pack_materials"
+    ).order_by("product__name")
+
+    return render(request, "core/product_formula_list.html", {
+        "formulas": formulas,
+    })
+
+
+def product_formula_create(request):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    selected_product = None
+    packing_materials = get_formula_screen_packing_materials()
+
+    if request.method == "POST":
+        selected_product_id = request.POST.get("product")
+
+        if selected_product_id:
+            selected_product = Product.objects.filter(
+                id=selected_product_id,
+                is_active=True
+            ).first()
+
+        form = ProductFormulaForm(request.POST)
+
+        raw_formset = ProductFormulaRawMaterialFormSet(
+            request.POST,
+            prefix="raw"
+        )
+
+        pack_formset = ProductFormulaPackMaterialFormSet(
+            request.POST,
+            prefix="pack",
+            form_kwargs={
+                "product": selected_product,
+                "packing_material_queryset": packing_materials,
+            }
+        )
+
+        if form.is_valid() and raw_formset.is_valid() and pack_formset.is_valid():
+            try:
+                with transaction.atomic():
+                    formula = form.save(commit=False)
+                    formula.created_by = request.user
+                    formula.save()
+
+                    save_formula_rows(formula, raw_formset, pack_formset)
+
+                messages.success(request, "Production formula created successfully.")
+                return redirect("product_formula_list")
+
+            except ValidationError as error:
+                messages.error(request, error)
+
+            except Exception as error:
+                messages.error(request, f"Formula could not be saved: {error}")
+
+    else:
+        selected_product_id = request.GET.get("product_id")
+
+        if selected_product_id:
+            selected_product = Product.objects.filter(
+                id=selected_product_id,
+                is_active=True
+            ).first()
+
+        form = ProductFormulaForm(
+            initial={"product": selected_product.id} if selected_product else None
+        )
+
+        raw_formset = ProductFormulaRawMaterialFormSet(
+            prefix="raw"
+        )
+
+        pack_formset = ProductFormulaPackMaterialFormSet(
+            prefix="pack",
+            form_kwargs={
+                "product": selected_product,
+                "packing_material_queryset": packing_materials,
+            }
+        )
+
+    return render(request, "core/product_formula_form.html", {
+        "form": form,
+        "raw_formset": raw_formset,
+        "pack_formset": pack_formset,
+        "title": "Create Production Formula",
+        "selected_product": selected_product,
+        "packing_materials": packing_materials,
+    })
+
+
+def product_formula_edit(request, formula_id):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    formula = get_object_or_404(
+        ProductProductionFormula.objects.select_related("product"),
+        id=formula_id
+    )
+
+    selected_product = formula.product
+    packing_materials = get_formula_screen_packing_materials(formula)
+
+    if request.method == "POST":
+        selected_product_id = request.POST.get("product") or formula.product_id
+
+        selected_product = Product.objects.filter(
+            id=selected_product_id,
+            is_active=True
+        ).first() or formula.product
+
+        form = ProductFormulaForm(
+            request.POST,
+            instance=formula
+        )
+
+        raw_formset = ProductFormulaRawMaterialFormSet(
+            request.POST,
+            prefix="raw"
+        )
+
+        pack_formset = ProductFormulaPackMaterialFormSet(
+            request.POST,
+            prefix="pack",
+            form_kwargs={
+                "product": selected_product,
+                "packing_material_queryset": packing_materials,
+            }
+        )
+
+        if form.is_valid() and raw_formset.is_valid() and pack_formset.is_valid():
+            try:
+                with transaction.atomic():
+                    formula = form.save()
+                    save_formula_rows(formula, raw_formset, pack_formset)
+
+                messages.success(request, "Production formula updated successfully.")
+                return redirect("product_formula_list")
+
+            except ValidationError as error:
+                messages.error(request, error)
+
+            except Exception as error:
+                messages.error(request, f"Formula could not be updated: {error}")
+
+    else:
+        form = ProductFormulaForm(instance=formula)
+
+        raw_formset = ProductFormulaRawMaterialFormSet(
+            prefix="raw",
+            initial=get_formula_initial_raw(formula)
+        )
+
+        pack_formset = ProductFormulaPackMaterialFormSet(
+            prefix="pack",
+            initial=get_formula_initial_pack(formula),
+            form_kwargs={
+                "product": selected_product,
+                "packing_material_queryset": packing_materials,
+            }
+        )
+
+    return render(request, "core/product_formula_form.html", {
+        "form": form,
+        "raw_formset": raw_formset,
+        "pack_formset": pack_formset,
+        "title": f"Edit Formula - {formula.product.name}",
+        "formula": formula,
+        "selected_product": selected_product,
+        "packing_materials": packing_materials,
+    })
+
+
+def save_formula_rows(formula, raw_formset, pack_formset):
+    raw_rows = []
+    pack_rows = []
+
+    for row_form in raw_formset:
+        data = row_form.cleaned_data
+
+        if data.get("DELETE"):
+            continue
+
+        inventory_item = data.get("inventory_item")
+        qty = data.get("quantity_required")
+
+        if not inventory_item and not qty:
+            continue
+
+        if not inventory_item:
+            raise ValidationError("Raw material item is required.")
+
+        if not qty or qty <= 0:
+            raise ValidationError(
+                f"{inventory_item.name}: raw material quantity is required."
+            )
+
+        raw_rows.append(data)
+
+    for row_form in pack_formset:
+        data = row_form.cleaned_data
+
+        if data.get("DELETE"):
+            continue
+
+        product_pack = data.get("product_pack")
+        inventory_item = data.get("inventory_item")
+        qty = data.get("quantity_required")
+
+        if not product_pack and not inventory_item and not qty:
+            continue
+
+        if not product_pack:
+            raise ValidationError("Product pack is required in packing material row.")
+
+        if not inventory_item:
+            raise ValidationError("Packing material item is required.")
+
+        if not qty or qty <= 0:
+            raise ValidationError(
+                f"{inventory_item.name}: packing material quantity is required."
+            )
+
+        pack_rows.append(data)
+
+    if not raw_rows:
+        raise ValidationError("Please add at least one raw material.")
+
+    formula.raw_materials.all().delete()
+    formula.pack_materials.all().delete()
+
+    for row in raw_rows:
+        ProductFormulaRawMaterial.objects.create(
+            formula=formula,
+            inventory_item=row["inventory_item"],
+            quantity_required=q3(row["quantity_required"]),
+            unit=row.get("unit") or getattr(row["inventory_item"], "stock_unit", "KG"),
+        )
+
+    for row in pack_rows:
+        ProductFormulaPackMaterial.objects.create(
+            formula=formula,
+            product_pack=row["product_pack"],
+            inventory_item=row["inventory_item"],
+            usage_basis=row.get("usage_basis") or "PER_UNIT",
+            quantity_required=q3(row["quantity_required"]),
+            unit=row.get("unit") or getattr(row["inventory_item"], "stock_unit", "PIECE"),
+        )
+
+
+def clean_pack_number(value):
+    try:
+        value = Decimal(str(value))
+        if value == value.to_integral_value():
+            return str(int(value))
+        return str(value)
+    except Exception:
+        return str(value)
+
+
+def plural_pack_type(pack):
+    try:
+        name = pack.get_packing_type_display()
+    except Exception:
+        name = getattr(pack, "packing_type", "")
+
+    name = str(name or "").strip().title()
+
+    if name.lower() == "box":
+        return "Boxes"
+
+    if name.lower() == "piece":
+        return "Pieces"
+
+    if name.lower() == "carton":
+        return "Cartons"
+
+    if name.lower() == "bag":
+        return "Bags"
+
+    if name.lower() == "packet":
+        return "Packets"
+
+    if name.lower() == "bottle":
+        return "Bottles"
+
+    if name.endswith("s"):
+        return name
+
+    return name + "s"
+
+
+def smart_pack_label(pack):
+    pack_size = clean_pack_number(pack.pack_size)
+    pack_unit = pack.unit
+    units_per_box = pack.units_per_box or 0
+    packing_name = plural_pack_type(pack)
+
+    return f"{pack_size} {pack_unit} | {units_per_box} {packing_name} in 1 Box"
+
+
+def formula_json_data():
+    formulas = ProductProductionFormula.objects.select_related(
+        "product"
+    ).prefetch_related(
+        "raw_materials__inventory_item",
+        "pack_materials__inventory_item",
+        "pack_materials__product_pack",
+    ).filter(
+        is_active=True
+    )
+
+    data = {}
+
+    for formula in formulas:
+        product_packs = ProductPackSize.objects.filter(
+            product=formula.product,
+            is_active=True
+        ).order_by("pack_size")
+
+        raw_rows = []
+        pack_rows = []
+        pack_options = []
+
+        for raw in formula.raw_materials.all():
+            item = raw.inventory_item
+            stock = q3(getattr(item, "stock_quantity", 0) or 0)
+            rate = inventory_rate(item)
+
+            raw_rows.append({
+                "item_id": item.id,
+                "item_name": item.name,
+                "base_qty": str(q3(raw.quantity_required)),
+                "unit": raw.unit,
+                "stock": str(stock),
+                "rate": str(rate),
+            })
+
+        for pack in product_packs:
+            pack_options.append({
+                "pack_id": pack.id,
+                "label": smart_pack_label(pack),
+                "pack_size": str(pack.pack_size),
+                "unit": pack.unit,
+                "units_per_box": pack.units_per_box,
+                "current_stock_boxes": pack.stock_boxes,
+            })
+
+        for mat in formula.pack_materials.all():
+            item = mat.inventory_item
+            pack = mat.product_pack
+            stock = q3(getattr(item, "stock_quantity", 0) or 0)
+            rate = inventory_rate(item)
+
+            pack_rows.append({
+                "pack_id": pack.id,
+                "pack_label": f"{pack.display_pack} | {pack.units_per_box} in 1 {pack.get_packing_type_display()}",
+                "item_id": item.id,
+                "item_name": item.name,
+                "usage_basis": mat.usage_basis,
+                "qty_required": str(q3(mat.quantity_required)),
+                "unit": mat.unit,
+                "stock": str(stock),
+                "rate": str(rate),
+            })
+
+        data[str(formula.id)] = {
+            "formula_id": formula.id,
+            "product_name": formula.product.name,
+            "base_output_qty": str(q3(formula.base_output_qty)),
+            "base_output_unit": formula.base_output_unit,
+            "raw_materials": raw_rows,
+            "pack_materials": pack_rows,
+            "packs": pack_options,
+        }
+
+    return data
+
+
+def smart_amount(value):
+    try:
+        return q2(Decimal(str(value or "0")))
+    except Exception:
+        return Decimal("0.00")
+
+
+def normalize_pack_output_qty(pack, boxes, target_unit):
+    """
+    Converts packed output to formula base unit.
+    Example:
+    250 ML × 40 bottles × 1 box = 10000 ML = 10 LITRE
+    """
+    boxes = Decimal(str(boxes or 0))
+    pack_size = Decimal(str(pack.pack_size or 0))
+    units_per_box = Decimal(str(pack.units_per_box or 0))
+
+    qty = pack_size * units_per_box * boxes
+
+    source_unit = str(pack.unit or "").upper()
+    target_unit = str(target_unit or "").upper()
+
+    if source_unit == target_unit:
+        return q3(qty)
+
+    if source_unit == "ML" and target_unit == "LITRE":
+        return q3(qty / Decimal("1000"))
+
+    if source_unit == "LITRE" and target_unit == "ML":
+        return q3(qty * Decimal("1000"))
+
+    if source_unit == "GRAM" and target_unit == "KG":
+        return q3(qty / Decimal("1000"))
+
+    if source_unit == "KG" and target_unit == "GRAM":
+        return q3(qty * Decimal("1000"))
+
+    return q3(qty)
+
+def calculate_smart_production(formula, output_qty, pack_box_map, labour_cost=0, other_cost=0):
+    output_qty = q3(output_qty)
+    labour_cost = smart_amount(labour_cost)
+    other_cost = smart_amount(other_cost)
+
+    if output_qty <= 0:
+        raise ValidationError("Output quantity must be greater than zero.")
+
+    factor = output_qty / q3(formula.base_output_qty)
+
+    required_raw = []
+    required_pack = []
+    shortages = []
+    output_pack_rows = []
+
+    total_raw_cost = Decimal("0.00")
+    total_pack_cost = Decimal("0.00")
+    total_boxes = 0
+    packed_output_qty = Decimal("0.000")
+
+    # Raw materials based on bulk output
+    for raw in formula.raw_materials.select_related("inventory_item").all():
+        item = raw.inventory_item
+        req_qty = q3(raw.quantity_required * factor)
+        available = q3(item.stock_quantity or 0)
+        rate = inventory_rate(item)
+        cost = q2(req_qty * rate)
+
+        if available < req_qty:
+            shortages.append({
+                "name": item.name,
+                "required": req_qty,
+                "available": available,
+                "unit": raw.unit,
+            })
+
+        total_raw_cost += cost
+
+        required_raw.append({
+            "item": item,
+            "type": "RAW",
+            "required_qty": req_qty,
+            "available": available,
+            "unit": raw.unit,
+            "rate": rate,
+            "cost": cost,
+        })
+
+    # Packing materials based on selected output boxes
+    for mat in formula.pack_materials.select_related("inventory_item", "product_pack").all():
+        boxes = int(pack_box_map.get(str(mat.product_pack_id), 0) or 0)
+
+        if boxes <= 0:
+            continue
+
+        if mat.usage_basis == "PER_BOX":
+            req_qty = q3(Decimal(boxes) * mat.quantity_required)
+        else:
+            req_qty = q3(Decimal(boxes) * Decimal(mat.product_pack.units_per_box) * mat.quantity_required)
+
+        item = mat.inventory_item
+        available = q3(item.stock_quantity or 0)
+        rate = inventory_rate(item)
+        cost = q2(req_qty * rate)
+
+        if available < req_qty:
+            shortages.append({
+                "name": item.name,
+                "required": req_qty,
+                "available": available,
+                "unit": mat.unit,
+            })
+
+        total_pack_cost += cost
+
+        required_pack.append({
+            "item": item,
+            "type": "PACKING",
+            "required_qty": req_qty,
+            "available": available,
+            "unit": mat.unit,
+            "rate": rate,
+            "cost": cost,
+            "product_pack": mat.product_pack,
+        })
+
+    # Output packing match calculation
+    product_packs = ProductPackSize.objects.filter(
+        product=formula.product,
+        is_active=True
+    )
+
+    for pack in product_packs:
+        boxes = int(pack_box_map.get(str(pack.id), 0) or 0)
+
+        if boxes <= 0:
+            continue
+
+        box_output_qty = normalize_pack_output_qty(
+            pack=pack,
+            boxes=boxes,
+            target_unit=formula.base_output_unit
+        )
+
+        packed_output_qty += box_output_qty
+        total_boxes += boxes
+
+        output_pack_rows.append({
+            "pack": pack,
+            "boxes": boxes,
+            "output_qty": box_output_qty,
+            "unit": formula.base_output_unit,
+        })
+
+    packed_output_qty = q3(packed_output_qty)
+    output_difference = q3(packed_output_qty - output_qty)
+    output_matched = output_difference == Decimal("0.000")
+
+    total_cost = q2(total_raw_cost + total_pack_cost + labour_cost + other_cost)
+
+    cost_per_output_unit = Decimal("0.00")
+    if output_qty > 0:
+        cost_per_output_unit = q2(total_cost / output_qty)
+
+    cost_per_box = Decimal("0.00")
+    if total_boxes > 0:
+        cost_per_box = q2(total_cost / Decimal(total_boxes))
+
+    # distribute cost by output quantity
+    for row in output_pack_rows:
+        row_total_cost = q2(row["output_qty"] * cost_per_output_unit)
+        row["total_cost"] = row_total_cost
+
+        if row["boxes"] > 0:
+            row["cost_per_box"] = q2(row_total_cost / Decimal(row["boxes"]))
+        else:
+            row["cost_per_box"] = Decimal("0.00")
+
+    return {
+        "required_raw": required_raw,
+        "required_pack": required_pack,
+        "shortages": shortages,
+
+        "output_qty": output_qty,
+        "packed_output_qty": packed_output_qty,
+        "output_difference": output_difference,
+        "output_matched": output_matched,
+        "output_unit": formula.base_output_unit,
+        "output_pack_rows": output_pack_rows,
+
+        "total_raw_cost": q2(total_raw_cost),
+        "total_pack_cost": q2(total_pack_cost),
+        "labour_cost": labour_cost,
+        "other_cost": other_cost,
+        "total_cost": total_cost,
+
+        "total_boxes": total_boxes,
+        "cost_per_output_unit": cost_per_output_unit,
+        "cost_per_box": cost_per_box,
+    }
+
+
+
+def smart_production_create(request):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    formulas_json = formula_json_data()
+
+    preview_result = None
+
+    if request.method == "POST":
+        form = SmartProductionRunForm(request.POST)
+
+        if form.is_valid():
+            formula = form.cleaned_data["formula"]
+            output_qty = form.cleaned_data["output_qty"]
+            labour_cost = request.POST.get("labour_cost") or "0"
+            other_cost = request.POST.get("other_cost") or "0"
+
+            pack_box_map = {}
+
+            for pack in ProductPackSize.objects.filter(product=formula.product, is_active=True):
+                key = f"pack_{pack.id}_boxes"
+                pack_box_map[str(pack.id)] = int(request.POST.get(key) or 0)
+
+            try:
+                calc = calculate_smart_production(
+                    formula=formula,
+                    output_qty=output_qty,
+                    pack_box_map=pack_box_map,
+                    labour_cost=labour_cost,
+                    other_cost=other_cost,
+                )
+                preview_result = calc
+
+                if calc["shortages"]:
+                    messages.error(request, "Stock is not enough. Please reduce production quantity or purchase missing items.")
+                    raise ValidationError("Insufficient stock.")
+
+                if calc["total_boxes"] <= 0:
+                    messages.error(request, "Please enter at least one output pack box quantity.")
+                    raise ValidationError("Output pack required.")
+                if not calc["output_matched"]:
+                    messages.error(
+                        request,
+                        f"Bulk output and packed output not matching. "
+                        f"Bulk: {calc['output_qty']} {calc['output_unit']}, "
+                        f"Packed: {calc['packed_output_qty']} {calc['output_unit']}."
+                    )
+                    raise ValidationError("Packed output mismatch.")
+
+                with transaction.atomic():
+                    run = ProductProductionRun.objects.create(
+                        product=formula.product,
+                        formula=formula,
+                        output_qty=q3(output_qty),
+                        output_unit=formula.base_output_unit,
+                        production_date=form.cleaned_data["production_date"],
+                        total_raw_cost=calc["total_raw_cost"],
+                        total_packing_cost=calc["total_pack_cost"],
+                        labour_cost=calc["labour_cost"],
+                        other_cost=calc["other_cost"],
+                        total_cost=calc["total_cost"],
+                        note=form.cleaned_data.get("note"),
+                        created_by=request.user,
+                    )
+
+                    for row in calc["required_raw"] + calc["required_pack"]:
+                        reduce_inventory_item_stock(row["item"], row["required_qty"])
+
+                        ProductProductionRunMaterial.objects.create(
+                            run=run,
+                            inventory_item=row["item"],
+                            material_type=row["type"],
+                            required_qty=row["required_qty"],
+                            unit=row["unit"],
+                            available_before=row["available"],
+                            rate=row["rate"],
+                            cost=row["cost"],
+                        )
+
+                    for pack_id, boxes in pack_box_map.items():
+                        boxes = int(boxes or 0)
+
+                        if boxes <= 0:
+                            continue
+
+                        pack = ProductPackSize.objects.get(id=pack_id, product=formula.product)
+
+                        add_product_pack_boxes(pack, boxes)
+
+                        output_row = next(
+                            (row for row in calc["output_pack_rows"] if row["pack"].id == pack.id),
+                            None
+                        )
+
+                        ProductProductionRunOutputPack.objects.create(
+                            run=run,
+                            product_pack=pack,
+                            output_boxes=boxes,
+                            units_per_box=pack.units_per_box,
+                            cost_per_box=output_row["cost_per_box"] if output_row else calc["cost_per_box"],
+                            total_cost=output_row["total_cost"] if output_row else q2(calc["cost_per_box"] * Decimal(boxes)),
+                        )
+
+                messages.success(request, "Production created successfully. Raw/Packing stock reduced and final product stock increased.")
+                return redirect("smart_production_run_detail", run_id=run.id)
+
+            except ValidationError:
+                pass
+
+            except Exception as error:
+                messages.error(request, f"Production could not be created: {error}")
+
+    else:
+        form = SmartProductionRunForm(initial={
+            "production_date": timezone.localdate()
+        })
+
+    return render(request, "core/smart_production_create.html", {
+        "form": form,
+        "formulas_json": json.dumps(formulas_json),
+        "preview_result": preview_result,
+        "title": "Smart Production / Packaging",
+    })
+
+
+
+
+def smart_production_run_list(request):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    runs = ProductProductionRun.objects.select_related(
+        "product",
+        "created_by",
+    ).prefetch_related(
+        "output_packs",
+    ).annotate(
+        total_boxes=Sum("output_packs__output_boxes")
+    ).order_by("-production_date", "-id")
+
+    return render(request, "core/smart_production_run_list.html", {
+        "runs": runs,
+    })
+
+
+
+def detail_decimal(value, default="0.000"):
+    try:
+        return Decimal(str(value or default))
+    except Exception:
+        return Decimal(default)
+
+
+def detail_q3(value):
+    return detail_decimal(value).quantize(Decimal("0.001"))
+
+
+def normalize_detail_unit(unit):
+    unit = str(unit or "").strip().upper()
+
+    if unit in ["LTR", "LT", "L", "LITER"]:
+        return "LITRE"
+
+    if unit in ["G", "GM"]:
+        return "GRAM"
+
+    return unit
+
+
+def detail_clean_number(value):
+    value = detail_decimal(value)
+
+    if value == value.to_integral_value():
+        return str(int(value))
+
+    return str(value)
+
+
+def detail_plural_packing_name(pack):
+    try:
+        name = pack.get_packing_type_display()
+    except Exception:
+        name = getattr(pack, "packing_type", "")
+
+    name = str(name or "").strip().title()
+
+    if name.lower() == "bottle":
+        return "Bottles"
+
+    if name.lower() == "bag":
+        return "Bags"
+
+    if name.lower() == "packet":
+        return "Packets"
+
+    if name.lower() == "piece":
+        return "Pieces"
+
+    if name.lower() == "carton":
+        return "Cartons"
+
+    if name.lower() == "box":
+        return "Boxes"
+
+    if name.endswith("s"):
+        return name
+
+    return name + "s"
+
+
+def detail_pack_label(pack, units_per_box=None):
+    pack_size = detail_clean_number(pack.pack_size)
+    unit = str(pack.unit or "").upper()
+    units = units_per_box if units_per_box is not None else pack.units_per_box
+    units = detail_clean_number(units)
+    packing_name = detail_plural_packing_name(pack)
+
+    return f"{pack_size} {unit} | {units} {packing_name} in 1 Box"
+
+
+def detail_pack_output_qty(pack, boxes, target_unit):
+    boxes = detail_decimal(boxes)
+    pack_size = detail_decimal(pack.pack_size)
+    units_per_box = detail_decimal(pack.units_per_box)
+
+    total_qty = pack_size * units_per_box * boxes
+
+    source_unit = normalize_detail_unit(pack.unit)
+    target_unit = normalize_detail_unit(target_unit)
+
+    if source_unit == target_unit:
+        return detail_q3(total_qty)
+
+    if source_unit == "ML" and target_unit == "LITRE":
+        return detail_q3(total_qty / Decimal("1000"))
+
+    if source_unit == "LITRE" and target_unit == "ML":
+        return detail_q3(total_qty * Decimal("1000"))
+
+    if source_unit == "GRAM" and target_unit == "KG":
+        return detail_q3(total_qty / Decimal("1000"))
+
+    if source_unit == "KG" and target_unit == "GRAM":
+        return detail_q3(total_qty * Decimal("1000"))
+
+    return detail_q3(total_qty)
+
+
+def smart_production_run_detail(request, run_id):
+    if not smart_production_check(request):
+        return redirect("dashboard")
+
+    run = get_object_or_404(
+        ProductProductionRun.objects.select_related(
+            "product",
+            "formula",
+            "created_by",
+        ).prefetch_related(
+            "output_packs__product_pack",
+            "materials__inventory_item",
+        ),
+        id=run_id
+    )
+
+    output_rows = []
+    packed_output_qty = Decimal("0.000")
+
+    for output_pack in run.output_packs.select_related("product_pack").all():
+        pack = output_pack.product_pack
+
+        packed_qty = detail_pack_output_qty(
+            pack=pack,
+            boxes=output_pack.output_boxes,
+            target_unit=run.output_unit,
+        )
+
+        packed_output_qty += packed_qty
+
+        output_rows.append({
+            "row": output_pack,
+            "pack_label": detail_pack_label(pack, output_pack.units_per_box),
+            "packed_output_qty": packed_qty,
+        })
+
+    packed_output_qty = detail_q3(packed_output_qty)
+    bulk_output_qty = detail_q3(run.output_qty)
+    output_difference = detail_q3(packed_output_qty - bulk_output_qty)
+    output_matched = output_difference == Decimal("0.000")
+
+    return render(request, "core/smart_production_run_detail.html", {
+        "run": run,
+        "output_rows": output_rows,
+        "bulk_output_qty": bulk_output_qty,
+        "packed_output_qty": packed_output_qty,
+        "output_difference": output_difference,
+        "output_matched": output_matched,
+    })
+
+
+# ==========================================================
+# FINAL FIX - PURCHASE NEW ITEM FULL SAVE
+# Saves New Item Name, SKU, Item Type, Unit, Qty, Rate, GST
+# ==========================================================
+
+from decimal import Decimal
+from django.core.exceptions import ValidationError
+
+
+def clean_purchase_text(value):
+    return str(value or "").strip()
+
+
+def get_purchase_decimal(value, default="0.00"):
+    if value is None or value == "":
+        return Decimal(default)
+
+    return value
+
+
+def update_inventory_item_from_purchase(item, row_data, purchase_type):
+    sku_code = clean_purchase_text(row_data.get("sku_code"))
+    item_type = row_data.get("item_type") or getattr(item, "item_type", "RAW_MATERIAL")
+    unit = row_data.get("unit") or getattr(item, "stock_unit", "PIECE")
+    purchase_price = get_purchase_decimal(row_data.get("purchase_price"), "0.00")
+
+    update_fields = []
+
+    if purchase_type and getattr(item, "purchase_type_id", None) != purchase_type.id:
+        item.purchase_type = purchase_type
+        update_fields.append("purchase_type")
+
+    if sku_code:
+        item.sku_code = sku_code
+        update_fields.append("sku_code")
+
+    if item_type:
+        item.item_type = item_type
+        update_fields.append("item_type")
+
+    if unit:
+        item.stock_unit = unit
+        update_fields.append("stock_unit")
+
+    item.average_purchase_price = purchase_price
+    update_fields.append("average_purchase_price")
+
+    if update_fields:
+        item.save(update_fields=list(set(update_fields)))
+
+    return item
+
+
+def get_or_create_simple_inventory_item(row_data, purchase_type):
+    selected_item = row_data.get("item")
+
+    item_name = clean_purchase_text(row_data.get("new_item_name"))
+    sku_code = clean_purchase_text(row_data.get("sku_code"))
+    item_type = row_data.get("item_type") or "RAW_MATERIAL"
+    unit = row_data.get("unit") or "PIECE"
+    purchase_price = get_purchase_decimal(row_data.get("purchase_price"), "0.00")
+
+    if selected_item:
+        return update_inventory_item_from_purchase(
+            item=selected_item,
+            row_data=row_data,
+            purchase_type=purchase_type,
+        )
+
+    if not item_name:
+        if is_asset_purchase_type(purchase_type):
+            raise ValidationError("Asset Name is required.")
+        raise ValidationError("New Item Name is required.")
+
+    if is_asset_purchase_type(purchase_type):
+        item_type = get_inventory_fallback_item_type()
+        unit = "PIECE"
+
+    existing = InventoryItem.objects.filter(
+        name__iexact=item_name,
+        purchase_type=purchase_type,
+    ).first()
+
+    if not existing:
+        existing = InventoryItem.objects.filter(
+            name__iexact=item_name
+        ).first()
+
+    if existing:
+        return update_inventory_item_from_purchase(
+            item=existing,
+            row_data={
+                "sku_code": sku_code,
+                "item_type": item_type,
+                "unit": unit,
+                "purchase_price": purchase_price,
+            },
+            purchase_type=purchase_type,
+        )
+
+    return InventoryItem.objects.create(
+        purchase_type=purchase_type,
+        item_type=item_type,
+        name=item_name,
+        sku_code=sku_code,
+        stock_unit=unit,
+        stock_quantity=Decimal("0.000"),
+        average_purchase_price=purchase_price,
+        minimum_stock_alert=Decimal("0.000"),
+        is_active=True,
+    )
+
+
+def get_valid_purchase_item_rows(formset):
+    valid_rows = []
+
+    for item_form in formset:
+        data = item_form.cleaned_data
+
+        if data.get("DELETE"):
+            continue
+
+        item = data.get("item")
+        new_item_name = clean_purchase_text(data.get("new_item_name"))
+        quantity = data.get("quantity")
+        purchase_price = data.get("purchase_price")
+
+        if not item and not new_item_name and not quantity and purchase_price in [None, ""]:
+            continue
+
+        if not item and not new_item_name:
+            raise ValidationError("Select item or enter new item name.")
+
+        if not quantity or quantity <= 0:
+            raise ValidationError("Quantity is required.")
+
+        if purchase_price is None or purchase_price < 0:
+            raise ValidationError("Purchase rate is required.")
+
+        valid_rows.append({
+            "item": item,
+            "new_item_name": new_item_name,
+            "sku_code": clean_purchase_text(data.get("sku_code")),
+            "item_type": data.get("item_type") or "RAW_MATERIAL",
+            "unit": data.get("unit") or "PIECE",
+            "quantity": quantity,
+            "purchase_price": purchase_price,
+            "gst_percent": data.get("gst_percent") or Decimal("0.00"),
+        })
+
+    return valid_rows
+
+# ==========================================================
+# CLEAN STOCK USAGE HISTORY
+# Only:
+# 1. Purchase Entry
+# 2. Purchase Return
+# 3. Smart Production Formula Usage
+# ==========================================================
+
+from decimal import Decimal
+from django.db.models import Q, Sum
+from django.shortcuts import render, redirect
+
+
+def stock_dec(value):
+    if value in [None, ""]:
+        return Decimal("0.000")
+    return Decimal(str(value))
+
+
+def amount_dec(value):
+    if value in [None, ""]:
+        return Decimal("0.00")
+    return Decimal(str(value))
+
+
+def purchase_stock_history(request):
+    if not purchase_permission_check(request):
+        return redirect("dashboard")
+
+    search = (request.GET.get("q") or "").strip()
+    from_date = (request.GET.get("from_date") or "").strip()
+    to_date = (request.GET.get("to_date") or "").strip()
+
+    items = InventoryItem.objects.filter(
+        is_active=True
+    ).order_by("name")
+
+    if search:
+        items = items.filter(
+            Q(name__icontains=search) |
+            Q(sku_code__icontains=search) |
+            Q(purchase_type__name__icontains=search)
+        )
+
+    item_ids = list(items.values_list("id", flat=True))
+
+    summary_rows = []
+    movements = []
+
+    for item in items:
+        purchased_qty = PurchaseBillItem.objects.filter(
+            inventory_item=item
+        ).aggregate(total=Sum("quantity"))["total"] or Decimal("0.000")
+
+        returned_qty = PurchaseReturnItem.objects.filter(
+            inventory_item=item
+        ).aggregate(total=Sum("quantity"))["total"] or Decimal("0.000")
+
+        used_qty = ProductProductionRunMaterial.objects.filter(
+            inventory_item=item
+        ).aggregate(total=Sum("required_qty"))["total"] or Decimal("0.000")
+
+        summary_rows.append({
+            "item": item,
+            "purchased_qty": purchased_qty,
+            "used_qty": used_qty,
+            "returned_qty": returned_qty,
+            "current_stock": item.stock_quantity or Decimal("0.000"),
+        })
+
+    purchase_items = PurchaseBillItem.objects.select_related(
+        "bill",
+        "bill__party",
+        "inventory_item",
+    ).filter(
+        inventory_item_id__in=item_ids
+    )
+
+    if from_date:
+        purchase_items = purchase_items.filter(bill__bill_date__gte=from_date)
+
+    if to_date:
+        purchase_items = purchase_items.filter(bill__bill_date__lte=to_date)
+
+    for item in purchase_items:
+        qty = stock_dec(item.quantity)
+        rate = amount_dec(item.purchase_price)
+        gst = amount_dec(item.gst_percent)
+        taxable = qty * rate
+        cost = taxable + ((taxable * gst) / Decimal("100.00"))
+
+        movements.append({
+            "date": item.bill.bill_date,
+            "type": "PURCHASED",
+            "item_name": item.inventory_item.name,
+            "sku": item.inventory_item.sku_code or "-",
+            "reference": item.bill.bill_number or f"Bill #{item.bill.id}",
+            "party": item.bill.party.party_name if item.bill.party else "-",
+            "in_qty": qty,
+            "out_qty": Decimal("0.000"),
+            "unit": item.unit,
+            "rate": rate,
+            "cost": cost,
+            "note": "Purchased stock added",
+        })
+
+    return_items = PurchaseReturnItem.objects.select_related(
+        "purchase_return",
+        "purchase_return__party",
+        "inventory_item",
+    ).filter(
+        inventory_item_id__in=item_ids
+    )
+
+    if from_date:
+        return_items = return_items.filter(purchase_return__return_date__gte=from_date)
+
+    if to_date:
+        return_items = return_items.filter(purchase_return__return_date__lte=to_date)
+
+    for item in return_items:
+        qty = stock_dec(item.quantity)
+        rate = amount_dec(item.return_price)
+        gst = amount_dec(item.gst_percent)
+        taxable = qty * rate
+        cost = taxable + ((taxable * gst) / Decimal("100.00"))
+
+        movements.append({
+            "date": item.purchase_return.return_date,
+            "type": "RETURNED",
+            "item_name": item.inventory_item.name,
+            "sku": item.inventory_item.sku_code or "-",
+            "reference": item.purchase_return.debit_note_number or f"Return #{item.purchase_return.id}",
+            "party": item.purchase_return.party.party_name if item.purchase_return.party else "-",
+            "in_qty": Decimal("0.000"),
+            "out_qty": qty,
+            "unit": item.unit,
+            "rate": rate,
+            "cost": cost,
+            "note": item.purchase_return.reason or "Purchase return",
+        })
+
+    production_items = ProductProductionRunMaterial.objects.select_related(
+        "run",
+        "run__product",
+        "inventory_item",
+    ).filter(
+        inventory_item_id__in=item_ids
+    )
+
+    if from_date:
+        production_items = production_items.filter(run__production_date__gte=from_date)
+
+    if to_date:
+        production_items = production_items.filter(run__production_date__lte=to_date)
+
+    for item in production_items:
+        movements.append({
+            "date": item.run.production_date,
+            "type": "USED",
+            "item_name": item.inventory_item.name,
+            "sku": item.inventory_item.sku_code or "-",
+            "reference": f"Production #{item.run.id}",
+            "party": item.run.product.name if item.run.product else "-",
+            "in_qty": Decimal("0.000"),
+            "out_qty": item.required_qty or Decimal("0.000"),
+            "unit": item.unit,
+            "rate": item.rate,
+            "cost": item.cost,
+            "note": f"{item.get_material_type_display()} used",
+        })
+
+    movements.sort(key=lambda row: row["date"], reverse=True)
+
+    total_purchased = sum((row["purchased_qty"] for row in summary_rows), Decimal("0.000"))
+    total_used = sum((row["used_qty"] for row in summary_rows), Decimal("0.000"))
+    total_returned = sum((row["returned_qty"] for row in summary_rows), Decimal("0.000"))
+    total_remaining = sum((row["current_stock"] for row in summary_rows), Decimal("0.000"))
+
+    return render(request, "core/purchase_stock_history.html", {
+        "summary_rows": summary_rows,
+        "movements": movements,
+        "search": search,
+        "from_date": from_date,
+        "to_date": to_date,
+        "total_purchased": total_purchased,
+        "total_used": total_used,
+        "total_returned": total_returned,
+        "total_remaining": total_remaining,
+    })
+
+# ================= STRICT ACTION-ONLY PENDING BADGES API =================
+# Replace your old pending-action-badges code in views.py with this full code.
+# This counts ONLY actions the logged-in role can perform now.
+# It does NOT count past/completed orders.
+
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.urls import reverse
+from django.apps import apps
+
+
+def badge_reverse(name):
+    try:
+        return reverse(name)
+    except Exception:
+        return None
+
+
+def badge_model(name):
+    try:
+        return apps.get_model("core", name)
+    except Exception:
+        return None
+
+
+def badge_count(model_name, **filters):
+    Model = badge_model(model_name)
+
+    if not Model:
+        return 0
+
+    try:
+        return Model.objects.filter(**filters).count()
+    except Exception:
+        return 0
+
+
+def badge_add(items, key, title, route_name, count, total_key=None):
+    count = int(count or 0)
+
+    if count <= 0:
+        return
+
+    url = badge_reverse(route_name)
+
+    if not url:
+        return
+
+    items.append({
+        "key": key,
+        "title": title,
+        "url": url,
+        "count": count,
+        "total_key": total_key or key,
+    })
+
+
+def badge_subordinate_ids(user):
+    UserProfile = badge_model("UserProfile")
+
+    if not UserProfile:
+        return []
+
+    try:
+        return list(
+            UserProfile.objects.filter(manager=user).values_list("user_id", flat=True)
+        )
+    except Exception:
+        return []
+
+
+def get_strict_order_action_counts(user, role):
+    """
+    DealerOrder actionable statuses from your workflow:
+
+    SALES_APPROVAL               -> concerned Sales Officer can approve/reject
+    ASM_APPROVAL                 -> concerned ASM can approve/reject
+    RSM_APPROVAL                 -> concerned Regional Manager can approve/reject
+    ACCOUNTANT_ORDER_APPROVAL    -> Accountant can approve/reject
+    WAREHOUSE_REVIEW             -> Warehouse Manager can review
+    ACCOUNTANT_INVOICE_REVIEW    -> Accountant can invoice review
+    DISPATCH_PENDING             -> Warehouse Manager can dispatch
+    DISPATCHED                   -> Dealer can accept delivery
+    """
+    DealerOrder = badge_model("DealerOrder")
+
+    if not DealerOrder:
+        return {
+            "orders_link_count": 0,
+            "warehouse_link_count": 0,
+            "invoice_link_count": 0,
+            "dealer_delivery_count": 0,
+        }
+
+    orders_link_count = 0
+    warehouse_link_count = 0
+    invoice_link_count = 0
+    dealer_delivery_count = 0
+
+    try:
+        if role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
+            orders_link_count = DealerOrder.objects.filter(
+                status="SALES_APPROVAL",
+                concerned_sales_officer=user,
+            ).count()
+
+        elif role == "ASM":
+            orders_link_count = DealerOrder.objects.filter(
+                status="ASM_APPROVAL",
+                concerned_asm=user,
+            ).count()
+
+        elif role == "REGIONAL_MANAGER":
+            orders_link_count = DealerOrder.objects.filter(
+                status="RSM_APPROVAL",
+                concerned_rsm=user,
+            ).count()
+
+        elif role == "ACCOUNTANT":
+            # Accountant can perform only these two order actions.
+            accountant_order_approval = DealerOrder.objects.filter(
+                status="ACCOUNTANT_ORDER_APPROVAL"
+            ).count()
+
+            accountant_invoice_review = DealerOrder.objects.filter(
+                status="ACCOUNTANT_INVOICE_REVIEW"
+            ).count()
+
+            orders_link_count = accountant_order_approval + accountant_invoice_review
+            invoice_link_count = accountant_invoice_review
+
+        elif role == "WAREHOUSE_MANAGER":
+            warehouse_review = DealerOrder.objects.filter(
+                status="WAREHOUSE_REVIEW",
+                warehouse_manager=user,
+            ).count()
+
+            dispatch_pending = DealerOrder.objects.filter(
+                status="DISPATCH_PENDING",
+                warehouse_manager=user,
+            ).count()
+
+            warehouse_link_count = warehouse_review + dispatch_pending
+
+        elif role == "DEALER":
+            dealer_delivery_count = DealerOrder.objects.filter(
+                status="DISPATCHED",
+                dealer_user=user,
+            ).count()
+
+            orders_link_count = dealer_delivery_count
+
+        elif role == "ADMIN" or user.is_superuser:
+            admin_approval = DealerOrder.objects.filter(
+                status__in=[
+                    "SALES_APPROVAL",
+                    "ASM_APPROVAL",
+                    "RSM_APPROVAL",
+                    "ACCOUNTANT_ORDER_APPROVAL",
+                ]
+            ).count()
+
+            admin_warehouse = DealerOrder.objects.filter(
+                status__in=[
+                    "WAREHOUSE_REVIEW",
+                    "DISPATCH_PENDING",
+                ]
+            ).count()
+
+            admin_invoice = DealerOrder.objects.filter(
+                status="ACCOUNTANT_INVOICE_REVIEW"
+            ).count()
+
+            orders_link_count = admin_approval + admin_warehouse + admin_invoice
+            warehouse_link_count = admin_warehouse
+            invoice_link_count = admin_invoice
+
+    except Exception:
+        pass
+
+    return {
+        "orders_link_count": orders_link_count,
+        "warehouse_link_count": warehouse_link_count,
+        "invoice_link_count": invoice_link_count,
+        "dealer_delivery_count": dealer_delivery_count,
+    }
+
+
+def get_pending_action_badges_for_user(user):
+    profile = getattr(user, "profile", None)
+    role = getattr(profile, "role", "")
+
+    items = []
+    unique_total_keys = {}
+
+    # ==========================
+    # OWN ATTENDANCE ACTION
+    # ==========================
+    clock_out_count = badge_count(
+        "EmployeeAttendance",
+        employee=user,
+        clock_out_at__isnull=True,
+    )
+
+    badge_add(
+        items,
+        "clock_out_pending",
+        "Clock Out Pending",
+        "employee_attendance_dashboard",
+        clock_out_count,
+        "clock_out_pending"
+    )
+
+    # ==========================
+    # TA/DA ACTIONS
+    # ==========================
+    subordinate_ids = badge_subordinate_ids(user)
+
+    if user.is_superuser or role == "ADMIN":
+        manager_tada_count = badge_count(
+            "EmployeeAttendance",
+            status="PENDING_MANAGER",
+        )
+    elif subordinate_ids:
+        manager_tada_count = badge_count(
+            "EmployeeAttendance",
+            employee_id__in=subordinate_ids,
+            status="PENDING_MANAGER",
+        )
+    else:
+        manager_tada_count = 0
+
+    badge_add(
+        items,
+        "manager_tada_approvals",
+        "TA/DA Manager Approvals",
+        "manager_attendance_approvals",
+        manager_tada_count,
+        "manager_tada_approvals"
+    )
+
+    if user.is_superuser or role in ["ADMIN", "HR"]:
+        hr_tada_count = badge_count(
+            "EmployeeAttendance",
+            status="MANAGER_APPROVED",
+        )
+
+        badge_add(
+            items,
+            "hr_tada_claims",
+            "HR TA/DA Claims",
+            "hr_attendance_claims",
+            hr_tada_count,
+            "hr_tada_claims"
+        )
+
+    if user.is_superuser or role in ["ADMIN", "ACCOUNTANT"]:
+        accountant_tada_count = badge_count(
+            "EmployeeAttendance",
+            status="HR_APPROVED",
+        )
+
+        badge_add(
+            items,
+            "accountant_tada_release",
+            "Release TA/DA Funds",
+            "accountant_attendance_claims",
+            accountant_tada_count,
+            "accountant_tada_release"
+        )
+
+    # ==========================
+    # LEAVE ACTIONS
+    # ==========================
+    if user.is_superuser or role == "ADMIN":
+        leave_manager_count = badge_count(
+            "EmployeeLeaveRequest",
+            status="PENDING",
+        )
+    elif subordinate_ids:
+        leave_manager_count = badge_count(
+            "EmployeeLeaveRequest",
+            employee_id__in=subordinate_ids,
+            status="PENDING",
+        )
+    else:
+        leave_manager_count = 0
+
+    badge_add(
+        items,
+        "manager_leave_approvals",
+        "Leave Approvals",
+        "manager_leave_approvals",
+        leave_manager_count,
+        "manager_leave_approvals"
+    )
+
+    # ==========================
+    # FARMER MEET ACTIONS
+    # ==========================
+    farmer_count = 0
+
+    if role in ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
+        farmer_count = badge_count(
+            "FarmerMeetRequest",
+            sales_officer=user,
+            approval_status="PENDING_SALES_OFFICER",
+        )
+
+    elif role == "ASM":
+        farmer_count = badge_count(
+            "FarmerMeetRequest",
+            asm=user,
+            approval_status="PENDING_ASM",
+        )
+
+    elif role == "REGIONAL_MANAGER":
+        farmer_count = badge_count(
+            "FarmerMeetRequest",
+            regional_manager=user,
+            approval_status="PENDING_REGIONAL_MANAGER",
+        )
+
+    elif role == "STATE_HEAD":
+        farmer_count = badge_count(
+            "FarmerMeetRequest",
+            state_head=user,
+            approval_status="PENDING_STATE_HEAD",
+        )
+
+    elif user.is_superuser or role == "ADMIN":
+        FarmerMeetRequest = badge_model("FarmerMeetRequest")
+        if FarmerMeetRequest:
+            try:
+                farmer_count = FarmerMeetRequest.objects.filter(
+                    approval_status__in=[
+                        "PENDING_SALES_OFFICER",
+                        "PENDING_ASM",
+                        "PENDING_REGIONAL_MANAGER",
+                        "PENDING_STATE_HEAD",
+                    ]
+                ).count()
+            except Exception:
+                farmer_count = 0
+
+    badge_add(
+        items,
+        "farmer_meet_approvals",
+        "Farmer Meet Approvals",
+        "farmer_meet_list",
+        farmer_count,
+        "farmer_meet_approvals"
+    )
+
+    # ==========================
+    # DEALER APPROVAL ACTIONS
+    # ==========================
+    dealer_approval_count = 0
+
+    if user.is_superuser or role == "ADMIN":
+        Dealer = badge_model("Dealer")
+        if Dealer:
+            try:
+                dealer_approval_count = Dealer.objects.exclude(
+                    approval_status__in=["APPROVED", "REJECTED"]
+                ).count()
+            except Exception:
+                dealer_approval_count = 0
+
+    elif role == "ASM":
+        dealer_approval_count = badge_count(
+            "Dealer",
+            concerned_asm=user,
+            approval_status="PENDING_ASM",
+        )
+
+    elif role == "REGIONAL_MANAGER":
+        dealer_approval_count = badge_count(
+            "Dealer",
+            forwarded_regional_manager=user,
+            approval_status="FORWARDED_RM",
+        )
+
+    elif role == "STATE_HEAD":
+        dealer_approval_count = badge_count(
+            "Dealer",
+            forwarded_state_head=user,
+            approval_status="FORWARDED_STATE_HEAD",
+        )
+
+    badge_add(
+        items,
+        "dealer_approvals",
+        "Dealer Approvals",
+        "dealer_approval_list",
+        dealer_approval_count,
+        "dealer_approvals"
+    )
+
+    # ==========================
+    # STRICT ORDER ACTIONS
+    # ==========================
+    order_counts = get_strict_order_action_counts(user, role)
+
+    badge_add(
+        items,
+        "order_actions",
+        "Order Actions Pending",
+        "dealer_order_list",
+        order_counts["orders_link_count"],
+        "order_actions"
+    )
+
+    badge_add(
+        items,
+        "warehouse_order_actions",
+        "Warehouse Orders Pending",
+        "warehouse_my_orders",
+        order_counts["warehouse_link_count"],
+        "order_actions"
+    )
+
+    # Show invoice badge only for actual accountant invoice review pending.
+    badge_add(
+        items,
+        "invoice_review_actions",
+        "Invoice Review Pending",
+        "dealer_invoice_list",
+        order_counts["invoice_link_count"],
+        "order_actions"
+    )
+
+    # ==========================
+    # DEALER REDEMPTION ACTIONS
+    # ==========================
+    redemption_count = 0
+
+    if user.is_superuser or role in ["ADMIN", "ACCOUNTANT", "ASM", "SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"]:
+        DealerRedemptionRequest = badge_model("DealerRedemptionRequest")
+
+        if DealerRedemptionRequest:
+            try:
+                redemption_count = DealerRedemptionRequest.objects.filter(
+                    status="PENDING"
+                ).count()
+            except Exception:
+                redemption_count = 0
+
+    badge_add(
+        items,
+        "dealer_redemption_approvals",
+        "Dealer Redemption Approvals",
+        "dealer_redemption_approvals",
+        redemption_count,
+        "dealer_redemption_approvals"
+    )
+
+    # ==========================
+    # ASSET MANAGER ACTIONS
+    # ==========================
+    asset_count = 0
+
+    if user.is_superuser or role in ["ADMIN", "ASSET_MANAGER"]:
+        AssetRequest = badge_model("AssetRequest")
+        AssetReturnRequest = badge_model("AssetReturnRequest")
+
+        if AssetRequest:
+            try:
+                asset_count += AssetRequest.objects.filter(status="PENDING").count()
+            except Exception:
+                pass
+
+        if AssetReturnRequest:
+            try:
+                asset_count += AssetReturnRequest.objects.filter(status="PENDING").count()
+            except Exception:
+                pass
+
+    badge_add(
+        items,
+        "asset_actions",
+        "Asset Actions Pending",
+        "asset_list",
+        asset_count,
+        "asset_actions"
+    )
+
+    # ==========================
+    # TOTAL WITHOUT DUPLICATING SAME ACTION ON MULTIPLE LINKS
+    # ==========================
+    for item in items:
+        total_key = item.get("total_key") or item["key"]
+        unique_total_keys[total_key] = max(
+            unique_total_keys.get(total_key, 0),
+            item["count"]
+        )
+
+    total = sum(unique_total_keys.values())
+
+    by_url = {}
+    by_key = {}
+
+    for item in items:
+        by_url[item["url"]] = by_url.get(item["url"], 0) + item["count"]
+        by_key[item["key"]] = by_key.get(item["key"], 0) + item["count"]
+
+    return {
+        "total": total,
+        "items": items,
+        "by_url": by_url,
+        "by_key": by_key,
+    }
+
+
+@login_required
+def pending_action_badges_api(request):
+    data = get_pending_action_badges_for_user(request.user)
+    return JsonResponse(data)
 

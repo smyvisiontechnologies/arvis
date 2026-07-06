@@ -2,339 +2,438 @@
 {% block content %}
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
+
+:root {
+    --primary-gold: #f59e0b;
+    --primary-amber: #d97706;
+    --primary-orange: #ea580c;
+    --dark-navy: #0f172a;
+    --light-bg: #fefce8;
+    --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+}
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
 .rewards-page {
-    padding: 18px;
-    background:
-        radial-gradient(circle at top left, rgba(245, 158, 11, 0.08), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.06), transparent 30%);
+    padding: 24px;
+    background: linear-gradient(135deg, #fefce8 0%, #fffbeb 25%, #fef3c7 50%, #fffbeb 75%, #fefce8 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.rewards-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(217, 119, 6, 0.08) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .rewards-wrap {
-    max-width: 1220px;
+    max-width: 1250px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
+/* Premium Hero Section */
 .reward-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 30px;
-    padding: 22px;
-    color: #fff7d6;
-    background:
-        radial-gradient(circle at 86% 12%, rgba(255, 226, 126, 0.34), transparent 23%),
-        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.26), transparent 30%),
-        linear-gradient(135deg, #1f1300 0%, #4a2f00 42%, #a16207 100%);
-    box-shadow: 0 24px 55px rgba(120, 72, 0, 0.24);
-    margin-bottom: 16px;
+    border-radius: 40px;
+    padding: 32px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #16213e 75%, #1a1a2e 100%);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .reward-hero::before {
     content: "";
     position: absolute;
-    inset: -80%;
-    background: linear-gradient(120deg, transparent 42%, rgba(255,255,255,0.22) 50%, transparent 58%);
-    transform: rotate(16deg);
-    animation: rewardShine 4s infinite;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.15) 50%, 
+        transparent 70%);
+    animation: shine 8s infinite;
+    transform: rotate(45deg);
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.reward-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15), transparent 70%);
+    pointer-events: none;
 }
 
 .reward-hero-content {
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: 18px;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+    gap: 24px;
+    align-items: center;
 }
 
 .reward-title-chip {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    color: #fff4c2;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 150, 0, 0.2));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.4);
     border-radius: 999px;
-    padding: 8px 12px;
+    padding: 8px 18px;
     font-size: 12px;
-    font-weight: 1000;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    width: fit-content;
+    color: #fbbf24;
 }
 
 .reward-hero h2 {
-    margin: 13px 0 8px;
-    font-size: clamp(27px, 4vw, 46px);
-    line-height: 1.04;
-    font-weight: 1000;
-    color: #ffffff;
-    letter-spacing: -1px;
+    margin: 16px 0 12px;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.1;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .reward-hero p {
     margin: 0;
-    color: rgba(255, 247, 214, 0.84);
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 1.55;
-    max-width: 680px;
-}
-
-.reward-points-wallet {
-    border-radius: 26px;
-    padding: 18px;
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    backdrop-filter: blur(12px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 190px;
-}
-
-.wallet-label {
-    color: rgba(255, 247, 214, 0.78);
-    font-size: 12px;
-    font-weight: 1000;
-    text-transform: uppercase;
-}
-
-.wallet-points {
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.wallet-points strong {
-    font-size: clamp(44px, 7vw, 72px);
-    line-height: 0.92;
-    font-weight: 1000;
-    color: #fff8d7;
-    text-shadow: 0 8px 26px rgba(0,0,0,0.22);
-}
-
-.wallet-points span {
-    padding-bottom: 8px;
-    color: rgba(255, 247, 214, 0.82);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 15px;
-    font-weight: 1000;
+    font-weight: 500;
+    line-height: 1.6;
 }
 
-.wallet-value {
-    margin-top: 12px;
-    display: inline-flex;
-    width: fit-content;
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.20);
-    border-radius: 999px;
-    padding: 8px 12px;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 1000;
+.reward-hero p strong {
+    color: #fbbf24;
+    font-weight: 700;
 }
 
 .reward-actions {
-    margin-top: 18px;
+    margin-top: 24px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
 .reward-btn {
     display: inline-flex;
-    justify-content: center;
     align-items: center;
+    gap: 10px;
     text-decoration: none;
     border-radius: 999px;
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 1000;
-    transition: 0.22s ease;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.3s ease;
 }
 
 .reward-btn.primary {
-    background: #fff7d6;
-    color: #4a2f00;
-    box-shadow: 0 14px 28px rgba(255, 247, 214, 0.17);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c);
+    color: white;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
 }
 
 .reward-btn.secondary {
-    background: rgba(255,255,255,0.12);
-    color: #fff7d6;
-    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #fbbf24;
 }
 
 .reward-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
 }
 
+/* Premium Wallet Card */
+.reward-points-wallet {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 32px;
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+.reward-points-wallet:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
+.wallet-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 247, 214, 0.9);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.wallet-points {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.wallet-points strong {
+    font-size: clamp(52px, 8vw, 80px);
+    line-height: 1;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.wallet-points span {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255, 215, 0, 0.8);
+}
+
+.wallet-value {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: #fbbf24;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Stats Grid */
 .reward-stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .reward-stat-card {
+    background: white;
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 28px;
+    padding: 20px;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #f3e2b5;
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 14px 32px rgba(120, 72, 0, 0.08);
 }
 
-.reward-stat-card::after {
+.reward-stat-card::before {
     content: "";
     position: absolute;
-    right: -28px;
-    top: -28px;
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background: rgba(245, 158, 11, 0.10);
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.reward-stat-card:hover::before {
+    left: 100%;
+}
+
+.reward-stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .reward-stat-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 15px;
+    width: 54px;
+    height: 54px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #fff7d6, #facc15);
-    color: #5c3d00;
-    font-size: 20px;
-    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #d97706;
+    font-size: 26px;
+    margin-bottom: 14px;
 }
 
 .reward-stat-card span {
     display: block;
-    color: #7c5d00;
-    font-size: 11px;
-    font-weight: 1000;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.35px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
 }
 
 .reward-stat-card strong {
     display: block;
-    margin-top: 5px;
-    color: #1f2937;
-    font-size: 24px;
-    font-weight: 1000;
-    word-break: break-word;
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
+/* Reward Store Section */
 .reward-section {
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 26px;
-    padding: 18px;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
-    margin-bottom: 16px;
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 36px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.reward-section:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
 .reward-section-head {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
     align-items: flex-start;
-    margin-bottom: 14px;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .reward-section-head h3 {
     margin: 0;
-    color: #0f172a;
-    font-size: 20px;
-    font-weight: 1000;
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .reward-section-head p {
-    margin: 5px 0 0;
+    margin: 8px 0 0;
     color: #64748b;
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .reward-mini-pill {
-    background: #fffbeb;
-    color: #92400e;
-    border: 1px solid #fde68a;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #d97706;
     border-radius: 999px;
-    padding: 8px 11px;
-    font-size: 12px;
-    font-weight: 1000;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
     white-space: nowrap;
 }
 
+/* Product Grid */
 .product-reward-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .product-reward-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 15px;
-    background:
-        radial-gradient(circle at top right, rgba(245, 158, 11, 0.11), transparent 30%),
-        #ffffff;
-    transition: 0.2s ease;
+    border: 2px solid #f1f5f9;
+    border-radius: 24px;
+    padding: 20px;
+    background: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .product-reward-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 28px rgba(15, 23, 42, 0.10);
-    border-color: #facc15;
+    transform: translateY(-5px);
+    border-color: #fbbf24;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
 
 .product-reward-top {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
     align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
 .product-reward-name {
+    font-size: 16px;
+    font-weight: 800;
     color: #0f172a;
-    font-size: 15px;
-    font-weight: 1000;
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
 .product-reward-badge {
-    background: #111827;
-    color: #fff7d6;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
     border-radius: 999px;
-    padding: 6px 9px;
-    font-size: 11px;
-    font-weight: 1000;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 .product-reward-meta {
-    margin-top: 10px;
     color: #64748b;
-    font-size: 12px;
-    font-weight: 850;
-    line-height: 1.5;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
 }
 
 .claim-status {
-    margin-top: 12px;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 10px;
     font-size: 12px;
-    font-weight: 1000;
+    font-weight: 700;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .claim-status.ready {
-    background: #ecfdf5;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
     color: #047857;
-    border: 1px solid #bbf7d0;
+    border: 1px solid #a7f3d0;
 }
 
 .claim-status.locked {
@@ -343,127 +442,302 @@
     border: 1px solid #e2e8f0;
 }
 
-.redeem-table-wrap {
-    overflow: auto;
-    border-radius: 18px;
+/* Redemption Requests - Mobile First Cards */
+.redemption-cards {
+    display: none;
+}
+
+.redemption-card {
+    background: white;
     border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.redeem-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 720px;
+.redemption-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    border-color: #fbbf24;
 }
 
-.redeem-table th {
-    background: #f8fafc;
-    color: #475569;
-    padding: 12px;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 1000;
-    text-transform: uppercase;
+.redemption-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
 }
 
-.redeem-table td {
-    padding: 12px;
-    border-top: 1px solid #e2e8f0;
-    color: #0f172a;
-    font-size: 13px;
+.redemption-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
     font-weight: 800;
+    color: #0f172a;
+}
+
+.redemption-points {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.redemption-details {
+    margin-bottom: 16px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.redemption-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .status-chip {
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
     border-radius: 999px;
-    padding: 6px 9px;
+    padding: 6px 14px;
     font-size: 11px;
-    font-weight: 1000;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 .status-chip.approved {
-    background: #ecfdf5;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
     color: #047857;
-    border: 1px solid #bbf7d0;
+    border: 1px solid #a7f3d0;
 }
 
 .status-chip.rejected {
-    background: #fef2f2;
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
     color: #b91c1c;
     border: 1px solid #fecaca;
 }
 
 .status-chip.pending {
-    background: #fffbeb;
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
     color: #92400e;
     border: 1px solid #fde68a;
 }
 
-.empty-reward {
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    color: #64748b;
-    border-radius: 18px;
-    padding: 18px;
-    text-align: center;
-    font-weight: 900;
+.redemption-date {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-@keyframes rewardShine {
-    0% { transform: translateX(-42%) rotate(16deg); }
-    48% { transform: translateX(42%) rotate(16deg); }
-    100% { transform: translateX(42%) rotate(16deg); }
+/* Desktop Table (hidden on mobile) */
+.redeem-table-wrap {
+    overflow-x: auto;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    display: block;
+}
+
+.redeem-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.redeem-table th {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: #475569;
+    padding: 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.redeem-table td {
+    padding: 16px;
+    border-top: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.empty-reward {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 2px dashed #cbd5e1;
+    color: #64748b;
+    border-radius: 24px;
+    padding: 48px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.empty-reward i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    color: #cbd5e1;
+}
+
+/* Responsive Design */
+@media(max-width: 1024px) {
+    .reward-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media(max-width: 980px) {
     .reward-hero-content {
         grid-template-columns: 1fr;
     }
-
-    .reward-stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
+    
     .product-reward-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 }
 
-@media(max-width: 620px) {
+@media(max-width: 768px) {
     .rewards-page {
-        padding: 10px;
+        padding: 16px;
     }
-
-    .reward-hero,
+    
+    .reward-hero {
+        padding: 24px;
+        border-radius: 28px;
+    }
+    
     .reward-section {
-        border-radius: 22px;
-        padding: 15px;
+        padding: 20px;
+        border-radius: 28px;
     }
+    
+    .reward-section-head {
+        flex-direction: column;
+    }
+    
+    .reward-mini-pill {
+        width: fit-content;
+    }
+    
+    .reward-stats-grid {
+        gap: 12px;
+    }
+    
+    .reward-stat-card strong {
+        font-size: 24px;
+    }
+    
+    /* Hide desktop table on mobile */
+    .redeem-table-wrap {
+        display: none;
+    }
+    
+    /* Show mobile cards */
+    .redemption-cards {
+        display: block;
+    }
+}
 
-    .reward-stats-grid,
+@media(max-width: 640px) {
+    .reward-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
     .product-reward-grid {
         grid-template-columns: 1fr;
     }
-
-    .reward-section-head {
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-
+    
     .reward-actions {
-        display: grid;
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
-
+    
     .reward-btn {
         width: 100%;
+        justify-content: center;
     }
-
+    
     .wallet-points strong {
-        font-size: 46px;
+        font-size: 48px;
+    }
+    
+    .redemption-card {
+        padding: 16px;
+    }
+    
+    .redemption-card-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .redemption-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .status-chip {
+        justify-content: center;
     }
 }
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reward-hero,
+.reward-stat-card,
+.reward-section,
+.redemption-card {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.reward-stat-card:nth-child(1) { animation-delay: 0.1s; }
+.reward-stat-card:nth-child(2) { animation-delay: 0.2s; }
+.reward-stat-card:nth-child(3) { animation-delay: 0.3s; }
+.reward-stat-card:nth-child(4) { animation-delay: 0.4s; }
 </style>
 
 <div class="rewards-page">
@@ -472,53 +746,71 @@
         <div class="reward-hero">
             <div class="reward-hero-content">
                 <div>
-                    <div class="reward-title-chip">🏆 Dealer Rewards Wallet</div>
+                    <div class="reward-title-chip">
+                        <i class="fas fa-trophy"></i> Dealer Rewards Wallet
+                    </div>
 
-                    <h2>Grow your points. Unlock more rewards.</h2>
+                    <h2>Grow your points.<br>Unlock more rewards.</h2>
 
                     <p>
-                        Every unique farmer data upload adds <strong>{{ setting.farmer_points }} points</strong> to your wallet.
-                        Keep adding genuine farmer contacts and redeem your points as money or free products.
+                        <i class="fas fa-check-circle"></i> Every unique farmer data upload adds <strong>{{ setting.farmer_points }} points</strong> to your wallet.<br>
+                        <i class="fas fa-chart-line"></i> Keep adding genuine farmer contacts and redeem your points as money or free products.
                     </p>
 
                     <div class="reward-actions">
-                        <a href="{% url 'dealer_farmer_data' %}" class="reward-btn primary">+ Upload Farmer Data</a>
-                        <a href="{% url 'dealer_redemption_create' %}" class="reward-btn secondary">Redeem Rewards</a>
+                        <a href="{% url 'dealer_farmer_data' %}" class="reward-btn primary">
+                            <i class="fas fa-cloud-upload-alt"></i> Upload Farmer Data
+                        </a>
+                        <a href="{% url 'dealer_redemption_create' %}" class="reward-btn secondary">
+                            <i class="fas fa-gift"></i> Redeem Rewards
+                        </a>
                     </div>
                 </div>
 
                 <div class="reward-points-wallet">
-                    <div class="wallet-label">Available Reward Balance</div>
+                    <div class="wallet-label">
+                        <i class="fas fa-wallet"></i> Available Reward Balance
+                    </div>
                     <div class="wallet-points">
                         <strong>{{ balance_points }}</strong>
                         <span>points</span>
                     </div>
-                    <div class="wallet-value">Worth ₹{{ point_value|floatformat:2 }} right now</div>
+                    <div class="wallet-value">
+                        <i class="fas fa-rupee-sign"></i> Worth ₹{{ point_value|floatformat:2 }} right now
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="reward-stats-grid">
             <div class="reward-stat-card">
-                <div class="reward-stat-icon">👨‍🌾</div>
+                <div class="reward-stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
                 <span>Farmers Uploaded</span>
                 <strong>{{ farmers_count }}</strong>
             </div>
 
             <div class="reward-stat-card">
-                <div class="reward-stat-icon">⭐</div>
+                <div class="reward-stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
                 <span>Points Per Farmer</span>
                 <strong>{{ setting.farmer_points }}</strong>
             </div>
 
             <div class="reward-stat-card">
-                <div class="reward-stat-icon">₹</div>
+                <div class="reward-stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
                 <span>One Point Value</span>
                 <strong>₹{{ setting.rupees_per_point }}</strong>
             </div>
 
             <div class="reward-stat-card">
-                <div class="reward-stat-icon">🎁</div>
+                <div class="reward-stat-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
                 <span>Min. Money Redeem</span>
                 <strong>{{ setting.minimum_money_redemption_points }}</strong>
             </div>
@@ -527,10 +819,12 @@
         <div class="reward-section">
             <div class="reward-section-head">
                 <div>
-                    <h3>Reward Store</h3>
+                    <h3><i class="fas fa-store"></i> Reward Store</h3>
                     <p>Choose free product rewards based on your available points.</p>
                 </div>
-                <span class="reward-mini-pill">Product minimum: {{ setting.minimum_product_redemption_points }} points</span>
+                <span class="reward-mini-pill">
+                    <i class="fas fa-tag"></i> Product minimum: {{ setting.minimum_product_redemption_points }} points
+                </span>
             </div>
 
             <div class="product-reward-grid">
@@ -538,29 +832,36 @@
                     <div class="product-reward-card">
                         <div class="product-reward-top">
                             <div class="product-reward-name">
-                                {{ rule.product.name }}
+                                <i class="fas fa-box"></i> {{ rule.product.name }}
                                 {% if rule.pack_size %}
-                                    <br><span style="color:#64748b;font-size:12px;">{{ rule.pack_size.display_pack }}</span>
+                                    <br><span style="color:#64748b;font-size:11px;margin-top:4px;display:inline-block;">
+                                        <i class="fas fa-cubes"></i> {{ rule.pack_size.display_pack }}
+                                    </span>
                                 {% endif %}
                             </div>
 
                             <div class="product-reward-badge">
-                                {{ rule.points_required }} pts
+                                <i class="fas fa-star"></i> {{ rule.points_required }} pts
                             </div>
                         </div>
 
                         <div class="product-reward-meta">
-                            Get <strong>{{ rule.free_quantity }}</strong> free quantity for this reward.
+                            <i class="fas fa-gift"></i> Get <strong>{{ rule.free_quantity }}</strong> free quantity for this reward.
                         </div>
 
                         {% if balance_points >= rule.points_required %}
-                            <div class="claim-status ready">Ready to redeem ✨</div>
+                            <div class="claim-status ready">
+                                <i class="fas fa-check-circle"></i> Ready to redeem ✨
+                            </div>
                         {% else %}
-                            <div class="claim-status locked">Keep uploading farmers to unlock 🔒</div>
+                            <div class="claim-status locked">
+                                <i class="fas fa-lock"></i> Need {{ rule.points_required|add:"-"|add:balance_points }} more points
+                            </div>
                         {% endif %}
                     </div>
                 {% empty %}
                     <div class="empty-reward">
+                        <i class="fas fa-box-open"></i>
                         No product reward rules added yet. Please check again later.
                     </div>
                 {% endfor %}
@@ -570,56 +871,122 @@
         <div class="reward-section">
             <div class="reward-section-head">
                 <div>
-                    <h3>My Redemption Requests</h3>
+                    <h3><i class="fas fa-list-alt"></i> My Redemption Requests</h3>
                     <p>Track money and product redemption status here.</p>
                 </div>
-                <span class="reward-mini-pill">Approval: Sales Officer → ASM → Accountant</span>
+                <span class="reward-mini-pill">
+                    <i class="fas fa-clock"></i> Approval: Sales Officer → ASM → Accountant
+                </span>
             </div>
 
+            <!-- Desktop Table View -->
             <div class="redeem-table-wrap">
                 <table class="redeem-table">
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Points</th>
-                            <th>Details</th>
-                            <th>Status</th>
-                            <th>Date</th>
+                            <th><i class="fas fa-tag"></i> Type</th>
+                            <th><i class="fas fa-star"></i> Points</th>
+                            <th><i class="fas fa-info-circle"></i> Details</th>
+                            <th><i class="fas fa-chart-simple"></i> Status</th>
+                            <th><i class="fas fa-calendar"></i> Date</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {% for req in redemptions %}
                             <tr>
-                                <td>{{ req.get_redemption_type_display }}</td>
-                                <td>{{ req.points_requested }}</td>
                                 <td>
                                     {% if req.redemption_type == "MONEY" %}
-                                        ₹{{ req.money_amount|floatformat:2 }}
+                                        <i class="fas fa-money-bill-wave"></i> {{ req.get_redemption_type_display }}
                                     {% else %}
-                                        {{ req.product_rule.product.name }} - Free Qty: {{ req.requested_free_quantity }}
+                                        <i class="fas fa-box"></i> {{ req.get_redemption_type_display }}
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ req.points_requested }}</strong></td>
+                                <td>
+                                    {% if req.redemption_type == "MONEY" %}
+                                        <i class="fas fa-rupee-sign"></i> ₹{{ req.money_amount|floatformat:2 }}
+                                    {% else %}
+                                        <i class="fas fa-box"></i> {{ req.product_rule.product.name }}<br>
+                                        <small>Free Qty: {{ req.requested_free_quantity }}</small>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if req.status == "APPROVED" %}
-                                        <span class="status-chip approved">Approved</span>
+                                        <span class="status-chip approved"><i class="fas fa-check-circle"></i> Approved</span>
                                     {% elif req.status == "REJECTED" %}
-                                        <span class="status-chip rejected">Rejected</span>
+                                        <span class="status-chip rejected"><i class="fas fa-times-circle"></i> Rejected</span>
                                     {% else %}
-                                        <span class="status-chip pending">{{ req.get_status_display }}</span>
+                                        <span class="status-chip pending"><i class="fas fa-hourglass-half"></i> {{ req.get_status_display }}</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ req.created_at|date:"d M Y" }}</td>
+                                <td><i class="far fa-calendar-alt"></i> {{ req.created_at|date:"d M Y" }}</td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="5" style="text-align:center;padding:22px;color:#64748b;font-weight:1000;">
+                                <td colspan="5" style="text-align:center;padding:48px;color:#64748b;">
+                                    <i class="fas fa-inbox" style="font-size:48px;display:block;margin-bottom:12px;"></i>
                                     No redemption requests yet. Build points and claim your first reward.
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="redemption-cards">
+                {% for req in redemptions %}
+                    <div class="redemption-card">
+                        <div class="redemption-card-header">
+                            <div class="redemption-type">
+                                {% if req.redemption_type == "MONEY" %}
+                                    <i class="fas fa-money-bill-wave" style="color:#f59e0b;"></i> Money Redemption
+                                {% else %}
+                                    <i class="fas fa-box" style="color:#f59e0b;"></i> Product Redemption
+                                {% endif %}
+                            </div>
+                            <div class="redemption-points">
+                                <i class="fas fa-star"></i> {{ req.points_requested }} pts
+                            </div>
+                        </div>
+
+                        <div class="redemption-details">
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </span>
+                                <span class="detail-value">
+                                    {% if req.redemption_type == "MONEY" %}
+                                        <i class="fas fa-rupee-sign"></i> ₹{{ req.money_amount|floatformat:2 }}
+                                    {% else %}
+                                        {{ req.product_rule.product.name }}<br>
+                                        <small>Free Qty: {{ req.requested_free_quantity }}</small>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="redemption-footer">
+                            {% if req.status == "APPROVED" %}
+                                <span class="status-chip approved"><i class="fas fa-check-circle"></i> Approved</span>
+                            {% elif req.status == "REJECTED" %}
+                                <span class="status-chip rejected"><i class="fas fa-times-circle"></i> Rejected</span>
+                            {% else %}
+                                <span class="status-chip pending"><i class="fas fa-hourglass-half"></i> {{ req.get_status_display }}</span>
+                            {% endif %}
+                            
+                            <div class="redemption-date">
+                                <i class="far fa-calendar-alt"></i> {{ req.created_at|date:"d M Y" }}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-reward">
+                        <i class="fas fa-inbox"></i>
+                        No redemption requests yet. Build points and claim your first reward.
+                    </div>
+                {% endfor %}
             </div>
         </div>
 

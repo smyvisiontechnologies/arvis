@@ -3,15 +3,14 @@
 
 {% block content %}
 <style>
-.thermal-page-wrap {
-    padding: 18px;
-}
+.thermal-page-wrap { padding: 18px; }
 
-.sticker-settings {
+.sticker-settings,
+.preview-area {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 22px;
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     margin-bottom: 16px;
 }
@@ -20,7 +19,6 @@
     display: flex;
     justify-content: space-between;
     gap: 14px;
-    align-items: flex-start;
     flex-wrap: wrap;
     margin-bottom: 14px;
 }
@@ -30,13 +28,6 @@
     color: #0f172a;
     font-size: 25px;
     font-weight: 900;
-}
-
-.settings-head p {
-    margin: 5px 0 0;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 750;
 }
 
 .action-row {
@@ -59,7 +50,6 @@
 .back-btn {
     background: #f1f5f9;
     color: #0f172a;
-    border: 1px solid #e2e8f0;
 }
 
 .print-btn {
@@ -81,7 +71,6 @@
 
 .form-group label {
     display: block;
-    color: #334155;
     font-size: 12px;
     font-weight: 900;
     margin-bottom: 6px;
@@ -93,34 +82,17 @@
     background: #f8fafc;
     border-radius: 13px;
     padding: 10px 11px;
-    color: #0f172a;
-    outline: none;
     font-weight: 800;
-}
-
-.form-control:focus {
-    border-color: #2563eb;
-    background: white;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .checkbox-card {
     background: #f8fafc;
     border: 1px solid #cbd5e1;
     border-radius: 13px;
-    padding: 10px 11px;
+    padding: 10px;
     display: flex;
-    align-items: center;
     gap: 8px;
-    min-height: 42px;
-    color: #0f172a;
     font-weight: 900;
-}
-
-.checkbox-card input {
-    width: 18px;
-    height: 18px;
-    accent-color: #2563eb;
 }
 
 .help-note {
@@ -156,16 +128,6 @@
     color: #0f172a;
     font-size: 16px;
     font-weight: 900;
-    margin: 0 0 10px;
-}
-
-.preview-area {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    overflow-x: auto;
 }
 
 .thermal-pages {
@@ -180,20 +142,17 @@
     background: white;
     color: #000;
     border: 1px dashed #94a3b8;
-    padding: 0;
     overflow: hidden;
-    page-break-after: always;
-    break-after: page;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* PRINT LABEL DESIGN LIKE SAMPLE PHOTO */
 .sticker {
     width: 100%;
     height: 100%;
     border: 0.35mm solid #000;
     border-radius: 1.6mm;
     padding: 2.2mm;
+    box-sizing: border-box;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -206,15 +165,11 @@
     padding-bottom: 0.9mm;
     margin-bottom: 1mm;
     text-align: center;
-    flex: 0 0 auto;
 }
 
 .company-name {
-    color: #000;
     font-size: 3.2mm;
-    line-height: 1.05;
     font-weight: 900;
-    letter-spacing: 0.14mm;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
@@ -223,7 +178,6 @@
 
 .company-address {
     margin-top: 0.45mm;
-    color: #000;
     font-size: 1.55mm;
     font-weight: 800;
     line-height: 1.08;
@@ -233,10 +187,8 @@
 
 .product-type {
     margin-top: 0.55mm;
-    color: #000;
     font-size: 2mm;
     font-weight: 900;
-    line-height: 1.08;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
@@ -247,7 +199,7 @@
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    flex: 1 1 auto;
+    flex: 1;
 }
 
 .info-table td {
@@ -258,23 +210,19 @@
 
 .info-table .key {
     width: 39%;
-    color: #000;
     font-size: {{ body_font_mm|default:"2.65" }}mm;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.06mm;
 }
 
 .info-table .colon {
     width: 4%;
-    color: #000;
     font-size: {{ body_font_mm|default:"2.65" }}mm;
     font-weight: 900;
     text-align: center;
 }
 
 .info-table .value {
-    color: #000;
     font-size: {{ body_font_mm|default:"2.65" }}mm;
     font-weight: 900;
     word-break: break-word;
@@ -283,7 +231,6 @@
 
 .info-table .price-key {
     font-size: 2.45mm;
-    line-height: 1;
 }
 
 .info-table .price-value {
@@ -300,7 +247,6 @@
     grid-template-columns: minmax(0, 1fr) 14mm;
     gap: 1.2mm;
     align-items: center;
-    flex: 0 0 auto;
 }
 
 .barcode-area {
@@ -312,16 +258,13 @@
     display: block;
     width: 100%;
     height: 8mm;
-    margin: 0 auto;
 }
 
 .barcode-text {
     margin-top: 0.25mm;
-    color: #000;
+    text-align: center;
     font-size: 1.65mm;
     font-weight: 900;
-    letter-spacing: 0.16mm;
-    line-height: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -335,17 +278,15 @@
 .qr-area img {
     width: 12.5mm;
     height: 12.5mm;
-    object-fit: contain;
     display: block;
-    margin: 0 auto;
+    margin: auto;
+    object-fit: contain;
 }
 
 .qr-text {
-    margin-top: 0.2mm;
-    color: #000;
     font-size: 1.25mm;
     font-weight: 900;
-    line-height: 1;
+    text-align: center;
     text-transform: uppercase;
 }
 
@@ -356,7 +297,6 @@
     margin-top: 0.75mm;
     padding-top: 0.6mm;
     border-top: 0.2mm dashed #000;
-    flex: 0 0 auto;
 }
 
 .symbol-box {
@@ -367,33 +307,25 @@
     justify-content: center;
     font-size: 2.5mm;
     font-weight: 900;
-    line-height: 1;
 }
 
 .footer-company {
     margin-top: 0.65mm;
     padding-top: 0.55mm;
     border-top: 0.22mm solid #000;
-    color: #000;
     font-size: 2.05mm;
-    line-height: 1.05;
     font-weight: 900;
     text-align: center;
     text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 0 0 auto;
+    line-height: 1.05;
 }
 
 .footer-details {
     margin-top: 0.45mm;
-    color: #000;
     font-size: 1.45mm;
-    line-height: 1.08;
     font-weight: 800;
     text-align: center;
-    flex: 0 0 auto;
+    line-height: 1.08;
 }
 
 .footer-details div {
@@ -404,79 +336,10 @@
 
 .footer-note {
     margin-top: 0.35mm;
-    color: #000;
     font-size: 1.35mm;
-    line-height: 1.05;
     font-weight: 800;
     text-align: center;
-    flex: 0 0 auto;
-}
-
-@media print {
-    html,
-    body {
-        width: {{ width_mm|default:"100" }}mm !important;
-        min-width: {{ width_mm|default:"100" }}mm !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    .topbar,
-    .footer,
-    .messages-wrap,
-    .sticker-settings,
-    .preview-title {
-        display: none !important;
-    }
-
-    .page-content {
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .thermal-page-wrap {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    .preview-area {
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: visible !important;
-    }
-
-    .thermal-pages {
-        display: block !important;
-        gap: 0 !important;
-    }
-
-    .thermal-label-page {
-        width: {{ width_mm|default:"100" }}mm !important;
-        height: {{ height_mm|default:"75" }}mm !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-        page-break-after: always !important;
-        break-after: page !important;
-    }
-
-    .thermal-label-page:last-child {
-        page-break-after: auto !important;
-        break-after: auto !important;
-    }
-
-    @page {
-        size: {{ width_mm|default:"100" }}mm {{ height_mm|default:"75" }}mm;
-        margin: 0;
-    }
+    line-height: 1.05;
 }
 
 @media(max-width: 800px) {
@@ -506,17 +369,17 @@
         <div class="settings-head">
             <div>
                 <h2>TSC TE244 Sticker Print</h2>
-                <p>Sample-style product sticker with saved settings, barcode and QR product details page.</p>
             </div>
 
             <div class="action-row">
                 <a href="{% url 'product_list' %}" class="back-btn">Back</a>
-                <button type="button" onclick="window.print()" class="print-btn">Print Stickers</button>
+                <button type="button" onclick="printStickerOnly()" class="print-btn">Print Stickers</button>
             </div>
         </div>
 
         <form method="post">
             {% csrf_token %}
+
             <div class="settings-grid">
                 <div class="form-group">
                     <label>Pack Size</label>
@@ -668,7 +531,7 @@
     <h3 class="preview-title">Sticker Preview</h3>
 
     <div class="preview-area">
-        <div class="thermal-pages">
+        <div class="thermal-pages" id="printOnly">
             {% for i in copies_range %}
                 <div class="thermal-label-page">
                     <div class="sticker">
@@ -709,6 +572,7 @@
                                 <td class="colon">:</td>
                                 <td class="value">{{ exp_date|default:"-" }}</td>
                             </tr>
+
                             {% if usp_text %}
                                 <tr>
                                     <td class="key">USP/LTR KG'S</td>
@@ -716,6 +580,7 @@
                                     <td class="value">{{ usp_text }}</td>
                                 </tr>
                             {% endif %}
+
                             <tr>
                                 <td class="key price-key">Per Unit M.R.P</td>
                                 <td class="colon">:</td>
@@ -772,6 +637,280 @@
 </div>
 
 <script>
+function printStickerOnly() {
+    const printArea = document.getElementById("printOnly");
+
+    if (!printArea) {
+        alert("Sticker print area not found.");
+        return;
+    }
+
+    const stickerContent = printArea.innerHTML;
+    const printWindow = window.open("", "", "width=900,height=700");
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Sticker Print</title>
+            <style>
+                @page {
+                    size: {{ width_mm|default:"100" }}mm {{ height_mm|default:"75" }}mm;
+                    margin: 0;
+                }
+
+                html,
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background: white;
+                    width: {{ width_mm|default:"100" }}mm;
+                }
+
+                * {
+                    box-sizing: border-box;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+
+                .thermal-pages {
+                    display: block;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .thermal-label-page {
+                    width: {{ width_mm|default:"100" }}mm;
+                    height: {{ height_mm|default:"75" }}mm;
+                    background: white;
+                    color: #000;
+                    border: none;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+                    page-break-after: always;
+                    break-after: page;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                .thermal-label-page:last-child {
+                    page-break-after: auto;
+                    break-after: auto;
+                }
+
+                .sticker {
+                    width: 100%;
+                    height: 100%;
+                    border: 0.35mm solid #000;
+                    border-radius: 1.6mm;
+                    padding: 2.2mm;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    background: white;
+                    color: #000;
+                }
+
+                .company-area {
+                    border-bottom: 0.28mm solid #000;
+                    padding-bottom: 0.9mm;
+                    margin-bottom: 1mm;
+                    text-align: center;
+                }
+
+                .company-name {
+                    font-size: 3.2mm;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .company-address {
+                    margin-top: 0.45mm;
+                    font-size: 1.55mm;
+                    font-weight: 800;
+                    line-height: 1.08;
+                    max-height: 3.4mm;
+                    overflow: hidden;
+                }
+
+                .product-type {
+                    margin-top: 0.55mm;
+                    font-size: 2mm;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .info-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    table-layout: fixed;
+                    flex: 1;
+                }
+
+                .info-table td {
+                    vertical-align: top;
+                    padding: 0.37mm 0;
+                    line-height: 1.04;
+                }
+
+                .info-table .key {
+                    width: 39%;
+                    font-size: {{ body_font_mm|default:"2.65" }}mm;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                }
+
+                .info-table .colon {
+                    width: 4%;
+                    font-size: {{ body_font_mm|default:"2.65" }}mm;
+                    font-weight: 900;
+                    text-align: center;
+                }
+
+                .info-table .value {
+                    font-size: {{ body_font_mm|default:"2.65" }}mm;
+                    font-weight: 900;
+                    word-break: break-word;
+                    text-transform: uppercase;
+                }
+
+                .info-table .price-key {
+                    font-size: 2.45mm;
+                }
+
+                .info-table .price-value {
+                    font-size: 3.2mm;
+                    font-weight: 900;
+                    white-space: nowrap;
+                }
+
+                .code-row {
+                    margin-top: 0.75mm;
+                    padding-top: 0.65mm;
+                    border-top: 0.2mm dashed #000;
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) 14mm;
+                    gap: 1.2mm;
+                    align-items: center;
+                }
+
+                .barcode-area {
+                    text-align: center;
+                    min-width: 0;
+                }
+
+                .barcode-svg {
+                    display: block;
+                    width: 100%;
+                    height: 8mm;
+                }
+
+                .barcode-text {
+                    margin-top: 0.25mm;
+                    text-align: center;
+                    font-size: 1.65mm;
+                    font-weight: 900;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .qr-area {
+                    width: 14mm;
+                    text-align: center;
+                }
+
+                .qr-area img {
+                    width: 12.5mm;
+                    height: 12.5mm;
+                    display: block;
+                    margin: auto;
+                    object-fit: contain;
+                }
+
+                .qr-text {
+                    font-size: 1.25mm;
+                    font-weight: 900;
+                    text-align: center;
+                    text-transform: uppercase;
+                }
+
+                .symbol-row {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 1.5mm;
+                    margin-top: 0.75mm;
+                    padding-top: 0.6mm;
+                    border-top: 0.2mm dashed #000;
+                }
+
+                .symbol-box {
+                    border: 0.22mm solid #000;
+                    height: 5mm;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2.5mm;
+                    font-weight: 900;
+                }
+
+                .footer-company {
+                    margin-top: 0.65mm;
+                    padding-top: 0.55mm;
+                    border-top: 0.22mm solid #000;
+                    font-size: 2.05mm;
+                    font-weight: 900;
+                    text-align: center;
+                    text-transform: uppercase;
+                    line-height: 1.05;
+                }
+
+                .footer-details {
+                    margin-top: 0.45mm;
+                    font-size: 1.45mm;
+                    font-weight: 800;
+                    text-align: center;
+                    line-height: 1.08;
+                }
+
+                .footer-details div {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .footer-note {
+                    margin-top: 0.35mm;
+                    font-size: 1.35mm;
+                    font-weight: 800;
+                    text-align: center;
+                    line-height: 1.05;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="thermal-pages">
+                ${stickerContent}
+            </div>
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+
+    setTimeout(function () {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }, 500);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const packSelect = document.getElementById("packSelect");
     const qtyInput = document.getElementById("qtyInput");

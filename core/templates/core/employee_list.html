@@ -1,540 +1,811 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 .employee-page {
-    padding: 18px;
+    padding: 16px;
+    background: #f8fafc;
+    min-height: calc(100vh - 70px);
 }
 
+/* Header Section - Compact */
 .employee-header {
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.20), transparent 32%),
-        linear-gradient(135deg, #ffffff, #f8fafc);
-    color: #0f172a;
-    border-radius: 24px;
-    padding: 20px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 20px;
+    padding: 16px 20px;
     margin-bottom: 16px;
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
-    border: 1px solid #e2e8f0;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    align-items: center;
     flex-wrap: wrap;
+    gap: 12px;
 }
 
 .employee-header h2 {
     margin: 0;
-    font-size: 25px;
-    font-weight: 900;
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.employee-header h2 i {
+    color: #16a34a;
+    font-size: 24px;
 }
 
 .employee-header p {
-    margin: 7px 0 0;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 750;
-    line-height: 1.5;
+    margin: 4px 0 0;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 500;
 }
 
-.header-btn {
-    background: #0f172a;
+.btn-create {
+    background: linear-gradient(135deg, #16a34a, #15803d);
     color: white;
     text-decoration: none;
-    padding: 11px 15px;
-    border-radius: 14px;
-    font-weight: 900;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 12px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: all 0.2s;
 }
 
+.btn-create:hover {
+    transform: translateY(-1px);
+}
+
+/* Filter Card - Compact */
 .filter-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 14px;
     margin-bottom: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .filter-form {
     display: grid;
-    grid-template-columns: 1fr 240px auto;
+    grid-template-columns: 1fr 200px auto;
     gap: 10px;
+}
+
+.filter-group {
+    position: relative;
+}
+
+.filter-group i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 13px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
+    padding: 10px 12px 10px 36px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
     outline: none;
-    font-weight: 800;
+    font-size: 13px;
+    font-weight: 500;
     background: #f8fafc;
 }
 
 .form-control:focus {
-    border-color: #2563eb;
-    background: white;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
 }
 
-.btn {
+.btn-search {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white;
     border: none;
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-weight: 900;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 800;
+    font-size: 12px;
     cursor: pointer;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 6px;
 }
 
-.btn-primary {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-light {
-    background: #f1f5f9;
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
-}
-
+/* Employee Grid - Compact Cards */
 .employee-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 14px;
 }
 
 .employee-card {
     background: white;
-    border-radius: 22px;
-    padding: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
 }
 
-.employee-top {
+.employee-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Card Header - Compact */
+.card-header {
+    background: #fafbfc;
+    padding: 14px;
+    border-bottom: 1px solid #e5e7eb;
     display: flex;
-    gap: 13px;
+    gap: 12px;
     align-items: center;
-    margin-bottom: 14px;
 }
 
-.employee-photo {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
-    object-fit: cover;
-    background: #e5e7eb;
-    border: 1px solid #e2e8f0;
-}
-
-.employee-letter {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #2563eb, #059669);
-    color: white;
+.employee-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
-    font-weight: 900;
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.employee-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.employee-info {
+    flex: 1;
+    min-width: 0;
 }
 
 .employee-name {
-    margin: 0;
-    font-size: 17px;
+    font-size: 15px;
+    font-weight: 800;
     color: #0f172a;
-    font-weight: 900;
-    line-height: 1.3;
+    margin: 0 0 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.employee-name i {
+    color: #16a34a;
+    font-size: 12px;
 }
 
 .employee-email {
-    margin: 5px 0 0;
+    font-size: 10px;
     color: #64748b;
-    font-size: 12.5px;
-    word-break: break-word;
-    font-weight: 750;
+    margin: 0 0 5px 0;
+    word-break: break-all;
 }
 
-.employee-role {
-    margin-top: 7px;
+.role-badge {
     display: inline-flex;
-    background: #eff6ff;
+    align-items: center;
+    gap: 4px;
+    background: #e0e7ff;
     color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    padding: 5px 9px;
-    border-radius: 999px;
-    font-size: 11.5px;
-    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 800;
 }
 
-.info-list {
-    display: grid;
-    gap: 8px;
-    margin-top: 12px;
+/* Card Body - Compact */
+.card-body {
+    padding: 10px 14px;
+    background: white;
 }
 
-.info-item {
+.info-row {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 10px 11px;
-    border-radius: 13px;
-    font-size: 13px;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.info-item span {
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
     color: #64748b;
-    font-weight: 900;
 }
 
-.info-item strong {
+.info-label i {
+    width: 14px;
+    color: #16a34a;
+    font-size: 11px;
+}
+
+.info-value {
+    font-size: 12px;
+    font-weight: 700;
     color: #0f172a;
-    text-align: right;
-    word-break: break-word;
-    font-weight: 900;
 }
 
-.manager-box {
-    margin-top: 12px;
+.status-active, .status-inactive {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-inactive {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+/* Manager Section - Compact */
+.manager-section {
     background: #fff7ed;
-    border: 1px solid #fed7aa;
-    border-radius: 16px;
-    padding: 12px;
+    padding: 10px 14px;
+    margin: 0;
+    border-top: 1px solid #fed7aa;
+    border-bottom: 1px solid #fed7aa;
 }
 
 .manager-title {
+    font-size: 9px;
+    font-weight: 800;
     color: #9a3412;
-    font-size: 12px;
-    font-weight: 900;
-    margin-bottom: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .manager-name {
+    font-size: 13px;
+    font-weight: 800;
     color: #0f172a;
-    font-size: 14px;
-    font-weight: 900;
 }
 
-.manager-meta {
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 750;
-    margin-top: 4px;
-    line-height: 1.45;
+.manager-detail {
+    font-size: 10px;
+    color: #78350f;
+    font-weight: 600;
+    margin-top: 3px;
 }
 
-.target-box {
-    margin-top: 12px;
+/* Target Section - Compact */
+.target-section {
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 13px;
+    padding: 10px 14px;
 }
 
-.target-head {
+.target-header {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
     align-items: center;
+    margin-bottom: 8px;
 }
 
-.target-head strong {
+.target-header strong {
+    font-size: 11px;
+    font-weight: 800;
     color: #0f172a;
-    font-size: 13px;
-    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.target-status {
+.target-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 6px 9px;
-    font-size: 10.5px;
-    font-weight: 900;
-    white-space: nowrap;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 800;
 }
 
-.target-status.achieved {
-    background: #ecfdf5;
-    color: #047857;
-    border: 1px solid #bbf7d0;
+.target-badge.achieved {
+    background: #dcfce7;
+    color: #16a34a;
 }
 
-.target-status.pending {
-    background: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
+.target-badge.pending {
+    background: #fef3c7;
+    color: #d97706;
 }
 
-.target-status.no-target {
+.target-badge.no-target {
     background: #f1f5f9;
     color: #64748b;
-    border: 1px solid #e2e8f0;
 }
 
-.progress-track {
-    height: 9px;
+.progress-bar {
+    height: 5px;
     background: #e5e7eb;
-    border-radius: 999px;
+    border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 6px;
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #2563eb, #059669);
-    border-radius: 999px;
+    background: linear-gradient(90deg, #16a34a, #059669);
+    border-radius: 10px;
 }
 
-.target-foot {
+.target-stats {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    margin-top: 9px;
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 10px;
+    font-weight: 700;
 }
 
+.target-stats span:first-child {
+    color: #64748b;
+}
+
+.target-stats span:last-child {
+    color: #0f172a;
+}
+
+/* Card Actions - Compact */
 .card-actions {
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    padding: 10px 14px;
+    border-top: 1px solid #e5e7eb;
+    background: #fafbfc;
+}
+
+.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #0f172a;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 11px;
+    width: 100%;
+    justify-content: center;
 }
 
 .no-edit-note {
-    margin-top: 14px;
     background: #f8fafc;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 10px;
+    font-weight: 700;
     color: #64748b;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 10px 11px;
-    font-size: 12.5px;
-    font-weight: 800;
-    line-height: 1.5;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
+/* Empty State */
 .empty-box {
     background: white;
-    border-radius: 22px;
-    padding: 28px;
+    border-radius: 18px;
+    padding: 40px 20px;
     text-align: center;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.empty-box i {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 12px;
 }
 
 .empty-box h3 {
+    font-size: 18px;
+    font-weight: 800;
     color: #0f172a;
-    font-weight: 900;
+    margin: 0 0 6px 0;
 }
 
-@media(max-width: 768px) {
+.empty-box p {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* ========================
+   MOBILE OPTIMIZATION
+======================== */
+@media (max-width: 768px) {
     .employee-page {
-        padding: 12px;
+        padding: 10px;
     }
 
     .employee-header {
-        border-radius: 20px;
-        padding: 16px;
+        padding: 12px 16px;
+        flex-direction: column;
+        text-align: center;
     }
 
     .employee-header h2 {
-        font-size: 22px;
+        font-size: 20px;
+        justify-content: center;
     }
 
-    .header-btn {
+    .employee-header p {
+        font-size: 10px;
+    }
+
+    .btn-create {
         width: 100%;
         justify-content: center;
+        padding: 8px 16px;
     }
 
     .filter-form {
         grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .form-control {
+        padding: 9px 12px 9px 36px;
+        font-size: 12px;
+    }
+
+    .btn-search {
+        width: 100%;
+        justify-content: center;
     }
 
     .employee-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .info-item {
-        align-items: flex-start;
+    .card-header {
+        padding: 12px;
+        gap: 10px;
     }
+
+    .employee-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .employee-name {
+        font-size: 14px;
+    }
+
+    .employee-email {
+        font-size: 9px;
+    }
+
+    .role-badge {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+
+    .card-body {
+        padding: 8px 12px;
+    }
+
+    .info-row {
+        padding: 5px 0;
+    }
+
+    .info-label {
+        font-size: 10px;
+    }
+
+    .info-label i {
+        font-size: 10px;
+    }
+
+    .info-value {
+        font-size: 11px;
+    }
+
+    .manager-section {
+        padding: 8px 12px;
+    }
+
+    .manager-name {
+        font-size: 12px;
+    }
+
+    .target-section {
+        padding: 8px 12px;
+    }
+
+    .target-header strong {
+        font-size: 10px;
+    }
+
+    .card-actions {
+        padding: 8px 12px;
+    }
+
+    .btn-edit {
+        padding: 7px 14px;
+        font-size: 10px;
+    }
+
+    .no-edit-note {
+        font-size: 9px;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .employee-page {
+        padding: 8px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .employee-info {
+        text-align: center;
+    }
+
+    .employee-name {
+        justify-content: center;
+    }
+
+    .role-badge {
+        justify-content: center;
+    }
+
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+    }
+
+    .manager-title {
+        justify-content: center;
+    }
+
+    .manager-section {
+        text-align: center;
+    }
+
+    .target-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .target-badge {
+        align-self: flex-start;
+    }
+}
+
+/* Animation */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.employee-card {
+    animation: fadeSlideUp 0.3s ease-out;
 }
 </style>
 
 <div class="employee-page">
 
+    <!-- Header Section -->
     <div class="employee-header">
         <div>
-            <h2>Employees</h2>
+            <h2>
+                <i class="fas fa-users"></i>
+                Employees
+            </h2>
             <p>
-                View employee profiles, reporting manager, and target achievement status.
-                Salary is hidden from employee list.
+                <i class="fas fa-info-circle"></i>
+                View employee profiles, managers & targets
             </p>
         </div>
 
         {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "HR" or request.user.profile.role == "ACCOUNTANT" %}
-            <a href="{% url 'employee_create' %}" class="header-btn">
-                + Create Employee
+            <a href="{% url 'employee_create' %}" class="btn-create">
+                <i class="fas fa-plus-circle"></i> Create Employee
             </a>
         {% endif %}
     </div>
 
+    <!-- Filter Card -->
     <div class="filter-card">
         <form method="get" class="filter-form">
-            <input
-                type="text"
-                name="q"
-                value="{{ search }}"
-                class="form-control"
-                placeholder="Search by name, email, phone, manager..."
-            >
+            <div class="filter-group">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search by name, email, phone...">
+            </div>
 
-            <select name="role" class="form-control">
-                <option value="">All Roles</option>
-                {% for value, label in role_choices %}
-                    {% if value != "DEALER" %}
-                        <option value="{{ value }}" {% if role_filter == value %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+            <div class="filter-group">
+                <i class="fas fa-filter"></i>
+                <select name="role" class="form-control">
+                    <option value="">All Roles</option>
+                    {% for value, label in role_choices %}
+                        {% if value != "DEALER" %}
+                            <option value="{{ value }}" {% if role_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
 
-            <button type="submit" class="btn btn-primary">
-                Search
+            <button type="submit" class="btn-search">
+                <i class="fas fa-search"></i> Search
             </button>
         </form>
     </div>
 
+    <!-- Employee Grid -->
     {% if employee_rows %}
         <div class="employee-grid">
             {% for row in employee_rows %}
                 {% with profile=row.profile %}
                     <div class="employee-card">
-
-                        <div class="employee-top">
+                        <!-- Card Header -->
+                        <div class="card-header">
                             {% if profile.profile_image %}
-                                <img src="{{ profile.profile_image.url }}" class="employee-photo" alt="Employee">
+                                <div class="employee-avatar">
+                                    <img src="{{ profile.profile_image.url }}" alt="Employee">
+                                </div>
                             {% else %}
-                                <div class="employee-letter">
+                                <div class="employee-avatar">
                                     {{ profile.user.username|first|upper }}
                                 </div>
                             {% endif %}
 
-                            <div>
-                                <h3 class="employee-name">
-                                    {{ profile.user.get_full_name|default:profile.user.username }}
-                                </h3>
-
-                                <p class="employee-email">
-                                    {{ profile.user.email|default:"-" }}
-                                </p>
-
-                                <span class="employee-role">
-                                    {{ profile.get_role_display }}
+                            <div class="employee-info">
+                                <div class="employee-name">
+                                    {{ profile.user.get_full_name|default:profile.user.username|truncatechars:20 }}
+                                    {% if profile.user.is_active %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="employee-email">
+                                    <i class="fas fa-envelope"></i> {{ profile.user.email|default:"No email"|truncatechars:25 }}
+                                </div>
+                                <span class="role-badge">
+                                    <i class="fas fa-briefcase"></i> {{ profile.get_role_display|truncatechars:15 }}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="info-list">
-                            <div class="info-item">
-                                <span>Phone</span>
-                                <strong>{{ profile.phone|default:"-" }}</strong>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="info-row">
+                                <div class="info-label"><i class="fas fa-phone-alt"></i> Phone</div>
+                                <div class="info-value">{{ profile.phone|default:"-" }}</div>
                             </div>
 
-                            <div class="info-item">
-                                <span>State</span>
-                                <strong>{{ profile.state|default:"-" }}</strong>
+                            <div class="info-row">
+                                <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                                <div class="info-value">
+                                    {% if profile.district %}{{ profile.district.name }}{% else %}-{% endif %}
+                                </div>
                             </div>
 
-                            <div class="info-item">
-                                <span>District</span>
-                                <strong>{{ profile.district|default:"-" }}</strong>
-                            </div>
-
-                            <div class="info-item">
-                                <span>Login Status</span>
-                                <strong>
+                            <div class="info-row">
+                                <div class="info-label"><i class="fas fa-power-off"></i> Status</div>
+                                <div class="info-value">
                                     {% if profile.user.is_active %}
-                                        Active
+                                        <span class="status-active"><i class="fas fa-circle"></i> Active</span>
                                     {% else %}
-                                        Blocked
+                                        <span class="status-inactive"><i class="fas fa-circle"></i> Inactive</span>
                                     {% endif %}
-                                </strong>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="manager-box">
-                            <div class="manager-title">Reporting Manager</div>
-
+                        <!-- Reporting Manager -->
+                        <div class="manager-section">
+                            <div class="manager-title">
+                                <i class="fas fa-user-tie"></i> Manager
+                            </div>
                             <div class="manager-name">
-                                {{ row.manager_name }}
+                                {% if row.manager_name != "-" %}
+                                    {{ row.manager_name|truncatechars:25 }}
+                                {% else %}
+                                    <span style="color: #94a3b8;">Not Assigned</span>
+                                {% endif %}
                             </div>
-
-                            <div class="manager-meta">
-                                Role: {{ row.manager_role }}<br>
-                                Phone: {{ row.manager_phone }}
-                            </div>
+                            {% if row.manager_name != "-" %}
+                                <div class="manager-detail">
+                                    {{ row.manager_role }}
+                                </div>
+                            {% endif %}
                         </div>
 
-                        <div class="target-box">
-                            <div class="target-head">
-                                <strong>Target Status {{ current_year }}</strong>
-
-                                <span class="target-status {{ row.target_status_class }}">
+                        <!-- Target Section -->
+                        <div class="target-section">
+                            <div class="target-header">
+                                <strong><i class="fas fa-bullseye"></i> Target {{ current_year }}</strong>
+                                <span class="target-badge {{ row.target_status_class }}">
                                     {{ row.target_status }}
                                 </span>
                             </div>
 
-                            <div class="progress-track">
+                            <div class="progress-bar">
                                 <div class="progress-fill" style="width: {{ row.percentage }}%;"></div>
                             </div>
 
-                            <div class="target-foot">
-                                <span>Achievement</span>
-                                <strong>{{ row.percentage }}%</strong>
+                            <div class="target-stats">
+                                <span>Progress</span>
+                                <span>{{ row.percentage }}%</span>
                             </div>
                         </div>
 
-                        {% if row.can_edit %}
-                            <div class="card-actions">
-                                <a href="{% url 'employee_edit' profile.id %}" class="btn btn-light">
-                                    Edit Employee
+                        <!-- Actions -->
+                        <div class="card-actions">
+                            {% if row.can_edit %}
+                                <a href="{% url 'employee_edit' profile.id %}" class="btn-edit">
+                                    <i class="fas fa-edit"></i> Edit Employee
                                 </a>
-                            </div>
-                        {% else %}
-                            <div class="no-edit-note">
-                                View only — only Admin, HR and Accountant can edit employee profiles.
-                            </div>
-                        {% endif %}
-
+                            {% else %}
+                                <div class="no-edit-note">
+                                    <i class="fas fa-lock"></i>
+                                    View only
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endwith %}
             {% endfor %}
         </div>
     {% else %}
+        <!-- Empty State -->
         <div class="empty-box">
-            <h3 style="margin-top:0;">No employees found</h3>
-            <p>No employee records are matching your search/filter.</p>
+            <i class="fas fa-users-slash"></i>
+            <h3>No Employees Found</h3>
+            <p>No employee records matching your search</p>
 
             {% if request.user.is_superuser or request.user.profile.role == "ADMIN" or request.user.profile.role == "HR" or request.user.profile.role == "ACCOUNTANT" %}
-                <a href="{% url 'employee_create' %}" class="btn btn-primary">
-                    Create First Employee
+                <a href="{% url 'employee_create' %}" class="btn-create" style="display: inline-flex;">
+                    <i class="fas fa-plus-circle"></i> Create Employee
                 </a>
             {% endif %}
         </div>

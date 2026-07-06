@@ -25,6 +25,14 @@
     color: #0f172a;
     font-size: 22px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cart-top h2 i {
+    color: #84c341;
+    font-size: 22px;
 }
 
 .cart-top p {
@@ -45,11 +53,16 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    transition: all 0.2s;
 }
 
-.back-btn svg {
-    width: 16px;
-    height: 16px;
+.back-btn i {
+    font-size: 12px;
+}
+
+.back-btn:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
 }
 
 .cart-layout {
@@ -74,6 +87,11 @@
     padding: 12px;
     border-bottom: 1px solid #e2e8f0;
     align-items: center;
+    transition: background 0.2s;
+}
+
+.cart-row:hover {
+    background: #f8fafc;
 }
 
 .cart-row:last-child {
@@ -87,6 +105,12 @@
     overflow: hidden;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cart-img:hover {
+    transform: scale(1.02);
 }
 
 .cart-img img {
@@ -99,15 +123,14 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #eff6ff, #ecfdf5);
-    color: #2563eb;
+    color: #84c341;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.img-fallback svg {
-    width: 34px;
-    height: 34px;
+.img-fallback i {
+    font-size: 32px;
 }
 
 .item-title {
@@ -126,11 +149,23 @@
     line-height: 1.45;
 }
 
+.item-desc i {
+    font-size: 10px;
+    margin-right: 2px;
+}
+
 .item-price {
     margin-top: 7px;
     color: #047857;
     font-size: 12px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-price i {
+    font-size: 10px;
 }
 
 .qty-side {
@@ -162,11 +197,12 @@
     cursor: pointer;
     font-size: 18px;
     font-weight: 900;
+    transition: all 0.2s;
 }
 
 .qty-btn:hover {
-    background: #eff6ff;
-    color: #1d4ed8;
+    background: #84c341;
+    color: white;
 }
 
 .qty-number {
@@ -197,11 +233,16 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    transition: all 0.2s;
 }
 
-.remove-link svg {
-    width: 13px;
-    height: 13px;
+.remove-link i {
+    font-size: 11px;
+}
+
+.remove-link:hover {
+    color: #b91c1c;
+    transform: translateX(-2px);
 }
 
 .price-card {
@@ -219,6 +260,13 @@
     color: #0f172a;
     font-size: 17px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-card h3 i {
+    color: #84c341;
 }
 
 .summary-row {
@@ -264,6 +312,20 @@
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 10px 22px rgba(22, 163, 74, 0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.place-btn i {
+    font-size: 14px;
+}
+
+.place-btn:hover {
+    background: #15803d;
+    transform: translateY(-1px);
 }
 
 .note {
@@ -276,6 +338,14 @@
     font-size: 11.5px;
     font-weight: 800;
     line-height: 1.45;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.note i {
+    font-size: 12px;
+    color: #84c341;
 }
 
 .empty-cart {
@@ -285,6 +355,12 @@
     padding: 34px 18px;
     text-align: center;
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.empty-cart i {
+    font-size: 56px;
+    color: #cbd5e1;
+    margin-bottom: 12px;
 }
 
 .empty-cart h3 {
@@ -301,6 +377,58 @@
     font-size: 13px;
     font-weight: 700;
     line-height: 1.5;
+}
+
+/* Image Modal */
+.image-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.image-modal.active {
+    display: flex;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.modal-close:hover {
+    opacity: 0.7;
+}
+
+.modal-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    padding: 8px;
+    margin: 0 auto;
+    width: fit-content;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 @media(max-width: 950px) {
@@ -321,10 +449,13 @@
     .cart-top {
         border-radius: 18px;
         padding: 13px;
+        flex-direction: column;
+        text-align: center;
     }
 
     .cart-top h2 {
         font-size: 20px;
+        justify-content: center;
     }
 
     .back-btn {
@@ -342,6 +473,10 @@
         width: 70px;
         height: 70px;
         border-radius: 13px;
+    }
+
+    .img-fallback i {
+        font-size: 26px;
     }
 
     .item-title {
@@ -403,15 +538,16 @@
 
     <div class="cart-top">
         <div>
-            <h2>My Cart</h2>
-            <p>Small product list. Change quantity and place order easily.</p>
+            <h2>
+                <i class="fas fa-shopping-cart"></i> 
+                My Cart
+            </h2>
+            <p><i class="fas fa-box"></i> Small product list. Change quantity and place order easily.</p>
         </div>
 
         <a href="{% url 'dealer_products' %}" class="back-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-width="2" d="M15 18l-6-6 6-6"/>
-            </svg>
-            Continue Shopping
+            <i class="fas fa-arrow-left"></i>
+            Buy More
         </a>
     </div>
 
@@ -422,14 +558,12 @@
                 {% for item in cart_items %}
                     <div class="cart-row">
 
-                        <div class="cart-img">
+                        <div class="cart-img" onclick="openImageModal('{% if item.product_pack.product.image %}{{ item.product_pack.product.image.url }}{% endif %}', '{{ item.product_pack.product.name }}')">
                             {% if item.product_pack.product.image %}
                                 <img src="{{ item.product_pack.product.image.url }}" alt="{{ item.product_pack.product.name }}">
                             {% else %}
                                 <div class="img-fallback">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                    </svg>
+                                    <i class="fas fa-seedling"></i>
                                 </div>
                             {% endif %}
                         </div>
@@ -440,16 +574,14 @@
                             </h3>
 
                             <div class="item-desc">
-                                {{ item.product_pack.display_pack }} |
-                                {{ item.product_pack.units_per_box }}
+                                <i class="fas fa-cube"></i> {{ item.product_pack.display_pack }} |
+                                <i class="fas fa-box"></i> {{ item.product_pack.units_per_box }}
                                 {{ item.product_pack.get_packing_type_display }}{% if item.product_pack.units_per_box != 1 %}s{% endif %}
                                 in 1 box
-                                <br>
-                                Warehouse: {{ item.product_pack.warehouse.name }}
                             </div>
 
                             <div class="item-price">
-                                ₹{{ item.product_pack.box_sale_price }} per box
+                                <i class="fas fa-tag"></i> ₹{{ item.product_pack.box_sale_price }} per box
                             </div>
                         </div>
 
@@ -472,12 +604,8 @@
                                 ₹{{ item.total_amount }}
                             </div>
 
-                            <a href="{% url 'dealer_remove_cart_item' item.id %}" class="remove-link">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M3 6h18"/>
-                                    <path stroke-width="2" d="M8 6V4h8v2"/>
-                                    <path stroke-width="2" d="M6 6l1 15h10l1-15"/>
-                                </svg>
+                            <a href="{% url 'dealer_remove_cart_item' item.id %}" class="remove-link" onclick="return confirm('Remove this item from cart?')">
+                                <i class="fas fa-trash-alt"></i>
                                 Remove
                             </a>
                         </div>
@@ -487,51 +615,95 @@
             </div>
 
             <div class="price-card">
-                <h3>Price Details</h3>
+                <h3>
+                    <i class="fas fa-file-invoice"></i>
+                    Price Details
+                </h3>
 
                 <div class="summary-row">
-                    <span>Total Items</span>
+                    <span><i class="fas fa-boxes"></i> Total Items</span>
                     <strong>{{ cart_items|length }}</strong>
                 </div>
 
                 <div class="summary-row">
-                    <span>Product Amount</span>
+                    <span><i class="fas fa-rupee-sign"></i> Product Amount</span>
                     <strong>₹{{ cart.total_amount }}</strong>
                 </div>
 
                 <div class="summary-row">
-                    <span>Transport</span>
+                    <span><i class="fas fa-truck"></i> Transport</span>
                     <strong>As per company</strong>
                 </div>
 
                 <div class="summary-total">
-                    <span>Total</span>
+                    <span><i class="fas fa-calculator"></i> Total</span>
                     <strong>₹{{ cart.total_amount }}</strong>
                 </div>
 
                 <form method="post" action="{% url 'dealer_place_order' %}">
                     {% csrf_token %}
-                    <button type="submit" class="place-btn">
+                    <button type="submit" class="place-btn" onclick="return confirm('Confirm your order?')">
+                        <i class="fas fa-check-circle"></i>
                         Place Order
                     </button>
                 </form>
 
-                <div class="note">
-                    Please check pack size, warehouse and quantity before placing the order.
-                </div>
             </div>
 
         </div>
     {% else %}
         <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
             <h3>Your cart is empty</h3>
             <p>Add products from catalogue. Selected products will appear here.</p>
 
             <a href="{% url 'dealer_products' %}" class="back-btn">
-                Browse Products
+                <i class="fas fa-search"></i> Browse Products
             </a>
         </div>
     {% endif %}
 
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="modal-close" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" alt="">
+    <div id="modalCaption" class="modal-caption"></div>
+</div>
+
+<script>
+// Image Modal Functions
+function openImageModal(imageUrl, productName) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    if (imageUrl && imageUrl !== 'None') {
+        modalImg.src = imageUrl;
+        modalCaption.innerHTML = productName || 'Product Image';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        modalImg.src = '';
+        modalCaption.innerHTML = 'No image available for ' + (productName || 'this product');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+</script>
+
 {% endblock %}

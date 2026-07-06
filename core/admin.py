@@ -692,9 +692,9 @@ class ProductStickerSettingInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "product_image", "name", "category", "hsn_number", "available_pack_count", "in_stock", "is_active", "created_at")
+    list_display = ("id", "product_image", "name","technical_name","category", "hsn_number", "available_pack_count", "in_stock", "is_active", "created_at")
     list_filter = ("category", "is_active", "created_at")
-    search_fields = ("name", "hsn_number", "description", "category__name")
+    search_fields = ("name", "technical_name","hsn_number", "description", "category__name")
     readonly_fields = ("product_image_preview", "created_at", "available_pack_count", "in_stock")
     autocomplete_fields = ("category",)
     ordering = ("-created_at",)
@@ -702,7 +702,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Product", {
-            "fields": ("category", "name", "image", "product_image_preview", "hsn_number", "description", "is_active")
+            "fields": ("category", "name", "technical_name","image", "product_image_preview", "hsn_number", "description", "is_active")
         }),
         ("System", {
             "fields": ("available_pack_count", "in_stock", "created_at")
@@ -1461,3 +1461,799 @@ class DealerVisitAdmin(admin.ModelAdmin):
 
     stamped_image_preview.short_description = "Stamped Image"
 
+# =========================================================
+# MISSING ADMIN REGISTRATIONS
+# PURCHASE / INVENTORY / STOCK / SMART PRODUCTION
+# Paste this at the bottom of admin.py
+# =========================================================
+
+# =========================================================
+# DEALER CREDIT SCORE HISTORY
+# =========================================================
+
+@admin.register(DealerCreditScoreHistory)
+class DealerCreditScoreHistoryAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "dealer",
+        "old_score",
+        "new_score",
+        "change_points",
+        "updated_by",
+        "created_at",
+    )
+    list_filter = ("created_at",)
+    search_fields = (
+        "dealer__firm_name",
+        "dealer__dealer_code",
+        "dealer__owner_name",
+        "note",
+        "updated_by__username",
+    )
+    readonly_fields = ("created_at",)
+    autocomplete_fields = ("dealer", "updated_by")
+    ordering = ("-created_at",)
+
+
+# =========================================================
+# PURCHASE MASTER
+# =========================================================
+
+@admin.register(PurchaseType)
+class PurchaseTypeAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("name", "description")
+    ordering = ("name",)
+
+
+@admin.register(PurchaseParty)
+class PurchasePartyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "party_name",
+        "party_type",
+        "contact_person",
+        "phone",
+        "email",
+        "gst_number",
+        "opening_balance",
+        "purchase_total",
+        "paid_total",
+        "debit_note_total",
+        "outstanding_amount",
+        "is_active",
+        "created_at",
+    )
+    list_filter = ("party_type", "is_active", "created_at")
+    search_fields = (
+        "party_name",
+        "contact_person",
+        "phone",
+        "email",
+        "gst_number",
+        "address",
+    )
+    readonly_fields = (
+        "purchase_total",
+        "paid_total",
+        "debit_note_total",
+        "outstanding_amount",
+        "created_at",
+    )
+    ordering = ("party_name",)
+
+
+# =========================================================
+# INVENTORY
+# =========================================================
+
+@admin.register(InventoryItem)
+class InventoryItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "sku_code",
+        "purchase_type",
+        "item_type",
+        "stock_quantity",
+        "stock_unit",
+        "average_purchase_price",
+        "stock_value",
+        "minimum_stock_alert",
+        "low_stock_badge",
+        "is_active",
+        "created_at",
+    )
+    list_filter = (
+        "purchase_type",
+        "item_type",
+        "stock_unit",
+        "is_active",
+        "created_at",
+    )
+    search_fields = (
+        "name",
+        "sku_code",
+        "description",
+        "purchase_type__name",
+    )
+    readonly_fields = ("stock_value", "is_low_stock", "created_at")
+    autocomplete_fields = ("purchase_type",)
+    ordering = ("name",)
+
+    def low_stock_badge(self, obj):
+        if obj.is_low_stock:
+            return badge("Low Stock", "#dc2626")
+        return badge("OK", "#16a34a")
+
+    low_stock_badge.short_description = "Stock Status"
+
+
+@admin.register(InventoryStockLedger)
+class InventoryStockLedgerAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "inventory_item",
+        "transaction_type",
+        "quantity",
+        "unit",
+        "balance_after",
+        "reference_model",
+        "reference_id",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("transaction_type", "unit", "created_at")
+    search_fields = (
+        "inventory_item__name",
+        "inventory_item__sku_code",
+        "reference_model",
+        "reference_id",
+        "note",
+        "created_by__username",
+    )
+    readonly_fields = ("created_at",)
+    autocomplete_fields = ("inventory_item", "created_by")
+    ordering = ("-created_at",)
+
+
+# =========================================================
+# PURCHASE ORDERS
+# =========================================================
+
+class PurchaseOrderItemInline(admin.TabularInline):
+    model = PurchaseOrderItem
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+    fields = (
+        "inventory_item",
+        "quantity",
+        "unit",
+        "purchase_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+@admin.register(PurchaseOrder)
+class PurchaseOrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "order_number",
+        "party",
+        "purchase_type",
+        "order_date",
+        "expected_delivery_date",
+        "status",
+        "subtotal_amount",
+        "gst_amount",
+        "total_amount",
+        "created_by",
+        "created_at",
+    )
+    list_filter = (
+        "status",
+        "purchase_type",
+        "order_date",
+        "expected_delivery_date",
+        "created_at",
+    )
+    search_fields = (
+        "order_number",
+        "party__party_name",
+        "party__phone",
+        "party__gst_number",
+        "note",
+    )
+    readonly_fields = (
+        "order_number",
+        "subtotal_amount",
+        "gst_amount",
+        "total_amount",
+        "created_at",
+    )
+    autocomplete_fields = ("party", "purchase_type", "created_by")
+    ordering = ("-id",)
+    inlines = [PurchaseOrderItemInline]
+
+
+@admin.register(PurchaseOrderItem)
+class PurchaseOrderItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "order",
+        "inventory_item",
+        "quantity",
+        "unit",
+        "purchase_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    list_filter = ("unit", "gst_percent")
+    search_fields = (
+        "order__order_number",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("order", "inventory_item")
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+# =========================================================
+# PURCHASE BILLS
+# =========================================================
+
+class PurchaseBillItemInline(admin.TabularInline):
+    model = PurchaseBillItem
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+    fields = (
+        "inventory_item",
+        "quantity",
+        "unit",
+        "purchase_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+class PurchasePaymentOutInline(admin.TabularInline):
+    model = PurchasePaymentOut
+    extra = 0
+    autocomplete_fields = ("party", "created_by")
+    fields = (
+        "payment_date",
+        "party",
+        "amount",
+        "payment_mode",
+        "reference_number",
+        "cheque_number",
+        "created_by",
+        "created_at",
+    )
+    readonly_fields = ("created_at",)
+
+
+@admin.register(PurchaseBill)
+class PurchaseBillAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "bill_number",
+        "bill_date",
+        "add_to_gstr2b",
+        "gstr2b_added_at",
+        "party",
+        "purchase_order",
+        "subtotal_amount",
+        "gst_amount",
+        "total_amount",
+        "paid_amount",
+        "return_credit_amount",
+        "balance_amount",
+        "payment_status",
+        "stock_added",
+        "created_by",
+        "created_at",
+    )
+    list_filter = (
+        "payment_status",
+        "add_to_gstr2b",
+        "gstr2b_added_at",
+        "stock_added",
+        "bill_date",
+        "created_at",
+    )
+    search_fields = (
+        "bill_number",
+        "party__party_name",
+        "party__phone",
+        "party__gst_number",
+        "purchase_order__order_number",
+        "note",
+    )
+    readonly_fields = (
+        "subtotal_amount",
+        "gstr2b_added_at",
+        "gst_amount",
+        "total_amount",
+        "paid_amount",
+        "return_credit_amount",
+        "balance_amount",
+        "created_at",
+    )
+    autocomplete_fields = ("party", "purchase_order", "created_by")
+    ordering = ("-bill_date", "-id")
+    inlines = [PurchaseBillItemInline, PurchasePaymentOutInline]
+
+
+@admin.register(PurchaseBillItem)
+class PurchaseBillItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "bill",
+        "inventory_item",
+        "quantity",
+        "unit",
+        "purchase_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    list_filter = ("unit", "gst_percent")
+    search_fields = (
+        "bill__bill_number",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("bill", "inventory_item")
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+@admin.register(PurchasePaymentOut)
+class PurchasePaymentOutAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "payment_date",
+        "party",
+        "bill",
+        "amount",
+        "payment_mode",
+        "reference_number",
+        "cheque_number",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("payment_mode", "payment_date", "created_at")
+    search_fields = (
+        "party__party_name",
+        "bill__bill_number",
+        "reference_number",
+        "cheque_number",
+        "note",
+    )
+    readonly_fields = ("created_at",)
+    autocomplete_fields = ("party", "bill", "created_by")
+    ordering = ("-payment_date", "-created_at")
+
+
+# =========================================================
+# PURCHASE RETURNS
+# =========================================================
+
+class PurchaseReturnItemInline(admin.TabularInline):
+    model = PurchaseReturnItem
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+    fields = (
+        "inventory_item",
+        "quantity",
+        "unit",
+        "return_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+@admin.register(PurchaseReturnOrder)
+class PurchaseReturnOrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "debit_note_number",
+        "party",
+        "bill",
+        "return_date",
+        "subtotal_amount",
+        "gst_amount",
+        "total_amount",
+        "status",
+        "stock_reduced",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("status", "stock_reduced", "return_date", "created_at")
+    search_fields = (
+        "debit_note_number",
+        "party__party_name",
+        "bill__bill_number",
+        "reason",
+    )
+    readonly_fields = (
+        "debit_note_number",
+        "subtotal_amount",
+        "gst_amount",
+        "total_amount",
+        "created_at",
+    )
+    autocomplete_fields = ("party", "bill", "created_by")
+    ordering = ("-return_date", "-id")
+    inlines = [PurchaseReturnItemInline]
+
+
+@admin.register(PurchaseReturnItem)
+class PurchaseReturnItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "purchase_return",
+        "inventory_item",
+        "quantity",
+        "unit",
+        "return_price",
+        "gst_percent",
+        "taxable_amount",
+        "gst_amount",
+        "total_amount",
+    )
+    list_filter = ("unit", "gst_percent")
+    search_fields = (
+        "purchase_return__debit_note_number",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("purchase_return", "inventory_item")
+    readonly_fields = ("taxable_amount", "gst_amount", "total_amount")
+
+
+# =========================================================
+# OLD PRODUCTION / REPACKING MODELS
+# =========================================================
+
+class ProductionRecipeItemInline(admin.TabularInline):
+    model = ProductionRecipeItem
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+
+
+@admin.register(ProductionRecipe)
+class ProductionRecipeAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "output_product_pack",
+        "output_boxes",
+        "is_active",
+        "created_at",
+    )
+    list_filter = ("is_active", "created_at")
+    search_fields = (
+        "name",
+        "output_product_pack__product__name",
+        "note",
+    )
+    readonly_fields = ("created_at",)
+    autocomplete_fields = ("output_product_pack",)
+    ordering = ("name",)
+    inlines = [ProductionRecipeItemInline]
+
+
+@admin.register(ProductionRecipeItem)
+class ProductionRecipeItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "recipe",
+        "inventory_item",
+        "quantity_required",
+        "unit",
+    )
+    list_filter = ("unit",)
+    search_fields = (
+        "recipe__name",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("recipe", "inventory_item")
+
+
+@admin.register(ProductionBatch)
+class ProductionBatchAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "batch_number",
+        "recipe",
+        "production_date",
+        "output_product_pack",
+        "output_boxes",
+        "status",
+        "stock_applied",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("status", "stock_applied", "production_date", "created_at")
+    search_fields = (
+        "batch_number",
+        "recipe__name",
+        "output_product_pack__product__name",
+        "note",
+    )
+    readonly_fields = ("batch_number", "created_at")
+    autocomplete_fields = ("recipe", "output_product_pack", "created_by")
+    ordering = ("-production_date", "-id")
+
+
+@admin.register(RepackingBatch)
+class RepackingBatchAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "batch_number",
+        "repack_date",
+        "source_inventory_item",
+        "source_quantity",
+        "source_unit",
+        "destination_product_pack",
+        "destination_boxes",
+        "packing_material",
+        "packing_material_quantity",
+        "packing_material_unit",
+        "status",
+        "stock_applied",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("status", "stock_applied", "repack_date", "created_at")
+    search_fields = (
+        "batch_number",
+        "source_inventory_item__name",
+        "destination_product_pack__product__name",
+        "packing_material__name",
+        "note",
+    )
+    readonly_fields = ("batch_number", "created_at")
+    autocomplete_fields = (
+        "source_inventory_item",
+        "destination_product_pack",
+        "packing_material",
+        "created_by",
+    )
+    ordering = ("-repack_date", "-id")
+
+
+# =========================================================
+# MAIN WAREHOUSE STOCK TRANSFER
+# =========================================================
+
+@admin.register(ProductStockTransfer)
+class ProductStockTransferAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "product",
+        "product_pack",
+        "from_warehouse",
+        "to_warehouse",
+        "quantity_boxes",
+        "before_main_stock",
+        "after_main_stock",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("from_warehouse", "to_warehouse", "created_at")
+    search_fields = (
+        "product__name",
+        "product_pack__product__name",
+        "from_warehouse__name",
+        "to_warehouse__name",
+        "note",
+    )
+    readonly_fields = ("before_main_stock", "after_main_stock", "created_at")
+    autocomplete_fields = (
+        "product",
+        "product_pack",
+        "from_warehouse",
+        "to_warehouse",
+        "created_by",
+    )
+    ordering = ("-created_at",)
+
+
+# =========================================================
+# SMART PRODUCTION FORMULA MASTER
+# =========================================================
+
+class ProductFormulaRawMaterialInline(admin.TabularInline):
+    model = ProductFormulaRawMaterial
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+
+
+class ProductFormulaPackMaterialInline(admin.TabularInline):
+    model = ProductFormulaPackMaterial
+    extra = 0
+    autocomplete_fields = ("product_pack", "inventory_item")
+
+
+@admin.register(ProductProductionFormula)
+class ProductProductionFormulaAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "product",
+        "base_output_qty",
+        "base_output_unit",
+        "is_active",
+        "created_by",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("base_output_unit", "is_active", "created_at", "updated_at")
+    search_fields = (
+        "product__name",
+        "note",
+        "created_by__username",
+    )
+    readonly_fields = ("created_at", "updated_at")
+    autocomplete_fields = ("product", "created_by")
+    ordering = ("product__name",)
+    inlines = [ProductFormulaRawMaterialInline, ProductFormulaPackMaterialInline]
+
+
+@admin.register(ProductFormulaRawMaterial)
+class ProductFormulaRawMaterialAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "formula",
+        "inventory_item",
+        "quantity_required",
+        "unit",
+    )
+    list_filter = ("unit",)
+    search_fields = (
+        "formula__product__name",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("formula", "inventory_item")
+    ordering = ("formula__product__name", "inventory_item__name")
+
+
+@admin.register(ProductFormulaPackMaterial)
+class ProductFormulaPackMaterialAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "formula",
+        "product_pack",
+        "inventory_item",
+        "usage_basis",
+        "quantity_required",
+        "unit",
+    )
+    list_filter = ("usage_basis", "unit")
+    search_fields = (
+        "formula__product__name",
+        "product_pack__product__name",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("formula", "product_pack", "inventory_item")
+    ordering = ("formula__product__name", "product_pack__pack_size", "inventory_item__name")
+
+
+class ProductProductionRunOutputPackInline(admin.TabularInline):
+    model = ProductProductionRunOutputPack
+    extra = 0
+    autocomplete_fields = ("product_pack",)
+
+
+class ProductProductionRunMaterialInline(admin.TabularInline):
+    model = ProductProductionRunMaterial
+    extra = 0
+    autocomplete_fields = ("inventory_item",)
+
+
+@admin.register(ProductProductionRun)
+class ProductProductionRunAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "product",
+        "formula",
+        "output_qty",
+        "output_unit",
+        "production_date",
+        "total_boxes",
+        "total_raw_cost",
+        "total_packing_cost",
+        "labour_cost",
+        "other_cost",
+        "total_cost",
+        "created_by",
+        "created_at",
+    )
+    list_filter = ("output_unit", "production_date", "created_at")
+    search_fields = (
+        "product__name",
+        "formula__product__name",
+        "note",
+        "created_by__username",
+    )
+    readonly_fields = (
+        "total_raw_cost",
+        "total_packing_cost",
+        "labour_cost",
+        "other_cost",
+        "total_cost",
+        "created_at",
+    )
+    autocomplete_fields = ("product", "formula", "created_by")
+    ordering = ("-production_date", "-id")
+    inlines = [ProductProductionRunOutputPackInline, ProductProductionRunMaterialInline]
+
+    def total_boxes(self, obj):
+        total = 0
+        for row in obj.output_packs.all():
+            total += row.output_boxes or 0
+        return total
+
+    total_boxes.short_description = "Total Boxes"
+
+
+@admin.register(ProductProductionRunOutputPack)
+class ProductProductionRunOutputPackAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "run",
+        "product_pack",
+        "output_boxes",
+        "units_per_box",
+        "cost_per_box",
+        "total_cost",
+    )
+    search_fields = (
+        "run__product__name",
+        "product_pack__product__name",
+    )
+    autocomplete_fields = ("run", "product_pack")
+    ordering = ("run__production_date", "product_pack__pack_size")
+
+
+@admin.register(ProductProductionRunMaterial)
+class ProductProductionRunMaterialAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "run",
+        "material_type",
+        "inventory_item",
+        "required_qty",
+        "unit",
+        "available_before",
+        "rate",
+        "cost",
+    )
+    list_filter = ("material_type", "unit")
+    search_fields = (
+        "run__product__name",
+        "inventory_item__name",
+        "inventory_item__sku_code",
+    )
+    autocomplete_fields = ("run", "inventory_item")
+    ordering = ("run__production_date", "material_type", "inventory_item__name")
+
+    

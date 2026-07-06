@@ -1,0 +1,453 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.pr-page{
+    padding:16px;
+    max-width:1350px;
+    margin:0 auto;
+    background:#f8fafc;
+}
+
+.pr-hero{
+    background:#07120d;
+    color:white;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:16px;
+    border:1px solid #123020;
+}
+
+.pr-hero-head{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.pr-hero-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#16a34a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.pr-hero-icon svg{
+    width:25px;
+    height:25px;
+}
+
+.pr-hero h2{
+    margin:0;
+    font-size:26px;
+    font-weight:900;
+    line-height:1.2;
+}
+
+.pr-hero p{
+    margin:7px 0 0;
+    color:#dcfce7;
+    font-size:13px;
+    font-weight:700;
+}
+
+.pr-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+}
+
+.pr-btn{
+    border:0;
+    text-decoration:none;
+    border-radius:11px;
+    padding:10px 13px;
+    font-size:13px;
+    font-weight:900;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.pr-btn svg{
+    width:16px;
+    height:16px;
+    flex:0 0 auto;
+}
+
+.pr-btn.green{
+    background:#16a34a;
+    color:white;
+}
+
+.pr-btn.blue{
+    background:#2563eb;
+    color:white;
+}
+
+.pr-btn.light{
+    background:#f1f5f9;
+    color:#0f172a;
+    border:1px solid #e2e8f0;
+}
+
+.pr-card{
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:16px;
+}
+
+.pr-section-title{
+    margin:0 0 14px;
+    padding:0 0 12px;
+    border-bottom:1px solid #e2e8f0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#0f172a;
+    font-size:18px;
+    font-weight:900;
+}
+
+.pr-section-title span{
+    width:36px;
+    height:36px;
+    border-radius:12px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.pr-section-title svg{
+    width:20px;
+    height:20px;
+}
+
+.pr-table-wrap{
+    overflow:auto;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    background:white;
+}
+
+.pr-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1200px;
+}
+
+.pr-table th{
+    background:#07120d;
+    color:white;
+    padding:12px;
+    border-bottom:1px solid #123020;
+    text-align:left;
+    font-size:12px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.pr-table th:first-child{
+    border-top-left-radius:14px;
+}
+
+.pr-table th:last-child{
+    border-top-right-radius:14px;
+}
+
+.pr-table td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+    font-size:13px;
+    font-weight:800;
+    color:#0f172a;
+    white-space:nowrap;
+}
+
+.pr-table tbody tr:nth-child(even){
+    background:#f8fafc;
+}
+
+.pr-product{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.pr-product-icon{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    background:#ecfdf5;
+    color:#047857;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.pr-product-icon svg{
+    width:18px;
+    height:18px;
+}
+
+.pr-output-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#ecfdf5;
+    color:#047857;
+    border:1px solid #bbf7d0;
+    font-size:12px;
+    font-weight:900;
+}
+
+.pr-box-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    border:1px solid #bfdbfe;
+    font-size:12px;
+    font-weight:900;
+}
+
+.pr-amount{
+    font-weight:900;
+    color:#0f172a;
+}
+
+.pr-total{
+    color:#16a34a;
+    font-weight:900;
+}
+
+.pr-empty{
+    text-align:center;
+    padding:34px 18px;
+    color:#64748b;
+    font-weight:900;
+}
+
+.pr-empty-icon{
+    width:56px;
+    height:56px;
+    margin:0 auto 12px;
+    border-radius:18px;
+    background:#f1f5f9;
+    color:#475569;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.pr-empty-icon svg{
+    width:29px;
+    height:29px;
+}
+
+.pr-view-btn{
+    padding:8px 12px;
+    border-radius:10px;
+}
+
+.text-right{
+    text-align:right!important;
+}
+
+@media(max-width:700px){
+    .pr-page{
+        padding:10px;
+    }
+
+    .pr-hero{
+        padding:17px;
+        border-radius:15px;
+    }
+
+    .pr-hero h2{
+        font-size:22px;
+    }
+
+    .pr-hero-icon{
+        width:42px;
+        height:42px;
+        border-radius:12px;
+    }
+
+    .pr-actions{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .pr-btn{
+        width:100%;
+    }
+
+    .pr-card{
+        padding:13px;
+        border-radius:15px;
+    }
+
+    .pr-section-title{
+        font-size:16px;
+    }
+}
+</style>
+
+<div class="pr-page">
+
+    <div class="pr-hero">
+        <div class="pr-hero-head">
+            <div class="pr-hero-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M13 3L4 14h7l-1 7 9-12h-7l1-6z"/>
+                </svg>
+            </div>
+
+            <div>
+                <h2>Production History</h2>
+                <p>View completed production runs, bulk output, total boxes, labour cost, other cost and total production cost.</p>
+            </div>
+        </div>
+
+        <div class="pr-actions">
+            <a href="{% url 'smart_production_create' %}" class="pr-btn green">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                </svg>
+                New Production
+            </a>
+
+            <a href="{% url 'product_formula_list' %}" class="pr-btn blue">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 3h6l1 3h3v5a7 7 0 0 1-14 0V6h3l1-3z"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 14h6M10 18h4"/>
+                </svg>
+                Formula Master
+            </a>
+
+            <a href="{% url 'purchase_dashboard' %}" class="pr-btn light">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+                </svg>
+                Back
+            </a>
+        </div>
+    </div>
+
+    <div class="pr-card">
+        <h3 class="pr-section-title">
+            <span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v6h6"/>
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/>
+                </svg>
+            </span>
+            Production Run List
+        </h3>
+
+        <div class="pr-table-wrap">
+            <table class="pr-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Bulk Output</th>
+                        <th>Total Boxes</th>
+                        <th class="text-right">Raw Cost</th>
+                        <th class="text-right">Packing Cost</th>
+                        <th class="text-right">Labour Cost</th>
+                        <th class="text-right">Other Cost</th>
+                        <th class="text-right">Total Cost</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for run in runs %}
+                        <tr>
+                            <td>{{ run.production_date|date:"d/m/Y" }}</td>
+
+                            <td>
+                                <div class="pr-product">
+                                    <span class="pr-product-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3.3 7L12 12l8.7-5"/>
+                                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22V12"/>
+                                        </svg>
+                                    </span>
+
+                                    <strong>{{ run.product.name }}</strong>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="pr-output-badge">
+                                    {{ run.output_qty|floatformat:3 }} {{ run.output_unit }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="pr-box-badge">
+                                    {{ run.total_boxes|default:0 }} Boxes
+                                </span>
+                            </td>
+
+                            <td class="pr-amount text-right">₹ {{ run.total_raw_cost|floatformat:2 }}</td>
+                            <td class="pr-amount text-right">₹ {{ run.total_packing_cost|floatformat:2 }}</td>
+                            <td class="pr-amount text-right">₹ {{ run.labour_cost|default:0|floatformat:2 }}</td>
+                            <td class="pr-amount text-right">₹ {{ run.other_cost|default:0|floatformat:2 }}</td>
+                            <td class="pr-total text-right">₹ {{ run.total_cost|floatformat:2 }}</td>
+
+                            <td>
+                                <a href="{% url 'smart_production_run_detail' run.id %}" class="pr-btn blue pr-view-btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>
+                                        <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                                    </svg>
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="10">
+                                <div class="pr-empty">
+                                    <div class="pr-empty-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M13 3L4 14h7l-1 7 9-12h-7l1-6z"/>
+                                        </svg>
+                                    </div>
+                                    No production history found.
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

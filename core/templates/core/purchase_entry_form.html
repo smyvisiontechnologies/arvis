@@ -3,7 +3,7 @@
 
 <style>
 .pm-page{
-    max-width:1200px;
+    max-width:1220px;
     margin:0 auto;
     padding:16px;
     background:#f8fafc;
@@ -15,12 +15,44 @@
     border-radius:18px;
     padding:20px;
     margin-bottom:14px;
+    border:1px solid #123020;
+}
+
+.pm-header-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.pm-header-title{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.pm-header-icon{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:#16a34a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.pm-header-icon svg{
+    width:24px;
+    height:24px;
 }
 
 .pm-header h2{
     margin:0;
     font-size:24px;
     font-weight:900;
+    line-height:1.2;
 }
 
 .pm-header p{
@@ -30,28 +62,67 @@
     font-weight:700;
 }
 
+.pm-layout{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+}
+
 .pm-card{
     background:#fff;
     border:1px solid #e2e8f0;
     border-radius:18px;
     padding:16px;
-    margin-bottom:14px;
 }
 
 .pm-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
     margin:0 0 14px;
-    padding-bottom:10px;
+    padding-bottom:11px;
     border-bottom:1px solid #e2e8f0;
     color:#0f172a;
     font-size:17px;
     font-weight:900;
 }
 
+.pm-title-icon{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    background:#ecfdf5;
+    color:#047857;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.pm-title-icon.blue{
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.pm-title-icon svg{
+    width:19px;
+    height:19px;
+}
+
 .pm-mini-title{
-    margin:12px 0 8px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin:13px 0 8px;
     color:#334155;
     font-size:13px;
     font-weight:900;
+}
+
+.pm-mini-title svg{
+    width:16px;
+    height:16px;
+    color:#16a34a;
 }
 
 .pm-tabs{
@@ -67,9 +138,19 @@
     color:#334155;
     border-radius:10px;
     padding:9px 13px;
+    font-size:13px;
     font-weight:900;
     cursor:pointer;
     font-family:inherit;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+}
+
+.pm-tab svg{
+    width:15px;
+    height:15px;
 }
 
 .pm-tab.active{
@@ -81,11 +162,12 @@
 .pm-tab.blue.active{
     background:#2563eb;
     border-color:#2563eb;
+    color:#fff;
 }
 
 .pm-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:12px;
     margin-bottom:14px;
 }
@@ -109,8 +191,10 @@
     padding:9px 11px;
     background:#fff;
     color:#0f172a;
-    font-weight:700;
+    font-size:14px;
+    font-weight:800;
     font-family:inherit;
+    pointer-events:auto;
 }
 
 .pm-field textarea{
@@ -131,18 +215,20 @@
     color:#64748b;
     font-size:12px;
     font-weight:700;
+    line-height:1.35;
 }
 
-.pm-hidden{
+.pm-hidden,
+.asset-mode-hide{
     display:none!important;
 }
 
 .pm-row{
     border:1px solid #e2e8f0;
-    border-radius:14px;
+    border-radius:16px;
     background:#f8fafc;
-    padding:12px;
-    margin-bottom:10px;
+    padding:13px;
+    margin-bottom:11px;
 }
 
 .pm-row-head{
@@ -155,6 +241,9 @@
 }
 
 .pm-row-title{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
     background:#ecfdf5;
     color:#166534;
     border:1px solid #bbf7d0;
@@ -164,9 +253,14 @@
     font-weight:900;
 }
 
+.pm-row-title svg{
+    width:15px;
+    height:15px;
+}
+
 .pm-row-grid{
     display:grid;
-    grid-template-columns:1.3fr 1fr .8fr .7fr .8fr .7fr;
+    grid-template-columns:1.25fr 1fr .8fr .7fr .8fr .7fr;
     gap:10px;
     align-items:end;
 }
@@ -187,6 +281,7 @@
     text-decoration:none;
     border-radius:10px;
     padding:10px 14px;
+    font-size:13px;
     font-weight:900;
     cursor:pointer;
     font-family:inherit;
@@ -194,6 +289,12 @@
     align-items:center;
     justify-content:center;
     gap:7px;
+}
+
+.pm-btn svg{
+    width:16px;
+    height:16px;
+    flex:0 0 auto;
 }
 
 .pm-btn.green{
@@ -218,6 +319,27 @@
     border:1px solid #fecaca;
 }
 
+.asset-mode-note{
+    background:#eff6ff;
+    color:#1d4ed8;
+    border:1px solid #bfdbfe;
+    padding:10px 12px;
+    border-radius:14px;
+    font-size:13px;
+    font-weight:900;
+    margin-bottom:12px;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+}
+
+.asset-mode-note svg{
+    width:18px;
+    height:18px;
+    flex:0 0 auto;
+    margin-top:1px;
+}
+
 .errorlist{
     margin:5px 0 0;
     padding-left:17px;
@@ -229,27 +351,14 @@
 #emptyFormTemplate{
     display:none;
 }
-.asset-mode-hide {
-    display: none !important;
-}
 
-.asset-mode-note {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    padding: 10px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 900;
-    margin-bottom: 12px;
-}
-
-@media(max-width:900px){
-    .pm-grid,
+@media(max-width:950px){
     .pm-row-grid{
-        grid-template-columns:1fr;
+        grid-template-columns:repeat(2,minmax(0,1fr));
     }
+}
 
+@media(max-width:800px){
     .pm-page{
         padding:10px;
     }
@@ -257,6 +366,15 @@
     .pm-header{
         padding:16px;
         border-radius:14px;
+    }
+
+    .pm-header h2{
+        font-size:22px;
+    }
+
+    .pm-grid,
+    .pm-row-grid{
+        grid-template-columns:1fr;
     }
 
     .pm-actions{
@@ -267,131 +385,294 @@
     .pm-btn{
         width:100%;
     }
+
+    .pm-tabs{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .pm-tab{
+        width:100%;
+    }
 }
 </style>
 
 <div class="pm-page">
 
     <div class="pm-header">
-        <h2>{{ title }}</h2>
-        <p>Fast purchase entry. Select existing details or add new details directly.</p>
+        <div class="pm-header-row">
+            <div class="pm-header-title">
+                <div class="pm-header-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>{{ title }}</h2>
+                    <p>Fast purchase entry. Select existing details or add new details directly.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <form method="post">
         {% csrf_token %}
 
-        <div class="pm-card">
-            <h3 class="pm-title">Party & Bill Details</h3>
+        <div class="pm-layout">
 
-            <div class="pm-mini-title">Party</div>
+            <div class="pm-card">
+                <h3 class="pm-title">
+                    <span class="pm-title-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3z"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3z"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 20c0-2.2 2.7-4 6-4s6 1.8 6 4"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 20c0-1.8 1.7-3.3 4-3.8 2.3.5 4 2 4 3.8"/>
+                        </svg>
+                    </span>
+                    Party & Bill Details
+                </h3>
 
-            <div class="pm-tabs">
-                <button type="button" class="pm-tab party-mode-btn" data-mode="existing" onclick="setPartyMode('existing')">
-                    Existing Party
-                </button>
-                <button type="button" class="pm-tab blue party-mode-btn" data-mode="new" onclick="setPartyMode('new')">
-                    + New Party
-                </button>
-            </div>
+                <div class="pm-mini-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Party
+                </div>
 
-            <div id="partyExistingBox" class="pm-grid">
-                <div class="pm-field">
-                    <label>Existing Party</label>
-                    {{ form.party }}
-                    {{ form.party.errors }}
-                    <div class="pm-help">Select already saved supplier or party.</div>
+                <div class="pm-tabs">
+                    <button type="button" class="pm-tab party-mode-btn" data-mode="existing" onclick="setPartyMode('existing')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10"/>
+                        </svg>
+                        Existing Party
+                    </button>
+                    <button type="button" class="pm-tab blue party-mode-btn" data-mode="new" onclick="setPartyMode('new')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                        </svg>
+                        New Party
+                    </button>
+                </div>
+
+                <div id="partyExistingBox" class="pm-grid">
+                    <div class="pm-field">
+                        <label>Existing Party</label>
+                        {{ form.party }}
+                        {{ form.party.errors }}
+                        <div class="pm-help">Select already saved supplier or party.</div>
+                    </div>
+                </div>
+
+                <div id="partyNewBox" class="pm-grid pm-hidden">
+                    <div class="pm-field">
+                        <label>New Party Name</label>
+                        {{ form.new_party_name }}
+                        {{ form.new_party_name.errors }}
+                    </div>
+
+                    <div class="pm-field">
+                        <label>Party Phone</label>
+                        {{ form.party_phone }}
+                    </div>
+
+                    <div class="pm-field">
+                        <label>Party GST</label>
+                        {{ form.party_gst }}
+                    </div>
+                </div>
+
+                <div class="pm-mini-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4 8 4 8-4z"/>
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l8 4 8-4"/>
+                    </svg>
+                    Purchase Type
+                </div>
+
+                <div class="pm-tabs">
+                    <button type="button" class="pm-tab purchase-type-mode-btn" data-mode="existing" onclick="setPurchaseTypeMode('existing')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+                        </svg>
+                        Existing Type
+                    </button>
+                    <button type="button" class="pm-tab blue purchase-type-mode-btn" data-mode="new" onclick="setPurchaseTypeMode('new')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                        </svg>
+                        New Type
+                    </button>
+                </div>
+
+                <div id="purchaseTypeExistingBox" class="pm-grid">
+                    <div class="pm-field">
+                        <label>Existing Purchase Type</label>
+                        {{ form.purchase_type }}
+                        {{ form.purchase_type.errors }}
+                        <div class="pm-help">Example: Raw Material, Packing Material, Finished Goods, Asset.</div>
+                    </div>
+                </div>
+
+                <div id="purchaseTypeNewBox" class="pm-grid pm-hidden">
+                    <div class="pm-field">
+                        <label>New Purchase Type</label>
+                        {{ form.new_purchase_type }}
+                        {{ form.new_purchase_type.errors }}
+                    </div>
+                </div>
+
+                <div class="pm-mini-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3h10v18H7z"/>
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4"/>
+                    </svg>
+                    Bill Details
+                </div>
+
+                <div class="pm-grid">
+                    <div class="pm-field">
+                        <label>Bill Number</label>
+                        {{ form.bill_number }}
+                        {{ form.bill_number.errors }}
+                    </div>
+
+                    <div class="pm-field">
+                        <label>Bill Date</label>
+                        {{ form.bill_date }}
+                        {{ form.bill_date.errors }}
+                    </div>
+                    <div style="display:none;">
+                        {{ form.add_to_gstr2b }}
+                    </div>
+
+                    <div class="pm-field" style="grid-column:1/-1;">
+                        <label>Note</label>
+                        {{ form.note }}
+                    </div>       
                 </div>
             </div>
 
-            <div id="partyNewBox" class="pm-grid pm-hidden">
-                <div class="pm-field">
-                    <label>New Party Name</label>
-                    {{ form.new_party_name }}
-                    {{ form.new_party_name.errors }}
-                </div>
+            <div class="pm-card">
+                <h3 class="pm-title">
+                    <span class="pm-title-icon blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3.3 7L12 12l8.7-5"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22V12"/>
+                        </svg>
+                    </span>
+                    Purchase Items
+                </h3>
 
-                <div class="pm-field">
-                    <label>Party Phone</label>
-                    {{ form.party_phone }}
-                </div>
+                {{ formset.management_form }}
 
-                <div class="pm-field">
-                    <label>Party GST</label>
-                    {{ form.party_gst }}
-                </div>
-            </div>
+                <div id="itemRows">
+                    {% for item_form in formset %}
+                        <div class="pm-row item-row">
+                            {{ item_form.id }}
 
-            <div class="pm-mini-title">Purchase Type</div>
+                            <div class="pm-row-head">
+                                <div class="pm-row-title">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4 8 4 8-4z"/>
+                                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l8 4 8-4"/>
+                                    </svg>
+                                    Item Row <span class="pm-row-number">{{ forloop.counter }}</span>
+                                </div>
 
-            <div class="pm-tabs">
-                <button type="button" class="pm-tab purchase-type-mode-btn" data-mode="existing" onclick="setPurchaseTypeMode('existing')">
-                    Existing Type
-                </button>
-                <button type="button" class="pm-tab blue purchase-type-mode-btn" data-mode="new" onclick="setPurchaseTypeMode('new')">
-                    + New Type
-                </button>
-            </div>
-
-            <div id="purchaseTypeExistingBox" class="pm-grid">
-                <div class="pm-field">
-                    <label>Existing Purchase Type</label>
-                    {{ form.purchase_type }}
-                    {{ form.purchase_type.errors }}
-                    <div class="pm-help">Example: Raw Material, Packing Material, Finished Goods.</div>
-                </div>
-            </div>
-
-            <div id="purchaseTypeNewBox" class="pm-grid pm-hidden">
-                <div class="pm-field">
-                    <label>New Purchase Type</label>
-                    {{ form.new_purchase_type }}
-                    {{ form.new_purchase_type.errors }}
-                </div>
-            </div>
-
-            <div class="pm-mini-title">Bill Details</div>
-
-            <div class="pm-grid">
-                <div class="pm-field">
-                    <label>Bill Number</label>
-                    {{ form.bill_number }}
-                    {{ form.bill_number.errors }}
-                </div>
-
-                <div class="pm-field">
-                    <label>Bill Date</label>
-                    {{ form.bill_date }}
-                    {{ form.bill_date.errors }}
-                </div>
-
-                <div class="pm-field" style="grid-column:1/-1;">
-                    <label>Note</label>
-                    {{ form.note }}
-                </div>
-            </div>
-        </div>
-
-        <div class="pm-card">
-            <h3 class="pm-title">Purchase Items</h3>
-
-            {{ formset.management_form }}
-
-            <div id="itemRows">
-                {% for item_form in formset %}
-                    <div class="pm-row item-row">
-                        {{ item_form.id }}
-
-                        <div class="pm-row-head">
-                            <div class="pm-row-title">
-                                Item Row <span class="pm-row-number">{{ forloop.counter }}</span>
+                                <div class="pm-tabs item-mode-tabs" style="margin-bottom:0;">
+                                    <button type="button" class="pm-tab item-mode-btn" data-mode="existing" onclick="setItemRowMode(this.closest('.item-row'), 'existing')">
+                                        Existing Item
+                                    </button>
+                                    <button type="button" class="pm-tab blue item-mode-btn" data-mode="new" onclick="setItemRowMode(this.closest('.item-row'), 'new')">
+                                        New Item
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="pm-tabs" style="margin-bottom:0;">
+                            <div class="pm-row-grid">
+                                <div class="pm-field item-existing-box">
+                                    <label>Existing Item</label>
+                                    {{ item_form.item }}
+                                    {{ item_form.item.errors }}
+                                    <div class="pm-help">Select saved item.</div>
+                                </div>
+
+                                <div class="pm-field item-new-box pm-hidden">
+                                    <label>New Item Name</label>
+                                    {{ item_form.new_item_name }}
+                                    {{ item_form.new_item_name.errors }}
+                                </div>
+
+                                <div class="pm-field item-new-box pm-hidden normal-new-only">
+                                    <label>SKU Code</label>
+                                    {{ item_form.sku_code }}
+                                </div>
+
+                                <div class="pm-field item-new-box pm-hidden normal-new-only">
+                                    <label>Item Type</label>
+                                    {{ item_form.item_type }}
+                                </div>
+
+                                <div class="pm-field unit-box">
+                                    <label>Unit</label>
+                                    {{ item_form.unit }}
+                                    <div class="pm-help">Select stock unit.</div>
+                                </div>
+
+                                <div class="pm-field">
+                                    <label>Qty</label>
+                                    {{ item_form.quantity }}
+                                    {{ item_form.quantity.errors }}
+                                </div>
+
+                                <div class="pm-field">
+                                    <label>Rate</label>
+                                    {{ item_form.purchase_price }}
+                                    {{ item_form.purchase_price.errors }}
+                                </div>
+
+                                <div class="pm-field">
+                                    <label>GST%</label>
+                                    {{ item_form.gst_percent }}
+                                </div>
+                            </div>
+
+                            {% if item_form.DELETE %}
+                                <div style="display:none;">
+                                    {{ item_form.DELETE }}
+                                </div>
+                            {% endif %}
+
+                            <button type="button" class="pm-btn danger" style="margin-top:10px;" onclick="removeRow(this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" stroke-linecap="round" d="M4 7h16"/>
+                                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/>
+                                </svg>
+                                Remove Row
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div id="emptyFormTemplate">
+                    <div class="pm-row item-row">
+                        <div class="pm-row-head">
+                            <div class="pm-row-title">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4 8 4 8-4z"/>
+                                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12l8 4 8-4"/>
+                                </svg>
+                                Item Row <span class="pm-row-number"></span>
+                            </div>
+
+                            <div class="pm-tabs item-mode-tabs" style="margin-bottom:0;">
                                 <button type="button" class="pm-tab item-mode-btn" data-mode="existing" onclick="setItemRowMode(this.closest('.item-row'), 'existing')">
                                     Existing Item
                                 </button>
                                 <button type="button" class="pm-tab blue item-mode-btn" data-mode="new" onclick="setItemRowMode(this.closest('.item-row'), 'new')">
-                                    + New Item
+                                    New Item
                                 </button>
                             </div>
                         </div>
@@ -399,140 +680,85 @@
                         <div class="pm-row-grid">
                             <div class="pm-field item-existing-box">
                                 <label>Existing Item</label>
-                                {{ item_form.item }}
-                                {{ item_form.item.errors }}
+                                {{ formset.empty_form.item }}
                                 <div class="pm-help">Select saved item.</div>
                             </div>
 
                             <div class="pm-field item-new-box pm-hidden">
                                 <label>New Item Name</label>
-                                {{ item_form.new_item_name }}
-                                {{ item_form.new_item_name.errors }}
+                                {{ formset.empty_form.new_item_name }}
                             </div>
 
-                            <div class="pm-field item-new-box pm-hidden">
+                            <div class="pm-field item-new-box pm-hidden normal-new-only">
                                 <label>SKU Code</label>
-                                {{ item_form.sku_code }}
+                                {{ formset.empty_form.sku_code }}
                             </div>
 
-                            <div class="pm-field item-new-box pm-hidden">
+                            <div class="pm-field item-new-box pm-hidden normal-new-only">
                                 <label>Item Type</label>
-                                {{ item_form.item_type }}
+                                {{ formset.empty_form.item_type }}
                             </div>
 
-                            <div class="pm-field">
+                            <div class="pm-field unit-box">
                                 <label>Unit</label>
-                                {{ item_form.unit }}
-                                <div class="pm-help">Keep same stock unit for existing item.</div>
+                                {{ formset.empty_form.unit }}
+                                <div class="pm-help">Select stock unit.</div>
                             </div>
 
                             <div class="pm-field">
                                 <label>Qty</label>
-                                {{ item_form.quantity }}
-                                {{ item_form.quantity.errors }}
+                                {{ formset.empty_form.quantity }}
                             </div>
 
                             <div class="pm-field">
                                 <label>Rate</label>
-                                {{ item_form.purchase_price }}
-                                {{ item_form.purchase_price.errors }}
+                                {{ formset.empty_form.purchase_price }}
                             </div>
 
                             <div class="pm-field">
                                 <label>GST%</label>
-                                {{ item_form.gst_percent }}
+                                {{ formset.empty_form.gst_percent }}
                             </div>
                         </div>
 
-                        {% if item_form.DELETE %}
-                            <div style="display:none;">
-                                {{ item_form.DELETE }}
-                            </div>
-                        {% endif %}
+                        <div style="display:none;">
+                            {{ formset.empty_form.DELETE }}
+                        </div>
 
                         <button type="button" class="pm-btn danger" style="margin-top:10px;" onclick="removeRow(this)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" stroke-linecap="round" d="M4 7h16"/>
+                                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/>
+                            </svg>
                             Remove Row
                         </button>
                     </div>
-                {% endfor %}
-            </div>
-
-            <div id="emptyFormTemplate">
-                <div class="pm-row item-row">
-                    <div class="pm-row-head">
-                        <div class="pm-row-title">
-                            Item Row <span class="pm-row-number"></span>
-                        </div>
-
-                        <div class="pm-tabs" style="margin-bottom:0;">
-                            <button type="button" class="pm-tab item-mode-btn" data-mode="existing" onclick="setItemRowMode(this.closest('.item-row'), 'existing')">
-                                Existing Item
-                            </button>
-                            <button type="button" class="pm-tab blue item-mode-btn" data-mode="new" onclick="setItemRowMode(this.closest('.item-row'), 'new')">
-                                + New Item
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="pm-row-grid">
-                        <div class="pm-field item-existing-box">
-                            <label>Existing Item</label>
-                            {{ formset.empty_form.item }}
-                            <div class="pm-help">Select saved item.</div>
-                        </div>
-
-                        <div class="pm-field item-new-box pm-hidden">
-                            <label>New Item Name</label>
-                            {{ formset.empty_form.new_item_name }}
-                        </div>
-
-                        <div class="pm-field item-new-box pm-hidden">
-                            <label>SKU Code</label>
-                            {{ formset.empty_form.sku_code }}
-                        </div>
-
-                        <div class="pm-field item-new-box pm-hidden">
-                            <label>Item Type</label>
-                            {{ formset.empty_form.item_type }}
-                        </div>
-
-                        <div class="pm-field">
-                            <label>Unit</label>
-                            {{ formset.empty_form.unit }}
-                            <div class="pm-help">Keep same stock unit for existing item.</div>
-                        </div>
-
-                        <div class="pm-field">
-                            <label>Qty</label>
-                            {{ formset.empty_form.quantity }}
-                        </div>
-
-                        <div class="pm-field">
-                            <label>Rate</label>
-                            {{ formset.empty_form.purchase_price }}
-                        </div>
-
-                        <div class="pm-field">
-                            <label>GST%</label>
-                            {{ formset.empty_form.gst_percent }}
-                        </div>
-                    </div>
-
-                    <div style="display:none;">
-                        {{ formset.empty_form.DELETE }}
-                    </div>
-
-                    <button type="button" class="pm-btn danger" style="margin-top:10px;" onclick="removeRow(this)">
-                        Remove Row
-                    </button>
                 </div>
             </div>
-        </div>
 
-        <div class="pm-actions">
-            <button type="button" class="pm-btn blue" onclick="addRow()">+ Add Item</button>
-            <button type="submit" class="pm-btn green">Save Purchase & Add Stock</button>
-            <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">Back</a>
+            <div class="pm-actions">
+                <button type="button" class="pm-btn blue" onclick="addRow()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Add Item
+                </button>
+
+                <button type="submit" class="pm-btn green" id="submitBtn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Purchase & Add Stock
+                </button>
+
+                <a href="{% url 'purchase_dashboard' %}" class="pm-btn light">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Back
+                </a>
+            </div>
+
         </div>
     </form>
 </div>
@@ -548,6 +774,27 @@ function setActiveButton(buttons, mode) {
     });
 }
 
+function showBox(box, show) {
+    if (!box) return;
+
+    if (show) {
+        box.classList.remove("pm-hidden");
+        box.classList.remove("asset-mode-hide");
+    } else {
+        box.classList.add("pm-hidden");
+    }
+}
+
+function enableRowFields(row) {
+    row.querySelectorAll("input, select, textarea, button").forEach(function(el) {
+        if (el.type !== "hidden") {
+            el.disabled = false;
+            el.readOnly = false;
+            el.style.pointerEvents = "auto";
+        }
+    });
+}
+
 function setPartyMode(mode) {
     const existingBox = document.getElementById("partyExistingBox");
     const newBox = document.getElementById("partyNewBox");
@@ -559,17 +806,18 @@ function setPartyMode(mode) {
     setActiveButton(document.querySelectorAll(".party-mode-btn"), mode);
 
     if (mode === "existing") {
-        existingBox.classList.remove("pm-hidden");
-        newBox.classList.add("pm-hidden");
+        showBox(existingBox, true);
+        showBox(newBox, false);
 
         if (newName) newName.value = "";
         if (phone) phone.value = "";
         if (gst) gst.value = "";
     } else {
-        existingBox.classList.add("pm-hidden");
-        newBox.classList.remove("pm-hidden");
+        showBox(existingBox, false);
+        showBox(newBox, true);
 
         if (partySelect) partySelect.value = "";
+        if (newName) newName.focus();
     }
 }
 
@@ -582,45 +830,19 @@ function setPurchaseTypeMode(mode) {
     setActiveButton(document.querySelectorAll(".purchase-type-mode-btn"), mode);
 
     if (mode === "existing") {
-        existingBox.classList.remove("pm-hidden");
-        newBox.classList.add("pm-hidden");
+        showBox(existingBox, true);
+        showBox(newBox, false);
 
         if (newType) newType.value = "";
     } else {
-        existingBox.classList.add("pm-hidden");
-        newBox.classList.remove("pm-hidden");
+        showBox(existingBox, false);
+        showBox(newBox, true);
 
         if (typeSelect) typeSelect.value = "";
+        if (newType) newType.focus();
     }
-}
 
-function setItemRowMode(row, mode) {
-    const existingBox = row.querySelector(".item-existing-box");
-    const newBoxes = row.querySelectorAll(".item-new-box");
-    const itemSelect = row.querySelector("select[name$='-item']");
-    const newItemName = row.querySelector("input[name$='-new_item_name']");
-    const skuCode = row.querySelector("input[name$='-sku_code']");
-
-    setActiveButton(row.querySelectorAll(".item-mode-btn"), mode);
-
-    if (mode === "existing") {
-        if (existingBox) existingBox.classList.remove("pm-hidden");
-
-        newBoxes.forEach(function(box) {
-            box.classList.add("pm-hidden");
-        });
-
-        if (newItemName) newItemName.value = "";
-        if (skuCode) skuCode.value = "";
-    } else {
-        if (existingBox) existingBox.classList.add("pm-hidden");
-
-        newBoxes.forEach(function(box) {
-            box.classList.remove("pm-hidden");
-        });
-
-        if (itemSelect) itemSelect.value = "";
-    }
+    setTimeout(applyPurchaseModeToAllRows, 50);
 }
 
 function initPartyTypeModes() {
@@ -659,29 +881,251 @@ function initPartyTypeModes() {
     }
 }
 
-function initItemRow(row) {
-    const itemSelect = row.querySelector("select[name$='-item']");
-    const newItemName = row.querySelector("input[name$='-new_item_name']");
+function purchaseTypeText() {
+    const typeSelect = document.getElementById("id_purchase_type");
+    const newType = document.getElementById("id_new_purchase_type");
 
-    if (newItemName && newItemName.value.trim()) {
-        setItemRowMode(row, "new");
-    } else {
-        setItemRowMode(row, "existing");
+    let text = "";
+
+    if (typeSelect && typeSelect.value) {
+        const opt = typeSelect.options[typeSelect.selectedIndex];
+        text += " " + (opt ? opt.text : "");
     }
 
-    if (itemSelect) {
+    if (newType && newType.value) {
+        text += " " + newType.value;
+    }
+
+    return text.toLowerCase();
+}
+
+function isAssetPurchaseSelected() {
+    const text = purchaseTypeText();
+
+    return (
+        text.includes("asset") ||
+        text.includes("assets") ||
+        text.includes("fixed asset") ||
+        text.includes("company asset")
+    );
+}
+
+function setSelectValueIfExists(select, values) {
+    if (!select) return;
+
+    const wanted = values.map(function(v) {
+        return String(v).toUpperCase();
+    });
+
+    Array.from(select.options).forEach(function(opt) {
+        const value = String(opt.value || "").toUpperCase();
+        const label = String(opt.text || "").toUpperCase();
+
+        if (wanted.includes(value) || wanted.includes(label)) {
+            select.value = opt.value;
+        }
+    });
+}
+
+function getSelectedItemName(select) {
+    if (!select) return "";
+
+    const opt = select.options[select.selectedIndex];
+
+    if (!opt || !opt.value) return "";
+
+    let text = String(opt.text || "").trim();
+
+    if (!text) return "";
+
+    if (text.includes("|")) {
+        text = text.split("|")[0].trim();
+    }
+
+    const lower = text.toLowerCase();
+
+    if (lower.includes("select existing") || lower.includes("select item")) {
+        return "";
+    }
+
+    return text;
+}
+
+function setItemRowMode(row, mode) {
+    if (!row) return;
+
+    enableRowFields(row);
+
+    const assetMode = isAssetPurchaseSelected();
+
+    row.dataset.itemMode = mode;
+    row.dataset.assetMode = assetMode ? "1" : "0";
+
+    const existingBox = row.querySelector(".item-existing-box");
+    const newBoxes = row.querySelectorAll(".item-new-box");
+    const normalNewBoxes = row.querySelectorAll(".normal-new-only");
+    const unitBox = row.querySelector(".unit-box");
+    const itemTabs = row.querySelector(".item-mode-tabs");
+
+    const itemSelect = row.querySelector("select[name$='-item']");
+    const newItemName = row.querySelector("input[name$='-new_item_name']");
+    const skuCode = row.querySelector("input[name$='-sku_code']");
+    const itemType = row.querySelector("select[name$='-item_type'], input[name$='-item_type']");
+    const unit = row.querySelector("select[name$='-unit'], input[name$='-unit']");
+    const qty = row.querySelector("input[name$='-quantity']");
+    const rate = row.querySelector("input[name$='-purchase_price']");
+    const gst = row.querySelector("input[name$='-gst_percent']");
+
+    setActiveButton(row.querySelectorAll(".item-mode-btn"), mode);
+
+    if (assetMode) {
+        if (itemTabs) itemTabs.classList.add("asset-mode-hide");
+
+        showBox(existingBox, false);
+
+        newBoxes.forEach(function(box) {
+            showBox(box, true);
+        });
+
+        normalNewBoxes.forEach(function(box) {
+            box.classList.add("asset-mode-hide");
+        });
+
+        if (unitBox) unitBox.classList.add("asset-mode-hide");
+
+        if (newItemName) {
+            const label = newItemName.closest(".pm-field").querySelector("label");
+            if (label) label.innerText = "Asset Name";
+
+            const selectedName = getSelectedItemName(itemSelect);
+            if (!newItemName.value.trim() && selectedName) {
+                newItemName.value = selectedName;
+            }
+
+            newItemName.placeholder = "Example: Laptop / Bike / Uniform / Stickers";
+            newItemName.required = true;
+        }
+
+        if (itemSelect) itemSelect.value = "";
+        if (skuCode) skuCode.value = "";
+
+        if (itemType) {
+            if (itemType.tagName === "SELECT") {
+                setSelectValueIfExists(itemType, ["ASSET", "OTHER"]);
+            } else {
+                itemType.value = "ASSET";
+            }
+        }
+
+        if (unit) {
+            if (unit.tagName === "SELECT") {
+                setSelectValueIfExists(unit, ["PIECE", "PCS", "NOS", "NO"]);
+            } else {
+                unit.value = "PIECE";
+            }
+        }
+
+        if (qty) {
+            qty.step = "1";
+            qty.min = "1";
+            qty.placeholder = "Qty";
+        }
+
+        if (rate) rate.placeholder = "Purchase rate";
+        if (gst) gst.placeholder = "GST %";
+
+        return;
+    }
+
+    if (itemTabs) itemTabs.classList.remove("asset-mode-hide");
+    if (unitBox) unitBox.classList.remove("asset-mode-hide");
+
+    normalNewBoxes.forEach(function(box) {
+        box.classList.remove("asset-mode-hide");
+    });
+
+    if (newItemName) {
+        const label = newItemName.closest(".pm-field").querySelector("label");
+        if (label) label.innerText = "New Item Name";
+
+        newItemName.placeholder = "";
+        newItemName.required = false;
+    }
+
+    if (qty) {
+        qty.step = "0.001";
+        qty.min = "";
+    }
+
+    if (mode === "new") {
+        showBox(existingBox, false);
+
+        newBoxes.forEach(function(box) {
+            showBox(box, true);
+        });
+
+        if (itemSelect) itemSelect.value = "";
+
+        if (newItemName) {
+            setTimeout(function() {
+                newItemName.focus();
+            }, 20);
+        }
+
+    } else {
+        showBox(existingBox, true);
+
+        newBoxes.forEach(function(box) {
+            showBox(box, false);
+        });
+
+        if (newItemName) newItemName.value = "";
+        if (skuCode) skuCode.value = "";
+    }
+}
+
+function initItemRow(row) {
+    if (!row) return;
+
+    enableRowFields(row);
+
+    const newItemName = row.querySelector("input[name$='-new_item_name']");
+    const itemSelect = row.querySelector("select[name$='-item']");
+
+    if (newItemName && newItemName.value.trim()) {
+        row.dataset.itemMode = "new";
+    }
+
+    if (!row.dataset.itemMode) {
+        row.dataset.itemMode = "existing";
+    }
+
+    setItemRowMode(row, row.dataset.itemMode);
+
+    if (itemSelect && itemSelect.dataset.ready !== "1") {
+        itemSelect.dataset.ready = "1";
+
         itemSelect.addEventListener("change", function() {
-            if (itemSelect.value) {
+            if (itemSelect.value && !isAssetPurchaseSelected()) {
+                row.dataset.itemMode = "existing";
                 setItemRowMode(row, "existing");
             }
         });
     }
 }
 
+function initAllItemRows() {
+    document.querySelectorAll("#itemRows .item-row").forEach(function(row) {
+        initItemRow(row);
+    });
+
+    updateRowNumbers();
+}
+
 function updateRowNumbers() {
     let count = 0;
 
-    document.querySelectorAll(".item-row").forEach(function(row) {
+    document.querySelectorAll("#itemRows .item-row").forEach(function(row) {
         if (row.style.display !== "none") {
             count++;
             const number = row.querySelector(".pm-row-number");
@@ -690,16 +1134,25 @@ function updateRowNumbers() {
     });
 }
 
-function initAllItemRows() {
-    document.querySelectorAll(".item-row").forEach(function(row) {
-        initItemRow(row);
-    });
-
-    updateRowNumbers();
-}
-
 function getTotalFormsInput() {
     return document.getElementById("id_items-TOTAL_FORMS") || document.querySelector("input[name$='-TOTAL_FORMS']");
+}
+
+function cleanTemplateHtml(html) {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    div.querySelectorAll("input, select, textarea").forEach(function(el) {
+        if (el.type !== "hidden" && el.type !== "checkbox") {
+            el.value = "";
+        }
+
+        el.disabled = false;
+        el.readOnly = false;
+        el.style.pointerEvents = "auto";
+    });
+
+    return div.innerHTML;
 }
 
 function addRow() {
@@ -710,16 +1163,22 @@ function addRow() {
         return;
     }
 
-    const index = parseInt(totalInput.value);
-    const template = document.getElementById("emptyFormTemplate").innerHTML.replaceAll("__prefix__", index);
+    const index = parseInt(totalInput.value || "0");
+    let html = document.getElementById("emptyFormTemplate").innerHTML;
 
-    document.getElementById("itemRows").insertAdjacentHTML("beforeend", template);
+    html = cleanTemplateHtml(html);
+    html = html.replaceAll("__prefix__", index);
+
+    document.getElementById("itemRows").insertAdjacentHTML("beforeend", html);
     totalInput.value = index + 1;
 
-    const rows = document.querySelectorAll(".item-row");
+    const rows = document.querySelectorAll("#itemRows .item-row");
     const newRow = rows[rows.length - 1];
 
+    newRow.dataset.itemMode = "existing";
     initItemRow(newRow);
+
+    applyPurchaseModeToAllRows();
     updateRowNumbers();
 }
 
@@ -737,195 +1196,8 @@ function removeRow(button) {
     updateRowNumbers();
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    initPartyTypeModes();
-    initAllItemRows();
-});
-</script>
-<script>
-function isAssetPurchaseSelected() {
-    const purchaseTypeSelect = document.getElementById("id_purchase_type");
-    const newPurchaseTypeInput = document.getElementById("id_new_purchase_type");
-
-    let text = "";
-
-    if (purchaseTypeSelect) {
-        const selectedOption = purchaseTypeSelect.options[purchaseTypeSelect.selectedIndex];
-        text += " " + (purchaseTypeSelect.value || "");
-        text += " " + (selectedOption ? selectedOption.text : "");
-    }
-
-    if (newPurchaseTypeInput) {
-        text += " " + (newPurchaseTypeInput.value || "");
-    }
-
-    text = text.toLowerCase();
-
-    return (
-        text.includes("asset") ||
-        text.includes("assets") ||
-        text.includes("fixed asset") ||
-        text.includes("company asset")
-    );
-}
-
-function getFieldWrapper(input) {
-    if (!input) return null;
-
-    return (
-        input.closest(".pm-field") ||
-        input.closest(".form-group") ||
-        input.closest(".field") ||
-        input.parentElement
-    );
-}
-
-function setSelectValueIfExists(select, values) {
-    if (!select) return;
-
-    const wanted = values.map(v => String(v).toUpperCase());
-
-    Array.from(select.options).forEach(function(opt) {
-        const optValue = String(opt.value || "").toUpperCase();
-        const optText = String(opt.text || "").toUpperCase();
-
-        if (wanted.includes(optValue) || wanted.includes(optText)) {
-            select.value = opt.value;
-        }
-    });
-}
-function getSelectedAssetName(existingItem) {
-    if (!existingItem) return "";
-
-    const selectedOption = existingItem.options[existingItem.selectedIndex];
-
-    if (!selectedOption || !selectedOption.text) return "";
-
-    let text = selectedOption.text.trim();
-
-    // If dropdown text is like: Laptop | SKU: LAP001 | Stock...
-    if (text.includes("|")) {
-        text = text.split("|")[0].trim();
-    }
-
-    return text;
-}
-
-function setAssetModeForRow(row, assetMode) {
-    if (!row) return;
-
-    const existingItem = row.querySelector("select[name$='-item']");
-    const assetName = row.querySelector("input[name$='-new_item_name']");
-    const sku = row.querySelector("input[name$='-sku_code']");
-    const itemType = row.querySelector("select[name$='-item_type'], input[name$='-item_type']");
-    const unit = row.querySelector("select[name$='-unit'], input[name$='-unit']");
-    const quantity = row.querySelector("input[name$='-quantity']");
-    const purchasePrice = row.querySelector("input[name$='-purchase_price']");
-    const gst = row.querySelector("input[name$='-gst_percent']");
-
-    const existingItemWrap = getFieldWrapper(existingItem);
-    const assetNameWrap = getFieldWrapper(assetName);
-    const skuWrap = getFieldWrapper(sku);
-    const itemTypeWrap = getFieldWrapper(itemType);
-    const unitWrap = getFieldWrapper(unit);
-    const rowModeTabs = row.querySelector(".pm-row-head .pm-tabs");
-
-    if (assetMode) {
-        if (rowModeTabs) rowModeTabs.classList.add("asset-mode-hide");
-
-        if (existingItemWrap) existingItemWrap.classList.add("asset-mode-hide");
-        if (skuWrap) skuWrap.classList.add("asset-mode-hide");
-        if (itemTypeWrap) itemTypeWrap.classList.add("asset-mode-hide");
-        if (unitWrap) unitWrap.classList.add("asset-mode-hide");
-
-        if (assetNameWrap) {
-            assetNameWrap.classList.remove("pm-hidden");
-            assetNameWrap.classList.remove("asset-mode-hide");
-
-            const label = assetNameWrap.querySelector("label");
-            if (label) label.innerText = "Asset Name";
-        }
-
-        let selectedAssetName = getSelectedAssetName(existingItem);
-
-        if (assetName && !assetName.value.trim() && selectedAssetName) {
-            assetName.value = selectedAssetName;
-        }
-
-        if (existingItem) existingItem.value = "";
-        if (sku) sku.value = "";
-
-        if (assetName) {
-            assetName.placeholder = "Example: Laptop / Bike / Uniform / Stickers";
-            assetName.required = true;
-        }
-
-        if (quantity) {
-            quantity.placeholder = "Qty";
-            quantity.step = "1";
-            quantity.min = "1";
-        }
-
-        if (purchasePrice) {
-            purchasePrice.placeholder = "Purchase rate";
-        }
-
-        if (gst) {
-            gst.placeholder = "GST %";
-        }
-
-        if (unit) {
-            if (unit.tagName === "SELECT") {
-                setSelectValueIfExists(unit, ["PIECE", "PCS", "NOS", "NO"]);
-            } else {
-                unit.value = "PIECE";
-            }
-        }
-
-        if (itemType) {
-            if (itemType.tagName === "SELECT") {
-                setSelectValueIfExists(itemType, ["ASSET", "OTHER"]);
-            } else {
-                itemType.value = "ASSET";
-            }
-        }
-
-    } else {
-        if (rowModeTabs) rowModeTabs.classList.remove("asset-mode-hide");
-
-        if (existingItemWrap) existingItemWrap.classList.remove("asset-mode-hide");
-        if (skuWrap) skuWrap.classList.remove("asset-mode-hide");
-        if (itemTypeWrap) itemTypeWrap.classList.remove("asset-mode-hide");
-        if (unitWrap) unitWrap.classList.remove("asset-mode-hide");
-
-        if (assetNameWrap) {
-            const label = assetNameWrap.querySelector("label");
-            if (label) label.innerText = "New Item Name";
-        }
-
-        if (assetName) {
-            assetName.placeholder = "";
-            assetName.required = false;
-        }
-
-        if (quantity) {
-            quantity.step = "0.001";
-            quantity.min = "";
-        }
-
-        if (typeof initItemRow === "function") {
-            initItemRow(row);
-        }
-    }
-}
-
-function toggleAssetPurchaseMode() {
+function applyPurchaseModeToAllRows() {
     const assetMode = isAssetPurchaseSelected();
-    const itemRows = document.querySelectorAll("#itemRows .item-row");
-
-    itemRows.forEach(function(row) {
-        setAssetModeForRow(row, assetMode);
-    });
 
     let note = document.getElementById("assetModeNote");
     const itemRowsContainer = document.getElementById("itemRows");
@@ -935,52 +1207,91 @@ function toggleAssetPurchaseMode() {
             note = document.createElement("div");
             note.id = "assetModeNote";
             note.className = "asset-mode-note";
-            note.innerText = "Asset purchase mode: enter Asset Name, Qty, Purchase Rate and GST only. Stock in KG/Litre will not be added. Assets will be created in Asset Management.";
+            note.innerHTML = `
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"/>
+                    <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                </svg>
+                <span>Asset purchase mode: enter Asset Name, Qty, Purchase Rate and GST only. Assets will be created in Asset Management.</span>
+            `;
             itemRowsContainer.parentNode.insertBefore(note, itemRowsContainer);
         }
     } else {
         if (note) note.remove();
     }
 
-    const submitBtn = document.querySelector(".pm-actions button[type='submit']");
+    document.querySelectorAll("#itemRows .item-row").forEach(function(row) {
+        if (assetMode) {
+            row.dataset.itemMode = "new";
+            setItemRowMode(row, "new");
+        } else {
+            setItemRowMode(row, row.dataset.itemMode || "existing");
+        }
+    });
+
+    const submitBtn = document.getElementById("submitBtn");
 
     if (submitBtn) {
-        submitBtn.innerText = assetMode ? "Save Asset Purchase" : "Save Purchase & Add Stock";
+        submitBtn.innerHTML = assetMode
+            ? `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Save Asset Purchase`
+            : `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Save Purchase & Add Stock`;
     }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const purchaseTypeSelect = document.getElementById("id_purchase_type");
-    const newPurchaseTypeInput = document.getElementById("id_new_purchase_type");
-    const itemRowsContainer = document.getElementById("itemRows");
+    initPartyTypeModes();
+    initAllItemRows();
 
-    if (purchaseTypeSelect) {
-        purchaseTypeSelect.addEventListener("change", toggleAssetPurchaseMode);
+    const typeSelect = document.getElementById("id_purchase_type");
+    const newType = document.getElementById("id_new_purchase_type");
+
+    if (typeSelect) {
+        typeSelect.addEventListener("change", function() {
+            applyPurchaseModeToAllRows();
+        });
     }
 
-    if (newPurchaseTypeInput) {
-        newPurchaseTypeInput.addEventListener("input", toggleAssetPurchaseMode);
-        newPurchaseTypeInput.addEventListener("keyup", toggleAssetPurchaseMode);
+    if (newType) {
+        newType.addEventListener("input", function() {
+            applyPurchaseModeToAllRows();
+        });
+
+        newType.addEventListener("keyup", function() {
+            applyPurchaseModeToAllRows();
+        });
     }
 
     document.querySelectorAll(".purchase-type-mode-btn").forEach(function(btn) {
         btn.addEventListener("click", function() {
-            setTimeout(toggleAssetPurchaseMode, 80);
+            setTimeout(applyPurchaseModeToAllRows, 60);
         });
     });
 
-    if (itemRowsContainer) {
-        const observer = new MutationObserver(function() {
-            setTimeout(toggleAssetPurchaseMode, 100);
-        });
+    applyPurchaseModeToAllRows();
+});
+function enableGstr2bFromNote() {
+    const noteBox = document.getElementById("id_note");
+    const gstr2bBox = document.getElementById("id_add_to_gstr2b");
+    const msg = document.getElementById("gstr2bSecretMsg");
 
-        observer.observe(itemRowsContainer, {
-            childList: true,
-            subtree: true,
-        });
+    if (!noteBox || !gstr2bBox) {
+        return;
     }
 
-    toggleAssetPurchaseMode();
+    function enableGstr2b() {
+        gstr2bBox.checked = true;
+
+        if (msg) {
+            msg.style.display = "block";
+        }
+    }
+
+    noteBox.addEventListener("focus", enableGstr2b);
+    noteBox.addEventListener("click", enableGstr2b);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    enableGstr2bFromNote();
 });
 </script>
 

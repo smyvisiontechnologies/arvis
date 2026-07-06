@@ -204,6 +204,10 @@ class UserProfile(models.Model):
 
     # Earned extra leaves from approved extra working days
     earned_extra_other_leaves = models.PositiveIntegerField(default=0)
+    tada_applicable = models.BooleanField(
+        default=True,
+        help_text="If enabled, employee can use TA/DA attendance, odometer and DA claims."
+    )
 
     bike_ta_per_km = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     car_ta_per_km = models.DecimalField(max_digits=8, decimal_places=2, default=0)
@@ -1035,6 +1039,12 @@ class Product(models.Model):
     )
 
     name = models.CharField(max_length=180)
+    technical_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Technical / chemical name of the product"
+    )
     image = models.ImageField(upload_to="products/", blank=True, null=True)
 
     hsn_number = models.CharField(max_length=50, blank=True, null=True)
@@ -1682,6 +1692,22 @@ class DealerInvoice(models.Model):
     )
 
     released_at = models.DateTimeField(auto_now_add=True)
+    add_to_gstr1 = models.BooleanField(
+        default=False,
+        help_text="If enabled, this sales invoice will appear in GSTR-1 report."
+    )
+
+    gstr1_code = models.CharField(
+        max_length=40,
+        blank=True,
+        null=True,
+        help_text="ARVIS = Add to GSTR-1, ARVISSMYVISION = Do not add to GSTR-1"
+    )
+
+    gstr1_added_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     is_converted_to_sales = models.BooleanField(default=False)
 
@@ -2591,7 +2617,45 @@ class EmployeeGPSTrack(models.Model):
     class Meta:
         ordering = ["recorded_at"]
 
+class EmployeeTadaFundReleaseBatch(models.Model):
+    employee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tada_release_batches"
+    )
 
+    from_date = models.DateField()
+    to_date = models.DateField()
+
+    total_km = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    total_ta_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    total_da_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    total_released_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+
+    attendance_records = models.ManyToManyField(
+        "EmployeeAttendance",
+        related_name="tada_release_batches",
+        blank=True
+    )
+
+    released_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="released_tada_batches"
+    )
+
+    released_at = models.DateTimeField(null=True, blank=True)
+    remarks = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.employee} | {self.from_date} to {self.to_date} | ₹{self.total_released_amount}"
+
+
+        
 class EmployeeLeaveRequest(models.Model):
     LEAVE_TYPE_CHOICES = (
         ("PAID", "Paid Leave"),
@@ -3627,6 +3691,16 @@ class PurchaseBill(models.Model):
 
     stock_added = models.BooleanField(default=False)
 
+    add_to_gstr2b = models.BooleanField(
+        default=False,
+        help_text="If enabled, this purchase bill will appear in GSTR-2B report."
+    )
+
+    gstr2b_added_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
     bill_file = models.FileField(upload_to="purchase_bills/", blank=True, null=True)
 
     note = models.TextField(blank=True, null=True)
@@ -4283,3 +4357,247 @@ class ProductStockTransfer(models.Model):
         return f"{product_name}: {self.quantity_boxes} from {from_name} to {to_name}"
 
 
+# ==========================================================
+# SMART PRODUCTION FORMULA MASTER
+# ==========================================================
+
+from decimal import Decimal
+from django.conf import settings
+from django.db import models
+from django.utils import timezone
+
+
+class ProductProductionFormula(models.Model):
+    BASE_UNIT_CHOICES = (
+        ("KG", "Kg"),
+        ("LITRE", "Litre"),
+    )
+
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="production_formula"
+    )
+
+    base_output_qty = models.DecimalField(
+        max_digits=14,
+        decimal_places=3,
+        default=Decimal("100.000")
+    )
+
+    base_output_unit = models.CharField(
+        max_length=20,
+        choices=BASE_UNIT_CHOICES,
+        default="KG"
+    )
+
+    note = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_product_production_formulas"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["product__name"]
+
+    def __str__(self):
+        return f"{self.product.name} - {self.base_output_qty} {self.base_output_unit}"
+
+
+class ProductFormulaRawMaterial(models.Model):
+    formula = models.ForeignKey(
+        ProductProductionFormula,
+        on_delete=models.CASCADE,
+        related_name="raw_materials"
+    )
+
+    inventory_item = models.ForeignKey(
+        InventoryItem,
+        on_delete=models.PROTECT,
+        related_name="formula_raw_materials"
+    )
+
+    quantity_required = models.DecimalField(
+        max_digits=14,
+        decimal_places=3
+    )
+
+    unit = models.CharField(max_length=20, default="KG")
+
+    class Meta:
+        ordering = ["inventory_item__name"]
+
+    def __str__(self):
+        return f"{self.formula.product.name} - {self.inventory_item.name}"
+
+
+class ProductFormulaPackMaterial(models.Model):
+    USAGE_BASIS_CHOICES = (
+        ("PER_UNIT", "Per Bottle / Label / Pouch"),
+        ("PER_BOX", "Per Outer Box / Carton"),
+    )
+
+    formula = models.ForeignKey(
+        ProductProductionFormula,
+        on_delete=models.CASCADE,
+        related_name="pack_materials"
+    )
+
+    product_pack = models.ForeignKey(
+        ProductPackSize,
+        on_delete=models.CASCADE,
+        related_name="formula_pack_materials"
+    )
+
+    inventory_item = models.ForeignKey(
+        InventoryItem,
+        on_delete=models.PROTECT,
+        related_name="formula_pack_materials"
+    )
+
+    usage_basis = models.CharField(
+        max_length=20,
+        choices=USAGE_BASIS_CHOICES,
+        default="PER_UNIT"
+    )
+
+    quantity_required = models.DecimalField(
+        max_digits=14,
+        decimal_places=3,
+        default=Decimal("1.000")
+    )
+
+    unit = models.CharField(max_length=20, default="PIECE")
+
+    class Meta:
+        ordering = ["product_pack__pack_size", "inventory_item__name"]
+
+    def __str__(self):
+        return f"{self.product_pack} - {self.inventory_item.name}"
+
+
+class ProductProductionRun(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        related_name="smart_production_runs"
+    )
+
+    formula = models.ForeignKey(
+        ProductProductionFormula,
+        on_delete=models.PROTECT,
+        related_name="smart_production_runs"
+    )
+
+    output_qty = models.DecimalField(
+        max_digits=14,
+        decimal_places=3
+    )
+
+    output_unit = models.CharField(max_length=20, default="KG")
+
+    production_date = models.DateField(default=timezone.localdate)
+
+    total_raw_cost = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+    total_packing_cost = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+    labour_cost = models.DecimalField(
+        max_digits=14,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
+
+    other_cost = models.DecimalField(
+        max_digits=14,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
+    total_cost = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+
+    note = models.TextField(blank=True, null=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="smart_production_runs_created"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-production_date", "-id"]
+
+    def __str__(self):
+        return f"{self.product.name} - {self.output_qty} {self.output_unit}"
+
+
+class ProductProductionRunOutputPack(models.Model):
+    run = models.ForeignKey(
+        ProductProductionRun,
+        on_delete=models.CASCADE,
+        related_name="output_packs"
+    )
+
+    product_pack = models.ForeignKey(
+        ProductPackSize,
+        on_delete=models.PROTECT,
+        related_name="smart_production_outputs"
+    )
+
+    output_boxes = models.PositiveIntegerField(default=0)
+    units_per_box = models.PositiveIntegerField(default=1)
+
+    cost_per_box = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+    total_cost = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+
+    class Meta:
+        ordering = ["product_pack__pack_size"]
+
+    def __str__(self):
+        return f"{self.run.product.name} - {self.product_pack.display_pack} - {self.output_boxes} boxes"
+
+
+class ProductProductionRunMaterial(models.Model):
+    MATERIAL_TYPE_CHOICES = (
+        ("RAW", "Raw Material"),
+        ("PACKING", "Packing Material"),
+    )
+
+    run = models.ForeignKey(
+        ProductProductionRun,
+        on_delete=models.CASCADE,
+        related_name="materials"
+    )
+
+    inventory_item = models.ForeignKey(
+        InventoryItem,
+        on_delete=models.PROTECT,
+        related_name="smart_production_materials"
+    )
+
+    material_type = models.CharField(max_length=20, choices=MATERIAL_TYPE_CHOICES)
+
+    required_qty = models.DecimalField(max_digits=14, decimal_places=3)
+    unit = models.CharField(max_length=20, default="KG")
+
+    available_before = models.DecimalField(max_digits=14, decimal_places=3, default=Decimal("0.000"))
+
+    rate = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+    cost = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal("0.00"))
+
+    class Meta:
+        ordering = ["material_type", "inventory_item__name"]
+
+    def __str__(self):
+        return f"{self.run} - {self.inventory_item.name}"
+
+        

@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 .dashboard-wrap {
     padding: 22px;
@@ -147,12 +148,12 @@
 
 .dealer-main-grid {
     display: grid;
-    grid-template-columns: minmax(230px, 285px) minmax(320px, 1fr) minmax(360px, 0.9fr);
-    gap: 16px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
     align-items: stretch;
 }
 
-/* Dealer profile */
+/* Dealer profile - Wider */
 .dealer-profile-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -163,12 +164,10 @@
 }
 
 .dealer-profile-cover {
-    height: 118px;
+    height: 100px;
     position: relative;
     overflow: hidden;
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.35), transparent 34%),
-        linear-gradient(135deg, #0f172a, #1d4ed8);
+    background: linear-gradient(135deg, #84c341, #6ba82e);
 }
 
 .dealer-profile-cover img {
@@ -187,9 +186,7 @@
     color: white;
     font-size: 42px;
     font-weight: 900;
-    background:
-        radial-gradient(circle at top right, rgba(34, 197, 94, 0.35), transparent 35%),
-        linear-gradient(135deg, #2563eb, #059669);
+    background: linear-gradient(135deg, #84c341, #6ba82e);
 }
 
 .dealer-cover-shade {
@@ -198,21 +195,9 @@
     background: linear-gradient(180deg, rgba(15,23,42,0.05), rgba(15,23,42,0.52));
 }
 
-.dealer-cover-chip {
-    position: absolute;
-    left: 12px;
-    bottom: 12px;
-    background: rgba(255,255,255,0.92);
-    color: #0f172a;
-    border-radius: 999px;
-    padding: 7px 11px;
-    font-size: 11px;
-    font-weight: 900;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
-}
-
 .dealer-profile-body {
-    padding: 15px;
+    padding: 20px;
+    text-align: center;
 }
 
 .dealer-profile-body span {
@@ -225,12 +210,22 @@
 }
 
 .dealer-profile-body h2 {
-    margin: 7px 0 7px;
+    margin: 7px 0 5px;
     color: #0f172a;
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1.22;
     font-weight: 900;
     word-break: break-word;
+}
+
+.dealer-quote {
+    font-size: 12px;
+    color: #84c341;
+    font-weight: 800;
+    font-style: italic;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #e5e7eb;
 }
 
 .dealer-profile-body p {
@@ -241,21 +236,18 @@
     line-height: 1.45;
 }
 
-/* Gold visualization card */
+/* Gold visualization card - Wider */
 .gold-visual-card {
     position: relative;
     overflow: hidden;
-    border-radius: 28px;
-    min-height: 275px;
+    border-radius: 26px;
     background:
         radial-gradient(circle at 16% 18%, rgba(255,255,255,0.52), transparent 22%),
         radial-gradient(circle at 90% 10%, rgba(255, 236, 153, 0.55), transparent 24%),
         linear-gradient(135deg, #fff5cc 0%, #ffd15c 42%, #b66a00 100%);
     border: 1px solid rgba(126, 75, 0, 0.22);
-    box-shadow:
-        0 18px 42px rgba(146, 94, 8, 0.22),
-        inset 0 1px 0 rgba(255,255,255,0.45);
-    padding: 16px;
+    box-shadow: 0 14px 34px rgba(146, 94, 8, 0.22);
+    padding: 18px;
     color: #4a2f00;
 }
 
@@ -279,7 +271,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: 10px;
+    gap: 8px;
 }
 
 .gold-top-line {
@@ -287,6 +279,7 @@
     justify-content: space-between;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .gold-title {
@@ -302,23 +295,23 @@
     border: 1px solid rgba(92,61,0,0.14);
     color: #5c3d00;
     border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 11px;
+    padding: 5px 9px;
+    font-size: 10px;
     font-weight: 1000;
     white-space: nowrap;
 }
 
 .gold-center {
     display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 14px;
+    grid-template-columns: 100px 1fr;
+    gap: 15px;
     align-items: center;
 }
 
 /* CSS money bag, no image */
 .coin-pot-wrap {
     position: relative;
-    height: 170px;
+    height: 100px;
     display: flex;
     align-items: end;
     justify-content: center;
@@ -326,8 +319,8 @@
 
 .coin {
     position: absolute;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background:
         radial-gradient(circle at 35% 30%, #fff8c7 0 18%, #facc15 35%, #b7791f 100%);
@@ -336,30 +329,30 @@
     animation: coinFloat 2.8s infinite ease-in-out;
 }
 
-.coin.c1 { top: 12px; left: 50px; animation-delay: 0s; }
-.coin.c2 { top: 32px; left: 78px; width: 14px; height: 14px; animation-delay: .4s; }
-.coin.c3 { top: 55px; left: 39px; width: 15px; height: 15px; animation-delay: .8s; }
-.coin.c4 { top: 73px; left: 83px; width: 12px; height: 12px; animation-delay: 1.2s; }
-.coin.c5 { top: 94px; left: 58px; width: 13px; height: 13px; animation-delay: 1.6s; }
+.coin.c1 { top: 10px; left: 35px; animation-delay: 0s; }
+.coin.c2 { top: 25px; left: 55px; width: 11px; height: 11px; animation-delay: .4s; }
+.coin.c3 { top: 42px; left: 28px; width: 12px; height: 12px; animation-delay: .8s; }
+.coin.c4 { top: 55px; left: 58px; width: 10px; height: 10px; animation-delay: 1.2s; }
+.coin.c5 { top: 68px; left: 42px; width: 11px; height: 11px; animation-delay: 1.6s; }
 
 .money-bag {
     position: relative;
-    width: 102px;
-    height: 94px;
+    width: 70px;
+    height: 65px;
     border-radius: 45% 45% 22px 22px;
     background:
         radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 28%),
         linear-gradient(135deg, #8b1545, #5b0f35 70%);
-    box-shadow: 0 18px 26px rgba(82, 24, 58, 0.28);
+    box-shadow: 0 12px 20px rgba(82, 24, 58, 0.28);
 }
 
 .money-bag::before {
     content: "";
     position: absolute;
-    top: -17px;
+    top: -10px;
     left: 50%;
-    width: 58px;
-    height: 26px;
+    width: 40px;
+    height: 18px;
     transform: translateX(-50%);
     background: linear-gradient(135deg, #facc15, #b7791f);
     border-radius: 50%;
@@ -369,18 +362,18 @@
 .money-bag::after {
     content: "₹";
     position: absolute;
-    top: 29px;
+    top: 18px;
     left: 50%;
     transform: translateX(-50%);
-    width: 42px;
-    height: 42px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: rgba(255,255,255,.13);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffd76a;
-    font-size: 26px;
+    font-size: 18px;
     font-weight: 1000;
 }
 
@@ -390,52 +383,52 @@
 
 .gold-number-label {
     color: #6b4200;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 1000;
     text-transform: uppercase;
 }
 
 .gold-number {
-    margin-top: 4px;
+    margin-top: 2px;
     color: #3b2500;
-    font-size: clamp(40px, 5vw, 58px);
+    font-size: 36px;
     line-height: .92;
     font-weight: 1000;
     letter-spacing: -1px;
 }
 
 .gold-number span {
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 0;
 }
 
 .gold-value-pill {
-    margin-top: 10px;
+    margin-top: 6px;
     display: inline-flex;
     background: rgba(255,255,255,.50);
     border: 1px solid rgba(92,61,0,.12);
     color: #5c3d00;
     border-radius: 999px;
-    padding: 8px 11px;
-    font-size: 12px;
+    padding: 5px 9px;
+    font-size: 10px;
     font-weight: 1000;
 }
 
 .gold-progress {
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .gold-progress-top {
     display: flex;
     justify-content: space-between;
     color: #5c3d00;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 1000;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .gold-progress-track {
-    height: 9px;
+    height: 6px;
     border-radius: 999px;
     background: rgba(92,61,0,.16);
     overflow: hidden;
@@ -451,6 +444,7 @@
 .gold-actions {
     display: flex;
     gap: 8px;
+    margin-top: 8px;
 }
 
 .gold-btn {
@@ -458,7 +452,7 @@
     text-align: center;
     text-decoration: none;
     border-radius: 999px;
-    padding: 10px 11px;
+    padding: 8px 10px;
     font-size: 11px;
     font-weight: 1000;
 }
@@ -476,7 +470,7 @@
 
 @keyframes coinFloat {
     0%, 100% { transform: translateY(0) rotate(0deg); opacity: .95; }
-    50% { transform: translateY(-9px) rotate(14deg); opacity: 1; }
+    50% { transform: translateY(-5px) rotate(14deg); opacity: 1; }
 }
 
 @keyframes goldShine {
@@ -485,15 +479,15 @@
     100% { transform: translateX(45%) rotate(18deg); }
 }
 
-/* Payment donut card */
+/* Payment donut card - Wider */
 .dealer-payment-summary-card {
     background:
         radial-gradient(circle at top right, rgba(34, 197, 94, 0.10), transparent 30%),
         radial-gradient(circle at bottom left, rgba(239, 68, 68, 0.08), transparent 34%),
         linear-gradient(135deg, #ffffff, #f8fafc);
     border: 1px solid #e2e8f0;
-    border-radius: 28px;
-    padding: 10px;
+    border-radius: 26px;
+    padding: 18px;
     box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
     min-width: 0;
 }
@@ -504,19 +498,20 @@
     gap: 14px;
     align-items: flex-start;
     margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
 .dealer-summary-title h3 {
     margin: 0;
     color: #0f172a;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
 }
 
 .dealer-summary-title p {
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     color: #64748b;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
 }
 
@@ -529,8 +524,8 @@
     background: #0f172a;
     color: white;
     border-radius: 999px;
-    padding: 10px 13px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
     font-weight: 900;
     box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
     transition: 0.22s ease;
@@ -543,7 +538,7 @@
 
 .dealer-payment-main {
     display: grid;
-    grid-template-columns: minmax(145px, 185px) minmax(0, 1fr);
+    grid-template-columns: minmax(120px, 150px) minmax(0, 1fr);
     gap: 15px;
     align-items: center;
 }
@@ -557,7 +552,7 @@
 
 .dealer-donut {
     --paid: 0;
-    width: clamp(132px, 15vw, 178px);
+    width: 120px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     background: conic-gradient(#16a34a 0 calc(var(--paid) * 1%), #ef4444 calc(var(--paid) * 1%) 100%);
@@ -572,7 +567,7 @@
 
 .dealer-donut-inner {
     position: absolute;
-    inset: 24px;
+    inset: 18px;
     background: #ffffff;
     border-radius: 50%;
     border: 1px solid #e2e8f0;
@@ -586,39 +581,40 @@
 .dealer-donut-inner strong {
     display: block;
     color: #0f172a;
-    font-size: 22px;
+    font-size: 18px;
     line-height: 1;
     font-weight: 900;
 }
 
 .dealer-donut-inner span {
-    margin-top: 4px;
+    margin-top: 2px;
     color: #64748b;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
     text-transform: uppercase;
 }
 
 .dealer-stat-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 8px;
     min-width: 0;
 }
 
 .dealer-stat-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 12px;
+    border-radius: 14px;
+    padding: 10px 12px;
     min-width: 0;
 }
 
 .dealer-stat-box span {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
     color: #64748b;
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 900;
     text-transform: uppercase;
     line-height: 1.2;
@@ -626,9 +622,9 @@
 
 .dealer-stat-box strong {
     display: block;
-    margin-top: 7px;
+    margin-top: 4px;
     color: #0f172a;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.2;
     font-weight: 900;
     word-break: break-word;
@@ -662,8 +658,8 @@
 }
 
 .dealer-stat-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     flex: 0 0 auto;
 }
@@ -673,7 +669,660 @@
 .dealer-stat-dot.red { background: #ef4444; }
 
 /* =========================
-   DASHBOARD SECTIONS
+   E-COMMERCE PRODUCT SECTIONS FOR DEALER
+========================= */
+
+/* Section Styles */
+.ecommerce-section {
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.section-header h2:after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #84c341, #f59e0b);
+    border-radius: 3px;
+}
+
+.section-header h2 i {
+    color: #84c341;
+    margin-right: 8px;
+}
+
+.view-all-btn {
+    background: transparent;
+    border: 2px solid #84c341;
+    color: #84c341;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.view-all-btn:hover {
+    background: #84c341;
+    color: white;
+    transform: translateX(5px);
+}
+
+/* Top Selling Products - Horizontal Scroll */
+.top-selling-scroll {
+    overflow-x: auto;
+    display: flex;
+    gap: 12px;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.top-selling-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.top-selling-scroll::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.top-selling-scroll::-webkit-scrollbar-thumb {
+    background: #84c341;
+    border-radius: 10px;
+}
+
+.top-selling-card {
+    min-width: 200px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.top-selling-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.top-selling-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.top-selling-image {
+    height: 140px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.top-selling-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+.top-selling-card:hover .top-selling-image img {
+    transform: scale(1.05);
+}
+
+.top-selling-info {
+    padding: 12px;
+}
+
+.top-selling-info h3 {
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.top-selling-category {
+    font-size: 10px;
+    color: #84c341;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.top-selling-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.top-selling-price small {
+    font-size: 10px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* Categories Grid - With Beautiful Gradient Backgrounds */
+.categories-section {
+    position: relative;
+    padding: 15px 0;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.category-circle-card {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.category-circle {
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.category-circle i {
+    font-size: 32px;
+    color: #d97706;
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.category-circle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+}
+
+.category-circle-card:hover .category-circle {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(132, 195, 65, 0.25);
+}
+
+.category-circle-card:hover .category-circle::before {
+    opacity: 1;
+}
+
+.category-circle-card:hover .category-circle i {
+    transform: scale(1.08);
+}
+
+.category-circle-card span {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 6px;
+}
+
+.category-circle-card small {
+    display: block;
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Category color variations */
+.category-circle[data-color="0"] { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.category-circle[data-color="1"] { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+.category-circle[data-color="2"] { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.category-circle[data-color="3"] { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+.category-circle[data-color="4"] { background: linear-gradient(135deg, #fed7aa, #fdba74); }
+.category-circle[data-color="5"] { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); }
+.category-circle[data-color="6"] { background: linear-gradient(135deg, #ccfbf1, #99f6e4); }
+.category-circle[data-color="7"] { background: linear-gradient(135deg, #fef08a, #fde047); }
+
+.explore-all-btn {
+    text-align: center;
+    margin-top: 12px;
+}
+
+.explore-all-btn .btn {
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.explore-all-btn .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(132, 195, 65, 0.35);
+}
+
+/* Top Searched Products */
+.top-searched-scroll {
+    overflow-x: auto;
+    display: flex;
+    gap: 12px;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.top-searched-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.top-searched-scroll::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.top-searched-scroll::-webkit-scrollbar-thumb {
+    background: #f59e0b;
+    border-radius: 10px;
+}
+
+.top-searched-card {
+    min-width: 190px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.top-searched-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.search-rank {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 12px;
+    z-index: 2;
+}
+
+.top-searched-image {
+    height: 130px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.top-searched-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.top-searched-info {
+    padding: 10px;
+}
+
+.top-searched-info h3 {
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.search-count {
+    font-size: 10px;
+    color: #f59e0b;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+/* Product Promotions Section - REDUCED HEIGHT */
+.promotions-section {
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
+    border-radius: 24px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.promotions-section::before {
+    content: "\f005";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 80px;
+    opacity: 0.06;
+    pointer-events: none;
+}
+
+.promotions-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.promotions-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.promotions-header p {
+    color: #64748b;
+    font-size: 12px;
+    margin: 0;
+}
+
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.promo-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.promo-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.promo-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.promo-image {
+    height: 140px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.promo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.promo-discount {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fbbf24;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.promo-info {
+    padding: 12px;
+}
+
+.promo-info h3 {
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.promo-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.current-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.old-price {
+    font-size: 12px;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.promo-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+    color: white;
+    border: none;
+    padding: 7px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.promo-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(132, 195, 65, 0.35);
+}
+
+/* Target Card - Minimal */
+.target-card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    margin-bottom: 18px;
+}
+
+.target-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.target-header h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.target-header p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.target-status {
+    display: inline-flex;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.target-ring {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin: 15px auto;
+    background: conic-gradient(#2563eb calc(var(--percent) * 1%), #e2e8f0 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.target-ring-inner {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.target-ring-inner strong {
+    font-size: 22px;
+    color: #0f172a;
+    font-weight: 900;
+}
+
+.target-ring-inner span {
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.target-stats {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.target-stat {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.target-stat span {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.target-stat strong {
+    color: #0f172a;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.empty-target {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    padding: 18px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 700;
+}
+
+/* =========================
+   DASHBOARD SECTIONS (for other roles)
 ========================= */
 .dashboard-grid {
     display: grid;
@@ -900,130 +1549,20 @@
     word-break: break-word;
 }
 
-/* Target */
-.target-card {
-    background: white;
-    border-radius: 24px;
-    padding: 18px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
-    margin-bottom: 18px;
-}
-
-.target-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-.target-header h3 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.target-header p {
-    margin: 5px 0 0;
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.target-status {
-    display: inline-flex;
-    background: #ecfdf5;
-    color: #047857;
-    border: 1px solid #bbf7d0;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 900;
-    white-space: nowrap;
-}
-
-.target-ring {
-    width: 190px;
-    height: 190px;
-    border-radius: 50%;
-    margin: 20px auto;
-    background: conic-gradient(#2563eb calc(var(--percent) * 1%), #e2e8f0 0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.target-ring-inner {
-    width: 132px;
-    height: 132px;
-    border-radius: 50%;
-    background: white;
-    border: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.target-ring-inner strong {
-    font-size: 30px;
-    color: #0f172a;
-    font-weight: 900;
-}
-
-.target-ring-inner span {
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.target-stats {
-    display: grid;
-    gap: 10px;
-}
-
-.target-stat {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    background: #f8fafc;
-    padding: 12px 14px;
-    border-radius: 15px;
-    border: 1px solid #e2e8f0;
-}
-
-.target-stat span {
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.target-stat strong {
-    color: #0f172a;
-    font-size: 13px;
-    font-weight: 900;
-    text-align: right;
-}
-
-.empty-target {
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    border-radius: 18px;
-    padding: 18px;
-    text-align: center;
-    color: #64748b;
-    font-weight: 800;
-}
-
 /* Responsive */
 @media (max-width: 1200px) {
     .dealer-main-grid {
-        grid-template-columns: 255px minmax(0, 1fr);
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
-
+    
     .dealer-payment-summary-card {
-        grid-column: 1 / -1;
+        grid-column: 1;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
     }
 }
 
@@ -1033,7 +1572,7 @@
     }
 
     .gold-center {
-        grid-template-columns: 130px 1fr;
+        grid-template-columns: 100px 1fr;
     }
 
     .dealer-payment-main {
@@ -1046,6 +1585,63 @@
 
     .dashboard-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .category-circle {
+        max-width: 90px;
+    }
+    
+    .category-circle i {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-wrap {
+        padding: 12px;
+    }
+    
+    .promotions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .section-header h2 {
+        font-size: 18px;
+    }
+    
+    .top-selling-card {
+        min-width: 170px;
+    }
+    
+    .top-selling-image {
+        height: 120px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .category-circle {
+        max-width: 80px;
+    }
+    
+    .category-circle i {
+        font-size: 24px;
+    }
+    
+    .category-circle-card span {
+        font-size: 11px;
+    }
+    
+    .category-circle-card small {
+        font-size: 9px;
     }
 }
 
@@ -1084,7 +1680,7 @@
     .dealer-payment-summary-card,
     .section-card,
     .target-card {
-        border-radius: 22px;
+        border-radius: 20px;
     }
 
     .gold-center {
@@ -1093,7 +1689,7 @@
     }
 
     .coin-pot-wrap {
-        height: 145px;
+        height: 90px;
     }
 
     .gold-actions {
@@ -1111,16 +1707,16 @@
     }
 
     .dealer-donut-area {
-        min-height: 160px;
+        min-height: 140px;
     }
 
     .dealer-donut {
-        width: min(56vw, 168px);
-        min-width: 138px;
+        width: min(50vw, 120px);
+        min-width: 110px;
     }
 
     .dealer-donut-inner {
-        inset: 22px;
+        inset: 15px;
     }
 
     .dealer-stat-box {
@@ -1128,13 +1724,13 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 11px 12px;
+        padding: 8px 10px;
     }
 
     .dealer-stat-box strong {
         margin-top: 0;
         text-align: right;
-        font-size: 13px;
+        font-size: 12px;
         white-space: nowrap;
     }
 
@@ -1150,32 +1746,95 @@
     }
 
     .target-ring {
-        width: 165px;
-        height: 165px;
+        width: 120px;
+        height: 120px;
     }
 
     .target-ring-inner {
-        width: 112px;
-        height: 112px;
+        width: 80px;
+        height: 80px;
     }
 
     .target-ring-inner strong {
-        font-size: 24px;
+        font-size: 20px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .category-circle {
+        max-width: 75px;
+    }
+    
+    .category-circle i {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 550px) {
+    .promotions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .promo-image {
+        height: 110px;
+    }
+    
+    .promo-info h3 {
+        font-size: 11px;
+    }
+    
+    .current-price {
+        font-size: 13px;
+    }
+    
+    .old-price {
+        font-size: 10px;
+    }
+    
+    .promo-btn {
+        font-size: 9px;
+        padding: 5px;
+    }
+    
+    .promo-discount {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .category-circle {
+        max-width: 65px;
+    }
+    
+    .category-circle i {
+        font-size: 18px;
+    }
+    
+    .category-circle-card span {
+        font-size: 10px;
     }
 }
 
 @media (max-width: 380px) {
     .gold-number {
-        font-size: 34px;
+        font-size: 28px;
     }
 
     .dealer-donut {
-        width: 142px;
-        min-width: 142px;
+        width: 110px;
+        min-width: 110px;
     }
 
     .dealer-donut-inner strong {
-        font-size: 19px;
+        font-size: 16px;
     }
 
     .dealer-stat-box {
@@ -1183,146 +1842,352 @@
     }
 
     .dealer-stat-box strong {
-        margin-top: 6px;
+        margin-top: 4px;
         text-align: left;
         white-space: normal;
     }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    
+    .category-circle {
+        max-width: 60px;
+    }
+    
+    .category-circle i {
+        font-size: 16px;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ecommerce-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.ecommerce-section:nth-child(1) { animation-delay: 0.1s; }
+.ecommerce-section:nth-child(2) { animation-delay: 0.2s; }
+.ecommerce-section:nth-child(3) { animation-delay: 0.3s; }
+.ecommerce-section:nth-child(4) { animation-delay: 0.4s; }
+
+/* ================= DEALER MOBILE APP DASHBOARD - APP STYLE ================= */
+.dealer-app-dashboard{
+    max-width:1180px;
+    margin:0 auto;
+    padding-bottom:18px;
+}
+.dealer-app-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:18px;
+}
+.dealer-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+.dealer-avatar,.dealer-avatar-fallback{
+    width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #ecfdf5;box-shadow:0 10px 24px rgba(15,23,42,.12);flex:0 0 auto;
+}
+.dealer-avatar-fallback{background:linear-gradient(135deg,#16a34a,#84c341);color:white;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.dealer-good{color:#64748b;font-size:12px;font-weight:800;}
+.dealer-left h2{margin:2px 0;color:#0f172a;font-size:23px;font-weight:1000;line-height:1.12;}
+.dealer-left h2 i{color:#16a34a;font-size:16px;}
+.dealer-left p{margin:0;color:#64748b;font-size:12px;font-weight:800;}
+.dealer-left p i{color:#16a34a;}
+.dealer-reward-card{min-width:150px;background:white;border:1px solid #e5e7eb;border-radius:18px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;text-decoration:none;box-shadow:0 12px 26px rgba(15,23,42,.08);}
+.dealer-reward-card span{color:#64748b;font-size:10px;font-weight:900;}
+.dealer-reward-card strong{color:#16a34a;font-size:18px;font-weight:1000;}
+.dealer-reward-card i{grid-row:1/3;grid-column:2;color:#16a34a;}
+.dealer-hero-banner{min-height:210px;border-radius:26px;padding:22px;margin-bottom:18px;display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:center;overflow:hidden;background:radial-gradient(circle at 88% 45%, rgba(255,255,255,.92), transparent 30%),radial-gradient(circle at 80% 80%, rgba(132,195,65,.23), transparent 34%),linear-gradient(135deg,#ecfdf5,#f7fee7 58%,#d9f99d);box-shadow:0 16px 34px rgba(15,23,42,.10);}
+.dealer-hero-text span{display:inline-flex;background:#16a34a;color:white;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:900;}
+.dealer-hero-text h1{margin:12px 0 8px;color:#172554;font-size:30px;line-height:1.1;font-weight:1000;}
+.dealer-hero-text p{margin:0 0 15px;color:#166534;font-size:13px;font-weight:900;}
+.dealer-hero-text a{display:inline-flex;align-items:center;gap:8px;background:#16a34a;color:white;text-decoration:none;border-radius:999px;padding:12px 18px;font-weight:900;font-size:13px;}
+.dealer-hero-product{display:flex;align-items:end;justify-content:center;gap:8px;min-height:150px;}
+.dealer-hero-product img{max-width:31%;max-height:145px;object-fit:contain;filter:drop-shadow(0 18px 20px rgba(15,23,42,.18));}
+.dealer-hero-product i{color:#16a34a;font-size:78px;}
+.dealer-quick-grid{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;box-shadow:0 12px 28px rgba(15,23,42,.07);}
+.dealer-quick-item{text-decoration:none;color:#0f172a;text-align:center;font-weight:900;font-size:12px;}
+.dealer-quick-item i{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:24px;}
+.dealer-quick-item.green i{background:#ecfdf5;color:#16a34a}.dealer-quick-item.blue i{background:#eff6ff;color:#2563eb}.dealer-quick-item.mint i{background:#ecfeff;color:#0891b2}.dealer-quick-item.orange i{background:#fff7ed;color:#ea580c}.dealer-quick-item.purple i{background:#f5f3ff;color:#7c3aed}.dealer-quick-item.yellow i{background:#fffbeb;color:#d97706}.dealer-quick-item.lightgreen i{background:#f0fdf4;color:#16a34a}.dealer-quick-item.sky i{background:#eff6ff;color:#0284c7}
+.dealer-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0 12px;}
+.dealer-section-head h3{margin:0;color:#0f172a;font-size:18px;font-weight:1000;}
+.dealer-section-head h3 i{color:#16a34a;margin-right:7px;}
+.dealer-section-head a{color:#16a34a;text-decoration:none;font-size:12px;font-weight:900;}
+.dealer-business-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.business-card{background:white;border:1px solid #e5e7eb;border-radius:20px;padding:14px;text-align:center;box-shadow:0 10px 22px rgba(15,23,42,.06);}
+.business-card i{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:17px;}
+.business-card.green{background:#f0fdf4}.business-card.orange{background:#fff7ed}.business-card.purple{background:#faf5ff}.business-card.blue{background:#eff6ff}
+.business-card.green i{background:#16a34a;color:white}.business-card.orange i{background:#f97316;color:white}.business-card.purple i{background:#8b5cf6;color:white}.business-card.blue i{background:#2563eb;color:white}
+.business-card span{display:block;color:#334155;font-size:11px;font-weight:900;}
+.business-card strong{display:block;margin-top:7px;color:#0f172a;font-size:20px;font-weight:1000;}
+.business-card small{display:block;color:#16a34a;font-size:10px;font-weight:900;margin-top:5px;}
+.dealer-product-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch;}
+.dealer-product-row::-webkit-scrollbar{height:0;}
+.dealer-product-card{min-width:160px;max-width:160px;background:white;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;box-shadow:0 10px 22px rgba(15,23,42,.07);}
+.dealer-product-img{position:relative;height:135px;background:#f8fafc;display:flex;align-items:center;justify-content:center;text-decoration:none;}
+.dealer-product-img img{width:100%;height:100%;object-fit:contain;padding:9px;}
+.dealer-product-img i{font-size:38px;color:#16a34a;}
+.dealer-product-img span{position:absolute;left:8px;bottom:8px;background:#dcfce7;color:#15803d;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;}
+.dealer-product-body{padding:10px;}
+.dealer-product-body h4{margin:0;min-height:34px;color:#0f172a;font-size:12px;font-weight:1000;line-height:1.25;}
+.dealer-product-body p{margin:5px 0;color:#64748b;font-size:10px;font-weight:800;min-height:14px;}
+.dealer-product-body strong{display:block;color:#16a34a;font-size:14px;font-weight:1000;}
+.dealer-product-body small{display:block;color:#64748b;font-size:10px;font-weight:800;margin-top:3px;}
+.dealer-add-btn{margin-top:8px;display:flex;justify-content:center;text-decoration:none;border:1px solid #16a34a;color:#16a34a;border-radius:10px;padding:7px;font-size:12px;font-weight:1000;}
+.dealer-category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.dealer-category-card{text-decoration:none;color:#0f172a;text-align:center;}
+.dealer-category-circle{width:82px;height:82px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 22px rgba(15,23,42,.08);}
+.dealer-category-circle i{font-size:28px;}
+.dealer-category-card strong{display:block;font-size:12px;font-weight:1000;}
+.dealer-category-card span{display:block;margin-top:3px;color:#64748b;font-size:10px;font-weight:800;}
+.color-0{background:#fef3c7;color:#d97706}.color-1{background:#dcfce7;color:#16a34a}.color-2{background:#dbeafe;color:#2563eb}.color-3{background:#fce7f3;color:#db2777}.color-4{background:#ffedd5;color:#ea580c}.color-5{background:#ede9fe;color:#7c3aed}.color-6{background:#ccfbf1;color:#0f766e}.color-7{background:#fef9c3;color:#ca8a04}
+.dealer-mini-product-list{display:grid;gap:10px;}
+.dealer-mini-product-item{display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:12px;background:white;border:1px solid #e5e7eb;border-radius:18px;padding:9px;text-decoration:none;color:#0f172a;box-shadow:0 8px 18px rgba(15,23,42,.05);}
+.mini-img{width:58px;height:58px;border-radius:15px;background:#f8fafc;display:flex;align-items:center;justify-content:center;}
+.mini-img img{width:100%;height:100%;object-fit:contain;}
+.mini-content h4{margin:0;font-size:13px;font-weight:1000;}.mini-content span{color:#64748b;font-size:11px;font-weight:800;}.dealer-mini-product-item > i{color:#94a3b8;}
+.dealer-promo-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0;}
+.dealer-promo-card{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:18px;padding:15px;text-decoration:none;color:#0f172a;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.dealer-promo-card.blue{background:#eff6ff;border-color:#bfdbfe;}.dealer-promo-card h4{margin:0;font-size:14px;font-weight:1000;}.dealer-promo-card p{margin:4px 0 0;color:#64748b;font-size:11px;font-weight:800;}.dealer-promo-card i{color:#16a34a;font-size:28px;}.dealer-promo-card.blue i{color:#2563eb;}
+.dealer-empty-box{background:white;border:1px dashed #cbd5e1;border-radius:18px;padding:22px;color:#64748b;font-weight:900;text-align:center;width:100%;}
+.dealer-bottom-safe{height:20px;}
+@media(max-width:768px){
+    .dashboard-wrap{padding:12px;background:#f8fafc;}
+    .dealer-app-header{align-items:flex-start;}
+    .dealer-avatar,.dealer-avatar-fallback{width:52px;height:52px;}
+    .dealer-left h2{font-size:20px;}
+    .dealer-reward-card{min-width:128px;padding:10px;}.dealer-reward-card strong{font-size:15px;}
+    .dealer-hero-banner{min-height:185px;grid-template-columns:1fr .75fr;padding:18px;border-radius:20px;}
+    .dealer-hero-text h1{font-size:21px;}
+    .dealer-hero-product{flex-direction:row;gap:4px;min-height:130px;align-items:center;}
+    .dealer-hero-product img{max-width:65px;max-height:72px;width:auto;height:auto;}
+    .dealer-hero-product i{font-size:52px;}
+    .dealer-quick-grid{grid-template-columns:repeat(4,1fr);gap:10px;padding:13px;border-radius:20px;}.dealer-quick-item{font-size:10px;}.dealer-quick-item i{width:54px;height:54px;border-radius:16px;font-size:21px;}
+    .dealer-business-grid{grid-template-columns:repeat(4,1fr);gap:8px;}.business-card{padding:10px 6px;border-radius:16px;}.business-card i{width:35px;height:35px;font-size:14px;}.business-card span{font-size:9px;min-height:22px;}.business-card strong{font-size:15px;}.business-card small{font-size:8px;}
+    .dealer-category-grid{grid-template-columns:repeat(4,1fr);gap:10px;}.dealer-category-circle{width:64px;height:64px;}.dealer-category-circle i{font-size:21px;}.dealer-category-card strong{font-size:10px;}.dealer-promo-row{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:430px){
+    .dealer-app-header{gap:8px;}.dealer-left{gap:9px;}.dealer-left h2{font-size:18px;}.dealer-reward-card{min-width:112px;}.dealer-reward-card span{font-size:8px;}.dealer-reward-card strong{font-size:14px;}.dealer-hero-text h1{font-size:19px;}.dealer-quick-grid{grid-template-columns:repeat(4,1fr);}.dealer-quick-item i{width:48px;height:48px;}.dealer-business-grid{grid-template-columns:repeat(4,1fr);}.business-card strong{font-size:13px;}.dealer-product-card{min-width:145px;max-width:145px;}.dealer-product-img{height:122px;}.dealer-category-circle{width:58px;height:58px;}
+}
+@media(max-width:380px){
+    .dealer-hero-product img{max-width:50px;max-height:60px;}
+    .dealer-hero-product i{font-size:40px;}
 }
 </style>
 
 <div class="dashboard-wrap">
 
     {% if profile.role == "DEALER" %}
-        <div class="dealer-top-shell">
-            <div class="dealer-main-grid">
 
-                <div class="dealer-profile-card">
-                    <div class="dealer-profile-cover">
-                        {% if profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" alt="Dealer Profile">
-                        {% else %}
-                            <div class="dealer-cover-placeholder">
-                                {{ request.user.username|first|upper }}
-                            </div>
-                        {% endif %}
+        <div class="dealer-app-dashboard">
 
-                        <div class="dealer-cover-shade"></div>
-                        <span class="dealer-cover-chip">{{ profile.get_role_display }}</span>
-                    </div>
+            <div class="dealer-app-header">
+                <div class="dealer-left">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" class="dealer-avatar" alt="Dealer">
+                    {% else %}
+                        <div class="dealer-avatar-fallback"><i class="fas fa-store"></i></div>
+                    {% endif %}
 
-                    <div class="dealer-profile-body">
-                        <span>Welcome back</span>
+                    <div>
+                        <div class="dealer-good" id="dynamicGreeting">Good Morning! 🌿</div>
                         <h2>
                             {% if dealer %}
-                                {{ dealer.firm_name }}
+                                {{ dealer.firm_name|default:request.user.username }}
                             {% else %}
                                 {{ request.user.get_full_name|default:request.user.username }}
                             {% endif %}
+                            <i class="fas fa-check-circle"></i>
                         </h2>
-                        <p>Upload more farmer data and unlock higher rewards.</p>
+                        <p>
+                            <i class="fas fa-location-dot"></i>
+                            {% if dealer and dealer.district %}
+                                {{ dealer.district.name }}
+                            {% elif profile.district %}
+                                {{ profile.district.name }}
+                            {% else %}
+                                Dealer Location
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
 
-                {% if dealer_points_summary %}
-                    <div class="gold-visual-card">
-                        <div class="gold-card-content">
-                            <div class="gold-top-line">
-                                <div class="gold-title">🏆 Gold Reward Wallet</div>
-                                <div class="gold-farmer-chip">
-                                    +{{ dealer_points_summary.farmer_points }} / Farmer
-                                </div>
-                            </div>
-
-                            <div class="gold-center">
-                                <div class="coin-pot-wrap">
-                                    <span class="coin c1"></span>
-                                    <span class="coin c2"></span>
-                                    <span class="coin c3"></span>
-                                    <span class="coin c4"></span>
-                                    <span class="coin c5"></span>
-                                    <div class="money-bag"></div>
-                                </div>
-
-                                <div class="gold-number-box">
-                                    <div class="gold-number-label">Available Points</div>
-                                    <div class="gold-number">
-                                        {{ dealer_points_summary.balance_points }} <span>pts</span>
-                                    </div>
-                                    <div class="gold-value-pill">
-                                        Worth ₹{{ dealer_points_summary.point_value|floatformat:2 }} now
-                                    </div>
-
-                                    <div class="gold-progress">
-                                        <div class="gold-progress-top">
-                                            <span>Minimum redemption progress</span>
-                                            <span>{{ dealer_points_summary.progress_percentage }}%</span>
-                                        </div>
-                                        <div class="gold-progress-track">
-                                            <div class="gold-progress-fill" style="width: {{ dealer_points_summary.progress_percentage }}%;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="gold-actions">
-                                <a href="{% url 'dealer_farmer_data' %}" class="gold-btn primary">
-                                    Upload Farmer
-                                </a>
-                                <a href="{% url 'dealer_points_dashboard' %}" class="gold-btn secondary">
-                                    View Rewards
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
-                {% if dealer_invoice_summary %}
-                    <div class="dealer-payment-summary-card">
-                        <div class="dealer-summary-head">
-                            <div class="dealer-summary-title">
-                                <h3>Invoice Payment Summary</h3>
-                                <p>Green is paid amount. Red is pending balance.</p>
-                            </div>
-
-                            <a href="{% url 'dealer_invoice_list' %}" class="dealer-invoice-mini-btn">
-                                View All Invoices →
-                            </a>
-                        </div>
-
-                        <div class="dealer-payment-main">
-                            <div class="dealer-donut-area">
-                                <div class="dealer-donut {% if not dealer_invoice_summary.total_invoice_count %}empty{% endif %}"
-                                     style="--paid: {{ dealer_invoice_summary.paid_percentage|default:0 }};">
-                                    <div class="dealer-donut-inner">
-                                        <strong>{{ dealer_invoice_summary.paid_percentage|default:0 }}%</strong>
-                                        <span>Paid</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="dealer-stat-grid">
-                                <div class="dealer-stat-box total">
-                                    <span><i class="dealer-stat-dot blue"></i>Total Invoice</span>
-                                    <strong>₹{{ dealer_invoice_summary.total_invoice_amount|floatformat:2 }}</strong>
-                                </div>
-
-                                <div class="dealer-stat-box paid">
-                                    <span><i class="dealer-stat-dot green"></i>Paid</span>
-                                    <strong>₹{{ dealer_invoice_summary.total_paid_amount|floatformat:2 }}</strong>
-                                </div>
-
-                                <div class="dealer-stat-box pending">
-                                    <span><i class="dealer-stat-dot red"></i>Pending</span>
-                                    <strong>₹{{ dealer_invoice_summary.total_pending_amount|floatformat:2 }}</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
+                <a href="{% url 'dealer_points_dashboard' %}" class="dealer-reward-card">
+                    <span>Rewards Balance</span>
+                    <strong>
+                        {% if dealer_points_summary %}
+                            {{ dealer_points_summary.balance_points }}
+                        {% else %}
+                            0
+                        {% endif %}
+                        pts
+                    </strong>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
             </div>
+
+            <div class="dealer-hero-banner">
+                <div class="dealer-hero-text">
+                    <span>Super Saving Offer</span>
+                    <h1>Best Quality. Best Yield.<br>Better Tomorrow.</h1>
+                    <p>Premium fertilizers for healthy crops 🌱</p>
+                    <a href="{% url 'dealer_products' %}">
+                        View Offers <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="dealer-hero-product">
+                    {% if top_selling_products %}
+                        {% for product in top_selling_products|slice:":3" %}
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <i class="fas fa-seedling"></i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="dealer-quick-grid">
+                <a href="{% url 'dealer_products' %}" class="dealer-quick-item green"><i class="fas fa-bag-shopping"></i><span>Place Order</span></a>
+                <a href="{% url 'dealer_order_list' %}" class="dealer-quick-item blue"><i class="fas fa-clipboard-list"></i><span>My Orders</span></a>
+                <a href="{% url 'dealer_products' %}" class="dealer-quick-item mint"><i class="fas fa-box-open"></i><span>Products</span></a>
+                <a href="{% url 'dealer_points_dashboard' %}" class="dealer-quick-item orange"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+                <a href="{% url 'dealer_invoice_list' %}" class="dealer-quick-item purple"><i class="fas fa-receipt"></i>   <span>Dealer Ledger</span></a>
+                <a href="{% url 'dealer_products' %}" class="dealer-quick-item yellow"><i class="fas fa-percent"></i><span>Schemes</span></a>
+                <a href="{% url 'dealer_farmer_data' %}" class="dealer-quick-item lightgreen"><i class="fas fa-users"></i><span>Farmers Added</span></a>
+                <a href="tel:8500352005" class="dealer-quick-item sky"><i class="fas fa-headset"></i><span>Support</span></a>
+            </div>
+
+            <div class="dealer-section-head">
+                <h3><i class="fas fa-chart-line"></i> Business Overview</h3>
+                <a href="{% url 'dealer_invoice_list' %}">View Details <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="dealer-business-grid">
+                <div class="business-card green">
+                    <i class="fas fa-cart-shopping"></i>
+                    <span>Active Orders</span>
+                    <strong>{{ my_orders_count|default:0 }}</strong>
+                    <small>In progress</small>
+                </div>
+
+                <div class="business-card orange">
+                    <i class="fas fa-indian-rupee-sign"></i>
+                    <span>Pending Payments</span>
+                    <strong>₹{% if dealer_invoice_summary %}{{ dealer_invoice_summary.total_pending_amount|floatformat:0 }}{% else %}0{% endif %}</strong>
+                    <small>{% if dealer_invoice_summary %}{{ dealer_invoice_summary.pending_invoice_count }} invoices{% else %}0 invoices{% endif %}</small>
+                </div>
+
+                <div class="business-card purple">
+                    <i class="fas fa-star"></i>
+                    <span>Reward Points</span>
+                    <strong>{% if dealer_points_summary %}{{ dealer_points_summary.balance_points }}{% else %}0{% endif %}</strong>
+                    <small>Worth ₹{% if dealer_points_summary %}{{ dealer_points_summary.point_value|floatformat:0 }}{% else %}0{% endif %}</small>
+                </div>
+
+                <div class="business-card blue">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Monthly Target</span>
+                    <strong>{% if target.show %}{{ target.percentage }}%{% else %}0%{% endif %}</strong>
+                    <small>{% if target.show %}₹{{ target.achieved_amount|floatformat:0 }} / ₹{{ target.target_amount|floatformat:0 }}{% else %}Not assigned{% endif %}</small>
+                </div>
+            </div>
+
+            <div class="dealer-section-head">
+                <h3><i class="fas fa-fire"></i> Popular Products</h3>
+                <a href="{% url 'dealer_products' %}">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="dealer-product-row">
+                {% for product in top_selling_products|slice:":10" %}
+                    <div class="dealer-product-card">
+                        <a href="{% url 'dealer_product_detail' product.id %}" class="dealer-product-img">
+                            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}<i class="fas fa-seedling"></i>{% endif %}
+                            <span>In Stock</span>
+                        </a>
+
+                        <div class="dealer-product-body">
+                            <h4>{{ product.name|truncatechars:22 }}</h4>
+                            {% if product.technical_name %}<p>{{ product.technical_name|truncatechars:24 }}</p>{% else %}<p>Dealer Price</p>{% endif %}
+                            {% with first_pack=product.pack_sizes.first %}
+                                <strong>₹ {{ first_pack.sale_price_per_unit|default:"0" }}</strong>
+                            {% endwith %}
+                            <a href="{% url 'dealer_product_detail' product.id %}" class="dealer-add-btn">+ Add</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="dealer-empty-box">No popular products available.</div>
+                {% endfor %}
+            </div>
+
+            <div class="dealer-section-head">
+                <h3><i class="fas fa-th-large"></i> Shop by Categories</h3>
+                <a href="{% url 'dealer_products' %}">Explore All <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="dealer-category-grid">
+                {% for category in categories|slice:":8" %}
+                    <a href="{% url 'dealer_products' %}?category={{ category.id }}" class="dealer-category-card">
+                        <div class="dealer-category-circle color-{{ forloop.counter0 }}">
+                            {% with category.name|lower as cat %}
+                                {% if "fert" in cat %}<i class="fas fa-seedling"></i>
+                                {% elif "chemical" in cat %}<i class="fas fa-flask"></i>
+                                {% elif "growth" in cat %}<i class="fas fa-leaf"></i>
+                                {% elif "bio" in cat %}<i class="fas fa-spa"></i>
+                                {% else %}<i class="fas fa-box"></i>{% endif %}
+                            {% endwith %}
+                        </div>
+                        <strong>{{ category.name|truncatechars:16 }}</strong>
+                        <span>{{ category.product_count|default:0 }} Products</span>
+                    </a>
+                {% empty %}
+                    <div class="dealer-empty-box">No categories available.</div>
+                {% endfor %}
+            </div>
+
+            <div class="dealer-section-head">
+                <h3><i class="fas fa-search"></i> Top Searched Products</h3>
+                <a href="{% url 'dealer_products' %}">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="dealer-mini-product-list">
+                {% for product in top_searched_products|slice:":5" %}
+                    <a href="{% url 'dealer_product_detail' product.id %}" class="dealer-mini-product-item">
+                        <div class="mini-img">{% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}<i class="fas fa-box"></i>{% endif %}</div>
+                        <div class="mini-content"><h4>{{ product.name }}</h4><span>{{ product.category.name|default:"Product" }}</span></div>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% empty %}
+                    <div class="dealer-empty-box">No searched products available.</div>
+                {% endfor %}
+            </div>
+
+            <div class="dealer-bottom-safe"></div>
         </div>
+
     {% else %}
+        <!-- ============================================ -->
+        <!-- ORIGINAL DASHBOARD FOR OTHER ROLES -->
+        <!-- ============================================ -->
         <div class="welcome-card">
             {% if profile.profile_image %}
                 <img src="{{ profile.profile_image.url }}" class="profile-avatar" alt="Profile">
@@ -1367,298 +2232,359 @@
                 </div>
             {% endif %}
         </div>
-    {% endif %}
 
-    {% if action_links %}
-        <div class="section-card">
-            <div class="section-head">
-                <div>
-                    <h3>Pending Actions</h3>
-                    <p>These are the sections where your approval or work is required now.</p>
-                </div>
-                <span class="total-action-pill">{{ pending_action_count }} Pending</span>
-            </div>
-
-            <div class="link-grid">
-                {% for link in action_links %}
-                    <a href="{{ link.url }}" class="dash-link-card urgent">
-                        <span class="red-count-badge">{{ link.count }}</span>
-
-                        <div class="icon-box">
-                            {% include "core/partials/dashboard_icon.html" with icon=link.icon %}
-                        </div>
-
-                        <h4>{{ link.title }}</h4>
-                        <p>{{ link.subtitle }}</p>
-                        <div class="link-arrow">Take Action →</div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
-    {% if profile.role != "DEALER" %}
-        <div class="section-card">
-            <div class="section-head">
-                <div>
-                    <h3>Attendance, TA/DA & Leave</h3>
-                    <p>Clock-in, clock-out, GPS travel, TA/DA approvals and leave management.</p>
-                </div>
-                <span class="attendance-pill">HR Module</span>
-            </div>
-
-            <div class="link-grid">
-                <a href="{% url 'employee_attendance_dashboard' %}" class="dash-link-card attendance-card">
-                    <div class="icon-box">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 8v5l3 2"/>
-                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                        </svg>
-                    </div>
-                    <h4>My Attendance / Clock In</h4>
-                    <p>Clock-in, clock-out, GPS tracking, monthly KM, TA and DA summary.</p>
-                    <div class="link-arrow">Open Attendance →</div>
-                </a>
-
-                <a href="{% url 'employee_leave_list' %}" class="dash-link-card leave-card">
-                    <div class="icon-box success">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                            <path stroke-width="2" d="M5 5h14v16H5z"/>
-                        </svg>
-                    </div>
-                    <h4>My Leaves</h4>
-                    <p>View paid, sick, unpaid and other leave requests with approval status.</p>
-                    <div class="link-arrow">View Leaves →</div>
-                </a>
-
-                <a href="{% url 'employee_leave_request_create' %}" class="dash-link-card leave-card">
-                    <div class="icon-box success">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                        </svg>
-                    </div>
-                    <h4>Apply Leave</h4>
-                    <p>Apply full day or half day leave and send it to your manager.</p>
-                    <div class="link-arrow">Apply Now →</div>
-                </a>
-
-                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "HR" %}
-                    <a href="{% url 'manager_attendance_approvals' %}" class="dash-link-card {% if pending_manager_attendance_count %}urgent{% endif %}">
-                        {% if pending_manager_attendance_count %}
-                            <span class="red-count-badge">{{ pending_manager_attendance_count }}</span>
-                        {% endif %}
-
-                        <div class="icon-box warning">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <h4>TA/DA Manager Approvals</h4>
-                        <p>Review employee travel KM, reduce KM if needed and send claim to HR.</p>
-                        <div class="link-arrow">
-                            {% if pending_manager_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
-                        </div>
-                    </a>
-
-                    <a href="{% url 'manager_leave_approvals' %}" class="dash-link-card {% if pending_manager_leave_count %}urgent{% endif %}">
-                        {% if pending_manager_leave_count %}
-                            <span class="red-count-badge">{{ pending_manager_leave_count }}</span>
-                        {% endif %}
-
-                        <div class="icon-box success">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M9 11l3 3L22 4"/>
-                                <path stroke-width="2" d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                            </svg>
-                        </div>
-                        <h4>Leave Approvals</h4>
-                        <p>Approve or reject leave requests from employees under you.</p>
-                        <div class="link-arrow">
-                            {% if pending_manager_leave_count %}Take Action →{% else %}Open Section →{% endif %}
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" %}
-                    <a href="{% url 'hr_attendance_claims' %}" class="dash-link-card {% if pending_hr_attendance_count %}urgent{% endif %}">
-                        {% if pending_hr_attendance_count %}
-                            <span class="red-count-badge">{{ pending_hr_attendance_count }}</span>
-                        {% endif %}
-
-                        <div class="icon-box purple">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M12 11c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"/>
-                                <path stroke-width="2" d="M4 21a8 8 0 0116 0"/>
-                            </svg>
-                        </div>
-                        <h4>HR TA/DA Claims</h4>
-                        <p>Verify manager-approved TA/DA claims and forward for fund release.</p>
-                        <div class="link-arrow">
-                            {% if pending_hr_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                    <a href="{% url 'accountant_attendance_claims' %}" class="dash-link-card {% if pending_accountant_attendance_count %}urgent{% endif %}">
-                        {% if pending_accountant_attendance_count %}
-                            <span class="red-count-badge">{{ pending_accountant_attendance_count }}</span>
-                        {% endif %}
-
-                        <div class="icon-box dark">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                <path stroke-width="2" d="M12 6v14"/>
-                            </svg>
-                        </div>
-                        <h4>Release TA/DA Funds</h4>
-                        <p>Release monthly approved TA/DA funds after HR approval.</p>
-                        <div class="link-arrow">
-                            {% if pending_accountant_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
-                        </div>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    {% endif %}
-
-    <div class="dashboard-grid">
-
-        <div>
+        {% if action_links %}
             <div class="section-card">
                 <div class="section-head">
                     <div>
-                        <h3>All Links</h3>
-                        <p>All available sections for your role. Red badge means pending work.</p>
+                        <h3>Pending Actions</h3>
+                        <p>These are the sections where your approval or work is required now.</p>
                     </div>
+                    <span class="total-action-pill">{{ pending_action_count }} Pending</span>
                 </div>
 
                 <div class="link-grid">
-                    {% for link in dashboard_links %}
-                        <a href="{{ link.url }}" class="dash-link-card {% if link.urgent %}urgent{% endif %}">
-                            {% if link.count > 0 %}
-                                <span class="red-count-badge">{{ link.count }}</span>
-                            {% endif %}
+                    {% for link in action_links %}
+                        <a href="{{ link.url }}" class="dash-link-card urgent">
+                            <span class="red-count-badge">{{ link.count }}</span>
 
-                            <div class="icon-box {% if link.icon == 'approval' %}success{% elif link.icon == 'warehouse' or link.icon == 'transport' %}warning{% elif link.icon == 'profile' %}dark{% endif %}">
+                            <div class="icon-box">
                                 {% include "core/partials/dashboard_icon.html" with icon=link.icon %}
                             </div>
 
                             <h4>{{ link.title }}</h4>
                             <p>{{ link.subtitle }}</p>
-
-                            <div class="link-arrow">
-                                {% if link.count > 0 %}
-                                    Action Required →
-                                {% else %}
-                                    Open Section →
-                                {% endif %}
-                            </div>
-                        </a>
-                    {% empty %}
-                        <a href="{% url 'my_profile' %}" class="dash-link-card">
-                            <div class="icon-box dark">
-                                {% include "core/partials/dashboard_icon.html" with icon="profile" %}
-                            </div>
-                            <h4>My Profile</h4>
-                            <p>View and update your profile details.</p>
-                            <div class="link-arrow">Open Profile →</div>
+                            <div class="link-arrow">Take Action →</div>
                         </a>
                     {% endfor %}
                 </div>
             </div>
-        </div>
+        {% endif %}
 
-        <div>
-            {% if target.show %}
-                <div class="target-card">
-                    <div class="target-header">
-                        <div>
-                            <h3>{{ target.title }}</h3>
-                            <p>Track assigned target and achieved progress.</p>
-                        </div>
-                        <span class="target-status">Live Target</span>
-                    </div>
-
-                    <div class="target-ring" style="--percent: {{ target.percentage }};">
-                        <div class="target-ring-inner">
-                            <strong>{{ target.percentage }}%</strong>
-                            <span>Reached</span>
-                        </div>
-                    </div>
-
-                    <div class="target-stats">
-                        <div class="target-stat">
-                            <span>Target</span>
-                            <strong>₹{{ target.target_amount }}</strong>
-                        </div>
-
-                        <div class="target-stat">
-                            <span>Achieved</span>
-                            <strong>₹{{ target.achieved_amount }}</strong>
-                        </div>
-
-                        <div class="target-stat">
-                            <span>Balance</span>
-                            <strong>₹{{ target.balance_amount }}</strong>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="target-card">
-                    <div class="target-header">
-                        <div>
-                            <h3>Target Progress</h3>
-                            <p>Your target information will appear here after assignment.</p>
-                        </div>
-                    </div>
-
-                    <div class="empty-target">
-                        No target assigned yet.
-                    </div>
-                </div>
-            {% endif %}
-
+        {% if profile.role != "DEALER" %}
             <div class="section-card">
                 <div class="section-head">
                     <div>
-                        <h3>Account Summary</h3>
-                        <p>Basic user and role information.</p>
+                        <h3>Attendance, TA/DA & Leave</h3>
+                        <p>Clock-in, clock-out, GPS travel, TA/DA approvals and leave management.</p>
                     </div>
+                    <span class="attendance-pill">HR Module</span>
                 </div>
 
-                <div class="profile-mini-grid">
-                    <div class="profile-info-box">
-                        <span>Name</span>
-                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
-                    </div>
+                <div class="link-grid">
+                    <a href="{% url 'employee_attendance_dashboard' %}" class="dash-link-card attendance-card">
+                        <div class="icon-box">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M12 8v5l3 2"/>
+                                <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h4>My Attendance / Clock In</h4>
+                        <p>Clock-in, clock-out, GPS tracking, monthly KM, TA and DA summary.</p>
+                        <div class="link-arrow">Open Attendance →</div>
+                    </a>
 
-                    <div class="profile-info-box">
-                        <span>Role</span>
-                        <strong>{{ profile.get_role_display }}</strong>
-                    </div>
+                    <a href="{% url 'employee_leave_list' %}" class="dash-link-card leave-card">
+                        <div class="icon-box success">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
+                                <path stroke-width="2" d="M5 5h14v16H5z"/>
+                            </svg>
+                        </div>
+                        <h4>My Leaves</h4>
+                        <p>View paid, sick, unpaid and other leave requests with approval status.</p>
+                        <div class="link-arrow">View Leaves →</div>
+                    </a>
 
-                    <div class="profile-info-box">
-                        <span>Email</span>
-                        <strong>{{ request.user.email|default:"-" }}</strong>
-                    </div>
+                    <a href="{% url 'employee_leave_request_create' %}" class="dash-link-card leave-card">
+                        <div class="icon-box success">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M12 5v14M5 12h14"/>
+                            </svg>
+                        </div>
+                        <h4>Apply Leave</h4>
+                        <p>Apply full day or half day leave and send it to your manager.</p>
+                        <div class="link-arrow">Apply Now →</div>
+                    </a>
 
-                    <div class="profile-info-box">
-                        <span>Status</span>
-                        <strong>
-                            {% if request.user.is_active %}
-                                Active
-                            {% else %}
-                                Inactive
+                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "HR" %}
+                        <a href="{% url 'manager_attendance_approvals' %}" class="dash-link-card {% if pending_manager_attendance_count %}urgent{% endif %}">
+                            {% if pending_manager_attendance_count %}
+                                <span class="red-count-badge">{{ pending_manager_attendance_count }}</span>
                             {% endif %}
-                        </strong>
+
+                            <div class="icon-box warning">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M9 12l2 2 4-4"/>
+                                    <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <h4>TA/DA Manager Approvals</h4>
+                            <p>Review employee travel KM, reduce KM if needed and send claim to HR.</p>
+                            <div class="link-arrow">
+                                {% if pending_manager_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
+                            </div>
+                        </a>
+
+                        <a href="{% url 'manager_leave_approvals' %}" class="dash-link-card {% if pending_manager_leave_count %}urgent{% endif %}">
+                            {% if pending_manager_leave_count %}
+                                <span class="red-count-badge">{{ pending_manager_leave_count }}</span>
+                            {% endif %}
+
+                            <div class="icon-box success">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M9 11l3 3L22 4"/>
+                                    <path stroke-width="2" d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                                </svg>
+                            </div>
+                            <h4>Leave Approvals</h4>
+                            <p>Approve or reject leave requests from employees under you.</p>
+                            <div class="link-arrow">
+                                {% if pending_manager_leave_count %}Take Action →{% else %}Open Section →{% endif %}
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" %}
+                        <a href="{% url 'hr_attendance_claims' %}" class="dash-link-card {% if pending_hr_attendance_count %}urgent{% endif %}">
+                            {% if pending_hr_attendance_count %}
+                                <span class="red-count-badge">{{ pending_hr_attendance_count }}</span>
+                            {% endif %}
+
+                            <div class="icon-box purple">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M12 11c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"/>
+                                    <path stroke-width="2" d="M4 21a8 8 0 0116 0"/>
+                                </svg>
+                            </div>
+                            <h4>HR TA/DA Claims</h4>
+                            <p>Verify manager-approved TA/DA claims and forward for fund release.</p>
+                            <div class="link-arrow">
+                                {% if pending_hr_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
+                        <a href="{% url 'accountant_attendance_claims' %}" class="dash-link-card {% if pending_accountant_attendance_count %}urgent{% endif %}">
+                            {% if pending_accountant_attendance_count %}
+                                <span class="red-count-badge">{{ pending_accountant_attendance_count }}</span>
+                            {% endif %}
+
+                            <div class="icon-box dark">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
+                                    <path stroke-width="2" d="M12 6v14"/>
+                                </svg>
+                            </div>
+                            <h4>Release TA/DA Funds</h4>
+                            <p>Release monthly approved TA/DA funds after HR approval.</p>
+                            <div class="link-arrow">
+                                {% if pending_accountant_attendance_count %}Take Action →{% else %}Open Section →{% endif %}
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="dashboard-grid">
+            <div>
+                <div class="section-card">
+                    <div class="section-head">
+                        <div>
+                            <h3>All Links</h3>
+                            <p>All available sections for your role. Red badge means pending work.</p>
+                        </div>
+                    </div>
+
+                    <div class="link-grid">
+                        {% for link in dashboard_links %}
+                            <a href="{{ link.url }}" class="dash-link-card {% if link.urgent %}urgent{% endif %}">
+                                {% if link.count > 0 %}
+                                    <span class="red-count-badge">{{ link.count }}</span>
+                                {% endif %}
+
+                                <div class="icon-box {% if link.icon == 'approval' %}success{% elif link.icon == 'warehouse' or link.icon == 'transport' %}warning{% elif link.icon == 'profile' %}dark{% endif %}">
+                                    {% include "core/partials/dashboard_icon.html" with icon=link.icon %}
+                                </div>
+
+                                <h4>{{ link.title }}</h4>
+                                <p>{{ link.subtitle }}</p>
+
+                                <div class="link-arrow">
+                                    {% if link.count > 0 %}
+                                        Action Required →
+                                    {% else %}
+                                        Open Section →
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% empty %}
+                            <a href="{% url 'my_profile' %}" class="dash-link-card">
+                                <div class="icon-box dark">
+                                    {% include "core/partials/dashboard_icon.html" with icon="profile" %}
+                                </div>
+                                <h4>My Profile</h4>
+                                <p>View and update your profile details.</p>
+                                <div class="link-arrow">Open Profile →</div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                {% if target.show %}
+                    <div class="target-card">
+                        <div class="target-header">
+                            <div>
+                                <h3>{{ target.title }}</h3>
+                                <p>Track assigned target and achieved progress.</p>
+                            </div>
+                            <span class="target-status">Live Target</span>
+                        </div>
+
+                        <div class="target-ring" style="--percent: {{ target.percentage }};">
+                            <div class="target-ring-inner">
+                                <strong>{{ target.percentage }}%</strong>
+                                <span>Reached</span>
+                            </div>
+                        </div>
+
+                        <div class="target-stats">
+                            <div class="target-stat">
+                                <span>Target</span>
+                                <strong>₹{{ target.target_amount }}</strong>
+                            </div>
+
+                            <div class="target-stat">
+                                <span>Achieved</span>
+                                <strong>₹{{ target.achieved_amount }}</strong>
+                            </div>
+
+                            <div class="target-stat">
+                                <span>Balance</span>
+                                <strong>₹{{ target.balance_amount }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="target-card">
+                        <div class="target-header">
+                            <div>
+                                <h3>Target Progress</h3>
+                                <p>Your target information will appear here after assignment.</p>
+                            </div>
+                        </div>
+
+                        <div class="empty-target">
+                            No target assigned yet.
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="section-card">
+                    <div class="section-head">
+                        <div>
+                            <h3>Account Summary</h3>
+                            <p>Basic user and role information.</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-mini-grid">
+                        <div class="profile-info-box">
+                            <span>Name</span>
+                            <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        </div>
+
+                        <div class="profile-info-box">
+                            <span>Role</span>
+                            <strong>{{ profile.get_role_display }}</strong>
+                        </div>
+
+                        <div class="profile-info-box">
+                            <span>Email</span>
+                            <strong>{{ request.user.email|default:"-" }}</strong>
+                        </div>
+
+                        <div class="profile-info-box">
+                            <span>Status</span>
+                            <strong>
+                                {% if request.user.is_active %}
+                                    Active
+                                {% else %}
+                                    Inactive
+                                {% endif %}
+                            </strong>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    {% endif %}
 
-    </div>
 </div>
+
+<script>
+// Dynamic greeting based on time of day
+function updateGreeting() {
+    const now = new Date();
+    const hours = now.getHours();
+    let greeting = "";
+    let emoji = "";
+    
+    if (hours >= 5 && hours < 12) {
+        greeting = "Good Morning";
+        emoji = "🌅";
+    } else if (hours >= 12 && hours < 17) {
+        greeting = "Good Afternoon";
+        emoji = "☀️";
+    } else if (hours >= 17 && hours < 20) {
+        greeting = "Good Evening";
+        emoji = "🌆";
+    } else {
+        greeting = "Good Evening";
+        emoji = "🌙";
+    }
+    
+    const greetingElement = document.getElementById('dynamicGreeting');
+    if (greetingElement) {
+        greetingElement.innerHTML = `${greeting}! ${emoji}`;
+    }
+}
+
+// Call on page load
+updateGreeting();
+
+// Smooth scroll for horizontal containers
+document.querySelectorAll('.top-selling-scroll, .top-searched-scroll').forEach(container => {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+    
+    container.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2;
+        container.scrollLeft = scrollLeft - walk;
+    });
+});
+</script>
+
 {% endblock %}

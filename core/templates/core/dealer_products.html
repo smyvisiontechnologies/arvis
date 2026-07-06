@@ -1,11 +1,9 @@
 {% extends "core/base.html" %}
+{% load volume_filters %}
 
 {% block content %}
 <style>
-.catalog-page {
-    padding: 14px;
-    padding-bottom: 84px;
-}
+
 
 .catalog-top {
     margin-bottom: 12px;
@@ -28,105 +26,247 @@
     font-weight: 700;
 }
 
-.filter-card {
+/* Circular Category Chips */
+.category-circles-wrapper {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 12px;
-    margin-bottom: 14px;
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
     box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
 }
 
-.search-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
+.circles-label {
+    display: flex;
+    align-items: center;
     gap: 8px;
-    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.circles-label i {
+    font-size: 11px;
+}
+
+.category-circles {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.category-circles::-webkit-scrollbar {
+    height: 4px;
+}
+
+.category-circles::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.category-circles::-webkit-scrollbar-thumb {
+    background: #84c341;
+    border-radius: 10px;
+}
+
+.category-circle-item {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 70px;
+}
+
+.category-circle {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.category-circle i {
+    font-size: 28px;
+    color: #d97706;
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.category-circle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+}
+
+.category-circle-item:hover .category-circle {
+    transform: scale(1.08);
+    box-shadow: 0 10px 25px rgba(132, 195, 65, 0.25);
+}
+
+.category-circle-item:hover .category-circle::before {
+    opacity: 1;
+}
+
+.category-circle-item:hover .category-circle i {
+    transform: scale(1.1);
+}
+
+.category-circle-item.active .category-circle {
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+    box-shadow: 0 8px 20px rgba(132, 195, 65, 0.4);
+}
+
+.category-circle-item.active .category-circle i {
+    color: white;
+}
+
+.category-circle-item span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 4px;
+    line-height: 1.2;
+}
+
+.category-circle-item small {
+    display: block;
+    font-size: 9px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Circle color variations */
+.category-circle[data-color="0"] { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.category-circle[data-color="1"] { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+.category-circle[data-color="2"] { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.category-circle[data-color="3"] { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+.category-circle[data-color="4"] { background: linear-gradient(135deg, #fed7aa, #fdba74); }
+.category-circle[data-color="5"] { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); }
+.category-circle[data-color="6"] { background: linear-gradient(135deg, #ccfbf1, #99f6e4); }
+.category-circle[data-color="7"] { background: linear-gradient(135deg, #fef08a, #fde047); }
+
+.category-circle-item.active .category-circle[data-color="0"],
+.category-circle-item.active .category-circle[data-color="1"],
+.category-circle-item.active .category-circle[data-color="2"],
+.category-circle-item.active .category-circle[data-color="3"],
+.category-circle-item.active .category-circle[data-color="4"],
+.category-circle-item.active .category-circle[data-color="5"],
+.category-circle-item.active .category-circle[data-color="6"],
+.category-circle-item.active .category-circle[data-color="7"] {
+    background: linear-gradient(135deg, #84c341, #6ba82e);
+}
+
+/* Search Row */
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
 }
 
 .search-input {
     width: 100%;
-    padding: 11px 13px;
-    border-radius: 12px;
+    padding: 12px 12px 12px 42px;
+    border-radius: 50px;
     border: 1px solid #e5e7eb;
     outline: none;
-    font-weight: 700;
+    font-weight: 500;
     background: #f8fafc;
+    font-size: 13px;
+    transition: all 0.2s;
 }
 
 .search-input:focus {
     border-color: #84c341;
-    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.14);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(132, 195, 65, 0.1);
 }
 
 .btn-filter {
-    background: #07120d;
+    background: linear-gradient(135deg, #07120d, #1a2e1a);
     color: white;
     border: none;
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-weight: 900;
+    padding: 0 20px;
+    border-radius: 50px;
+    font-weight: 700;
     cursor: pointer;
-}
-
-.category-scroll {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-}
-
-.category-scroll::-webkit-scrollbar {
-    height: 0;
-}
-
-.category-chip {
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    border: 1px solid #d1d5db;
-    background: white;
-    color: #111827;
-    border-radius: 999px;
-    padding: 7px 14px;
-    font-size: 11px;
-    font-weight: 900;
-    white-space: nowrap;
+    gap: 8px;
+    font-size: 13px;
+    transition: all 0.2s;
 }
 
-.category-chip.active {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: white;
+.btn-filter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* Product Grid */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
     align-items: start;
 }
 
 .product-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.12);
 }
 
 .product-image {
-    height: 250px;
+    height: 220px;
     background: linear-gradient(180deg, #ffffff, #f8fafc);
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 15px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .product-image img {
@@ -135,6 +275,11 @@
     object-fit: contain;
     object-position: center;
     display: block;
+    transition: transform 0.4s;
+}
+
+.product-image:hover img {
+    transform: scale(1.05);
 }
 
 .product-placeholder {
@@ -149,6 +294,28 @@
     font-weight: 900;
 }
 
+.zoom-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.product-image:hover .zoom-icon {
+    opacity: 1;
+}
+
 .available-badge {
     position: absolute;
     left: 10px;
@@ -159,10 +326,13 @@
     border-radius: 999px;
     font-size: 10px;
     font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .product-body {
-    padding: 12px;
+    padding: 14px;
     background: linear-gradient(180deg, #ffffff, #fbfdff);
     flex: 1;
     display: flex;
@@ -176,34 +346,69 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .product-title {
-    margin: 0;
     font-size: 16px;
-    color: #111827;
-    line-height: 1.2;
     font-weight: 900;
-    min-height: 38px;
+    color: #111827;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.product-title .product-name {
+    display: inline;
+}
+
+.product-title .technical-name {
+    display: inline;
+    font-size: 13px;
+    font-weight: 700;
+    color: #047857;
+}
+
+.product-title .technical-name i {
+    font-size: 11px;
+    margin-right: 3px;
 }
 
 .pack-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 5px;
 }
 
 .pack-option {
     border: 1px solid #d4ded7;
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px 6px;
     cursor: pointer;
     text-align: left;
     position: relative;
     min-height: 62px;
     transition: 0.18s ease;
+    overflow: hidden;
+}
+
+.pack-option::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+    pointer-events: none;
+}
+
+.pack-option:hover::before {
+    left: 100%;
 }
 
 .pack-option::after {
@@ -241,9 +446,9 @@
 
 .pack-size {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 900;
-    line-height: 1.05;
+    line-height: 1.1;
 }
 
 .pack-rate {
@@ -260,11 +465,23 @@
 
 .pack-detail {
     display: none;
-    margin-top: 11px;
+    margin-top: 12px;
 }
 
 .pack-detail.active {
     display: block;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .price-panel {
@@ -275,7 +492,7 @@
 }
 
 .price-row {
-    padding: 11px 12px;
+    padding: 12px;
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -299,6 +516,9 @@
     font-size: 11px;
     margin-top: 4px;
     font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .best-price {
@@ -307,29 +527,58 @@
     font-weight: 900;
     white-space: nowrap;
     padding-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .box-row {
     border-top: 1px solid #eef2f7;
-    padding: 11px 12px;
+    padding: 12px;
     display: grid;
-    grid-template-columns: 32px 1fr 40px;
-    gap: 8px;
+    grid-template-columns: 40px 1fr 50px;
+    gap: 10px;
     align-items: center;
     background: #fbfdff;
+    position: relative;
+    overflow: hidden;
 }
 
-.box-icon {
-    width: 28px;
-    height: 28px;
+.box-image {
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
-    background: #f1f5f9;
-    color: #334155;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: pulseBox 2s ease-in-out infinite;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.box-image-fallback {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
-    font-size: 12px;
+}
+
+.box-image-fallback i {
+    font-size: 24px;
+    color: #d97706;
+}
+
+@keyframes pulseBox {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 18px rgba(132, 195, 65, 0.3);
+    }
 }
 
 .box-title {
@@ -349,7 +598,7 @@
     color: #111827;
     font-size: 16px;
     font-weight: 900;
-    margin-top: 3px;
+    text-align: right;
 }
 
 .bubble-wrap {
@@ -421,6 +670,8 @@
 
 .scheme-badge {
     display: inline-flex;
+    align-items: center;
+    gap: 4px;
     background: #fffbeb;
     color: #92400e;
     border: 1px solid #fde68a;
@@ -434,7 +685,7 @@
     display: grid;
     grid-template-columns: 105px 1fr;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
 .qty-control {
@@ -453,6 +704,11 @@
     font-size: 17px;
     font-weight: 900;
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.qty-btn:hover {
+    background: #e2e8f0;
 }
 
 .qty-input {
@@ -473,6 +729,16 @@
     cursor: pointer;
     color: white;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-cart:hover {
+    background: #e05a1f;
+    transform: translateY(-1px);
 }
 
 .floating-cart {
@@ -491,6 +757,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: all 0.2s;
+}
+
+.floating-cart:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 22px 44px rgba(15, 23, 42, 0.28);
 }
 
 .empty-box {
@@ -500,27 +772,63 @@
     border: 1px solid #e5e7eb;
     color: #64748b;
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    text-align: center;
 }
 
-@media (min-width: 1200px) {
-    .product-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+/* Image Modal */
+.image-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-@media (min-width: 900px) and (max-width: 1199px) {
-    .product-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+.image-modal.active {
+    display: flex;
 }
 
-@media (min-width: 801px) and (max-width: 899px) {
-    .product-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
 }
 
-@media(max-width: 800px) {
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.modal-close:hover {
+    opacity: 0.7;
+}
+
+.modal-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    padding: 8px;
+    margin: 0 auto;
+    width: fit-content;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
     .catalog-page {
         padding: 10px;
         padding-bottom: 80px;
@@ -534,28 +842,26 @@
         font-size: 11px;
     }
 
-    .search-row {
-        grid-template-columns: 1fr;
-    }
-
-    .filter-card {
-        padding: 10px;
+    .category-circles-wrapper {
+        padding: 12px;
         border-radius: 16px;
     }
 
-    .search-input {
-        padding: 10px 12px;
-        font-size: 12px;
+    .category-circle {
+        width: 55px;
+        height: 55px;
     }
 
-    .btn-filter {
-        padding: 9px 12px;
-        font-size: 12px;
+    .category-circle i {
+        font-size: 24px;
     }
 
-    .category-chip {
-        padding: 6px 12px;
+    .category-circle-item span {
         font-size: 10px;
+    }
+
+    .category-circle-item small {
+        font-size: 8px;
     }
 
     .product-grid {
@@ -568,8 +874,8 @@
     }
 
     .product-image {
-        height: 155px;
-        padding: 6px;
+        height: 140px;
+        padding: 8px;
     }
 
     .available-badge {
@@ -579,8 +885,14 @@
         padding: 3px 7px;
     }
 
+    .zoom-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+
     .product-body {
-        padding: 8px;
+        padding: 10px;
     }
 
     .category-text {
@@ -589,12 +901,15 @@
     }
 
     .product-title {
-        font-size: 12px;
-        min-height: 28px;
+        font-size: 13px;
+    }
+    
+    .product-title .technical-name {
+        font-size: 11px;
     }
 
     .pack-options {
-        gap: 4px;
+        gap: 5px;
         margin-top: 8px;
     }
 
@@ -617,7 +932,7 @@
     }
 
     .pack-size {
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .pack-rate {
@@ -633,7 +948,7 @@
     }
 
     .price-row {
-        padding: 8px 9px;
+        padding: 8px 10px;
         flex-direction: column;
         gap: 2px;
     }
@@ -657,16 +972,23 @@
     }
 
     .box-row {
-        grid-template-columns: 24px 1fr 26px;
-        gap: 6px;
-        padding: 8px 9px;
+        grid-template-columns: 30px 1fr 35px;
+        gap: 8px;
+        padding: 8px 10px;
     }
 
-    .box-icon {
-        width: 22px;
-        height: 22px;
-        border-radius: 8px;
-        font-size: 10px;
+    .box-image {
+        width: 30px;
+        height: 30px;
+    }
+
+    .box-image-fallback {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .box-image-fallback i {
+        font-size: 18px;
     }
 
     .box-title {
@@ -679,7 +1001,7 @@
     }
 
     .box-total {
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .bubble-wrap {
@@ -753,62 +1075,100 @@
     }
 }
 
-@media(max-width: 390px) {
-    .catalog-page {
-        padding: 8px;
-        padding-bottom: 78px;
-    }
-
+@media(max-width: 480px) {
     .product-grid {
         gap: 8px;
     }
 
     .product-image {
-        height: 145px;
+        height: 120px;
     }
 
     .product-body {
-        padding: 7px;
+        padding: 8px;
     }
-
+    
     .product-title {
-        font-size: 11px;
+        font-size: 12px;
+    }
+    
+    .product-title .technical-name {
+        font-size: 10px;
     }
 }
 </style>
 
 <div class="catalog-page">
     <div class="catalog-top">
-        <h2>▣ Products</h2>
-        <p>{{ products|length }} products available</p>
+        <h2>
+            <i class="fas fa-seedling" style="color: #84c341;"></i> 
+            Products
+        </h2>
     </div>
 
-    <div class="filter-card">
-        <form method="get">
-            <div class="search-row">
-                <input
-                    type="text"
-                    name="q"
-                    value="{{ search }}"
-                    class="search-input"
-                    placeholder="Search products..."
-                >
-                <button type="submit" class="btn-filter">Search</button>
-            </div>
+    <!-- Circular Category Chips (Like Dashboard) -->
+    <div class="category-circles-wrapper">
+        <div class="circles-label">
+            <i class="fas fa-th-large"></i> 
+            SHOP BY CATEGORY
+            <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 10px;"></i>
+        </div>
+        <div class="category-circles">
+            <a href="{% url 'dealer_products' %}" class="category-circle-item {% if not selected_category %}active{% endif %}">
+                <div class="category-circle" data-color="0">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <span>All</span>
+                <small>Products</small>
+            </a>
 
-            <div class="category-scroll">
-                <a href="{% url 'dealer_products' %}" class="category-chip {% if not selected_category %}active{% endif %}">
-                    All
+            {% for category in categories %}
+                <a href="?category={{ category.id }}{% if search %}&q={{ search }}{% endif %}" 
+                   class="category-circle-item {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
+                    <div class="category-circle" data-color="{{ forloop.counter|stringformat:'d' }}">
+                        {% with category.name|lower as cat_name %}
+                            {% if "fertilizer" in cat_name %}
+                                <i class="fas fa-seedling"></i>
+                            {% elif "herbicides" in cat_name or "herbicide" in cat_name %}
+                                <i class="fas fa-leaf"></i>
+                            {% elif "insecticides" in cat_name or "insecticide" in cat_name %}
+                                <i class="fas fa-bug"></i>
+                            {% elif "micronutrient" in cat_name or "micronutrients" in cat_name %}
+                                <i class="fas fa-flask"></i>
+                            {% elif "fungicides" in cat_name or "fungicide" in cat_name %}
+                                <i class="fas fa-spray-can"></i>
+                            {% elif "biostimulant" in cat_name %}
+                                <i class="fas fa-chart-line"></i>
+                            {% elif "organic" in cat_name %}
+                                <i class="fas fa-apple-alt"></i>
+                            {% else %}
+                                <i class="fas fa-tag"></i>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <span>{{ category.name|truncatechars:12 }}</span>
                 </a>
+            {% endfor %}
+        </div>
+    </div>
 
-                {% for category in categories %}
-                    <a
-                        href="?category={{ category.id }}{% if search %}&q={{ search }}{% endif %}"
-                        class="category-chip {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}"
+    <!-- Search and Filter -->
+    <div class="filter-card">
+        <form method="get" id="filterForm">
+            <div class="search-row">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ search }}"
+                        class="search-input"
+                        placeholder="Search products..."
                     >
-                        {{ category.name }}
-                    </a>
-                {% endfor %}
+                </div>
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </form>
     </div>
@@ -816,24 +1176,35 @@
     <div class="product-grid">
         {% for product in products %}
             <div class="product-card" data-product-card>
-                <div class="product-image">
+                <div class="product-image" onclick="openImageModal('{% if product.image %}{{ product.image.url }}{% endif %}', '{{ product.name }}')">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }}">
                     {% else %}
                         <div class="product-placeholder">
-                            {{ product.name|first|upper }}
+                            <i class="fas fa-seedling"></i>
                         </div>
                     {% endif %}
-
-                    <span class="available-badge">Available</span>
+                    <div class="zoom-icon">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <span class="available-badge">
+                        <i class="fas fa-check-circle"></i> Available
+                    </span>
                 </div>
 
                 <div class="product-body">
                     <div class="category-text">
-                        {{ product.category.name }}
+                        <i class="fas fa-tag"></i> {{ product.category.name }}
                     </div>
 
-                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-title">
+                        <span class="product-name">{{ product.name }}</span>
+                        {% if product.technical_name %}
+                            <span class="technical-name">
+                                <i class="fas fa-flask"></i> ({{ product.technical_name }})
+                            </span>
+                        {% endif %}
+                    </div>
 
                     <div class="pack-options">
                         {% for pack in product.pack_sizes.all %}
@@ -842,8 +1213,8 @@
                                 class="pack-option {% if forloop.first %}active{% endif %}"
                                 data-pack-target="pack-{{ product.id }}-{{ pack.id }}"
                             >
-                                <span class="pack-icon">▣</span>
-                                <span class="pack-size">{{ pack.display_pack }}</span>
+                                <span class="pack-icon"><i class="fas fa-cube"></i></span>
+                                <span class="pack-size">{{ pack.display_pack|format_volume }}</span>
                                 <span class="pack-rate">₹{{ pack.sale_price_per_unit }}</span>
                             </button>
                         {% endfor %}
@@ -860,22 +1231,28 @@
                                         <div class="price-main">
                                             ₹{{ pack.sale_price_per_unit }}<small>/{{ pack.get_unit_display }}</small>
                                         </div>
-                                        <div class="gst-text">(incl GST)</div>
+                                        <div class="gst-text">
+                                            <i class="fas fa-file-invoice"></i> (incl GST)
+                                        </div>
                                     </div>
 
-                                    <div class="best-price">Best Price</div>
+                                    <div class="best-price">
+                                        <i class="fas fa-tag"></i> Best Price
+                                    </div>
                                 </div>
 
                                 <div class="box-row">
-                                    <div class="box-icon">□</div>
+                                    <div class="box-image" style="background-image: url('https://images.unsplash.com/photo-1656543802898-41c8c46683a7?w=100&h=100&fit=crop')" 
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'box-image-fallback\'><i class=\'fas fa-box\'></i></div>'">
+                                    </div>
 
                                     <div>
                                         <div class="box-title">
                                             1 Box
                                             <br>
-                                            <span>Contains {{ pack.units_per_box }} × {{ pack.display_pack }}</span>
+                                            <span>Contains {{ pack.units_per_box }} × {{ pack.display_pack|format_volume }}</span>
                                             <br>
-                                            <span>Total {{ pack.total_quantity_label }}</span>
+                                            <span>Total {{ pack.total_quantity_label|format_total_volume }}</span>
                                         </div>
 
                                         <div class="box-total">
@@ -897,7 +1274,7 @@
                                     {% for scheme in product.schemes.all %}
                                         {% if scheme.is_active %}
                                             <span class="scheme-badge">
-                                                {{ scheme.scheme_name }}
+                                                <i class="fas fa-gift"></i> {{ scheme.scheme_name }}
                                             </span>
                                         {% endif %}
                                     {% endfor %}
@@ -909,21 +1286,12 @@
 
                                 <div class="qty-control">
                                     <button type="button" class="qty-btn" onclick="changeQty(this, -1)">−</button>
-
-                                    <input
-                                        type="number"
-                                        name="quantity_boxes"
-                                        min="1"
-                                        max="{{ pack.stock_boxes }}"
-                                        value="1"
-                                        class="qty-input"
-                                    >
-
+                                    <input type="number" name="quantity_boxes" min="1" max="{{ pack.stock_boxes }}" value="1" class="qty-input">
                                     <button type="button" class="qty-btn" onclick="changeQty(this, 1)">+</button>
                                 </div>
 
                                 <button type="submit" class="btn-cart">
-                                    🛒 Add to Cart
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
                                 </button>
                             </form>
                         </div>
@@ -931,7 +1299,9 @@
                         <div class="pack-detail active">
                             <div class="price-panel">
                                 <div class="price-row">
-                                    <div class="gst-text">No pack size available.</div>
+                                    <div class="gst-text">
+                                        <i class="fas fa-exclamation-circle"></i> No pack size available.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -940,6 +1310,7 @@
             </div>
         {% empty %}
             <div class="empty-box">
+                <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 12px; display: block;"></i>
                 No products available.
             </div>
         {% endfor %}
@@ -947,8 +1318,15 @@
 </div>
 
 <a href="{% url 'dealer_cart' %}" class="floating-cart">
-    🛒 View Cart
+    <i class="fas fa-shopping-cart"></i> View Cart
 </a>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="modal-close" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" alt="">
+    <div id="modalCaption" class="modal-caption"></div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -957,7 +1335,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const details = card.querySelectorAll(".pack-detail");
 
         options.forEach(function(option) {
-            option.addEventListener("click", function() {
+            option.addEventListener("click", function(e) {
+                e.stopPropagation();
                 const targetId = option.getAttribute("data-pack-target");
 
                 options.forEach(function(btn) {
@@ -993,6 +1372,68 @@ function changeQty(button, step) {
     if (value > max) value = max;
 
     input.value = value;
+}
+
+// Image Modal Functions
+function openImageModal(imageUrl, productName) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    if (imageUrl && imageUrl !== 'None' && imageUrl) {
+        modalImg.src = imageUrl;
+        modalCaption.innerHTML = productName || 'Product Image';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        modalImg.src = '';
+        modalCaption.innerHTML = 'No image available for ' + (productName || 'this product');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+
+// Smooth scroll for category circles
+const categoryCircles = document.querySelector('.category-circles');
+if (categoryCircles && window.innerWidth <= 800) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    categoryCircles.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - categoryCircles.offsetLeft;
+        scrollLeft = categoryCircles.scrollLeft;
+    });
+    
+    categoryCircles.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+    
+    categoryCircles.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+    
+    categoryCircles.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - categoryCircles.offsetLeft;
+        const walk = (x - startX) * 2;
+        categoryCircles.scrollLeft = scrollLeft - walk;
+    });
 }
 </script>
 {% endblock %}

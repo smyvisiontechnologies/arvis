@@ -2,151 +2,372 @@
 
 {% block content %}
 <style>
-.page { padding: 18px; }
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
 
 .card {
-    max-width: 720px;
+    max-width: 800px;
     margin: 0 auto;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 24px;
-    padding: 18px;
-    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
 }
 
 h2 {
     margin: 0;
     color: #0f172a;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+h2 i {
+    color: #84c341;
+    font-size: 24px;
+}
+
+/* Meta Section */
 .meta {
-    color: #64748b;
-    font-weight: 750;
-    line-height: 1.6;
-    margin-top: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-item i {
+    color: #84c341;
+    font-size: 14px;
+}
+
+.meta-item span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.meta-item strong {
+    color: #0f172a;
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+/* Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 10px;
-    margin-top: 14px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 .info {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 15px;
+    border-radius: 14px;
     padding: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.info:hover {
+    border-color: #84c341;
+    background: #fefce8;
 }
 
 .info span {
     display: block;
     color: #64748b;
-    font-size: 11px;
-    font-weight: 900;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 5px;
+}
+
+.info span i {
+    font-size: 9px;
+    margin-right: 3px;
 }
 
 .info strong {
     display: block;
-    margin-top: 5px;
     color: #0f172a;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 800;
 }
 
+.info.total {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.info.total strong {
+    color: #059669;
+    font-size: 18px;
+}
+
+/* Field */
 .field {
-    margin-top: 14px;
+    margin-bottom: 20px;
 }
 
 .field label {
     display: block;
     color: #334155;
     font-size: 13px;
-    font-weight: 900;
-    margin-bottom: 7px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field label i {
+    margin-right: 6px;
+    color: #84c341;
 }
 
 .field textarea {
     width: 100%;
-    padding: 12px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    font-weight: 800;
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    font-weight: 600;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 90px;
 }
 
+.field textarea:focus {
+    outline: none;
+    border-color: #84c341;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(132, 195, 65, 0.1);
+}
+
+.errorlist {
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+    list-style: none;
+    padding-left: 0;
+}
+
+/* Button Row */
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 8px;
 }
 
 .btn {
     border: none;
-    border-radius: 14px;
-    padding: 12px 16px;
+    border-radius: 40px;
+    padding: 12px 24px;
     color: white;
-    font-weight: 900;
+    font-weight: 800;
     text-decoration: none;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
 }
 
-.btn.green { background: #16a34a; }
-.btn.dark { background: #0f172a; }
+.btn i {
+    font-size: 14px;
+}
 
-@media(max-width:650px) {
-    .page { padding: 12px; }
-    .btn-row { display: grid; grid-template-columns: 1fr; }
-    .btn { text-align: center; }
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn.green { 
+    background: linear-gradient(135deg, #16a34a, #059669); 
+    flex: 1;
+}
+
+.btn.dark { 
+    background: linear-gradient(135deg, #0f172a, #1e293b); 
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 18px;
+        border-radius: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    .card {
+        padding: 14px;
+        border-radius: 20px;
+    }
+    
+    h2 {
+        font-size: 18px;
+    }
+    
+    .meta {
+        padding: 10px 12px;
+    }
+    
+    .meta-item {
+        font-size: 11px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .info {
+        padding: 10px;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .info span {
+        margin-bottom: 0;
+        font-size: 11px;
+    }
+    
+    .info strong {
+        font-size: 14px;
+    }
+    
+    .field textarea {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .btn-row {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
 }
 </style>
 
 <div class="page">
     <div class="card">
-        <h2>HR Approval</h2>
+        <h2>
+            <i class="fas fa-user-check"></i>
+            HR Approval
+        </h2>
 
+        <!-- Compact Meta Section -->
         <div class="meta">
-            Employee: <b>{{ attendance.employee.get_full_name|default:attendance.employee.username }}</b><br>
-            Date: {{ attendance.attendance_date|date:"d M Y" }}<br>
-            Manager Approved By: {{ attendance.manager_approved_by.get_full_name|default:attendance.manager_approved_by.username }}
+            <div class="meta-item">
+                <i class="fas fa-user"></i>
+                <span>Employee:</span>
+                <strong>{{ attendance.employee.get_full_name|default:attendance.employee.username }}</strong>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Date:</span>
+                <strong>{{ attendance.attendance_date|date:"d M Y" }}</strong>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-user-tie"></i>
+                <span>Manager Approved By:</span>
+                <strong>{{ attendance.manager_approved_by.get_full_name|default:attendance.manager_approved_by.username }}</strong>
+            </div>
         </div>
 
+        <!-- Info Grid -->
         <div class="info-grid">
             <div class="info">
-                <span>Approved KM</span>
-                <strong>{{ attendance.manager_approved_km }} KM</strong>
+                <span><i class="fas fa-check-circle"></i> Approved KM</span>
+                <strong>{{ attendance.manager_approved_km|floatformat:1 }} KM</strong>
             </div>
 
             <div class="info">
-                <span>TA Amount</span>
-                <strong>₹{{ attendance.ta_amount }}</strong>
+                <span><i class="fas fa-rupee-sign"></i> TA Amount</span>
+                <strong>₹{{ attendance.ta_amount|floatformat:0 }}</strong>
             </div>
 
             <div class="info">
-                <span>DA Amount</span>
-                <strong>₹{{ attendance.da_amount }}</strong>
+                <span><i class="fas fa-coffee"></i> DA Amount</span>
+                <strong>₹{{ attendance.da_amount|floatformat:0 }}</strong>
             </div>
 
-            <div class="info">
-                <span>Total Claim</span>
-                <strong>₹{{ attendance.total_claim_amount }}</strong>
+            <div class="info total">
+                <span><i class="fas fa-calculator"></i> Total Claim</span>
+                <strong>₹{{ attendance.total_claim_amount|floatformat:0 }}</strong>
             </div>
         </div>
 
+        <!-- Approval Form -->
         <form method="post">
             {% csrf_token %}
 
             <div class="field">
-                <label>HR Remarks</label>
+                <label><i class="fas fa-comment"></i> HR Remarks</label>
                 {{ form.hr_remarks }}
                 {{ form.hr_remarks.errors }}
             </div>
 
             <div class="btn-row">
-                <button type="submit" class="btn green">Approve for Release</button>
-                <a href="{% url 'hr_attendance_claims' %}" class="btn dark">Back</a>
+                <button type="submit" class="btn green">
+                    <i class="fas fa-check-circle"></i> Approve for Release
+                </button>
+                <a href="{% url 'hr_attendance_claims' %}" class="btn dark">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
         </form>
     </div>

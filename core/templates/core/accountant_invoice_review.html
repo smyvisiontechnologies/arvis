@@ -251,10 +251,10 @@ textarea:focus {
                 </div>
 
                 <div>
-                    <label>Place of Supply</label>
-                    {{ release_form.place_of_supply }}
-                    {{ release_form.place_of_supply.errors }}
-                </div>
+    <label>GSTR-1 Code</label>
+    {{ release_form.gstr1_code }}
+    {{ release_form.gstr1_code.errors }}
+</div>
             </div>
         </div>
 
@@ -561,6 +561,37 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
         });
+    }
+});
+function updateGstr1Help() {
+    const codeInput = document.getElementById("id_gstr1_code");
+    const help = document.getElementById("gstr1Help");
+
+    if (!codeInput || !help) {
+        return;
+    }
+
+    const value = String(codeInput.value || "").toUpperCase();
+
+    if (value === "ARVIS") {
+        help.style.background = "#ecfdf5";
+        help.style.color = "#047857";
+        help.style.borderColor = "#bbf7d0";
+        help.innerText = "Arvis selected: this invoice will be added to GSTR-1 report.";
+    } else {
+        help.style.background = "#fef2f2";
+        help.style.color = "#b91c1c";
+        help.style.borderColor = "#fecaca";
+        help.innerText = "Arvissmyvision selected: this invoice will NOT be added to GSTR-1 report.";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const codeInput = document.getElementById("id_gstr1_code");
+
+    if (codeInput) {
+        codeInput.addEventListener("change", updateGstr1Help);
+        updateGstr1Help();
     }
 });
 </script>

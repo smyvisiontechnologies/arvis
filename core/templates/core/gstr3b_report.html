@@ -1,0 +1,266 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.g3b-page{padding:16px;max-width:1400px;margin:0 auto}
+.g3b-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:26px;padding:24px;margin-bottom:16px}
+.g3b-hero h2{margin:0;font-size:28px;font-weight:900}
+.g3b-hero p{margin:8px 0 0;color:#dcfce7;font-weight:800}
+.g3b-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.g3b-btn{border:0;text-decoration:none;background:#07120d;color:white;border-radius:14px;padding:11px 14px;font-weight:900;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.g3b-btn.green{background:#16a34a}
+.g3b-btn.blue{background:#2563eb}
+.g3b-btn.light{background:#f1f5f9;color:#0f172a}
+.g3b-btn.orange{background:#d97706}
+.g3b-btn.red{background:#dc2626}
+.g3b-btn.small{padding:8px 11px;border-radius:11px;font-size:12px}
+
+.g3b-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.g3b-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.g3b-card span{display:block;color:#64748b;font-size:12px;font-weight:900}
+.g3b-card strong{display:block;color:#0f172a;font-size:23px;font-weight:900;margin-top:8px}
+.g3b-card.green strong{color:#047857}
+.g3b-card.blue strong{color:#2563eb}
+.g3b-card.orange strong{color:#d97706}
+.g3b-card.red strong{color:#dc2626}
+
+.g3b-result{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.g3b-result-box{padding:18px;border-radius:20px;font-weight:900;line-height:1.7}
+.g3b-result-box.payable{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+.g3b-result-box.credit{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857}
+.g3b-result-box.nil{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+.g3b-result-box strong{font-size:26px;display:block;margin-top:6px}
+
+.g3b-filter{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.g3b-filter form{display:grid;grid-template-columns:1.4fr .8fr .8fr auto;gap:10px;align-items:end}
+.g3b-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+
+.g3b-section{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06);margin-bottom:16px}
+.g3b-title{margin:0 0 14px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+
+.g3b-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:18px}
+.g3b-table{width:100%;border-collapse:collapse;min-width:1250px}
+.g3b-table th,.g3b-table td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.g3b-table th{background:#f8fafc;font-weight:900;color:#334155}
+.g3b-table td{font-weight:800;color:#0f172a}
+.text-right{text-align:right!important}
+.g3b-empty{padding:24px;text-align:center;color:#64748b;font-weight:900}
+
+@media(max-width:1000px){
+    .g3b-grid{grid-template-columns:repeat(2,1fr)}
+    .g3b-filter form{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+    .g3b-page{padding:10px}
+    .g3b-grid{grid-template-columns:1fr}
+    .g3b-actions{display:grid}
+    .g3b-btn{justify-content:center}
+}
+</style>
+
+<div class="g3b-page">
+
+    <div class="g3b-hero">
+        <h2>GSTR-3B GST Payable Report</h2>
+        <p>Output GST from sales minus Input GST from purchases. This shows how much GST has to be paid to Government.</p>
+
+        <div class="g3b-actions">
+            <a href="{% url 'gstr1_report' %}" class="g3b-btn blue">GSTR-1 Sales</a>
+            <a href="{% url 'gstr2b_report' %}" class="g3b-btn green">GSTR-2B Purchase</a>
+            <a href="{% url 'purchase_dashboard' %}" class="g3b-btn light">Back</a>
+        </div>
+    </div>
+
+    <div class="g3b-filter">
+        <form method="get">
+            <div class="g3b-field">
+                <label>Search Invoice / Bill / Party / GST</label>
+                <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Invoice no, bill no, party, GST...">
+            </div>
+
+            <div class="g3b-field">
+                <label>From Date</label>
+                <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+            </div>
+
+            <div class="g3b-field">
+                <label>To Date</label>
+                <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+            </div>
+
+            <button type="submit" class="g3b-btn green">Search</button>
+        </form>
+    </div>
+
+    <div class="g3b-grid">
+        <div class="g3b-card blue">
+            <span>Output GST From Sales</span>
+            <strong>₹ {{ output_gst|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card green">
+            <span>Input GST From Purchases</span>
+            <strong>₹ {{ input_gst|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card orange">
+            <span>GST Difference</span>
+            <strong>₹ {{ gst_payable|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card {% if result_status == 'PAYABLE' %}red{% elif result_status == 'CREDIT' %}green{% else %}blue{% endif %}">
+            <span>Final Status</span>
+            {% if result_status == "PAYABLE" %}
+                <strong>Payable</strong>
+            {% elif result_status == "CREDIT" %}
+                <strong>ITC Credit</strong>
+            {% else %}
+                <strong>Nil</strong>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="g3b-result">
+        {% if result_status == "PAYABLE" %}
+            <div class="g3b-result-box payable">
+                GST Payable to Government
+                <strong>₹ {{ payable_amount|floatformat:2 }}</strong>
+                Output GST is higher than Input GST.
+            </div>
+        {% elif result_status == "CREDIT" %}
+            <div class="g3b-result-box credit">
+                No GST payable. Input GST is higher than Output GST.
+                <strong>₹ {{ credit_carried_forward|floatformat:2 }}</strong>
+                This amount can be treated as input credit carried forward.
+            </div>
+        {% else %}
+            <div class="g3b-result-box nil">
+                Output GST and Input GST are equal.
+                <strong>₹ 0.00</strong>
+                No GST payable.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="g3b-grid">
+        <div class="g3b-card blue">
+            <span>Sales Taxable Amount</span>
+            <strong>₹ {{ output_taxable|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card blue">
+            <span>Sales Invoice Total</span>
+            <strong>₹ {{ output_total|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card green">
+            <span>Purchase Taxable Amount</span>
+            <strong>₹ {{ input_taxable|floatformat:2 }}</strong>
+        </div>
+
+        <div class="g3b-card green">
+            <span>Purchase Bill Total</span>
+            <strong>₹ {{ input_total|floatformat:2 }}</strong>
+        </div>
+    </div>
+
+    <div class="g3b-section">
+        <h3 class="g3b-title">Output GST - Sales Invoices Added to GSTR-1</h3>
+
+        <div class="g3b-table-wrap">
+            <table class="g3b-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No</th>
+                        <th>Dealer</th>
+                        <th>GST Number</th>
+                        <th class="text-right">Taxable</th>
+                        <th class="text-right">GST</th>
+                        <th class="text-right">Total</th>
+                        <th>View Bill</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for invoice in sales_invoices %}
+                        <tr>
+                            <td>{{ invoice.invoice_date|date:"d/m/Y" }}</td>
+                            <td>{{ invoice.invoice_number }}</td>
+                            <td>{{ invoice.order.dealer.firm_name }}</td>
+                            <td>{{ invoice.order.dealer.gst_number|default:"-" }}</td>
+                            <td class="text-right">₹ {{ invoice.subtotal_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ invoice.gst_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ invoice.total_amount|floatformat:2 }}</td>
+                            <td>
+                                <a href="{% url 'dealer_invoice_print' invoice.id 'COMPANY' %}"
+                                   class="g3b-btn blue small"
+                                   target="_blank">
+                                    View Bill
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="g3b-empty">No GSTR-1 sales invoices found.</div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="g3b-section">
+        <h3 class="g3b-title">Input GST - Purchase Bills Added to GSTR-2B</h3>
+
+        <div class="g3b-table-wrap">
+            <table class="g3b-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Bill No</th>
+                        <th>Supplier</th>
+                        <th>GST Number</th>
+                        <th class="text-right">Taxable</th>
+                        <th class="text-right">GST</th>
+                        <th class="text-right">Total</th>
+                        <th>View Bill</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for bill in purchase_bills %}
+                        <tr>
+                            <td>{{ bill.bill_date|date:"d/m/Y" }}</td>
+                            <td>{{ bill.bill_number }}</td>
+                            <td>{{ bill.party.party_name }}</td>
+                            <td>{{ bill.party.gst_number|default:"-" }}</td>
+                            <td class="text-right">₹ {{ bill.subtotal_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ bill.gst_amount|floatformat:2 }}</td>
+                            <td class="text-right">₹ {{ bill.total_amount|floatformat:2 }}</td>
+                            <td>
+                                <a href="{% url 'purchase_entry_detail' bill.id %}"
+                                   class="g3b-btn green small"
+                                   target="_blank">
+                                    View Bill
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="g3b-empty">No GSTR-2B purchase bills found.</div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

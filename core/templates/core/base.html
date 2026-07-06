@@ -5,10 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Arvis Fertilizers & Chemical Pvt Ltd</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
@@ -18,88 +23,77 @@
             --slate: #334155;
             --muted: #64748b;
             --light-muted: #94a3b8;
-
             --brand: #2563eb;
             --brand-dark: #1d4ed8;
             --brand-soft: #eff6ff;
-
             --success: #059669;
             --success-soft: #ecfdf5;
-
             --warning: #d97706;
             --warning-soft: #fffbeb;
-
             --danger: #dc2626;
             --danger-soft: #fef2f2;
-
             --bg: #f4f7fb;
             --surface: #ffffff;
             --surface-soft: #f8fafc;
             --border: #e2e8f0;
-
             --shadow-sm: 0 6px 16px rgba(15, 23, 42, 0.06);
             --shadow-md: 0 14px 34px rgba(15, 23, 42, 0.10);
-            --radius: 18px;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 26%),
-                radial-gradient(circle at top right, rgba(5, 150, 105, 0.08), transparent 28%),
-                linear-gradient(135deg, #f8fafc, #eef2ff);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 26%),
+                        radial-gradient(circle at top right, rgba(5, 150, 105, 0.08), transparent 28%),
+                        linear-gradient(135deg, #f8fafc, #eef2ff);
             color: var(--navy);
             min-height: 100vh;
         }
 
-        a {
-            color: inherit;
-        }
-
         .app-shell {
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* TOPBAR */
         .topbar {
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+            border-bottom: 1px solid var(--border);
             box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
         }
 
         .topbar-inner {
             max-width: 1500px;
             margin: 0 auto;
-            padding: 10px 22px;
+            padding: 8px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 14px;
+            flex-wrap: wrap;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
             text-decoration: none;
-            min-width: 290px;
+            flex-shrink: 0;
         }
 
         .brand-logo {
-            width: 74px;
-            height: 48px;
-            border-radius: 16px;
-            background: white;
+            width: 100px;
+            height: 55px;
+            border-radius: 0;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 5px;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
-            border: 1px solid var(--border);
             overflow: hidden;
         }
 
@@ -107,64 +101,38 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display: block;
         }
 
-        .brand-text strong {
-            display: block;
-            font-size: 17px;
-            letter-spacing: .2px;
-            color: var(--navy);
-            line-height: 1.1;
-            font-weight: 900;
-        }
-
-        .brand-text span {
-            display: block;
-            color: var(--muted);
-            font-size: 12px;
-            margin-top: 3px;
-            font-weight: 800;
-            letter-spacing: .2px;
-        }
-
+        /* Desktop Navigation */
         .desktop-main-nav {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 0;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
-        .nav-link,
-        .more-btn {
+        .nav-link {
             text-decoration: none;
             color: var(--slate);
             background: transparent;
-            padding: 9px 12px;
-            border-radius: 13px;
+            padding: 8px 14px;
+            border-radius: 40px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
-            font-weight: 900;
-            transition: .2s ease;
+            font-size: 13px;
+            font-weight: 800;
+            transition: all 0.15s ease;
             white-space: nowrap;
             border: 1px solid transparent;
-            cursor: pointer;
         }
 
-        .nav-link svg,
-        .more-btn svg {
-            width: 18px;
-            height: 18px;
-            flex: 0 0 auto;
+        .nav-link i {
+            font-size: 15px;
         }
 
-        .nav-link:hover,
-        .nav-link.active,
-        .more-btn:hover {
+        .nav-link:hover, .nav-link.active {
             background: var(--brand-soft);
             color: var(--brand-dark);
             border-color: #bfdbfe;
@@ -173,14 +141,94 @@
         .more-btn {
             background: var(--navy);
             color: white;
-            border-color: var(--navy);
+            border-radius: 40px;
+            padding: 8px 18px;
+            border: none;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .more-btn i {
+            font-size: 14px;
         }
 
         .more-btn:hover {
             background: var(--brand-dark);
-            color: white;
-            border-color: var(--brand-dark);
         }
+
+        /* PENDING ACTION BADGES */
+        .more-action-count {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #dc2626;
+            color: white;
+            font-size: 11px;
+            font-weight: 1000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+            line-height: 1;
+        }
+
+        #mobileMoreBtn {
+            position: relative;
+        }
+
+        .bottom-nav-item .more-action-count {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            margin-left: 0;
+            min-width: 18px;
+            height: 18px;
+            font-size: 10px;
+            box-shadow: 0 0 0 2px white;
+        }
+
+        .link-action-count {
+            margin-left: auto;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            border-radius: 999px;
+            background: #dc2626;
+            color: white;
+            font-size: 11px;
+            font-weight: 1000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+        }
+
+        .section-action-count {
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            border-radius: 999px;
+            background: #dc2626;
+            color: white;
+            font-size: 11px;
+            font-weight: 1000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+        }
+
+        .drawer-link .link-title,
+        .sheet-link .link-title {
+            flex: 1;
+        }
+
 
         .user-area {
             display: flex;
@@ -193,16 +241,14 @@
             align-items: center;
             gap: 9px;
             background: var(--surface-soft);
-            padding: 7px 10px;
+            padding: 5px 12px 5px 8px;
             border-radius: 999px;
-            max-width: 260px;
             border: 1px solid var(--border);
             cursor: pointer;
         }
 
         .user-chip:hover {
             background: var(--brand-soft);
-            border-color: #bfdbfe;
         }
 
         .user-avatar {
@@ -210,8 +256,6 @@
             height: 34px;
             border-radius: 50%;
             object-fit: cover;
-            background: #e5e7eb;
-            flex: 0 0 auto;
         }
 
         .user-letter {
@@ -224,146 +268,92 @@
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            flex: 0 0 auto;
-        }
-
-        .user-chip-text {
-            min-width: 0;
         }
 
         .user-chip-text strong {
             display: block;
-            font-size: 13px;
-            color: var(--navy);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 12px;
         }
 
         .user-chip-text span {
-            display: block;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--muted);
-            margin-top: 1px;
-            font-weight: 800;
         }
 
-        .logout-form {
-            margin: 0;
-        }
-
-        .logout-btn {
-            border: 0;
-            cursor: pointer;
-            color: white;
-            background: var(--danger);
-            border-radius: 13px;
-            padding: 10px 12px;
-            font-weight: 900;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.18);
-        }
-
-        .logout-btn svg {
-            width: 17px;
-            height: 17px;
-        }
-
-        .drawer-toggle {
+        /* Mobile bottom navigation */
+        .mobile-bottom-nav {
             display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 12px 12px;
+            justify-content: space-around;
+            z-index: 1050;
         }
 
-        .mobile-profile-menu-btn {
-            display: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            background: white;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            flex: 0 0 auto;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .mobile-profile-menu-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .mobile-profile-letter {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand), var(--success));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 18px;
-        }
-
-        .mobile-menu-lines {
-            position: absolute;
-            right: -2px;
-            bottom: -2px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--navy);
-            border: 2px solid white;
+        .bottom-nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 2px;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 30px;
+            transition: 0.1s ease;
         }
 
-        .mobile-menu-lines i {
-            width: 9px;
-            height: 1.5px;
-            background: white;
-            border-radius: 999px;
-            display: block;
+        .bottom-nav-item i {
+            font-size: 20px;
         }
 
-        .drawer-backdrop {
+        .bottom-nav-item.active {
+            color: var(--brand-dark);
+            background: var(--brand-soft);
+        }
+
+        /* DESKTOP DRAWER */
+        .desktop-drawer-toggle {
+            display: none;
+        }
+
+        .desktop-drawer-backdrop {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.50);
+            background: rgba(15, 23, 42, 0.5);
             z-index: 1100;
         }
 
-        .side-drawer {
+        .desktop-side-drawer {
             position: fixed;
             top: 0;
             left: 0;
-            width: min(92vw, 430px);
+            width: min(92vw, 420px);
             height: 100vh;
-            background: #ffffff;
-            color: var(--navy);
+            background: white;
             z-index: 1200;
             transform: translateX(-105%);
-            transition: transform 0.28s ease;
-            box-shadow: 18px 0 55px rgba(15, 23, 42, 0.26);
+            transition: transform 0.25s ease;
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border);
+            box-shadow: 18px 0 55px rgba(0,0,0,0.2);
         }
 
-        .drawer-toggle:checked ~ .drawer-backdrop {
+        .desktop-drawer-toggle:checked ~ .desktop-drawer-backdrop {
             display: block;
         }
 
-        .drawer-toggle:checked ~ .side-drawer {
+        .desktop-drawer-toggle:checked ~ .desktop-side-drawer {
             transform: translateX(0);
         }
 
@@ -373,9 +363,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background:
-                linear-gradient(135deg, #ffffff, #f8fafc),
-                radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 35%);
+            background: #f8fafc;
         }
 
         .drawer-avatar {
@@ -383,9 +371,6 @@
             height: 58px;
             border-radius: 18px;
             object-fit: cover;
-            background: white;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
         }
 
         .drawer-letter {
@@ -399,248 +384,339 @@
             justify-content: center;
             font-weight: 900;
             font-size: 24px;
-            box-shadow: var(--shadow-sm);
         }
 
         .drawer-user-text {
-            min-width: 0;
             flex: 1;
         }
 
         .drawer-user-text strong {
             display: block;
-            font-size: 15px;
-            line-height: 1.2;
-            word-break: break-word;
-            color: var(--navy);
-        }
-
-        .drawer-user-text span {
-            display: block;
-            margin-top: 4px;
-            font-size: 12px;
-            color: var(--muted);
-            font-weight: 800;
+            font-size: 14px;
         }
 
         .drawer-close {
             width: 36px;
             height: 36px;
-            border-radius: 12px;
+            border-radius: 50%;
             background: var(--surface-soft);
             border: 1px solid var(--border);
-            color: var(--slate);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 22px;
-            font-weight: 900;
-            flex: 0 0 auto;
-        }
-
-        .drawer-close:hover {
-            background: var(--danger-soft);
-            color: var(--danger);
-            border-color: #fecaca;
-        }
-
-        .drawer-search-wrap {
-            padding: 14px 14px 8px;
-            background: white;
+            font-size: 18px;
         }
 
         .drawer-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .drawer-search input {
             width: 100%;
+            padding: 12px;
             border: 1px solid var(--border);
-            background: var(--surface-soft);
-            color: var(--navy);
-            padding: 12px 14px;
-            border-radius: 15px;
+            border-radius: 30px;
             outline: none;
-            font-weight: 800;
-        }
-
-        .drawer-search:focus {
-            border-color: #93c5fd;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-            background: white;
-        }
-
-        .drawer-search::placeholder {
-            color: var(--muted);
         }
 
         .drawer-body {
-            padding: 6px 14px 14px;
             overflow-y: auto;
+            padding: 12px 16px 24px;
             flex: 1;
-            background: #ffffff;
         }
 
+        /* Collapsible Section Styles */
         .drawer-section {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
         }
 
-        .drawer-section-toggle {
-            width: 100%;
-            border: 1px solid var(--border);
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            color: var(--navy);
-            padding: 12px 12px;
-            border-radius: 17px;
+        .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            padding: 14px 16px;
+            background: var(--surface-soft);
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            transition: 0.1s ease;
+            font-weight: 800;
         }
 
-        .drawer-section.open .drawer-section-toggle {
-            border-color: #bfdbfe;
-            background: linear-gradient(135deg, #eff6ff, #ffffff);
-        }
-
-        .section-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .section-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 13px;
+        .section-header:hover {
             background: var(--brand-soft);
-            color: var(--brand-dark);
+        }
+
+        .section-header-left {
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
+            gap: 12px;
         }
 
-        .section-icon svg {
-            width: 20px;
-            height: 20px;
+        .section-header-left i {
+            width: 24px;
+            font-size: 18px;
+            color: var(--brand-dark);
         }
 
-        .section-text {
-            text-align: left;
-            min-width: 0;
-        }
-
-        .section-text strong {
-            display: block;
-            font-size: 13.5px;
-            font-weight: 900;
-            line-height: 1.2;
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
             color: var(--navy);
         }
 
-        .section-text span {
-            display: block;
-            color: var(--muted);
-            font-size: 10.8px;
-            font-weight: 800;
-            margin-top: 2px;
-        }
-
-        .section-symbol {
-            width: 30px;
-            height: 30px;
-            border-radius: 11px;
-            background: var(--surface-soft);
-            border: 1px solid var(--border);
-            color: var(--slate);
+        .toggle-icon {
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 900;
-            flex: 0 0 auto;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+            color: var(--muted);
         }
 
-        .drawer-section:not(.open) .drawer-section-links {
+        .drawer-section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section-links {
+            padding: 8px 12px 12px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        .drawer-section.collapsed .section-links {
             display: none;
-        }
-
-        .drawer-section .section-symbol::before {
-            content: "+";
-        }
-
-        .drawer-section.open .section-symbol::before {
-            content: "−";
-        }
-
-        .drawer-section-links {
-            padding-top: 8px;
-            padding-left: 7px;
-            border-left: 2px solid #e0ecff;
-            margin-left: 17px;
         }
 
         .drawer-link {
             display: flex;
             align-items: center;
-            gap: 11px;
-            color: var(--slate);
+            gap: 14px;
+            padding: 12px 14px;
             text-decoration: none;
-            padding: 11px 12px;
-            border-radius: 15px;
-            font-weight: 900;
-            margin-bottom: 7px;
-            background: #ffffff;
+            color: var(--slate);
+            font-weight: 700;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            background: var(--surface-soft);
             border: 1px solid var(--border);
-            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.03);
+            transition: 0.1s ease;
         }
 
-        .drawer-link svg {
-            width: 19px;
-            height: 19px;
-            flex: 0 0 auto;
+        .drawer-link i {
+            width: 24px;
+            font-size: 18px;
             color: var(--brand-dark);
         }
 
-        .drawer-link:hover,
-        .drawer-link.active {
-            color: var(--brand-dark);
+        .drawer-link:hover, .drawer-link.active {
             background: var(--brand-soft);
             border-color: #bfdbfe;
+            color: var(--brand-dark);
         }
 
-        .drawer-link.profile-first {
-            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-            color: white;
-            border-color: transparent;
-            margin-bottom: 10px;
+        .logout-drawer-btn {
+            background: var(--danger-soft);
+            border-color: #fecaca;
+            color: var(--danger);
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
         }
 
-        .drawer-link.profile-first svg {
-            color: white;
+        .logout-drawer-btn i {
+            color: var(--danger);
         }
 
-        .drawer-empty {
+        /* MOBILE BOTTOM SHEET */
+        .bottom-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1150;
             display: none;
-            color: var(--muted);
-            padding: 14px;
-            font-weight: 900;
-            text-align: center;
         }
 
-        .drawer-footer {
-            padding: 14px 18px;
-            border-top: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--muted);
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            z-index: 1200;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .bottom-sheet-header h4 {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--navy);
+        }
+
+        .close-sheet {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             background: var(--surface-soft);
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .bottom-sheet-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bottom-sheet-search input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            outline: none;
+        }
+
+        .bottom-sheet-content {
+            overflow-y: auto;
+            padding: 12px 16px 24px;
+            flex: 1;
+        }
+
+        /* Collapsible sections in bottom sheet */
+        .sheet-section {
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .sheet-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--surface-soft);
+            cursor: pointer;
+            transition: 0.1s ease;
             font-weight: 800;
         }
 
+        .sheet-section-header:hover {
+            background: var(--brand-soft);
+        }
+
+        .sheet-section-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sheet-section-header-left i {
+            width: 24px;
+            font-size: 18px;
+            color: var(--brand-dark);
+        }
+
+        .sheet-section-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .sheet-toggle-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+            color: var(--muted);
+        }
+
+        .sheet-section.collapsed .sheet-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .sheet-section-links {
+            padding: 8px 12px 12px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        .sheet-section.collapsed .sheet-section-links {
+            display: none;
+        }
+
+        .sheet-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            color: var(--slate);
+            font-weight: 700;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            transition: 0.1s ease;
+        }
+
+        .sheet-link i {
+            width: 24px;
+            font-size: 18px;
+            color: var(--brand-dark);
+        }
+
+        .sheet-link:hover, .sheet-link.active {
+            background: var(--brand-soft);
+            border-color: #bfdbfe;
+            color: var(--brand-dark);
+        }
+
+        .logout-sheet-btn {
+            background: var(--danger-soft);
+            border-color: #fecaca;
+            color: var(--danger);
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .logout-sheet-btn i {
+            color: var(--danger);
+        }
+
         .page-content {
-            max-width: 1500px;
-            margin: 0 auto;
-            padding-bottom: 40px;
+            padding: 3vw;
         }
 
         .messages-wrap {
@@ -653,1506 +729,914 @@
             padding: 13px 15px;
             border-radius: 16px;
             margin-bottom: 10px;
-            border: 1px solid var(--border);
-            background: white;
-            box-shadow: var(--shadow-sm);
-            font-weight: 800;
-        }
-
-        .message.success {
-            background: var(--success-soft);
-            color: #047857;
-            border-color: #bbf7d0;
-        }
-
-        .message.error {
-            background: var(--danger-soft);
-            color: #b91c1c;
-            border-color: #fecaca;
-        }
-
-        .message.warning {
-            background: var(--warning-soft);
-            color: #b45309;
-            border-color: #fde68a;
-        }
-
-        .message.info {
-            background: var(--brand-soft);
-            color: var(--brand-dark);
-            border-color: #bfdbfe;
+            font-weight: 700;
         }
 
         .footer {
             max-width: 1500px;
             margin: 0 auto;
-            padding: 24px 22px;
-            color: var(--muted);
+            padding: 20px 22px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
+            color: var(--muted);
         }
 
-        .footer a {
-            color: var(--brand-dark);
-            font-weight: 900;
-            text-decoration: none;
+        .mobile-profile-menu-btn {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid var(--border);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 11px 12px;
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--brand);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-        }
-
-        @media (max-width: 1180px) {
-            .desktop-optional {
+        @media (max-width: 1100px) {
+            .desktop-main-nav, .user-chip, .desktop-side-drawer, .desktop-drawer-backdrop, .desktop-drawer-toggle {
                 display: none;
             }
-
+            .mobile-bottom-nav {
+                display: flex;
+            }
             .mobile-profile-menu-btn {
                 display: flex;
             }
-
-            .user-chip {
-                display: none;
+            .brand {
+                min-width: auto;
             }
-
             .topbar-inner {
                 flex-wrap: nowrap;
             }
-
-            .brand {
-                flex: 1;
+            .page-content {
+                padding-bottom: 90px;
             }
         }
 
-        @media (max-width: 650px) {
-            .topbar-inner {
-                padding: 10px 14px;
-                gap: 10px;
-            }
-
-            .brand {
-                min-width: 0;
-            }
-
-            .brand-logo {
-                width: 58px;
-                height: 42px;
-                border-radius: 13px;
-            }
-
-            .brand-text strong {
-                font-size: 13px;
-            }
-
-            .brand-text span {
-                font-size: 10.5px;
-            }
-
-            .desktop-main-nav {
+        @media (min-width: 1101px) {
+            .mobile-bottom-nav, .mobile-profile-menu-btn, .bottom-sheet, .bottom-sheet-overlay {
                 display: none;
             }
+        }
 
-            .logout-btn span {
-                display: none;
-            }
-
-            .page-content {
-                padding-bottom: 20px;
-            }
-
-            .messages-wrap {
-                padding: 12px 14px 0;
-            }
-
-            .side-drawer {
-                width: min(94vw, 410px);
-            }
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
         }
     </style>
 </head>
-
 <body>
 <div class="app-shell">
 
-    {% if request.user.is_authenticated %}
-        {% with profile=request.user.profile %}
-        <header class="topbar">
-            <input type="checkbox" id="drawerToggle" class="drawer-toggle">
+{% if request.user.is_authenticated %}
+    {% with profile=request.user.profile %}
+    {% with role=profile.role|default:"STAFF" %}
+    
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="{% url 'dashboard' %}" class="brand">
+                <div class="brand-logo"><img src="{% static 'images/logo.png' %}" alt="Logo"></div>
+            </a>
 
-            <div class="topbar-inner">
-                <a href="{% url 'dashboard' %}" class="brand">
-                    <div class="brand-logo">
-                        <img src="{% static 'images/logo.png' %}" alt="Arvis Fertilizers Logo">
-                    </div>
+            <!-- DESKTOP MAIN NAV -->
+            <nav class="desktop-main-nav" id="desktopMainNav">
+                <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="{% url 'my_profile' %}" class="nav-link {% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}"><i class="fas fa-user-circle"></i> Profile</a>
+                
+                {% if role == "DEALER" %}
+                    <a href="{% url 'dealer_products' %}" class="nav-link"><i class="fas fa-box-open"></i> Products</a>
+                    <a href="{% url 'dealer_cart' %}" class="nav-link"><i class="fas fa-shopping-bag"></i> Cart</a>
+                    <a href="{% url 'dealer_order_list' %}" class="nav-link"><i class="fas fa-truck-fast"></i> Orders</a>
+                {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
+                    <a href="{% url 'dealer_list' %}" class="nav-link"><i class="fas fa-store"></i> Dealers</a>
+                    <a href="{% url 'dealer_create' %}" class="nav-link"><i class="fas fa-user-plus"></i> Create Dealer</a>
+                    <a href="{% url 'employee_attendance_dashboard' %}" class="nav-link"><i class="fas fa-fingerprint"></i> Attendance</a>
+                {% else %}
+                                <a href="{% url 'employee_attendance_dashboard' %}" class="nav-link">
+                                    <i class="fas fa-fingerprint"></i> Attendance
+                                </a>
 
-                    <div class="brand-text">
-                        <strong>Arvis Fertilizers</strong>
-                        <span>& Chemical Pvt Ltd</span>
-                    </div>
-                </a>
+                                <a href="{% url 'employee_leave_list' %}" class="nav-link">
+                                    <i class="fas fa-umbrella-beach"></i> Leaves
+                                </a>
 
-                <nav class="desktop-main-nav">
-                    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M3 13h8V3H3v10zm10 8h8V3h-8v18zM3 21h8v-6H3v6z"/>
-                        </svg>
-                        Dashboard
-                    </a>
+                                {% if profile.tada_applicable %}
+                                <a href="{% url 'employee_tada_calendar' %}" class="nav-link">
+                                        <i class="fas fa-walking"></i> TA/DA
+                                </a>
+                                {% endif %}
+                {% endif %}
+                
+                <label for="desktopDrawerToggle" class="more-btn">
+                    <i class="fas fa-bars"></i>
+                    More
+                    <span id="desktopPendingActionTotal" class="more-action-count" style="display:none;">0</span>
+                </label>
+            </nav>
 
-                    <a href="{% url 'my_profile' %}" class="nav-link {% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                            <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                        </svg>
-                        My Profile
-                    </a>
-
-                    <label for="drawerToggle" class="more-btn">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                        More
-                    </label>
-                </nav>
-
-                <div class="user-area">
-                    <label for="drawerToggle" class="user-chip">
-                        {% if profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" class="user-avatar" alt="Profile">
-                        {% else %}
-                            <div class="user-letter">
-                                {{ request.user.username|first|upper }}
-                            </div>
-                        {% endif %}
-
-                        <div class="user-chip-text">
-                            <strong>{{ request.user.get_full_name|default:request.user.email|default:request.user.username }}</strong>
-                            <span>{{ profile.get_role_display|default:"User" }}</span>
-                        </div>
-                    </label>
-
-                    <form method="post" action="{% url 'logout' %}" class="logout-form">
-                        {% csrf_token %}
-                        <button type="submit" class="logout-btn">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H9"/>
-                                <path stroke-width="2" d="M13 5H5v14h8"/>
-                            </svg>
-                            <span>Logout</span>
-                        </button>
-                    </form>
-
-                    <label for="drawerToggle" class="mobile-profile-menu-btn" aria-label="Open menu">
-                        {% if profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" alt="Profile">
-                        {% else %}
-                            <span class="mobile-profile-letter">
-                                {{ request.user.username|first|upper }}
-                            </span>
-                        {% endif %}
-
-                        <span class="mobile-menu-lines">
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                        </span>
-                    </label>
+            <div class="user-area">
+                <label for="desktopDrawerToggle" class="user-chip">
+                    {% if profile.profile_image %}<img src="{{ profile.profile_image.url }}" class="user-avatar">{% else %}<div class="user-letter">{{ request.user.username|first|upper }}</div>{% endif %}
+                    <div class="user-chip-text"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>{{ profile.get_role_display|default:"User" }}</span></div>
+                </label>
+                <div class="mobile-profile-menu-btn" id="mobileMenuBtn">
+                    {% if profile.profile_image %}<img src="{{ profile.profile_image.url }}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">{% else %}<div class="user-letter" style="width:38px;height:38px;">{{ request.user.username|first|upper }}</div>{% endif %}
                 </div>
             </div>
+        </div>
+    </header>
 
-            <label for="drawerToggle" class="drawer-backdrop"></label>
+    <!-- DESKTOP DRAWER -->
+    <input type="checkbox" id="desktopDrawerToggle" class="desktop-drawer-toggle">
+    <label for="desktopDrawerToggle" class="desktop-drawer-backdrop"></label>
+    <aside class="desktop-side-drawer">
+        <div class="drawer-header">
+            {% if profile.profile_image %}<img src="{{ profile.profile_image.url }}" class="drawer-avatar">{% else %}<div class="drawer-letter">{{ request.user.username|first|upper }}</div>{% endif %}
+            <div class="drawer-user-text"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>{{ profile.get_role_display|default:"User" }}</span></div>
+            <label for="desktopDrawerToggle" class="drawer-close"><i class="fas fa-times"></i></label>
+        </div>
+        <div class="drawer-search">
+            <input type="text" id="desktopDrawerSearch" placeholder="🔍 Search links...">
+        </div>
+        <div class="drawer-body" id="desktopDrawerContent"></div>
+    </aside>
 
-            <aside class="side-drawer">
-                <div class="drawer-header">
-                    {% if profile.profile_image %}
-                        <img src="{{ profile.profile_image.url }}" class="drawer-avatar" alt="Profile">
-                    {% else %}
-                        <div class="drawer-letter">
-                            {{ request.user.username|first|upper }}
-                        </div>
-                    {% endif %}
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <div class="mobile-bottom-nav" id="mobileBottomNav">
+        <button class="bottom-nav-item" data-mobile-nav="dashboard"><i class="fas fa-chart-line"></i><span>Home</span></button>
+        {% if role == "DEALER" %}
+            <button class="bottom-nav-item" data-mobile-nav="products"><i class="fas fa-box-open"></i><span>Products</span></button>
+            <button class="bottom-nav-item" data-mobile-nav="cart"><i class="fas fa-shopping-bag"></i><span>Cart</span></button>
+            <button class="bottom-nav-item" data-mobile-nav="orders"><i class="fas fa-truck-fast"></i><span>Orders</span></button>
+            <!-- Changed from "More" to "My Business" -->
+            <button class="bottom-nav-item" id="mobileMoreBtn" style="background:linear-gradient(135deg, #84c341, #6ba82e); color:white; border-radius:30px; padding:5px 15px;">
+                <i class="fas fa-briefcase"></i><span>My Business</span>
+            <span class="more-action-count mobile-pending-action-total" style="display:none;">0</span></button>
+        {% elif role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
+            <button class="bottom-nav-item" data-mobile-nav="dealers"><i class="fas fa-store"></i><span>Dealers</span></button>
+            <button class="bottom-nav-item" data-mobile-nav="create_dealer"><i class="fas fa-user-plus"></i><span>Create</span></button>
+            <button class="bottom-nav-item" data-mobile-nav="attendance"><i class="fas fa-clock"></i><span>Attendance</span></button>
+            <button class="bottom-nav-item" id="mobileMoreBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:white; border-radius:30px; padding:5px 15px;">
+                <i class="fas fa-bars"></i><span>Menu</span>
+            <span class="more-action-count mobile-pending-action-total" style="display:none;">0</span></button>
+        {% else %}
+    <button class="bottom-nav-item" data-mobile-nav="attendance">
+        <i class="fas fa-clock"></i><span>Attendance</span>
+    </button>
 
-                    <div class="drawer-user-text">
-                        <strong>{{ request.user.get_full_name|default:request.user.email|default:request.user.username }}</strong>
-                        <span>{{ profile.get_role_display|default:"User" }}</span>
-                    </div>
+    <button class="bottom-nav-item" data-mobile-nav="leaves">
+        <i class="fas fa-calendar-alt"></i><span>Leaves</span>
+    </button>
 
-                    <label for="drawerToggle" class="drawer-close">×</label>
-                </div>
+    {% if profile.tada_applicable %}
+        <button class="bottom-nav-item" data-mobile-nav="tada">
+            <i class="fas fa-rupee-sign"></i><span>TA/DA</span>
+        </button>
+    {% endif %}
 
-                <div class="drawer-search-wrap">
-                    <input
-                        type="text"
-                        id="drawerSearch"
-                        class="drawer-search"
-                        placeholder="Search links..."
-                        onkeyup="filterDrawerLinks()"
-                    >
-                </div>
+    <button class="bottom-nav-item" id="mobileMoreBtn" style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:white; border-radius:30px; padding:5px 15px;">
+        <i class="fas fa-bars"></i><span>Menu</span>
+    <span class="more-action-count mobile-pending-action-total" style="display:none;">0</span></button>
+{% endif %}
+    </div>
 
-                <div class="drawer-body" id="drawerLinks">
+    <!-- MOBILE BOTTOM SHEET -->
+    <div class="bottom-sheet-overlay" id="bottomSheetOverlay"></div>
+    <div class="bottom-sheet" id="bottomSheet">
+        <div class="bottom-sheet-header">
+            <h4><i class="fas fa-briefcase"></i> My Business</h4>
+            <button class="close-sheet" id="closeSheetBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="bottom-sheet-search">
+            <input type="text" id="mobileSheetSearch" placeholder="🔍 Search links...">
+        </div>
+        <div class="bottom-sheet-content" id="mobileSheetContent"></div>
+    </div>
 
-                    <div class="drawer-section open default-open">
-                        <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                            <span class="section-left">
-                                <span class="section-icon">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                        <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                                    </svg>
-                                </span>
-                                <span class="section-text">
-                                    <strong>Profile & Main</strong>
-                                    <span>Profile and dashboard</span>
-                                </span>
-                            </span>
-                            <span class="section-symbol"></span>
-                        </button>
+    <script>
+        // Complete role-based links data
+        var allLinksSections = [];
 
-                        <div class="drawer-section-links">
-                            <a href="{% url 'my_profile' %}"
-                               data-link-title="my profile account profile picture user details"
-                               class="drawer-link profile-first {% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                    <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                                </svg>
-                                My Profile
-                            </a>
+        var pendingActionBadges = {
+            total: 0,
+            by_url: {},
+            by_key: {},
+            items: []
+        };
 
-                            <a href="{% url 'dashboard' %}"
-                               data-link-title="dashboard home main overview"
-                               class="drawer-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M3 13h8V3H3v10zm10 8h8V3h-8v18zM3 21h8v-6H3v6z"/>
-                                </svg>
-                                Dashboard
-                            </a>
-                        </div>
-                    </div>
+        var notificationAudio = null;
+        var pendingActionApiUrl = "{% url 'pending_action_badges_api' %}";
+        var notificationSoundUrl = "{% static 'sounds/not.mp3' %}";
 
-                    {% if profile.role != "DEALER" %}
+        try {
+            notificationAudio = new Audio(notificationSoundUrl);
+            notificationAudio.preload = "auto";
+        } catch (e) {
+            notificationAudio = null;
+        }
 
-                        <div class="drawer-section open default-open">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 8v5l3 2"/>
-                                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Attendance</strong>
-                                        <span>Clock-in and daily attendance</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
+        function getActionBadgeHtml(url) {
+            var count = 0;
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'employee_attendance_dashboard' %}"
-                                   data-link-title="attendance clock in clock out gps employee daily attendance"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_attendance_dashboard' or request.resolver_match.url_name == 'employee_clock_out' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 8v5l3 2"/>
-                                        <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                    </svg>
-                                    My Attendance / Clock In
-                                </a>
-                            </div>
-                        </div>
+            if (pendingActionBadges && pendingActionBadges.by_url && pendingActionBadges.by_url[url]) {
+                count = pendingActionBadges.by_url[url];
+            }
 
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                            <path stroke-width="2" d="M12 6v14"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>TA / DA</strong>
-                                        <span>Travel claims, approvals and release</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
+            if (!count || count <= 0) {
+                return "";
+            }
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'employee_tada_calendar' %}"
-                                   data-link-title="my ta da calendar travel allowance daily allowance approved amount"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_tada_calendar' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                                        <path stroke-width="2" d="M5 5h14v16H5z"/>
-                                        <path stroke-width="2" d="M9 15h.01M12 15h.01M15 15h.01"/>
-                                    </svg>
-                                    My TA/DA Calendar
-                                </a>
+            return '<span class="link-action-count">' + count + '</span>';
+        }
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "HR" %}
-                                    <a href="{% url 'manager_attendance_approvals' %}"
-                                       data-link-title="manager attendance approvals ta da approve km reduce travel claim asm manager"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'manager_attendance_approvals' or request.resolver_match.url_name == 'manager_approve_attendance' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                        </svg>
-                                        TA/DA Manager Approvals
-                                    </a>
-                                {% endif %}
+        function getSectionBadgeHtml(section) {
+            var total = 0;
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" %}
-                                    <a href="{% url 'hr_attendance_claims' %}"
-                                       data-link-title="hr attendance claims ta da hr approve employee travel amount"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'hr_attendance_claims' or request.resolver_match.url_name == 'hr_approve_attendance' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 11c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"/>
-                                            <path stroke-width="2" d="M4 21a8 8 0 0116 0"/>
-                                        </svg>
-                                        HR TA/DA Claims
-                                    </a>
-                                {% endif %}
+            if (!section || !section.links) {
+                return "";
+            }
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                                    <a href="{% url 'accountant_attendance_claims' %}"
-                                       data-link-title="accountant attendance claims ta da fund release payment release"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'accountant_attendance_claims' or request.resolver_match.url_name == 'accountant_release_attendance_claim' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                            <path stroke-width="2" d="M12 6v14"/>
-                                        </svg>
-                                        Release TA/DA Funds
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
+            for (var i = 0; i < section.links.length; i++) {
+                var link = section.links[i];
 
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                                            <path stroke-width="2" d="M5 5h14v16H5z"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Leaves</strong>
-                                        <span>Apply leave, balance and approvals</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
+                if (pendingActionBadges && pendingActionBadges.by_url && pendingActionBadges.by_url[link.url]) {
+                    total += parseInt(pendingActionBadges.by_url[link.url] || 0);
+                }
+            }
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'employee_leave_list' %}"
-                                   data-link-title="my leaves leave list paid sick unpaid other leave status"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_leave_list' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                                        <path stroke-width="2" d="M5 5h14v16H5z"/>
-                                    </svg>
-                                    My Leaves
-                                </a>
+            if (!total || total <= 0) {
+                return "";
+            }
 
-                                <a href="{% url 'employee_leave_request_create' %}"
-                                   data-link-title="apply leave request half day full day paid sick unpaid"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_leave_request_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                    </svg>
-                                    Apply Leave
-                                </a>
+            return '<span class="section-action-count">' + total + '</span>';
+        }
 
-                                <a href="{% url 'employee_leave_balance' %}"
-                                   data-link-title="leave balance pie chart paid sick other extra leave"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_leave_balance' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                        <path stroke-width="2" d="M12 3v9h9"/>
-                                    </svg>
-                                    My Leave Balance
-                                </a>
+        function updateMoreActionBadges(total) {
+            var desktopBadge = document.getElementById("desktopPendingActionTotal");
+            var mobileBadges = document.querySelectorAll(".mobile-pending-action-total");
 
-                                <a href="{% url 'employee_extra_workday_list' %}"
-                                   data-link-title="extra working day request sunday work other leave"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_extra_workday_list' or request.resolver_match.url_name == 'employee_extra_workday_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                                        <path stroke-width="2" d="M12 14v5M9.5 16.5h5"/>
-                                    </svg>
-                                    Extra Working Day Request
-                                </a>
+            if (desktopBadge) {
+                desktopBadge.textContent = total;
+                desktopBadge.style.display = total > 0 ? "inline-flex" : "none";
+            }
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "HR" %}
-                                    <a href="{% url 'manager_leave_approvals' %}"
-                                       data-link-title="manager leave approvals approve reject employee leaves"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'manager_leave_approvals' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 11l3 3L22 4"/>
-                                            <path stroke-width="2" d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                                        </svg>
-                                        Leave Approvals
-                                    </a>
+            mobileBadges.forEach(function(badge) {
+                badge.textContent = total;
+                badge.style.display = total > 0 ? "inline-flex" : "none";
+            });
+        }
 
-                                    <a href="{% url 'manager_extra_workday_requests' %}"
-                                       data-link-title="manager extra working day approvals sunday work approval"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'manager_extra_workday_requests' or request.resolver_match.url_name == 'manager_approve_extra_workday' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                        </svg>
-                                        Extra Workday Approvals
-                                    </a>
-                                {% endif %}
+        var notificationSoundUnlocked = false;
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" %}
-                                    <a href="{% url 'hr_extra_workday_requests' %}"
-                                       data-link-title="hr extra leave approval extra workday leave add"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'hr_extra_workday_requests' or request.resolver_match.url_name == 'hr_approve_extra_workday' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                        HR Extra Leave Approval
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
+        function unlockNotificationSound() {
+            if (!notificationAudio || notificationSoundUnlocked) {
+                return;
+            }
 
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M7 3h10v18H7z"/>
-                                            <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Payslips</strong>
-                                        <span>Salary slips and payroll release</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
+            try {
+                notificationAudio.volume = 0;
+                notificationAudio.play().then(function() {
+                    notificationAudio.pause();
+                    notificationAudio.currentTime = 0;
+                    notificationAudio.volume = 1;
+                    notificationSoundUnlocked = true;
+                }).catch(function() {});
+            } catch (e) {}
+        }
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'my_payslips' %}"
-                                   data-link-title="my payslips employee salary slip released payslip"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'my_payslips' or request.resolver_match.url_name == 'payslip_print' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M7 3h10v18H7z"/>
-                                        <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                    </svg>
-                                    My Payslips
-                                </a>
+        document.addEventListener("click", unlockNotificationSound, { once: true });
+        document.addEventListener("touchstart", unlockNotificationSound, { once: true });
+        document.addEventListener("keydown", unlockNotificationSound, { once: true });
 
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" or profile.role == "ACCOUNTANT" %}
-                                    <a href="{% url 'payslip_list' %}"
-                                       data-link-title="payslip salary payslip generate release employee salary"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'payslip_list' or request.resolver_match.url_name == 'payslip_generate' or request.resolver_match.url_name == 'payslip_detail' or request.resolver_match.url_name == 'payslip_edit' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M7 3h10v18H7z"/>
-                                            <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                        </svg>
-                                        Payslip Management
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
+        function playNotificationSoundIfNeeded(newTotal) {
+            var oldTotal = parseInt(localStorage.getItem("lastPendingActionTotal") || "0");
 
-                        {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "HR" or profile.role == "ACCOUNTANT" %}
-                            <div class="drawer-section">
-                                <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                    <span class="section-left">
-                                        <span class="section-icon">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M4 19V5"/>
-                                                <path stroke-width="2" d="M4 19h16"/>
-                                                <path stroke-width="2" d="M8 15l3-3 3 2 5-7"/>
-                                            </svg>
-                                        </span>
-                                        <span class="section-text">
-                                            <strong>HR Management</strong>
-                                            <span>Employee dashboard and analytics</span>
-                                        </span>
-                                    </span>
-                                    <span class="section-symbol"></span>
-                                </button>
+            if (newTotal > oldTotal && notificationAudio && notificationSoundUnlocked) {
+                try {
+                    notificationAudio.currentTime = 0;
+                    notificationAudio.volume = 1;
+                    notificationAudio.play().catch(function() {});
+                } catch (e) {}
+            }
 
-                                <div class="drawer-section-links">
-                                    <a href="{% url 'hr_management_dashboard' %}"
-                                       data-link-title="hr dashboard employee attendance clock in clock out top performer ta da leave management"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'hr_management_dashboard' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M4 19V5"/>
-                                            <path stroke-width="2" d="M4 19h16"/>
-                                            <path stroke-width="2" d="M8 15l3-3 3 2 5-7"/>
-                                        </svg>
-                                        HR Management Dashboard
-                                    </a>
-                                </div>
-                            </div>
-                        {% endif %}
+            localStorage.setItem("lastPendingActionTotal", String(newTotal));
+        }
 
-                    {% endif %}
+        function refreshPendingActionBadges(playSound) {
+            fetch(pendingActionApiUrl, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                pendingActionBadges = data || {
+                    total: 0,
+                    by_url: {},
+                    by_key: {},
+                    items: []
+                };
 
-                    {% if profile.role == "DEALER" %}
-                        <div class="drawer-section open default-open">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>My Business</strong>
-                                        <span>Products, cart, orders, invoices</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
+                var total = parseInt(pendingActionBadges.total || 0);
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'dealer_products' %}"
-                                   data-link-title="products catalogue dealer products add to cart order products"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_products' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                    </svg>
-                                    Products
-                                </a>
+                updateMoreActionBadges(total);
 
-                                <a href="{% url 'dealer_cart' %}"
-                                   data-link-title="cart dealer cart selected products place order"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_cart' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9"/>
-                                    </svg>
-                                    Cart
-                                </a>
+                if (playSound) {
+                    playNotificationSoundIfNeeded(total);
+                } else {
+                    localStorage.setItem("lastPendingActionTotal", String(total));
+                }
 
-                                <a href="{% url 'dealer_order_list' %}"
-                                   data-link-title="my orders dealer orders tracking status"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_order_list' or request.resolver_match.url_name == 'dealer_order_detail' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M9 5h6M9 9h6M9 13h6"/>
-                                        <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                    </svg>
-                                    My Orders
-                                </a>
-                                <a href="{% url 'dealer_my_credit_score' %}"
-                                data-link-title="my credit score dealer cibil score dues pending amount"
-                                class="drawer-link {% if request.resolver_match.url_name == 'dealer_my_credit_score' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 15a8 8 0 0116 0"/>
-                                        <path stroke-width="2" d="M7 15h10"/>
-                                        <path stroke-width="2" d="M12 15l4-6"/>
-                                        <path stroke-width="2" d="M5 20h14"/>
-                                    </svg>
-                                    My Credit Score
-                                </a>
+                renderDesktopDrawer("");
 
-                                <a href="{% url 'dealer_invoice_list' %}"
-                                   data-link-title="invoices dealer copy bill pending balance"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_invoice_list' or request.resolver_match.url_name == 'dealer_invoice_print' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M7 3h10v18H7z"/>
-                                        <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                    </svg>
-                                    Invoices
-                                </a>
+                var mobileSheet = document.getElementById("bottomSheet");
 
-                                <a href="{% url 'sales_return_credit_note_list' %}"
-                                   data-link-title="sales return credit note dealer return invoice"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'sales_return_credit_note_list' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M3 7h13"/>
-                                        <path stroke-width="2" d="M7 3L3 7l4 4"/>
-                                        <path stroke-width="2" d="M21 17H8"/>
-                                        <path stroke-width="2" d="M17 21l4-4-4-4"/>
-                                    </svg>
-                                    Credit Notes
-                                </a>
-                                <a href="{% url 'dealer_farmer_data' %}"
-                                data-link-title="farmer data upload dealer points farmer mobile number"
-                                class="drawer-link {% if request.resolver_match.url_name == 'dealer_farmer_data' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                        <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                                    </svg>
-                                    Farmer Data Upload
-                                </a>
+                if (mobileSheet && mobileSheet.classList.contains("open")) {
+                    renderMobileSheet("");
+                }
+            })
+            .catch(function() {});
+        }
 
-                                <a href="{% url 'dealer_points_dashboard' %}"
-                                data-link-title="dealer points redemption money product free quantity"
-                                class="drawer-link {% if request.resolver_match.url_name == 'dealer_points_dashboard' or request.resolver_match.url_name == 'dealer_redemption_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                        <path stroke-width="2" d="M12 6v14"/>
-                                    </svg>
-                                    My Points & Redemption
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
+        var userRole = "{{ role }}";
+        var isSuperuser = {{ request.user.is_superuser|lower }};
+        
+        // Profile Section
+        var profileSection = {
+            title: "ACCOUNT",
+            icon: "fas fa-user",
+            defaultOpen: true,
+            links: [
+                { url: "{% url 'my_profile' %}", icon: "fas fa-user-circle", title: "My Profile" },
+                { url: "{% url 'dashboard' %}", icon: "fas fa-chart-line", title: "Dashboard" }
+            ]
+        };
+        allLinksSections.push(profileSection);
+        
+        // Dealer Business Section
+        {% if role == "DEALER" %}
+        var dealerSection = {
+            title: "MY BUSINESS",
+            icon: "fas fa-briefcase",
+            defaultOpen: true,
+            links: [
+                { url: "{% url 'dealer_products' %}", icon: "fas fa-box-open", title: "Products" },
+                { url: "{% url 'dealer_cart' %}", icon: "fas fa-shopping-bag", title: "Cart" },
+                { url: "{% url 'dealer_order_list' %}", icon: "fas fa-truck-fast", title: "My Orders" },
+                { url: "{% url 'dealer_my_credit_score' %}", icon: "fas fa-chart-line", title: "My Credit Score" },
+                { url: "{% url 'dealer_invoice_list' %}", icon: "fas fa-file-invoice", title: "Invoices" },
+                { url: "{% url 'sales_return_credit_note_list' %}", icon: "fas fa-undo-alt", title: "Credit Notes" },
+                { url: "{% url 'dealer_farmer_data' %}", icon: "fas fa-tractor", title: "Farmer Data Upload" },
+                { url: "{% url 'dealer_points_dashboard' %}", icon: "fas fa-star", title: "My Points & Redemption" }
+            ]
+        };
+        allLinksSections.push(dealerSection);
+        {% endif %}
+        
+        // Sales Officer Dealers Section
+        {% if role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" %}
+        var salesDealersSection = {
+            title: "DEALERS",
+            icon: "fas fa-store",
+            defaultOpen: true,
+            links: [
+                { url: "{% url 'dealer_list' %}", icon: "fas fa-list", title: "Dealer List" },
+                { url: "{% url 'dealer_create' %}", icon: "fas fa-user-plus", title: "Create Dealer" },
+                { url: "{% url 'dealer_visit_list' %}", icon: "fas fa-map-marker-alt", title: "Dealer Visits" },
+                { url: "{% url 'dealer_visit_create' %}", icon: "fas fa-plus-circle", title: "Add Dealer Visit" }
+            ]
+        };
+        allLinksSections.push(salesDealersSection);
+        {% endif %}
+        
+        // Employee Sections
+        {% if role != "DEALER" %}
+        var attendanceSection = {
+            title: "ATTENDANCE",
+            icon: "fas fa-fingerprint",
+            defaultOpen: true,
+            links: [
+                { url: "{% url 'employee_attendance_dashboard' %}", icon: "fas fa-clock", title: "My Attendance / Clock In" }
+            ]
+        };
+        allLinksSections.push(attendanceSection);
+        
+        var tadaLinks = [];
 
-                    {% if profile.role != "DEALER" %}
-                        {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" or profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" or profile.role == "ACCOUNTANT" or profile.role == "WAREHOUSE_MANAGER" %}
-                            <div class="drawer-section">
-                                <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                    <span class="section-left">
-                                        <span class="section-icon">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                                <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                            </svg>
-                                        </span>
-                                        <span class="section-text">
-                                            <strong>Orders & Invoices</strong>
-                                            <span>Approvals, bills and transport</span>
-                                        </span>
-                                    </span>
-                                    <span class="section-symbol"></span>
-                                </button>
+        {% if profile.tada_applicable %}
+        tadaLinks.push({
+            url: "{% url 'employee_tada_calendar' %}",
+            icon: "fas fa-calendar-week",
+            title: "My TA/DA Calendar"
+        });
+        {% endif %}
 
-                                <div class="drawer-section-links">
-                                    <a href="{% url 'dealer_order_list' %}"
-                                       data-link-title="orders dealer orders order tracking approvals pending order approval"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'dealer_order_list' or request.resolver_match.url_name == 'dealer_order_detail' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 5h6M9 9h6M9 13h6"/>
-                                            <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                        </svg>
+        {% if request.user.is_superuser or role == "ADMIN" or role == "STATE_HEAD" or role == "REGIONAL_MANAGER" or role == "ASM" or role == "HR" %}
+        tadaLinks.push({
+            url: "{% url 'manager_attendance_approvals' %}",
+            icon: "fas fa-check-double",
+            title: "TA/DA Manager Approvals"
+        });
+        {% endif %}
 
-                                        {% if profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" %}
-                                            Sales Officer Approvals
-                                        {% elif profile.role == "ASM" %}
-                                            ASM Order Approvals
-                                        {% elif profile.role == "REGIONAL_MANAGER" %}
-                                            RSM Order Approvals
-                                        {% elif profile.role == "ACCOUNTANT" %}
-                                            Accountant Review
-                                        {% elif profile.role == "WAREHOUSE_MANAGER" %}
-                                            Warehouse Review
-                                        {% else %}
-                                            Orders
-                                        {% endif %}
-                                    </a>
+        {% if request.user.is_superuser or role == "ADMIN" or role == "HR" %}
+        tadaLinks.push({
+            url: "{% url 'hr_attendance_claims' %}",
+            icon: "fas fa-users",
+            title: "HR TA/DA Claims"
+        });
+        {% endif %}
 
-                                    <a href="{% url 'dealer_invoice_list' %}"
-                                       data-link-title="invoices bills invoice copies dealer company transporter pending balance"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'dealer_invoice_list' or request.resolver_match.url_name == 'dealer_invoice_print' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M7 3h10v18H7z"/>
-                                            <path stroke-width="2" d="M9 7h6M9 11h6M9 15h4"/>
-                                        </svg>
-                                        Invoices
-                                    </a>
-                                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                                        <a href="{% url 'farmer_data_admin_list' %}"
-                                        data-link-title="all farmer data uploaded by dealers excel pdf report"
-                                        class="drawer-link {% if request.resolver_match.url_name == 'farmer_data_admin_list' %}active{% endif %}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                                <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                                            </svg>
-                                            All Farmer Data
-                                        </a>
-                                    {% endif %}
-                                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" or profile.role == "ASM" or profile.role == "ACCOUNTANT" %}
-                                    <a href="{% url 'dealer_redemption_approvals' %}"
-                                    data-link-title="dealer point redemption approvals sales officer asm accountant money product"
-                                    class="drawer-link {% if request.resolver_match.url_name == 'dealer_redemption_approvals' or request.resolver_match.url_name == 'dealer_redemption_reject' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                            <path stroke-width="2" d="M12 22a10 10 0 100-20 10 10 0 000 20z"/>
-                                        </svg>
-                                        Dealer Redemption Approvals
-                                    </a>
-                                {% endif %}
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" %}
+        tadaLinks.push({
+            url: "{% url 'accountant_attendance_claims' %}",
+            icon: "fas fa-rupee-sign",
+            title: "Release TA/DA Funds"
+        });
+        {% endif %}
 
-                                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" or profile.role == "WAREHOUSE_MANAGER" or profile.role == "PRODUCTION_INCHARGE" %}
-                                        <a href="{% url 'transport_copy_list' %}"
-                                           data-link-title="transport copies transporter invoice warehouse driver print whatsapp"
-                                           class="drawer-link {% if request.resolver_match.url_name == 'transport_copy_list' %}active{% endif %}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M3 7h11v10H3z"/>
-                                                <path stroke-width="2" d="M14 10h4l3 3v4h-7z"/>
-                                                <circle cx="7" cy="18" r="2" stroke-width="2"/>
-                                                <circle cx="18" cy="18" r="2" stroke-width="2"/>
-                                            </svg>
-                                            Transport Copies
-                                        </a>
-                                    {% endif %}
+        if (tadaLinks.length > 0) {
+            var tadaSection = {
+                title: "TA / DA",
+                icon: "fas fa-walking",
+                defaultOpen: false,
+                links: tadaLinks
+            };
 
-                                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                                        <a href="{% url 'sales_return_credit_note_list' %}"
-                                           data-link-title="sales return credit note return products dealer return invoice"
-                                           class="drawer-link {% if request.resolver_match.url_name == 'sales_return_credit_note_list' or request.resolver_match.url_name == 'sales_return_credit_note_create' or request.resolver_match.url_name == 'sales_return_credit_note_edit' %}active{% endif %}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M3 7h13"/>
-                                                <path stroke-width="2" d="M7 3L3 7l4 4"/>
-                                                <path stroke-width="2" d="M21 17H8"/>
-                                                <path stroke-width="2" d="M17 21l4-4-4-4"/>
-                                            </svg>
-                                            Sales Return / Credit Note
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
+            allLinksSections.push(tadaSection);
+        }
+        
+        var leavesSection = {
+            title: "LEAVES",
+            icon: "fas fa-umbrella-beach",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'employee_leave_list' %}", icon: "fas fa-list-ul", title: "My Leaves" },
+                { url: "{% url 'employee_leave_request_create' %}", icon: "fas fa-plus-circle", title: "Apply Leave" },
+                { url: "{% url 'employee_leave_balance' %}", icon: "fas fa-chart-pie", title: "My Leave Balance" },
+                { url: "{% url 'employee_extra_workday_list' %}", icon: "fas fa-calendar-plus", title: "Extra Working Day Request" }
+                {% if request.user.is_superuser or role == "ADMIN" or role == "STATE_HEAD" or role == "REGIONAL_MANAGER" or role == "ASM" or role == "HR" %}
+                ,{ url: "{% url 'manager_leave_approvals' %}", icon: "fas fa-stamp", title: "Leave Approvals" }
+                ,{ url: "{% url 'manager_extra_workday_requests' %}", icon: "fas fa-calendar-check", title: "Extra Workday Approvals" }
+                {% endif %}
+                {% if request.user.is_superuser or role == "ADMIN" or role == "HR" %}
+                ,{ url: "{% url 'hr_extra_workday_requests' %}", icon: "fas fa-hourglass-half", title: "HR Extra Leave Approval" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(leavesSection);
+        
+        var payslipsSection = {
+            title: "PAYSLIPS",
+            icon: "fas fa-file-invoice-dollar",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'my_payslips' %}", icon: "fas fa-receipt", title: "My Payslips" }
+                {% if request.user.is_superuser or role == "ADMIN" or role == "HR" or role == "ACCOUNTANT" %}
+                ,{ url: "{% url 'payslip_list' %}", icon: "fas fa-gear", title: "Payslip Management" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(payslipsSection);
+        
+        {% if request.user.is_superuser or role == "ADMIN" or role == "HR" or role == "ACCOUNTANT" %}
+        var hrSection = {
+            title: "HR MANAGEMENT",
+            icon: "fas fa-chart-line",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'hr_management_dashboard' %}", icon: "fas fa-chart-bar", title: "HR Management Dashboard" }
+            ]
+        };
+        allLinksSections.push(hrSection);
+        {% endif %}
+        {% endif %}
+        
+        // Orders & Invoices Section
+        {% if role == "ADMIN" or role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" or role == "STATE_HEAD" or role == "ACCOUNTANT" or role == "WAREHOUSE_MANAGER" %}
+        var ordersSection = {
+            title: "ORDERS & INVOICES",
+            icon: "fas fa-file-signature",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'dealer_order_list' %}", icon: "fas fa-clipboard-list", title: "Orders" },
+                { url: "{% url 'dealer_invoice_list' %}", icon: "fas fa-file-pdf", title: "Invoices" }
+                {% if request.user.is_superuser or role == "ADMIN" or role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "ACCOUNTANT" %}
+                ,{ url: "{% url 'dealer_redemption_approvals' %}", icon: "fas fa-gem", title: "Dealer Redemption Approvals" }
+                {% endif %}
+                {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" or role == "WAREHOUSE_MANAGER" %}
+                ,{ url: "{% url 'transport_copy_list' %}", icon: "fas fa-truck-fast", title: "Transport Copies" }
+                {% endif %}
+                {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" %}
+                ,{ url: "{% url 'sales_return_credit_note_list' %}", icon: "fas fa-exchange-alt", title: "Sales Return / Credit Note" }
+                ,{ url: "{% url 'farmer_data_admin_list' %}", icon: "fas fa-database", title: "All Farmer Data" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(ordersSection);
+        {% endif %}
+        
+        // Accounts & Reports Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" %}
+        var accountsSection = {
+            title: "ACCOUNTS & REPORTS",
+            icon: "fas fa-chart-pie",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'accounts_dashboard' %}", icon: "fas fa-coins", title: "Accounts" },
+                { url: "{% url 'paid_sales_report' %}", icon: "fas fa-chart-line", title: "Paid Sales Report" },
+                { url: "{% url 'order_payment_difference_report' %}", icon: "fas fa-chart-simple", title: "Order vs Payment Report" },
+                { url: "{% url 'dealer_credit_score_list' %}", icon: "fas fa-credit-card", title: "Dealer Credit Scores" }
+            ]
+        };
+        allLinksSections.push(accountsSection);
+        {% endif %}
+        
+        // GST REPORTS
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" or role == "INVENTORY_MANAGER" %}
+        var gstSection = {
+            title: "GST REPORTS",
+            icon: "fas fa-file-invoice",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'gstr2b_report' %}", icon: "fas fa-file-invoice", title: "GSTR-2B Report (Purchase)" },
+                { url: "{% url 'gstr1_report' %}", icon: "fas fa-file-invoice", title: "GSTR-1 Report (Sales)" },
+                { url: "{% url 'gstr3b_report' %}", icon: "fas fa-file-invoice", title: "GSTR-3B Payabale" }
+            ]
+        };
+        allLinksSections.push(gstSection);
+        {% endif %}
+        
+        // Dealers Section (for admin/manager roles)
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" or role == "STATE_HEAD" or role == "REGIONAL_MANAGER" or role == "ASM" %}
+        var dealersSection = {
+            title: "DEALERS",
+            icon: "fas fa-users",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'dealer_list' %}", icon: "fas fa-store", title: "Dealer List" },
+                { url: "{% url 'dealer_visit_list' %}", icon: "fas fa-map-marker-alt", title: "Dealer Visits" },
+                { url: "{% url 'dealer_approval_list' %}", icon: "fas fa-stamp", title: "Dealer Approvals" }
+            ]
+        };
+        allLinksSections.push(dealersSection);
+        {% endif %}
+        
+        // Employees Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" or role == "STATE_HEAD" or role == "REGIONAL_MANAGER" or role == "ASM" or role == "HR" %}
+        var employeesSection = {
+            title: "EMPLOYEES",
+            icon: "fas fa-id-badge",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'employee_list' %}", icon: "fas fa-users", title: "Employees" }
+                {% if request.user.is_superuser or role == "ADMIN" or role == "ACCOUNTANT" or role == "HR" %}
+                ,{ url: "{% url 'employee_create' %}", icon: "fas fa-user-plus", title: "Create Employee" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(employeesSection);
+        {% endif %}
+        
+        // Product Management Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "INVENTORY_MANAGER" %}
+        var productsSection = {
+            title: "PRODUCT MANAGEMENT",
+            icon: "fas fa-box",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'product_list' %}", icon: "fas fa-boxes", title: "Products" },
+                { url: "{% url 'product_stock_transfer_list' %}", icon: "fas fa-exchange-alt", title: "Stock Transfer" }
+                {% if request.user.is_superuser or role == "ADMIN" %}
+                ,{ url: "{% url 'product_category_list' %}", icon: "fas fa-tags", title: "Categories & Payment Rules" }
+                ,{ url: "{% url 'product_create' %}", icon: "fas fa-plus-circle", title: "Create Product" }
+                ,{ url: "{% url 'dealer_point_admin_settings' %}", icon: "fas fa-star", title: "Point Value Settings" }
+                ,{ url: "{% url 'product_formula_list' %}", icon: "fas fa-flask", title: "Formula Master" }
+                ,{ url: "{% url 'smart_production_create' %}", icon: "fas fa-industry", title: "Smart Production" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(productsSection);
+        {% endif %}
+        
+        // Purchase Management Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "INVENTORY_MANAGER" or role == "ACCOUNTANT" %}
+        var purchaseSection = {
+            title: "PURCHASE MANAGEMENT",
+            icon: "fas fa-shopping-cart",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'purchase_dashboard' %}", icon: "fas fa-cart-shopping", title: "Purchase Management" },
+                { url: "{% url 'purchase_stock_history' %}", icon: "fas fa-history", title: "Stock Usage History" }
+            ]
+        };
+        allLinksSections.push(purchaseSection);
+        {% endif %}
+        
+        // Warehouse Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "WAREHOUSE_MANAGER" %}
+        var warehouseSection = {
+            title: "WAREHOUSE",
+            icon: "fas fa-warehouse",
+            defaultOpen: false,
+            links: [
+                {% if request.user.is_superuser or role == "ADMIN" %}
+                { url: "{% url 'warehouse_list' %}", icon: "fas fa-warehouse", title: "Warehouses" },
+                { url: "{% url 'warehouse_create' %}", icon: "fas fa-plus-circle", title: "Create Warehouse" },
+                {% endif %}
+                { url: "{% url 'warehouse_my_products' %}", icon: "fas fa-box", title: "My Warehouse Products" },
+                { url: "{% url 'warehouse_my_orders' %}", icon: "fas fa-truck", title: "My Warehouse Orders" }
+            ]
+        };
+        allLinksSections.push(warehouseSection);
+        {% endif %}
+        
+        // Asset Management Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "ASSET_MANAGER" %}
+        var assetSection = {
+            title: "ASSET MANAGEMENT",
+            icon: "fas fa-laptop",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'asset_list' %}", icon: "fas fa-laptop", title: "Asset List" },
+                { url: "{% url 'asset_create_bulk' %}", icon: "fas fa-plus-circle", title: "Create Assets" }
+            ]
+        };
+        allLinksSections.push(assetSection);
+        {% endif %}
+        
+        // My Assets Section
+        {% if role != "DEALER" %}
+        var myAssetsSection = {
+            title: "MY ASSETS",
+            icon: "fas fa-id-card",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'my_assets' %}", icon: "fas fa-id-card", title: "My Assigned Assets" }
+            ]
+        };
+        allLinksSections.push(myAssetsSection);
+        {% endif %}
+        
+        // Farmer Meetings Section
+        {% if request.user.is_superuser or role == "ADMIN" or role == "DEVELOPMENT_OFFICER" or role == "SALES_OFFICER_SENIOR" or role == "SALES_OFFICER_JUNIOR" or role == "ASM" or role == "REGIONAL_MANAGER" or role == "STATE_HEAD" %}
+        var farmerSection = {
+            title: "FARMER MEETINGS",
+            icon: "fas fa-leaf",
+            defaultOpen: false,
+            links: [
+                { url: "{% url 'farmer_meet_list' %}", icon: "fas fa-handshake", title: "Farmer Meets" }
+                {% if role == "DEVELOPMENT_OFFICER" %}
+                ,{ url: "{% url 'farmer_meet_create' %}", icon: "fas fa-plus-circle", title: "Create Farmer Meet" }
+                {% endif %}
+            ]
+        };
+        allLinksSections.push(farmerSection);
+        {% endif %}
+        
+        var sectionStates = {};
+        
+        // Global toggle function for both desktop and mobile
+        window.toggleDrawerSection = function(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle('collapsed');
+                var isCollapsed = section.classList.contains('collapsed');
+                sectionStates[sectionId] = !isCollapsed;
+            }
+        };
+        
+        // Render function for desktop drawer
+        function renderDesktopDrawer(filterText) {
+            var container = document.getElementById('desktopDrawerContent');
+            if (!container) return;
+            var filter = filterText ? filterText.toLowerCase().trim() : '';
+            var html = '';
+            var hasResults = false;
+            
+            for (var s = 0; s < allLinksSections.length; s++) {
+                var section = allLinksSections[s];
+                var filteredLinks = [];
+                
+                for (var l = 0; l < section.links.length; l++) {
+                    var link = section.links[l];
+                    if (!filter || link.title.toLowerCase().indexOf(filter) !== -1) {
+                        filteredLinks.push(link);
+                    }
+                }
+                
+                if (filteredLinks.length > 0 || (!filter && section.links.length > 0)) {
+                    hasResults = true;
+                    var sectionId = "section_" + s + "_" + section.title.replace(/\s/g, '_');
+                    var isOpen = (sectionStates[sectionId] !== undefined) ? sectionStates[sectionId] : (section.defaultOpen === true);
+                    var collapsedClass = !isOpen ? 'collapsed' : '';
+                    
+                    html += '<div class="drawer-section ' + collapsedClass + '" id="' + sectionId + '">';
+                    html += '<div class="section-header" onclick="toggleDrawerSection(\'' + sectionId + '\')">';
+                    html += '<div class="section-header-left">';
+                    html += '<i class="' + section.icon + '"></i>';
+                    html += '<span class="section-title">' + section.title + '</span>' + getSectionBadgeHtml(section);
+                    html += '</div>';
+                    html += '<div class="toggle-icon"><i class="fas fa-chevron-down"></i></div>';
+                    html += '</div>';
+                    html += '<div class="section-links">';
+                    
+                    for (var f = 0; f < filteredLinks.length; f++) {
+                        var fl = filteredLinks[f];
+                        html += '<a href="' + fl.url + '" class="drawer-link"><i class="' + fl.icon + '"></i><span class="link-title">' + fl.title + '</span>' + getActionBadgeHtml(fl.url) + '</a>';
+                    }
+                    html += '</div></div>';
+                }
+            }
+            
+            html += '<div style="margin-top: 16px;"><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="drawer-link logout-drawer-btn" style="margin-top:8px;"><i class="fas fa-sign-out-alt"></i> Logout</button></form></div>';
+            
+            if (!hasResults && filter) {
+                html = '<div class="no-results"><i class="fas fa-search"></i> No links found for "' + filter + '"</div>';
+            }
+            
+            container.innerHTML = html;
+            
+            for (var sectionId in sectionStates) {
+                var el = document.getElementById(sectionId);
+                if (el && !sectionStates[sectionId]) {
+                    el.classList.add('collapsed');
+                }
+            }
+        }
+        
+        // Render function for mobile bottom sheet
+        function renderMobileSheet(filterText) {
+            var container = document.getElementById('mobileSheetContent');
+            if (!container) return;
+            var filter = filterText ? filterText.toLowerCase().trim() : '';
+            var html = '';
+            var hasResults = false;
+            
+            for (var s = 0; s < allLinksSections.length; s++) {
+                var section = allLinksSections[s];
+                var filteredLinks = [];
+                
+                for (var l = 0; l < section.links.length; l++) {
+                    var link = section.links[l];
+                    if (!filter || link.title.toLowerCase().indexOf(filter) !== -1) {
+                        filteredLinks.push(link);
+                    }
+                }
+                
+                if (filteredLinks.length > 0 || (!filter && section.links.length > 0)) {
+                    hasResults = true;
+                    var sectionId = "mobile_section_" + s + "_" + section.title.replace(/\s/g, '_');
+                    var isOpen = (sectionStates[sectionId] !== undefined) ? sectionStates[sectionId] : (section.defaultOpen === true);
+                    var collapsedClass = !isOpen ? 'collapsed' : '';
+                    
+                    html += '<div class="sheet-section ' + collapsedClass + '" id="' + sectionId + '">';
+                    html += '<div class="sheet-section-header" onclick="toggleDrawerSection(\'' + sectionId + '\')">';
+                    html += '<div class="sheet-section-header-left">';
+                    html += '<i class="' + section.icon + '"></i>';
+                    html += '<span class="sheet-section-title">' + section.title + '</span>' + getSectionBadgeHtml(section);
+                    html += '</div>';
+                    html += '<div class="sheet-toggle-icon"><i class="fas fa-chevron-down"></i></div>';
+                    html += '</div>';
+                    html += '<div class="sheet-section-links">';
+                    
+                    for (var f = 0; f < filteredLinks.length; f++) {
+                        var fl = filteredLinks[f];
+                        html += '<a href="' + fl.url + '" class="sheet-link"><i class="' + fl.icon + '"></i><span class="link-title">' + fl.title + '</span>' + getActionBadgeHtml(fl.url) + '</a>';
+                    }
+                    html += '</div></div>';
+                }
+            }
+            
+            html += '<div style="margin-top: 16px;"><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="sheet-link logout-sheet-btn" style="width:100%;margin-top:8px;"><i class="fas fa-sign-out-alt"></i> Logout</button></form></div>';
+            
+            if (!hasResults && filter) {
+                html = '<div class="no-results"><i class="fas fa-search"></i> No links found for "' + filter + '"</div>';
+            }
+            
+            container.innerHTML = html;
+            
+            for (var sectionId in sectionStates) {
+                var el = document.getElementById(sectionId);
+                if (el && !sectionStates[sectionId]) {
+                    el.classList.add('collapsed');
+                }
+            }
+        }
+        
+        // Desktop Drawer Search
+        var desktopDrawerSearch = document.getElementById('desktopDrawerSearch');
+        if (desktopDrawerSearch) {
+            desktopDrawerSearch.addEventListener('keyup', function(e) {
+                renderDesktopDrawer(e.target.value);
+            });
+        }
+        renderDesktopDrawer('');
+        
+        // Mobile Bottom Sheet
+        var mobileSheet = document.getElementById('bottomSheet');
+        var mobileOverlay = document.getElementById('bottomSheetOverlay');
+        
+        function openMobileSheet() {
+            mobileSheet.classList.add('open');
+            mobileOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            renderMobileSheet('');
+            var sheetSearch = document.getElementById('mobileSheetSearch');
+            if (sheetSearch) sheetSearch.value = '';
+        }
+        
+        function closeMobileSheet() {
+            mobileSheet.classList.remove('open');
+            mobileOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        var mobileMoreBtn = document.getElementById('mobileMoreBtn');
+        var mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        var closeSheetBtn = document.getElementById('closeSheetBtn');
+        
+        if (mobileMoreBtn) mobileMoreBtn.addEventListener('click', openMobileSheet);
+        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileSheet);
+        if (closeSheetBtn) closeSheetBtn.addEventListener('click', closeMobileSheet);
+        if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileSheet);
+        
+        var mobileSheetSearch = document.getElementById('mobileSheetSearch');
+        if (mobileSheetSearch) {
+            mobileSheetSearch.addEventListener('keyup', function(e) {
+                renderMobileSheet(e.target.value);
+            });
+        }
+        
+        // Mobile bottom nav routing
+        var mobileNavBtns = document.querySelectorAll('[data-mobile-nav]');
+        for (var i = 0; i < mobileNavBtns.length; i++) {
+            var btn = mobileNavBtns[i];
+            btn.addEventListener('click', function() {
+                var action = this.getAttribute('data-mobile-nav');
+                if (action === 'dashboard') window.location.href = "{% url 'dashboard' %}";
+                else if (action === 'products') window.location.href = "{% url 'dealer_products' %}";
+                else if (action === 'cart') window.location.href = "{% url 'dealer_cart' %}";
+                else if (action === 'orders') window.location.href = "{% url 'dealer_order_list' %}";
+                else if (action === 'attendance') window.location.href = "{% url 'employee_attendance_dashboard' %}";
+                else if (action === 'leaves') window.location.href = "{% url 'employee_leave_list' %}";
+                else if (action === 'tada') window.location.href = "{% url 'employee_tada_calendar' %}";
+                else if (action === 'dealers') window.location.href = "{% url 'dealer_list' %}";
+                else if (action === 'create_dealer') window.location.href = "{% url 'dealer_create' %}";
+            });
 
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M3 10h18"/>
-                                            <path stroke-width="2" d="M5 10V7l7-4 7 4v3"/>
-                                            <path stroke-width="2" d="M6 10v9M10 10v9M14 10v9M18 10v9"/>
-                                            <path stroke-width="2" d="M4 19h16"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Accounts & Reports</strong>
-                                        <span>Payments, bank, sales graphs</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
 
-                            <div class="drawer-section-links">
-                                <a href="{% url 'accounts_dashboard' %}"
-                                   data-link-title="accounts bank payment in payment out accountant admin cash bank expense"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'accounts_dashboard' or request.resolver_match.url_name == 'company_account_create' or request.resolver_match.url_name == 'company_payment_in_create' or request.resolver_match.url_name == 'company_payment_out_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M3 10h18"/>
-                                        <path stroke-width="2" d="M5 10V7l7-4 7 4v3"/>
-                                        <path stroke-width="2" d="M6 10v9M10 10v9M14 10v9M18 10v9"/>
-                                        <path stroke-width="2" d="M4 19h16"/>
-                                    </svg>
-                                    Accounts
-                                </a>
+        refreshPendingActionBadges(false);
 
-                                <a href="{% url 'paid_sales_report' %}"
-                                   data-link-title="paid sales report sales graph payment report accountant admin quarters financial year"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'paid_sales_report' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 19V5"/>
-                                        <path stroke-width="2" d="M4 19h16"/>
-                                        <path stroke-width="2" d="M8 15l3-3 3 2 5-7"/>
-                                    </svg>
-                                    Paid Sales Report
-                                </a>
-
-                                <a href="{% url 'order_payment_difference_report' %}"
-                                   data-link-title="order payment difference report invoice received pending accountant admin graph"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'order_payment_difference_report' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 19V5"/>
-                                        <path stroke-width="2" d="M4 19h16"/>
-                                        <path stroke-width="2" d="M7 15h2"/>
-                                        <path stroke-width="2" d="M11 11h2"/>
-                                        <path stroke-width="2" d="M15 8h2"/>
-                                    </svg>
-                                    Order vs Payment Report
-                                </a>
-                                <a href="{% url 'dealer_credit_score_list' %}"
-                                data-link-title="dealer credit score cibil score accountant admin dealer dues pending amount"
-                                class="drawer-link {% if request.resolver_match.url_name == 'dealer_credit_score_list' or request.resolver_match.url_name == 'dealer_credit_score_update' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 19V5"/>
-                                        <path stroke-width="2" d="M4 19h16"/>
-                                        <path stroke-width="2" d="M7 15l3-3 3 2 5-7"/>
-                                        <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                    </svg>
-                                    Dealer Credit Scores
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if request.user.is_superuser or profile.role == "ADMIN" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                            <path stroke-width="2" d="M12 6v14"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Dealer Points</strong>
-                                        <span>Point value and redemption rules</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                <a href="{% url 'dealer_point_admin_settings' %}"
-                                data-link-title="dealer points settings farmer points rupees per point redemption product rules"
-                                class="drawer-link {% if request.resolver_match.url_name == 'dealer_point_admin_settings' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18"/>
-                                        <path stroke-width="2" d="M12 6v14"/>
-                                    </svg>
-                                    Point Value Settings
-                                </a>
-                            </div>
-                        </div>
+        setInterval(function() {
+            refreshPendingActionBadges(true);
+        }, 30000);
+        }
+    </script>
+    
+    {% endwith %}
+    {% endwith %}
 {% endif %}
 
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "INVENTORY_MANAGER" %}
-                    <div class="drawer-section">
-                        <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                            <span class="section-left">
-                                <span class="section-icon">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                    </svg>
-                                </span>
-
-                                <span class="section-text">
-                                    {% if profile.role == "INVENTORY_MANAGER" and not request.user.is_superuser %}
-                                        <strong>Sticker Printing</strong>
-                                        <span>Product barcode and QR sticker print</span>
-                                    {% else %}
-                                        <strong>Product Management</strong>
-                                        <span>Products, categories, rules</span>
-                                    {% endif %}
-                                </span>
-                            </span>
-
-                            <span class="section-symbol"></span>
-                        </button>
-
-                        <div class="drawer-section-links">
-
-                            {% if request.user.is_superuser or profile.role == "ADMIN" %}
-                                <a href="{% url 'product_category_list' %}"
-                                data-link-title="category product category payment rules advance instant day wise discount"
-                                class="drawer-link {% if request.resolver_match.url_name == 'product_category_list' or request.resolver_match.url_name == 'product_category_create' or request.resolver_match.url_name == 'product_category_edit' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/>
-                                    </svg>
-                                    Categories & Payment Rules
-                                </a>
-
-                                <a href="{% url 'product_create' %}"
-                                data-link-title="create product add product pack size stock warehouse scheme"
-                                class="drawer-link {% if request.resolver_match.url_name == 'product_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                    </svg>
-                                    Create Product
-                                </a>
-                            {% endif %}
-
-                            <a href="{% url 'product_list' %}"
-                            data-link-title="products product list stock pack sizes schemes sticker print barcode qr inventory manager"
-                            class="drawer-link {% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'product_edit' or request.resolver_match.url_name == 'product_sticker_print' %}active{% endif %}">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                </svg>
-
-                                {% if profile.role == "INVENTORY_MANAGER" and not request.user.is_superuser %}
-                                    Products / Print Stickers
-                                {% else %}
-                                    Products
-                                {% endif %}
-                            </a>
-                            <a href="{% url 'product_stock_transfer_list' %}"
-   data-link-title="stock transfer main warehouse warehouse transfer product stock inventory"
-   class="drawer-link {% if request.resolver_match.url_name == 'product_stock_transfer_list' or request.resolver_match.url_name == 'product_stock_transfer_create' %}active{% endif %}">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-width="2" d="M7 7h11m0 0l-4-4m4 4l-4 4"/>
-        <path stroke-width="2" d="M17 17H6m0 0l4 4m-4-4l4-4"/>
-        <path stroke-width="2" d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/>
-        <path stroke-width="2" d="M4 12V6a2 2 0 012-2h12a2 2 0 012 2v6"/>
-    </svg>
-    Stock Transfer
-</a>
-
-                        </div>
-                    </div>
-                {% endif %}
-
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "INVENTORY_MANAGER" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M3 10h18"/>
-                                            <path stroke-width="2" d="M5 10V7l7-4 7 4v3"/>
-                                            <path stroke-width="2" d="M6 10v9M10 10v9M14 10v9M18 10v9"/>
-                                            <path stroke-width="2" d="M4 19h16"/>
-                                        </svg>
-                                    </span>
-
-                                    <span class="section-text">
-                                        <strong>Purchase Management</strong>
-                                        <span>Purchase entry, payment, return and production</span>
-                                    </span>
-                                </span>
-
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                <a href="{% url 'purchase_dashboard' %}"
-                                   data-link-title="purchase management purchase entry payment out purchase return debit note production repacking inventory stock"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'purchase_dashboard' or request.resolver_match.url_name == 'purchase_entry_create' or request.resolver_match.url_name == 'purchase_entry_list' or request.resolver_match.url_name == 'purchase_payment_out_create' or request.resolver_match.url_name == 'purchase_return_create' or request.resolver_match.url_name == 'production_make_product_create' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                    </svg>
-                                    Purchase Management
-                                </a>
-                                <a href="{% url 'purchase_stock_history' %}"
-                                data-link-title="purchase stock history usage remaining raw material production used returned stock"
-                                class="drawer-link {% if request.resolver_match.url_name == 'purchase_stock_history' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M4 19V5"/>
-                                        <path stroke-width="2" d="M4 19h16"/>
-                                        <path stroke-width="2" d="M8 15l3-3 3 2 5-7"/>
-                                    </svg>
-                                    Stock Usage History
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M17 20h5v-2a4 4 0 0 0-4-4h-1"/>
-                                            <path stroke-width="2" d="M9 20H4v-2a4 4 0 0 1 4-4h1"/>
-                                            <circle cx="9" cy="7" r="4" stroke-width="2"/>
-                                            <path stroke-width="2" d="M17 11a4 4 0 1 0 0-8"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Dealers</strong>
-                                        <span>Dealer list, creation, approvals</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                <a href="{% url 'dealer_list' %}"
-                                   data-link-title="dealer list dealers profile firm owner gst phone state sales officer"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_list' or request.resolver_match.url_name == 'dealer_edit' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M17 20h5v-2a4 4 0 0 0-4-4h-1"/>
-                                        <path stroke-width="2" d="M9 20H4v-2a4 4 0 0 1 4-4h1"/>
-                                        <circle cx="9" cy="7" r="4" stroke-width="2"/>
-                                        <path stroke-width="2" d="M17 11a4 4 0 1 0 0-8"/>
-                                    </svg>
-                                    Dealer List
-                                </a>
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" %}
-                                    <a href="{% url 'dealer_credit_score_list' %}"
-                                    data-link-title="dealer credit score cibil dealer score dues pending amount accountant admin"
-                                    class="drawer-link {% if request.resolver_match.url_name == 'dealer_credit_score_list' or request.resolver_match.url_name == 'dealer_credit_score_update' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M4 15a8 8 0 0116 0"/>
-                                            <path stroke-width="2" d="M7 15h10"/>
-                                            <path stroke-width="2" d="M12 15l4-6"/>
-                                            <path stroke-width="2" d="M5 20h14"/>
-                                        </svg>
-                                        Dealer Credit Scores
-                                    </a>
-                                {% endif %}
-                                <a href="{% url 'dealer_visit_list' %}"
-                                    data-link-title="dealer visits sales officer visit photo gps dealer shop visit reason date location"
-                                    class="drawer-link {% if request.resolver_match.url_name == 'dealer_visit_list' or request.resolver_match.url_name == 'dealer_visit_create' or request.resolver_match.url_name == 'dealer_visit_detail' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M4 7h16v13H4z"/>
-                                            <path stroke-width="2" d="M8 7l2-3h4l2 3"/>
-                                            <circle cx="12" cy="13" r="3" stroke-width="2"/>
-                                        </svg>
-                                        Dealer Visits
-                                    </a>
-                                    {% if profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" %}
-                                        <a href="{% url 'dealer_visit_create' %}"
-                                        data-link-title="add dealer visit create dealer visit take photo gps location reason"
-                                        class="drawer-link {% if request.resolver_match.url_name == 'dealer_visit_create' %}active{% endif %}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                            </svg>
-                                            Add Dealer Visit
-                                        </a>
-                                    {% endif %}
-
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" %}
-                                    <a href="{% url 'dealer_create' %}"
-                                       data-link-title="create dealer dealer creation new dealer"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'dealer_create' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                        Create Dealer
-                                    </a>
-                                {% endif %}
-
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                                    <a href="{% url 'dealer_approval_list' %}"
-                                       data-link-title="dealer approval approvals approve reject pending dealers asm rsm state head"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'dealer_approval_list' or request.resolver_match.url_name == 'dealer_approval_detail' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                            <path stroke-width="2" d="M12 22a10 10 0 100-20 10 10 0 000 20z"/>
-                                        </svg>
-
-                                        {% if profile.role == "ASM" %}
-                                            ASM Dealer Approvals
-                                        {% elif profile.role == "REGIONAL_MANAGER" %}
-                                            RSM Dealer Approvals
-                                        {% elif profile.role == "STATE_HEAD" %}
-                                            State Head Dealer Approvals
-                                        {% else %}
-                                            Dealer Approvals
-                                        {% endif %}
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" or profile.role == "STATE_HEAD" or profile.role == "REGIONAL_MANAGER" or profile.role == "ASM" or profile.role == "HR" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Employees</strong>
-                                        <span>Staff, roles, targets</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ACCOUNTANT" or profile.role == "HR" %}
-                                    <a href="{% url 'employee_create' %}"
-                                       data-link-title="create employee add employee staff salary target attendance ta da leave settings"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'employee_create' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                        Create Employee
-                                    </a>
-                                {% endif %}
-
-                                <a href="{% url 'employee_list' %}"
-                                   data-link-title="employees employee list staff target salary manager"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'employee_list' or request.resolver_match.url_name == 'employee_edit' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                    </svg>
-                                    Employees
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "ASSET_MANAGER" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Asset Management</strong>
-                                        <span>Company assets and employee handover</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                <a href="{% url 'asset_list' %}"
-                                   data-link-title="asset management asset list laptop mobile uniform banner pamphlet employee assets assigned available"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'asset_list' or request.resolver_match.url_name == 'asset_assign' or request.resolver_match.url_name == 'asset_return' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                    </svg>
-                                    Asset List
-                                </a>
-
-                                <a href="{% url 'asset_create_bulk' %}"
-                                   data-link-title="create asset bulk asset laptop mobile tab uniform banner pamphlet asset code quantity"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'asset_create_bulk' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                    </svg>
-                                    Create Assets
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_authenticated and profile.role != "DEALER" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>My Assets</strong>
-                                        <span>Assets issued to me</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                <a href="{% url 'my_assets' %}"
-                                   data-link-title="my assets assigned assets employee laptop mobile uniform asset handover"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'my_assets' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M9 12l2 2 4-4"/>
-                                        <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                                    </svg>
-                                    My Assigned Assets
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "WAREHOUSE_MANAGER" or profile.role == "PRODUCTION_INCHARGE" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M3 21V9l9-6 9 6v12"/>
-                                            <path stroke-width="2" d="M7 21v-8h10v8"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Warehouse</strong>
-                                        <span>Products, orders, dispatch and transport</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                {% if request.user.is_superuser or profile.role == "ADMIN" %}
-                                    <a href="{% url 'warehouse_list' %}"
-                                       data-link-title="warehouse warehouses list admin warehouse manager create warehouse"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_list' or request.resolver_match.url_name == 'warehouse_create' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M3 21V9l9-6 9 6v12"/>
-                                            <path stroke-width="2" d="M7 21v-8h10v8"/>
-                                        </svg>
-                                        Warehouses
-                                    </a>
-
-                                    <a href="{% url 'warehouse_create' %}"
-                                       data-link-title="create warehouse add warehouse assign manager admin"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_create' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                        Create Warehouse
-                                    </a>
-
-                                    <a href="{% url 'warehouse_my_products' %}"
-                                       data-link-title="all warehouse products stock pack size admin products warehouse"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_my_products' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                        </svg>
-                                        All Warehouse Products
-                                    </a>
-
-                                    <a href="{% url 'warehouse_my_orders' %}"
-                                       data-link-title="all warehouse orders admin warehouse review dispatch orders"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_my_orders' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 5h6M9 9h6M9 13h6"/>
-                                            <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                        </svg>
-                                        All Warehouse Orders
-                                    </a>
-                                {% endif %}
-
-                                {% if profile.role == "WAREHOUSE_MANAGER" %}
-                                    <a href="{% url 'warehouse_my_products' %}"
-                                       data-link-title="my warehouse products stock pack size warehouse manager"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_my_products' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-                                        </svg>
-                                        My Warehouse Products
-                                    </a>
-
-                                    <a href="{% url 'warehouse_my_orders' %}"
-                                       data-link-title="my warehouse orders review dispatch transport warehouse manager"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_my_orders' or request.resolver_match.url_name == 'warehouse_order_review' or request.resolver_match.url_name == 'warehouse_dispatch_order' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 5h6M9 9h6M9 13h6"/>
-                                            <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                        </svg>
-                                        My Warehouse Orders
-                                    </a>
-                                {% endif %}
-
-                                {% if profile.role == "PRODUCTION_INCHARGE" %}
-                                    <a href="{% url 'warehouse_my_orders' %}"
-                                       data-link-title="production warehouse orders review dispatch transport"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'warehouse_my_orders' or request.resolver_match.url_name == 'warehouse_order_review' or request.resolver_match.url_name == 'warehouse_dispatch_order' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M9 5h6M9 9h6M9 13h6"/>
-                                            <path stroke-width="2" d="M5 3h14v18H5z"/>
-                                        </svg>
-                                        Warehouse Orders
-                                    </a>
-                                {% endif %}
-
-                                <a href="{% url 'dealer_order_list' %}"
-                                   data-link-title="warehouse review dispatch pending old order list approvals"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'dealer_order_list' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M3 7l9-4 9 4-9 4-9-4z"/>
-                                        <path stroke-width="2" d="M3 7v10l9 4 9-4V7"/>
-                                    </svg>
-                                    Warehouse Review / Dispatch
-                                </a>
-
-                                <a href="{% url 'transport_copy_list' %}"
-                                   data-link-title="transport copies transporter invoice warehouse driver print whatsapp"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'transport_copy_list' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M3 7h11v10H3z"/>
-                                        <path stroke-width="2" d="M14 10h4l3 3v4h-7z"/>
-                                        <circle cx="7" cy="18" r="2" stroke-width="2"/>
-                                        <circle cx="18" cy="18" r="2" stroke-width="2"/>
-                                    </svg>
-                                    Transport Copies
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if request.user.is_superuser or profile.role == "ADMIN" or profile.role == "DEVELOPMENT_OFFICER" or profile.role == "SALES_OFFICER_SENIOR" or profile.role == "SALES_OFFICER_JUNIOR" or profile.role == "ASM" or profile.role == "REGIONAL_MANAGER" or profile.role == "STATE_HEAD" %}
-                        <div class="drawer-section">
-                            <button type="button" class="drawer-section-toggle" onclick="toggleDrawerSection(this)">
-                                <span class="section-left">
-                                    <span class="section-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 3v18M5 8c4 0 7 3 7 7M19 8c-4 0-7 3-7 7"/>
-                                        </svg>
-                                    </span>
-                                    <span class="section-text">
-                                        <strong>Farmer Meetings</strong>
-                                        <span>Meet requests and approvals</span>
-                                    </span>
-                                </span>
-                                <span class="section-symbol"></span>
-                            </button>
-
-                            <div class="drawer-section-links">
-                                {% if profile.role == "DEVELOPMENT_OFFICER" %}
-                                    <a href="{% url 'farmer_meet_create' %}"
-                                       data-link-title="create farmer meet farmer meeting request development officer"
-                                       class="drawer-link {% if request.resolver_match.url_name == 'farmer_meet_create' %}active{% endif %}">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-width="2" d="M12 3v18M5 8c4 0 7 3 7 7M19 8c-4 0-7 3-7 7"/>
-                                        </svg>
-                                        Create Farmer Meet
-                                    </a>
-                                {% endif %}
-
-                                <a href="{% url 'farmer_meet_list' %}"
-                                   data-link-title="farmer meets farmer meeting approvals asm rsm state head"
-                                   class="drawer-link {% if request.resolver_match.url_name == 'farmer_meet_list' or request.resolver_match.url_name == 'farmer_meet_detail' %}active{% endif %}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" d="M9 17v-6h6v6M7 21h10a2 2 0 002-2V9l-7-6-7 6v10a2 2 0 002 2z"/>
-                                    </svg>
-                                    Farmer Meets
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <div class="drawer-empty" id="drawerEmpty">
-                        No matching links found.
-                    </div>
-                </div>
-
-                <div class="drawer-footer">
-                    Arvis Fertilizers & Chemical Pvt Ltd
-                </div>
-            </aside>
-        </header>
-        {% endwith %}
-    {% endif %}
-
-    {% if messages %}
-        <div class="messages-wrap">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <main class="page-content">
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    {% if request.user.is_authenticated %}
-        <footer class="footer">
-            © {% now "Y" %} Arvis Fertilizers & Chemical Pvt Ltd.
-            Developed by
-            <a href="https://smyvisiontechnologies.vercel.app" target="_blank">
-                SMYVISION TECHNOLOGIES
-            </a>
-        </footer>
-    {% endif %}
-
+{% if messages %}
+<div class="messages-wrap">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">
+        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+        {{ message }}
+    </div>
+    {% endfor %}
 </div>
+{% endif %}
 
-<script>
-function toggleDrawerSection(button) {
-    const section = button.closest(".drawer-section");
+<main class="page-content">
+    {% block content %}
+    {% endblock %}
+</main>
 
-    if (!section) {
-        return;
-    }
-
-    section.classList.toggle("open");
-}
-
-function resetDrawerSections() {
-    const sections = document.querySelectorAll(".drawer-section");
-
-    sections.forEach(function(section) {
-        const hasActive = section.querySelector(".drawer-link.active");
-        const isDefault = section.classList.contains("default-open");
-
-        section.style.display = "block";
-
-        if (hasActive || isDefault) {
-            section.classList.add("open");
-        } else {
-            section.classList.remove("open");
-        }
-
-        section.querySelectorAll(".drawer-link").forEach(function(link) {
-            link.style.display = "flex";
-        });
-    });
-
-    const empty = document.getElementById("drawerEmpty");
-
-    if (empty) {
-        empty.style.display = "none";
-    }
-}
-
-function filterDrawerLinks() {
-    const searchInput = document.getElementById("drawerSearch");
-    const drawer = document.getElementById("drawerLinks");
-    const empty = document.getElementById("drawerEmpty");
-
-    if (!searchInput || !drawer) {
-        return;
-    }
-
-    const value = searchInput.value.toLowerCase().trim();
-
-    if (!value) {
-        resetDrawerSections();
-        return;
-    }
-
-    const sections = drawer.querySelectorAll(".drawer-section");
-    let totalVisibleLinks = 0;
-
-    sections.forEach(function(section) {
-        const links = section.querySelectorAll(".drawer-link");
-        let sectionVisibleCount = 0;
-
-        links.forEach(function(link) {
-            const text = (
-                link.innerText + " " + (link.getAttribute("data-link-title") || "")
-            ).toLowerCase();
-
-            if (text.includes(value)) {
-                link.style.display = "flex";
-                sectionVisibleCount += 1;
-                totalVisibleLinks += 1;
-            } else {
-                link.style.display = "none";
-            }
-        });
-
-        if (sectionVisibleCount > 0) {
-            section.style.display = "block";
-            section.classList.add("open");
-        } else {
-            section.style.display = "none";
-        }
-    });
-
-    if (empty) {
-        empty.style.display = totalVisibleLinks === 0 ? "block" : "none";
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    const activeLink = document.querySelector(".drawer-link.active");
-
-    if (activeLink) {
-        const section = activeLink.closest(".drawer-section");
-
-        if (section) {
-            section.classList.add("open");
-        }
-    }
-
-    resetDrawerSections();
-});
-</script>
-
+{% if request.user.is_authenticated %}
+<footer class="footer">
+    <i class="far fa-copyright"></i> {% now "Y" %} Arvis Fertilizers & Chemical Pvt Ltd. Developed by
+    <a href="https://smyvisiontechnologies.vercel.app" target="_blank"><i class="fas fa-code"></i> SMYVISION TECHNOLOGIES</a>
+</footer>
+{% endif %}
+</div>
 </body>
 </html>

@@ -1,59 +1,631 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div style="padding:18px;">
-    <div style="max-width:1200px;margin:auto;">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
 
-        <div style="background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:18px;border-radius:22px;margin-bottom:16px;">
-            <h2 style="margin:0;">Dealer Point Settings</h2>
-            <p style="margin:6px 0 0;">Set farmer upload points, point value and redemption rules.</p>
+:root {
+    --primary-blue: #2563eb;
+    --primary-dark: #1e40af;
+    --success-green: #059669;
+    --warning-orange: #d97706;
+    --dark-slate: #0f172a;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    --hover-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+}
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.settings-page {
+    padding: 24px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #fef3c7 50%, #f0f9ff 75%, #e0f2fe 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.settings-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.settings-wrap {
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Premium Header Section */
+.settings-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #2563eb 50%, #1e293b 75%, #0f172a 100%);
+    border-radius: 32px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.settings-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 70%);
+    animation: headerShine 8s infinite;
+    transform: rotate(45deg);
+}
+
+@keyframes headerShine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.settings-header h2 i {
+    color: #fbbf24;
+    font-size: 32px;
+}
+
+.settings-header p {
+    margin: 12px 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Premium Cards */
+.settings-card {
+    background: white;
+    border-radius: 28px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.settings-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.card-header i {
+    font-size: 28px;
+    color: #2563eb;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    padding: 12px;
+    border-radius: 16px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: #334155;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group label i {
+    color: #2563eb;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+/* Premium Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #059669, #047857);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+}
+
+.btn-dark {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-dark:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #1e293b, #334155);
+}
+
+/* Rules Table - Desktop */
+.rules-table-wrap {
+    overflow-x: auto;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    display: block;
+}
+
+.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.rules-table th {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: #475569;
+    padding: 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rules-table th i {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.rules-table td {
+    padding: 16px;
+    border-top: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.rules-table tr:hover {
+    background: #f8fafc;
+}
+
+/* Mobile Rules Cards */
+.rules-cards {
+    display: none;
+    gap: 16px;
+}
+
+.rule-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.rule-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    border-color: #2563eb;
+}
+
+.rule-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.rule-product {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rule-product i {
+    color: #2563eb;
+    font-size: 18px;
+}
+
+.rule-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rule-status.active {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.rule-status.inactive {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.rule-details {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.rule-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-radius: 24px;
+    color: #64748b;
+}
+
+.empty-state i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+    color: #cbd5e1;
+}
+
+.empty-state p {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media(max-width: 1024px) {
+    .settings-page {
+        padding: 20px;
+    }
+    
+    .settings-card {
+        padding: 24px;
+    }
+}
+
+@media(max-width: 768px) {
+    .settings-page {
+        padding: 16px;
+    }
+    
+    .settings-header {
+        padding: 20px;
+        border-radius: 24px;
+    }
+    
+    .settings-header h2 {
+        font-size: 24px;
+    }
+    
+    .settings-card {
+        padding: 20px;
+        border-radius: 24px;
+    }
+    
+    .card-header h3 {
+        font-size: 20px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    /* Hide desktop table on mobile */
+    .rules-table-wrap {
+        display: none;
+    }
+    
+    /* Show mobile cards */
+    .rules-cards {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media(max-width: 640px) {
+    .settings-page {
+        padding: 12px;
+    }
+    
+    .settings-header {
+        padding: 16px;
+    }
+    
+    .settings-header h2 {
+        font-size: 20px;
+    }
+    
+    .settings-header h2 i {
+        font-size: 24px;
+    }
+    
+    .settings-card {
+        padding: 16px;
+    }
+    
+    .card-header {
+        margin-bottom: 16px;
+    }
+    
+    .card-header i {
+        font-size: 20px;
+        padding: 8px;
+    }
+    
+    .card-header h3 {
+        font-size: 18px;
+    }
+    
+    .btn-primary, .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .rule-card {
+        padding: 14px;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .rule-actions {
+        justify-content: stretch;
+    }
+    
+    .rule-actions form {
+        width: 100%;
+    }
+    
+    .btn-dark {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-header,
+.settings-card,
+.rule-card {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.settings-card:nth-child(1) { animation-delay: 0.1s; }
+.settings-card:nth-child(2) { animation-delay: 0.2s; }
+.settings-card:nth-child(3) { animation-delay: 0.3s; }
+</style>
+
+<div class="settings-page">
+    <div class="settings-wrap">
+        
+        <!-- Premium Header -->
+        <div class="settings-header">
+            <h2>
+                <i class="fas fa-crown"></i>
+                Dealer Point Settings
+            </h2>
+            <p>
+                <i class="fas fa-sliders-h"></i> Configure farmer upload points, point values, and redemption rules for the dealer rewards system.
+            </p>
         </div>
 
-        <div style="background:white;border:1px solid #e2e8f0;border-radius:22px;padding:18px;margin-bottom:16px;">
-            <h3 style="margin-top:0;">Point Value Settings</h3>
+        <!-- Point Value Settings Card -->
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="fas fa-chart-line"></i>
+                <h3>Point Value Settings</h3>
+            </div>
 
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="save_settings">
 
-                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
-                    <div>
-                        <label style="font-weight:900;">Points Per Farmer</label>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user-plus"></i> Points Per Farmer</label>
                         <input type="number" name="farmer_points" class="form-control" value="{{ setting.farmer_points }}" required>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Rupees Per Point</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-coins"></i> Rupees Per Point</label>
                         <input type="number" step="0.01" name="rupees_per_point" class="form-control" value="{{ setting.rupees_per_point }}" required>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Minimum Money Redemption</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-hand-holding-usd"></i> Minimum Money Redemption</label>
                         <input type="number" name="minimum_money_redemption_points" class="form-control" value="{{ setting.minimum_money_redemption_points }}" required>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Minimum Product Redemption</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-gift"></i> Minimum Product Redemption</label>
                         <input type="number" name="minimum_product_redemption_points" class="form-control" value="{{ setting.minimum_product_redemption_points }}" required>
                     </div>
                 </div>
 
-                <button type="submit" style="margin-top:14px;background:#2563eb;color:white;border:0;border-radius:14px;padding:12px 16px;font-weight:900;">
-                    Save Settings
-                </button>
+                <div style="margin-top: 24px;">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
             </form>
         </div>
 
-        <div style="background:white;border:1px solid #e2e8f0;border-radius:22px;padding:18px;margin-bottom:16px;">
-            <h3 style="margin-top:0;">Add Product Redemption Rule</h3>
+        <!-- Add Product Redemption Rule Card -->
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Add Product Redemption Rule</h3>
+            </div>
 
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="add_product_rule">
 
-                <div style="display:grid;grid-template-columns:2fr 2fr 1fr 1fr auto;gap:12px;">
-                    <div>
-                        <label style="font-weight:900;">Product</label>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-box"></i> Product</label>
                         <select name="product" class="form-control" required>
                             <option value="">Select Product</option>
                             {% for product in products %}
@@ -62,8 +634,8 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Pack Size Optional</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-cubes"></i> Pack Size (Optional)</label>
                         <select name="pack_size" class="form-control">
                             <option value="">No Pack Size</option>
                             {% for pack in pack_sizes %}
@@ -72,82 +644,145 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Points</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-star"></i> Points Required</label>
                         <input type="number" name="points_required" class="form-control" placeholder="100" required>
                     </div>
 
-                    <div>
-                        <label style="font-weight:900;">Free Qty</label>
+                    <div class="form-group">
+                        <label><i class="fas fa-gift"></i> Free Quantity</label>
                         <input type="number" name="free_quantity" class="form-control" value="1" required>
                     </div>
+                </div>
 
-                    <div style="display:flex;align-items:end;">
-                        <button type="submit" style="background:#059669;color:white;border:0;border-radius:14px;padding:12px 16px;font-weight:900;">
-                            Add
-                        </button>
-                    </div>
+                <div style="margin-top: 24px;">
+                    <button type="submit" class="btn-success">
+                        <i class="fas fa-plus"></i> Add Redemption Rule
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div style="background:white;border:1px solid #e2e8f0;border-radius:22px;padding:18px;">
-            <h3 style="margin-top:0;">Product Redemption Rules</h3>
+        <!-- Product Redemption Rules Card -->
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="fas fa-list-alt"></i>
+                <h3>Product Redemption Rules</h3>
+            </div>
 
-            <div style="overflow:auto;">
-                <table style="width:100%;border-collapse:collapse;">
+            <!-- Desktop Table View -->
+            <div class="rules-table-wrap">
+                <table class="rules-table">
                     <thead>
-                        <tr style="background:#f8fafc;">
-                            <th style="padding:10px;text-align:left;">Product</th>
-                            <th style="padding:10px;text-align:left;">Pack</th>
-                            <th style="padding:10px;text-align:left;">Points Required</th>
-                            <th style="padding:10px;text-align:left;">Free Quantity</th>
-                            <th style="padding:10px;text-align:left;">Status</th>
-                            <th style="padding:10px;text-align:left;">Action</th>
+                        <tr>
+                            <th><i class="fas fa-box"></i> Product</th>
+                            <th><i class="fas fa-cubes"></i> Pack</th>
+                            <th><i class="fas fa-star"></i> Points Required</th>
+                            <th><i class="fas fa-gift"></i> Free Quantity</th>
+                            <th><i class="fas fa-toggle-on"></i> Status</th>
+                            <th><i class="fas fa-cog"></i> Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {% for rule in product_rules %}
                             <tr>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">{{ rule.product.name }}</td>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">
+                                <td><strong>{{ rule.product.name }}</strong></td>
+                                <td>
                                     {% if rule.pack_size %}
                                         {{ rule.pack_size }}
                                     {% else %}
-                                        -
+                                        <span style="color:#94a3b8;">—</span>
                                     {% endif %}
                                 </td>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">{{ rule.points_required }}</td>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">{{ rule.free_quantity }}</td>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">
+                                <td><span class="badge" style="background:#fef3c7;color:#d97706;padding:4px 10px;border-radius:999px;">{{ rule.points_required }} pts</span></td>
+                                <td>{{ rule.free_quantity }}</td>
+                                <td>
                                     {% if rule.is_active %}
-                                        Active
+                                        <span class="status-chip active"><i class="fas fa-check-circle"></i> Active</span>
                                     {% else %}
-                                        Inactive
+                                        <span class="status-chip inactive"><i class="fas fa-times-circle"></i> Inactive</span>
                                     {% endif %}
                                 </td>
-                                <td style="padding:10px;border-top:1px solid #e2e8f0;">
-                                    <form method="post">
+                                <td>
+                                    <form method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="toggle_product_rule">
                                         <input type="hidden" name="rule_id" value="{{ rule.id }}">
-
-                                        <button type="submit" style="background:#0f172a;color:white;border:0;border-radius:10px;padding:8px 12px;font-weight:900;">
+                                        <button type="submit" class="btn-dark">
+                                            <i class="fas {% if rule.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
                                             {% if rule.is_active %}Deactivate{% else %}Activate{% endif %}
                                         </button>
                                     </form>
                                 </td>
-                            </tr>
+                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="6" style="padding:18px;text-align:center;color:#64748b;font-weight:900;">
-                                    No product redemption rules added yet.
-                                </td>
-                            </tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="fas fa-box-open"></i>
+                                    <p>No product redemption rules added yet.</p>
+                                 </td>
+                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="rules-cards">
+                {% for rule in product_rules %}
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <div class="rule-product">
+                                <i class="fas fa-box"></i>
+                                {{ rule.product.name }}
+                            </div>
+                            <div class="rule-status {% if rule.is_active %}active{% else %}inactive{% endif %}">
+                                <i class="fas {% if rule.is_active %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                {% if rule.is_active %}Active{% else %}Inactive{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="rule-details">
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-cubes"></i> Pack Size</span>
+                                <span class="detail-value">
+                                    {% if rule.pack_size %}
+                                        {{ rule.pack_size }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-star"></i> Points Required</span>
+                                <span class="detail-value">{{ rule.points_required }} points</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label"><i class="fas fa-gift"></i> Free Quantity</span>
+                                <span class="detail-value">{{ rule.free_quantity }}</span>
+                            </div>
+                        </div>
+
+                        <div class="rule-actions">
+                            <form method="post" style="width: 100%;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="toggle_product_rule">
+                                <input type="hidden" name="rule_id" value="{{ rule.id }}">
+                                <button type="submit" class="btn-dark" style="width: 100%; justify-content: center;">
+                                    <i class="fas {% if rule.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
+                                    {% if rule.is_active %}Deactivate Rule{% else %}Activate Rule{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>No product redemption rules added yet.</p>
+                        <p style="font-size: 12px; margin-top: 8px;">Click "Add Redemption Rule" above to get started.</p>
+                    </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -155,11 +790,34 @@
 </div>
 
 <style>
-@media(max-width: 900px) {
-    div[style*="grid-template-columns:repeat(4,1fr)"],
-    div[style*="grid-template-columns:2fr 2fr 1fr 1fr auto"] {
-        grid-template-columns: 1fr !important;
-    }
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-chip.active {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.status-chip.inactive {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
 }
 </style>
 

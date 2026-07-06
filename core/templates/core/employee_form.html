@@ -1,144 +1,169 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 .employee-form-page {
-    padding: 18px;
+    padding: 16px;
+    background: #f8fafc;
+    min-height: calc(100vh - 70px);
 }
 
 .employee-form-card {
     background: #ffffff;
-    border-radius: 26px;
-    padding: 22px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
+/* Header - Compact */
 .employee-form-header {
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 30%),
-        linear-gradient(135deg, #f8fafc, #ffffff);
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 18px;
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px 18px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .employee-form-header h2 {
     margin: 0;
-    font-size: 26px;
+    font-size: 22px;
     color: #0f172a;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.employee-form-header h2 i {
+    color: #16a34a;
+    font-size: 22px;
 }
 
 .employee-form-header p {
-    margin: 7px 0 0;
+    margin: 4px 0 0;
     color: #64748b;
-    font-size: 13px;
-    font-weight: 750;
-    line-height: 1.5;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Note Boxes - Compact */
+.info-note, .warning-note, .error-box {
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .info-note {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    border-radius: 17px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.5;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #bbf7d0;
+}
+
+.info-note i, .warning-note i, .error-box i {
+    font-size: 14px;
 }
 
 .warning-note {
-    background: #fff7ed;
-    color: #c2410c;
-    border: 1px solid #fed7aa;
-    border-radius: 17px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.5;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
 }
 
 .error-box {
     background: #fef2f2;
     color: #b91c1c;
     border: 1px solid #fecaca;
-    padding: 12px 14px;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.5;
 }
 
+/* Section Blocks - Compact */
 .section-block {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 16px;
-    margin-top: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px;
+    margin-top: 14px;
 }
 
 .section-head {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    align-items: flex-start;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .section-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     color: #0f172a;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: #16a34a;
+    font-size: 16px;
 }
 
 .section-desc {
-    margin: 5px 0 0;
+    margin: 3px 0 0;
     color: #64748b;
-    font-size: 12.5px;
-    font-weight: 750;
-    line-height: 1.45;
+    font-size: 11px;
+    font-weight: 500;
 }
 
 .section-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 10px;
-    border-radius: 999px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #334155;
-    font-size: 11px;
-    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 800;
 }
 
+/* Form Grid - Compact */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.form-group {
+    margin-bottom: 0;
 }
 
 .form-group label {
     display: block;
-    font-weight: 900;
-    margin-bottom: 7px;
+    font-weight: 800;
+    margin-bottom: 5px;
     color: #334155;
-    font-size: 13px;
+    font-size: 12px;
+}
+
+.form-group label i {
+    color: #16a34a;
+    font-size: 11px;
+    margin-right: 4px;
 }
 
 .form-control,
@@ -146,75 +171,212 @@
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 12px 13px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
     outline: none;
     background: #f8fafc;
-    color: #0f172a;
-    font-weight: 800;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .form-control:focus,
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #2563eb;
+    border-color: #16a34a;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
 
-textarea.form-control,
-.form-group textarea {
+textarea.form-control {
     resize: vertical;
-    min-height: 92px;
+    min-height: 70px;
 }
 
 .errorlist {
-    margin: 6px 0 0;
-    padding-left: 18px;
+    margin: 4px 0 0;
+    padding-left: 16px;
     color: #dc2626;
-    font-size: 12.5px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .help-text {
     display: block;
-    margin-top: 5px;
+    margin-top: 4px;
     color: #64748b;
-    font-size: 11.5px;
-    font-weight: 750;
-    line-height: 1.4;
+    font-size: 10px;
+    font-weight: 600;
 }
 
-.field-card {
+/* Profile Image Preview */
+.current-image-preview {
+    margin-bottom: 12px;
+    text-align: center;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+.profile-image-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #16a34a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.current-image-label {
+    font-size: 12px;
+    color: #16a34a;
+    margin-top: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.image-change-note {
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #1d4ed8;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* File input styling */
+input[type="file"] {
+    padding: 8px;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 13px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    font-size: 12px;
 }
 
-.field-card .form-group {
-    margin: 0;
+input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 11px;
+    margin-right: 12px;
+    transition: all 0.2s;
 }
 
-.ta-info-grid {
+input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #15803d, #166534);
+    transform: translateY(-1px);
+}
+
+.upload-preview-note {
+    margin-top: 8px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Workday Grid - Compact */
+.workday-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 12px;
-    margin-top: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+}
+
+.workday-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.workday-card:hover {
+    background: #f1f5f9;
+    border-color: #16a34a;
+}
+
+.workday-card input {
+    width: 16px;
+    height: 16px;
+    accent-color: #16a34a;
+}
+
+/* Check Cards - Compact */
+.check-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.check-card:hover {
+    background: #f1f5f9;
+    border-color: #16a34a;
+}
+
+.check-card input {
+    width: 16px;
+    height: 16px;
+    accent-color: #16a34a;
+}
+
+/* Info Grids - Compact */
+.ta-info-grid, .payroll-calc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .ta-info {
     background: #ecfdf5;
     border: 1px solid #bbf7d0;
-    color: #047857;
-    border-radius: 16px;
-    padding: 12px;
-    font-size: 12px;
-    font-weight: 850;
-    line-height: 1.45;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ta-info i {
+    font-size: 14px;
+    flex-shrink: 0;
 }
 
 .ta-info.orange {
@@ -228,221 +390,250 @@ textarea.form-control,
     border-color: #bfdbfe;
     color: #1d4ed8;
 }
-.workday-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    gap: 10px;
-}
 
-.workday-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 15px;
-    padding: 11px;
+/* Payroll Section */
+.payroll-mini-note {
+    background: #f0fdf4;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-weight: 900;
-    color: #334155;
-    cursor: pointer;
+    gap: 8px;
 }
 
-.workday-card input {
-    width: 18px;
-    height: 18px;
-    accent-color: #2563eb;
-}
-
-.workday-card span {
+.payroll-sub-title {
+    margin: 14px 0 10px;
     font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
+.payroll-sub-title i {
+    color: #16a34a;
+}
+
+.payroll-alert {
+    margin-top: 10px;
+    background: #eff6ff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.payroll-alert.gold {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.payroll-calc-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+}
+
+.payroll-calc-box span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.payroll-calc-box strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #16a34a;
+}
+
+/* Action Row - Compact */
 .action-row {
-    margin-top: 22px;
+    margin-top: 20px;
     display: flex;
     gap: 12px;
-    flex-wrap: wrap;
     justify-content: flex-end;
-    padding-top: 18px;
-    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #2563eb, #0f172a);
+    background: linear-gradient(135deg, #16a34a, #15803d);
     color: white;
     border: none;
-    padding: 13px 18px;
-    border-radius: 15px;
-    font-weight: 900;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
     cursor: pointer;
-    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
 
 .btn-light {
     background: #f1f5f9;
     color: #0f172a;
     text-decoration: none;
-    padding: 13px 18px;
-    border-radius: 15px;
-    font-weight: 900;
-    display: inline-block;
-    border: 1px solid #e2e8f0;
-}
-
-.upload-preview-note {
-    margin-top: 8px;
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    border-radius: 13px;
-    padding: 10px;
-    color: #64748b;
-    font-size: 12px;
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 800;
-}
-
-
-/* =========================
-   PROFESSIONAL PAYROLL SECTION
-========================= */
-.payroll-section {
-    background:
-        radial-gradient(circle at top right, rgba(5, 150, 105, 0.08), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.06), transparent 32%),
-        #ffffff;
-}
-
-.payroll-mini-note {
-    background: #f0fdf4;
-    color: #047857;
-    border: 1px solid #bbf7d0;
-    border-radius: 15px;
-    padding: 11px 12px;
-    font-size: 12px;
-    font-weight: 850;
-    line-height: 1.45;
-    margin-bottom: 14px;
-}
-
-.payroll-sub-title {
-    margin: 16px 0 12px;
-    color: #0f172a;
-    font-size: 14px;
-    font-weight: 1000;
-    display: flex;
+    font-size: 13px;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
 }
 
-.payroll-sub-title::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+.btn-light:hover {
+    background: #e5e7eb;
 }
 
-.check-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 13px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: #0f172a;
-    font-weight: 900;
+/* Hide/Show Classes */
+.pf-payroll-box, .insurance-payroll-box {
+    transition: all 0.2s;
 }
 
-.check-card input {
-    width: 18px;
-    height: 18px;
-    accent-color: #2563eb;
-}
-
-.payroll-alert {
-    margin-top: 12px;
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    border-radius: 15px;
-    padding: 11px 12px;
-    font-size: 12px;
-    font-weight: 850;
-    line-height: 1.45;
-}
-
-.payroll-alert.gold {
-    background: #fffbeb;
-    color: #92400e;
-    border-color: #fde68a;
-}
-
-.payroll-calc-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-    margin-top: 14px;
-}
-
-.payroll-calc-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 12px;
-}
-
-.payroll-calc-box span {
-    display: block;
-    color: #64748b;
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-}
-
-.payroll-calc-box strong {
-    display: block;
-    margin-top: 5px;
-    color: #0f172a;
-    font-size: 18px;
-    font-weight: 1000;
-}
-
-@media(max-width: 760px) {
+/* ========================
+   MOBILE OPTIMIZATION
+======================== */
+@media (max-width: 768px) {
     .employee-form-page {
-        padding: 12px;
+        padding: 10px;
     }
 
     .employee-form-card {
-        padding: 14px;
-        border-radius: 22px;
+        padding: 12px;
+        border-radius: 20px;
     }
 
     .employee-form-header {
-        border-radius: 20px;
-        padding: 15px;
+        padding: 12px;
+        flex-direction: column;
+        text-align: center;
     }
 
     .employee-form-header h2 {
-        font-size: 22px;
+        font-size: 20px;
+        justify-content: center;
     }
 
-    .form-grid,
-    .ta-info-grid {
+    .employee-form-header p {
+        font-size: 10px;
+    }
+
+    .btn-light {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .workday-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ta-info-grid, .payroll-calc-grid {
         grid-template-columns: 1fr;
     }
 
     .action-row {
-        display: grid;
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-light {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .section-block {
+        padding: 12px;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+
+    .check-card {
+        padding: 8px 12px;
+    }
+
+    .info-note, .warning-note, .error-box {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+    
+    .profile-image-preview {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .workday-grid {
         grid-template-columns: 1fr;
     }
 
-    .btn-primary,
-    .btn-light {
-        width: 100%;
-        text-align: center;
+    .workday-card {
+        padding: 6px 10px;
     }
+
+    .ta-info {
+        font-size: 10px;
+    }
+
+    .payroll-calc-box strong {
+        font-size: 13px;
+    }
+}
+
+/* Animation */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-block {
+    animation: fadeSlideUp 0.3s ease-out;
+}
+
+/* Image Preview Animation */
+@keyframes imagePop {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.current-image-preview {
+    animation: imagePop 0.3s ease-out;
 }
 </style>
 
@@ -451,25 +642,29 @@ textarea.form-control,
 
         <div class="employee-form-header">
             <div>
-                <h2>{{ title }}</h2>
+                <h2>
+                    <i class="fas fa-user-plus"></i>
+                    {{ title }}
+                </h2>
                 <p>
-                    Add employee login, profile details, duty timing, TA/DA settings,
-                    leave limits and yearly target.
+                    <i class="fas fa-info-circle"></i>
+                    Add employee login, profile, payroll, leaves & target
                 </p>
             </div>
 
             <a href="{% url 'employee_list' %}" class="btn-light">
-                Back to Employees
+                <i class="fas fa-arrow-left"></i> Back to Employees
             </a>
         </div>
 
         <div class="info-note">
-            Employee login will use email and password only. Username is saved internally as email.
+            <i class="fas fa-envelope"></i>
+            Employee will use email as username for login
         </div>
 
         <div class="warning-note">
-            TA/DA is separate from salary. Bike/Car TA will be calculated by approved KM.
-            Public vehicle uses bill amount. Company vehicle will not get TA.
+            <i class="fas fa-car"></i>
+            TA/DA separate from salary. Bike/Car based on approved KM
         </div>
 
         <form method="post" enctype="multipart/form-data">
@@ -477,6 +672,7 @@ textarea.form-control,
 
             {% if form.non_field_errors %}
                 <div class="error-box">
+                    <i class="fas fa-exclamation-triangle"></i>
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
@@ -485,41 +681,45 @@ textarea.form-control,
             <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Login Details</h3>
-                        <p class="section-desc">Email and password used by employee to login.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-key"></i> Login Details
+                        </h3>
+                        <p class="section-desc">Email and password for employee login</p>
                     </div>
                     <span class="section-badge">Login</span>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>First Name</label>
+                        <label><i class="fas fa-user"></i> First Name</label>
                         {{ form.first_name }}
                         {{ form.first_name.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>Last Name</label>
+                        <label><i class="fas fa-user"></i> Last Name</label>
                         {{ form.last_name }}
                         {{ form.last_name.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>Email Login</label>
+                        <label><i class="fas fa-envelope"></i> Email</label>
                         {{ form.email }}
                         {{ form.email.errors }}
-                        <span class="help-text">Employee will use this email for login.</span>
+                        <span class="help-text">Will be used as username for login</span>
                     </div>
 
                     <div class="form-group">
-                        <label>Password</label>
+                        <label><i class="fas fa-lock"></i> Password</label>
                         {{ form.password }}
                         {{ form.password.errors }}
-                        {% if title == "Edit Employee" %}
-                            <span class="help-text">Leave blank if you do not want to change password.</span>
-                        {% else %}
-                            <span class="help-text">Create a secure password for employee login.</span>
-                        {% endif %}
+                        <span class="help-text">
+                            {% if title == "Edit Employee" %}
+                                Leave blank to keep current password
+                            {% else %}
+                                Minimum 8 characters
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -528,208 +728,207 @@ textarea.form-control,
             <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Employee Profile</h3>
-                        <p class="section-desc">Basic employee identity and reporting structure.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-id-card"></i> Employee Profile
+                        </h3>
+                        <p class="section-desc">Basic identity and reporting structure</p>
                     </div>
                     <span class="section-badge">Profile</span>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Employee ID</label>
+                        <label><i class="fas fa-id-badge"></i> Employee ID</label>
                         {{ form.employee_code }}
                         {{ form.employee_code.errors }}
-                        <span class="help-text">Example: EMP001, SO-102, ASM-01.</span>
+                        <span class="help-text">Example: EMP001, SO-102, ASM-01</span>
                     </div>
 
                     <div class="form-group">
-                        <label>Role</label>
+                        <label><i class="fas fa-briefcase"></i> Role</label>
                         {{ form.role }}
                         {{ form.role.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>Reporting Manager</label>
+                        <label><i class="fas fa-user-tie"></i> Manager</label>
                         {{ form.manager }}
                         {{ form.manager.errors }}
-                        <span class="help-text">For Junior/Senior Sales Officer, select ASM or assigned manager.</span>
+                        <span class="help-text">Select reporting manager</span>
                     </div>
 
                     <div class="form-group">
-                        <label>Phone</label>
+                        <label><i class="fas fa-phone"></i> Phone</label>
                         {{ form.phone }}
                         {{ form.phone.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>State</label>
+                        <label><i class="fas fa-map-marker-alt"></i> State</label>
                         {{ form.state }}
                         {{ form.state.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>District</label>
+                        <label><i class="fas fa-location-dot"></i> District</label>
                         {{ form.district }}
                         {{ form.district.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>Profile Image</label>
+                        <label><i class="fas fa-image"></i> Profile Image</label>
+                        
+                        {% if form.instance.profile_image %}
+                            <div class="current-image-preview">
+                                <img src="{{ form.instance.profile_image.url }}" alt="Current Profile Image" class="profile-image-preview">
+                                <div class="current-image-label">
+                                    <i class="fas fa-camera"></i> Current Profile Picture
+                                </div>
+                            </div>
+                            <div class="image-change-note">
+                                <i class="fas fa-exchange-alt"></i> Upload new image to replace current one
+                            </div>
+                        {% endif %}
+                        
                         {{ form.profile_image }}
                         {{ form.profile_image.errors }}
+                        
                         <div class="upload-preview-note">
-                            Upload employee photo. This will show in employee profile.
+                            <i class="fas fa-cloud-upload-alt"></i> Supported formats: JPG, PNG, GIF (Max 5MB)
                         </div>
                     </div>
-
                 </div>
 
-                <div class="form-group" style="margin-top:14px;">
-                    <label>Address</label>
+                <div class="form-group">
+                    <label><i class="fas fa-address-card"></i> Address</label>
                     {{ form.address }}
                     {{ form.address.errors }}
                 </div>
             </div>
 
-            <!-- SALARY / PAYROLL DETAILS -->
-            <div class="section-block payroll-section">
+            <!-- SALARY & PAYROLL -->
+            <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Salary & Payroll Details</h3>
-                        <p class="section-desc">
-                            Professional payroll information used for payslip generation, PF deduction, insurance deduction and salary transfer.
-                        </p>
+                        <h3 class="section-title">
+                            <i class="fas fa-rupee-sign"></i> Salary & Payroll
+                        </h3>
+                        <p class="section-desc">For payslip generation and deductions</p>
                     </div>
                     <span class="section-badge">Payroll</span>
                 </div>
 
                 <div class="payroll-mini-note">
-                    Monthly Salary is used as the payslip basic salary. PF and insurance deductions will be calculated automatically while generating payslips.
+                    <i class="fas fa-info-circle"></i>
+                    Monthly salary used in payslip. PF/Insurance deducted automatically
                 </div>
 
-                <div class="payroll-sub-title">Employee Payroll Identity</div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Monthly Gross Salary</label>
+                        <label><i class="fas fa-money-bill"></i> Monthly Salary (₹)</label>
                         {{ form.salary_amount }}
                         {{ form.salary_amount.errors }}
-                        <span class="help-text">Salary is separate. TA/DA will not be mixed with salary.</span>
+                        <span class="help-text">Amount in Indian Rupees</span>
                     </div>
 
                     <div class="form-group">
-                        <label>Date of Birth</label>
+                        <label><i class="fas fa-calendar"></i> Date of Birth</label>
                         {{ form.date_of_birth }}
                         {{ form.date_of_birth.errors }}
                     </div>
 
                     <div class="form-group">
-                        <label>PAN Number</label>
+                        <label><i class="fas fa-file-alt"></i> PAN Number</label>
                         {{ form.pan_number }}
                         {{ form.pan_number.errors }}
-                        <span class="help-text">Example: ABCDE1234F.</span>
+                        <span class="help-text">Example: ABCDE1234F</span>
                     </div>
                 </div>
 
-                <div class="payroll-sub-title">Bank Account Details</div>
+                <div class="payroll-sub-title">
+                    <i class="fas fa-university"></i> Bank Details
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Bank Name</label>
                         {{ form.bank_name }}
                         {{ form.bank_name.errors }}
                     </div>
-
                     <div class="form-group">
                         <label>Account Holder Name</label>
                         {{ form.bank_account_holder_name }}
                         {{ form.bank_account_holder_name.errors }}
                     </div>
-
                     <div class="form-group">
-                        <label>Bank Account Number</label>
+                        <label>Account Number</label>
                         {{ form.bank_account_number }}
                         {{ form.bank_account_number.errors }}
                     </div>
-
                     <div class="form-group">
                         <label>IFSC Code</label>
                         {{ form.bank_ifsc_code }}
                         {{ form.bank_ifsc_code.errors }}
-                        <span class="help-text">Example: HDFC0001234.</span>
+                        <span class="help-text">Example: HDFC0001234</span>
                     </div>
                 </div>
 
-                <div class="payroll-alert">
-                    Bank details are optional, but if you enter any bank detail, complete bank name, holder name, account number and IFSC code.
+                <div class="payroll-sub-title">
+                    <i class="fas fa-chart-line"></i> PF Details
                 </div>
-
-                <div class="payroll-sub-title">PF Details</div>
                 <div class="check-card">
                     {{ form.pf_applicable }}
-                    <label for="id_pf_applicable" style="margin:0;">PF applicable for this employee?</label>
+                    <label>PF applicable for this employee?</label>
                 </div>
 
-                <div class="form-grid pf-payroll-box" style="margin-top:12px;">
+                <div class="form-grid pf-payroll-box" style="margin-top:10px;">
                     <div class="form-group">
                         <label>PF UAN Number</label>
                         {{ form.pf_uan_number }}
                         {{ form.pf_uan_number.errors }}
-                        <span class="help-text">Enter 12 digit UAN number.</span>
+                        <span class="help-text">12 digit UAN number</span>
                     </div>
-
                     <div class="form-group">
-                        <label>PF Deduction Percentage</label>
+                        <label>PF Percentage (%)</label>
                         {{ form.pf_deduction_percentage }}
                         {{ form.pf_deduction_percentage.errors }}
-                        <span class="help-text">Example: 12 means 12% deduction from salary.</span>
+                        <span class="help-text">Example: 12 means 12% deduction</span>
                     </div>
                 </div>
 
-                <div class="payroll-alert gold pf-payroll-box">
-                    PF deduction will be calculated as: Monthly Salary × PF Percentage / 100.
+                <div class="payroll-sub-title">
+                    <i class="fas fa-umbrella"></i> Insurance Details
                 </div>
-
-                <div class="payroll-sub-title">Insurance Details</div>
                 <div class="check-card">
                     {{ form.insurance_applicable }}
-                    <label for="id_insurance_applicable" style="margin:0;">Employee is related to company insurance?</label>
+                    <label>Insurance applicable for this employee?</label>
                 </div>
 
-                <div class="form-grid insurance-payroll-box" style="margin-top:12px;">
+                <div class="form-grid insurance-payroll-box" style="margin-top:10px;">
                     <div class="form-group">
-                        <label>Insurance Provider Name</label>
+                        <label>Insurance Provider</label>
                         {{ form.insurance_provider_name }}
                         {{ form.insurance_provider_name.errors }}
                     </div>
-
                     <div class="form-group">
-                        <label>Insurance Policy Number</label>
+                        <label>Policy Number</label>
                         {{ form.insurance_policy_number }}
                         {{ form.insurance_policy_number.errors }}
                     </div>
-
                     <div class="form-group">
-                        <label>Monthly Insurance Deduction</label>
+                        <label>Monthly Deduction (₹)</label>
                         {{ form.insurance_deduction_amount }}
                         {{ form.insurance_deduction_amount.errors }}
-                        <span class="help-text">Fixed monthly deduction from salary.</span>
+                        <span class="help-text">Fixed monthly deduction from salary</span>
                     </div>
-                </div>
-
-                <div class="payroll-alert gold insurance-payroll-box">
-                    Insurance deduction will be deducted as a fixed monthly amount from the payslip.
                 </div>
 
                 <div class="payroll-calc-grid">
                     <div class="payroll-calc-box">
-                        <span>Salary Source</span>
-                        <strong>Employee Profile</strong>
-                    </div>
-                    <div class="payroll-calc-box">
-                        <span>PF Deduction</span>
+                        <span><i class="fas fa-chart-line"></i> PF Deduction</span>
                         <strong>Percentage Based</strong>
                     </div>
                     <div class="payroll-calc-box">
-                        <span>Insurance Deduction</span>
+                        <span><i class="fas fa-umbrella"></i> Insurance</span>
                         <strong>Fixed Monthly</strong>
                     </div>
                 </div>
@@ -739,105 +938,103 @@ textarea.form-control,
             <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Duty Timings</h3>
-                        <p class="section-desc">Set employee working time for attendance checking.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-clock"></i> Duty Timings
+                        </h3>
+                        <p class="section-desc">For attendance tracking</p>
                     </div>
                     <span class="section-badge">Attendance</span>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Duty Start Time</label>
+                        <label><i class="fas fa-sun"></i> Duty Start Time</label>
                         {{ form.duty_start_time }}
                         {{ form.duty_start_time.errors }}
-                        <span class="help-text">Example: 09:30 AM.</span>
+                        <span class="help-text">Example: 09:30 AM</span>
                     </div>
-
                     <div class="form-group">
-                        <label>Duty End Time</label>
+                        <label><i class="fas fa-moon"></i> Duty End Time</label>
                         {{ form.duty_end_time }}
                         {{ form.duty_end_time.errors }}
-                        <span class="help-text">Example: 06:30 PM.</span>
+                        <span class="help-text">Example: 06:30 PM</span>
                     </div>
                 </div>
             </div>
-            <div class="section-block">
-    <div class="section-head">
-        <div>
-            <h3 class="section-title">Working Days</h3>
-            <p class="section-desc">Set weekly working days for attendance clock-in.</p>
-        </div>
-        <span class="section-badge">Work Week</span>
-    </div>
 
-    <div class="workday-grid">
-        <label class="workday-card">{{ form.work_monday }} <span>Monday</span></label>
-        <label class="workday-card">{{ form.work_tuesday }} <span>Tuesday</span></label>
-        <label class="workday-card">{{ form.work_wednesday }} <span>Wednesday</span></label>
-        <label class="workday-card">{{ form.work_thursday }} <span>Thursday</span></label>
-        <label class="workday-card">{{ form.work_friday }} <span>Friday</span></label>
-        <label class="workday-card">{{ form.work_saturday }} <span>Saturday</span></label>
-        <label class="workday-card">{{ form.work_sunday }} <span>Sunday</span></label>
-    </div>
-
-    <div class="ta-info-grid">
-        <div class="ta-info blue">
-            Employee can clock-in only on selected working days.
-        </div>
-        <div class="ta-info orange">
-            For non-working day work, employee must request manager approval.
-        </div>
-        <div class="ta-info">
-            HR approval after manager approval adds 1 extra other leave.
-        </div>
-    </div>
-</div>
-
-            <!-- TA / DA SETTINGS -->
+            <!-- WORKING DAYS -->
             <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">TA / DA Settings</h3>
-                        <p class="section-desc">Set travel allowance and daily allowance for field employees.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-calendar-week"></i> Working Days
+                        </h3>
+                        <p class="section-desc">Weekly working schedule</p>
                     </div>
-                    <span class="section-badge">TA / DA</span>
+                    <span class="section-badge">Work Week</span>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Bike TA Per KM</label>
-                        {{ form.bike_ta_per_km }}
-                        {{ form.bike_ta_per_km.errors }}
-                        <span class="help-text">Example: ₹5 per KM.</span>
-                    </div>
+                <div class="workday-grid">
+                    <label class="workday-card">{{ form.work_monday }} <span>Monday</span></label>
+                    <label class="workday-card">{{ form.work_tuesday }} <span>Tuesday</span></label>
+                    <label class="workday-card">{{ form.work_wednesday }} <span>Wednesday</span></label>
+                    <label class="workday-card">{{ form.work_thursday }} <span>Thursday</span></label>
+                    <label class="workday-card">{{ form.work_friday }} <span>Friday</span></label>
+                    <label class="workday-card">{{ form.work_saturday }} <span>Saturday</span></label>
+                    <label class="workday-card">{{ form.work_sunday }} <span>Sunday</span></label>
+                </div>
 
-                    <div class="form-group">
-                        <label>Car TA Per KM</label>
-                        {{ form.car_ta_per_km }}
-                        {{ form.car_ta_per_km.errors }}
-                        <span class="help-text">Example: ₹10 per KM.</span>
-                    </div>
+                <div class="ta-info-grid" style="margin-top: 12px;">
+                    <div class="ta-info blue"><i class="fas fa-info-circle"></i> Employee can clock-in only on selected working days</div>
+                    <div class="ta-info orange"><i class="fas fa-calendar-plus"></i> For non-working day, must request manager approval</div>
+                    <div class="ta-info"><i class="fas fa-check-circle"></i> HR approval adds 1 extra leave</div>
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label>Daily DA Amount</label>
-                        {{ form.daily_da_amount }}
-                        {{ form.daily_da_amount.errors }}
-                        <span class="help-text">Fixed DA amount for one working day.</span>
+            <!-- TA/DA SETTINGS -->
+            <div class="section-block">
+                <div class="section-head">
+                    <div>
+                        <h3 class="section-title">
+                            <i class="fas fa-tachometer-alt"></i> TA/DA Settings
+                        </h3>
+                        <p class="section-desc">Travel allowance configuration</p>
+                    </div>
+                    <span class="section-badge">TA/DA</span>
+                </div>
+
+                <div class="check-card">
+                    {{ form.tada_applicable }}
+                    <label>TA/DA applicable for this employee?</label>
+                </div>
+
+                <div id="tadaAmountFields">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fas fa-motorcycle"></i> Bike TA Per KM (₹)</label>
+                            {{ form.bike_ta_per_km }}
+                            {{ form.bike_ta_per_km.errors }}
+                            <span class="help-text">Example: 5 means ₹5 per KM</span>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-car"></i> Car TA Per KM (₹)</label>
+                            {{ form.car_ta_per_km }}
+                            {{ form.car_ta_per_km.errors }}
+                            <span class="help-text">Example: 10 means ₹10 per KM</span>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-coffee"></i> Daily DA Amount (₹)</label>
+                            {{ form.daily_da_amount }}
+                            {{ form.daily_da_amount.errors }}
+                            <span class="help-text">Fixed DA amount per working day</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="ta-info-grid">
-                    <div class="ta-info blue">
-                        Bike/Car: TA = Manager Approved KM × TA Per KM.
-                    </div>
-
-                    <div class="ta-info orange">
-                        Public Vehicle: Employee uploads bill and enters amount at clock-out.
-                    </div>
-
-                    <div class="ta-info">
-                        Company Vehicle: TA will be ₹0. Only DA can apply.
-                    </div>
+                    <div class="ta-info"><i class="fas fa-motorcycle"></i> Bike: TA = Approved KM × Rate</div>
+                    <div class="ta-info orange"><i class="fas fa-bus"></i> Public: Upload bill amount at clock-out</div>
+                    <div class="ta-info blue"><i class="fas fa-truck"></i> Company Vehicle: TA = ₹0</div>
                 </div>
             </div>
 
@@ -845,125 +1042,100 @@ textarea.form-control,
             <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Leave Settings</h3>
-                        <p class="section-desc">Set yearly leave limits for this employee.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-calendar-alt"></i> Leave Settings
+                        </h3>
+                        <p class="section-desc">Yearly leave limits</p>
                     </div>
                     <span class="section-badge">Leaves</span>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Paid Leaves Per Year</label>
+                        <label><i class="fas fa-check-circle"></i> Paid Leaves</label>
                         {{ form.paid_leaves_per_year }}
                         {{ form.paid_leaves_per_year.errors }}
+                        <span class="help-text">With salary</span>
                     </div>
-
                     <div class="form-group">
-                        <label>Sick Leaves Per Year</label>
+                        <label><i class="fas fa-thermometer-half"></i> Sick Leaves</label>
                         {{ form.sick_leaves_per_year }}
                         {{ form.sick_leaves_per_year.errors }}
+                        <span class="help-text">Medical leave</span>
                     </div>
-
                     <div class="form-group">
-                        <label>Other Leaves Per Year</label>
+                        <label><i class="fas fa-gift"></i> Other Leaves</label>
                         {{ form.other_leaves_per_year }}
                         {{ form.other_leaves_per_year.errors }}
+                        <span class="help-text">Casual leave</span>
                     </div>
-
                     <div class="form-group">
-                        <label>Unpaid Leaves Per Year</label>
+                        <label><i class="fas fa-hourglass"></i> Unpaid Leaves</label>
                         {{ form.unpaid_leaves_per_year }}
                         {{ form.unpaid_leaves_per_year.errors }}
+                        <span class="help-text">Salary deducted</span>
                     </div>
                 </div>
 
-                <div class="ta-info-grid">
-                    <div class="ta-info">
-                        Paid/Sick/Other leaves need manager approval.
-                    </div>
-
-                    <div class="ta-info orange">
-                        Unpaid leave will be marked for salary deduction.
-                    </div>
-
-                    <div class="ta-info blue">
-                        Half day and full day leave can be selected when employee applies leave.
-                    </div>
+                <div class="ta-info-grid" style="margin-top: 12px;">
+                    <div class="ta-info"><i class="fas fa-calendar-check"></i> Paid/Sick/Other need manager approval</div>
+                    <div class="ta-info orange"><i class="fas fa-clock"></i> Half day leave option available</div>
+                    <div class="ta-info blue"><i class="fas fa-chart-line"></i> Unpaid leave marked for salary deduction</div>
                 </div>
             </div>
 
             <!-- YEARLY TARGET -->
-            <div class="section-block" id="yearlyTargetSection">
+            <div class="section-block">
                 <div class="section-head">
                     <div>
-                        <h3 class="section-title">Yearly Target</h3>
-                        <p class="section-desc">Target details for sales/team performance tracking.</p>
+                        <h3 class="section-title">
+                            <i class="fas fa-bullseye"></i> Yearly Target
+                        </h3>
+                        <p class="section-desc">Performance target tracking</p>
                     </div>
                     <span class="section-badge">Target</span>
                 </div>
 
-                <div class="info-note" id="salesTargetInfo" style="display:none; margin-bottom:14px;">
-                    Junior/Senior Sales Officer target is entered manually. This amount will be added into their manager target calculation.
-                </div>
-
-                <div class="warning-note" id="managerTargetInfo" style="display:none; margin-bottom:14px;">
-                    Manager target is auto calculated from direct reporting employees target + extra percentage.
-                    Example: Team target ₹10,00,000 and percentage 50 means manager target ₹15,00,000.
-                </div>
-
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Target Year</label>
+                        <label><i class="fas fa-calendar-year"></i> Target Year</label>
                         {{ form.target_year }}
                         {{ form.target_year.errors }}
                     </div>
-
-                    <div class="form-group" id="targetAmountBox">
-                        <label id="targetAmountLabel">Yearly Target Amount</label>
+                    <div class="form-group">
+                        <label id="targetAmountLabel"><i class="fas fa-flag-checkered"></i> Target Amount (₹)</label>
                         {{ form.target_amount }}
                         {{ form.target_amount.errors }}
-                        <span class="help-text" id="targetAmountHelp">Example: 2000000 for ₹20 lakhs.</span>
+                        <span class="help-text" id="targetAmountHelp">Enter target amount in Rupees</span>
                     </div>
-
                     <div class="form-group manager-percentage-box" style="display:none;">
-                        <label>Manager Extra Target Percentage</label>
+                        <label><i class="fas fa-percent"></i> Manager Extra Percentage (%)</label>
                         {{ form.manager_target_extra_percentage }}
                         {{ form.manager_target_extra_percentage.errors }}
-                        <span class="help-text">
-                            Example: If direct team target is ₹10,00,000 and percentage is 50, this manager target becomes ₹15,00,000.
-                        </span>
+                        <span class="help-text">Extra target on top of team target</span>
                     </div>
-
                     <div class="form-group">
-                        <label>Achieved Amount</label>
+                        <label><i class="fas fa-chart-line"></i> Achieved Amount (₹)</label>
                         {{ form.achieved_amount }}
                         {{ form.achieved_amount.errors }}
-                        <span class="help-text">Use 0 for new employee.</span>
+                        <span class="help-text">Current achievement (use 0 for new)</span>
                     </div>
                 </div>
 
-                <div class="ta-info-grid">
-                    <div class="ta-info blue">
-                        Sales Officer: target entered manually.
-                    </div>
-
-                    <div class="ta-info orange">
-                        ASM / Regional Manager / State Head: target auto calculated from direct employees.
-                    </div>
-
-                    <div class="ta-info">
-                        Manager percentage can be changed employee-wise during create/edit.
-                    </div>
+                <div class="ta-info-grid" style="margin-top: 12px;">
+                    <div class="ta-info blue"><i class="fas fa-user"></i> Sales Officer: Enter target manually</div>
+                    <div class="ta-info orange"><i class="fas fa-chart-line"></i> ASM/RM/State Head: Target auto-calculated</div>
+                    <div class="ta-info"><i class="fas fa-percent"></i> Manager percentage can be customized</div>
                 </div>
             </div>
 
+            <!-- FORM ACTIONS -->
             <div class="action-row">
                 <a href="{% url 'employee_list' %}" class="btn-light">
-                    Cancel
+                    <i class="fas fa-times"></i> Cancel
                 </a>
-
                 <button type="submit" class="btn-primary">
-                    {{ button_text|default:"Save Employee" }}
+                    <i class="fas fa-save"></i> {{ button_text|default:"Save Employee" }}
                 </button>
             </div>
         </form>
@@ -971,9 +1143,7 @@ textarea.form-control,
     </div>
 </div>
 
-
 <script>
-
 function togglePayrollFields() {
     const pfApplicable = document.getElementById("id_pf_applicable");
     const insuranceApplicable = document.getElementById("id_insurance_applicable");
@@ -981,120 +1151,105 @@ function togglePayrollFields() {
     const showPf = pfApplicable && pfApplicable.checked;
     const showInsurance = insuranceApplicable && insuranceApplicable.checked;
 
-    document.querySelectorAll(".pf-payroll-box").forEach(function(box) {
+    document.querySelectorAll(".pf-payroll-box").forEach(box => {
         box.style.display = showPf ? "grid" : "none";
     });
 
-    document.querySelectorAll(".payroll-alert.pf-payroll-box").forEach(function(box) {
-        box.style.display = showPf ? "block" : "none";
-    });
-
-    document.querySelectorAll(".insurance-payroll-box").forEach(function(box) {
+    document.querySelectorAll(".insurance-payroll-box").forEach(box => {
         box.style.display = showInsurance ? "grid" : "none";
-    });
-
-    document.querySelectorAll(".payroll-alert.insurance-payroll-box").forEach(function(box) {
-        box.style.display = showInsurance ? "block" : "none";
     });
 }
 
 function toggleEmployeeTargetFields() {
     const roleField = document.getElementById("id_role");
-    const targetInput = document.getElementById("id_target_amount");
-    const managerPercentBox = document.querySelector(".manager-percentage-box");
-    const managerPercentInput = document.getElementById("id_manager_target_extra_percentage");
-    const salesInfo = document.getElementById("salesTargetInfo");
-    const managerInfo = document.getElementById("managerTargetInfo");
-    const targetAmountLabel = document.getElementById("targetAmountLabel");
-    const targetAmountHelp = document.getElementById("targetAmountHelp");
-
-    if (!roleField) {
-        return;
-    }
+    if (!roleField) return;
 
     const selectedRole = roleField.value;
-
-    const salesOfficerRoles = [
-        "SALES_OFFICER_SENIOR",
-        "SALES_OFFICER_JUNIOR"
-    ];
-
-    const managerRoles = [
-        "ASM",
-        "REGIONAL_MANAGER",
-        "STATE_HEAD"
-    ];
-
+    const salesOfficerRoles = ["SALES_OFFICER_SENIOR", "SALES_OFFICER_JUNIOR"];
+    const managerRoles = ["ASM", "REGIONAL_MANAGER", "STATE_HEAD"];
+    
     const isSalesOfficer = salesOfficerRoles.includes(selectedRole);
     const isManagerRole = managerRoles.includes(selectedRole);
+
+    const targetInput = document.getElementById("id_target_amount");
+    const managerPercentBox = document.querySelector(".manager-percentage-box");
+    const targetAmountLabel = document.getElementById("targetAmountLabel");
+    const targetAmountHelp = document.getElementById("targetAmountHelp");
 
     if (managerPercentBox) {
         managerPercentBox.style.display = isManagerRole ? "block" : "none";
     }
 
-    if (salesInfo) {
-        salesInfo.style.display = isSalesOfficer ? "block" : "none";
-    }
-
-    if (managerInfo) {
-        managerInfo.style.display = isManagerRole ? "block" : "none";
-    }
-
     if (targetInput) {
-        if (isManagerRole) {
-            targetInput.readOnly = true;
-            targetInput.style.background = "#f1f5f9";
-            targetInput.style.cursor = "not-allowed";
-
-            if (!targetInput.value) {
-                targetInput.value = "0";
-            }
-        } else {
-            targetInput.readOnly = false;
-            targetInput.style.background = "#f8fafc";
-            targetInput.style.cursor = "text";
-        }
+        targetInput.readOnly = isManagerRole;
+        targetInput.style.background = isManagerRole ? "#f1f5f9" : "#f8fafc";
+        targetInput.style.cursor = isManagerRole ? "not-allowed" : "text";
     }
 
     if (targetAmountLabel) {
         if (isManagerRole) {
-            targetAmountLabel.textContent = "Auto Calculated Team Target";
+            targetAmountLabel.innerHTML = '<i class="fas fa-calculator"></i> Auto Calculated Target';
+        } else if (isSalesOfficer) {
+            targetAmountLabel.innerHTML = '<i class="fas fa-flag-checkered"></i> Yearly Sales Target (₹)';
         } else {
-            targetAmountLabel.textContent = "Yearly Target Amount";
+            targetAmountLabel.innerHTML = '<i class="fas fa-flag-checkered"></i> Target Amount (₹)';
         }
     }
 
     if (targetAmountHelp) {
-        if (isSalesOfficer) {
-            targetAmountHelp.textContent = "Enter direct yearly sales target. Example: 1000000 for ₹10 lakhs.";
-        } else if (isManagerRole) {
-            targetAmountHelp.textContent = "No need to enter. This target will be calculated from under employees + percentage.";
+        if (isManagerRole) {
+            targetAmountHelp.textContent = "No need to enter. Calculated from team + percentage";
+        } else if (isSalesOfficer) {
+            targetAmountHelp.textContent = "Enter yearly sales target for this sales officer";
         } else {
-            targetAmountHelp.textContent = "Example: 2000000 for ₹20 lakhs.";
+            targetAmountHelp.textContent = "Enter target amount in Rupees";
+        }
+    }
+}
+
+function setupTadaApplicableToggle() {
+    const tadaCheckbox = document.getElementById("id_tada_applicable");
+    const tadaAmountFields = document.getElementById("tadaAmountFields");
+
+    if (!tadaCheckbox) return;
+
+    function toggleTadaFields() {
+        const isApplicable = tadaCheckbox.checked;
+        if (tadaAmountFields) {
+            tadaAmountFields.style.display = isApplicable ? "block" : "none";
+        }
+        
+        // Reset values if not applicable
+        if (!isApplicable) {
+            const bikeInput = document.getElementById("id_bike_ta_per_km");
+            const carInput = document.getElementById("id_car_ta_per_km");
+            const daInput = document.getElementById("id_daily_da_amount");
+            if (bikeInput && bikeInput.value === "") bikeInput.value = "0";
+            if (carInput && carInput.value === "") carInput.value = "0";
+            if (daInput && daInput.value === "") daInput.value = "0";
         }
     }
 
-    if (managerPercentInput && isManagerRole && !managerPercentInput.value) {
-        managerPercentInput.value = "0";
-    }
+    tadaCheckbox.addEventListener("change", toggleTadaFields);
+    toggleTadaFields();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     toggleEmployeeTargetFields();
     togglePayrollFields();
+    setupTadaApplicableToggle();
 
     const roleField = document.getElementById("id_role");
-    const pfApplicable = document.getElementById("id_pf_applicable");
-    const insuranceApplicable = document.getElementById("id_insurance_applicable");
-
     if (roleField) {
         roleField.addEventListener("change", toggleEmployeeTargetFields);
     }
 
+    const pfApplicable = document.getElementById("id_pf_applicable");
     if (pfApplicable) {
         pfApplicable.addEventListener("change", togglePayrollFields);
     }
 
+    const insuranceApplicable = document.getElementById("id_insurance_applicable");
     if (insuranceApplicable) {
         insuranceApplicable.addEventListener("change", togglePayrollFields);
     }

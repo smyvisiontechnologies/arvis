@@ -2,23 +2,87 @@
 
 {% block content %}
 <style>
-.page { padding: 18px; }
-
-.head, .card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 8px 22px rgba(15,23,42,.05);
+.page {
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
-.head { margin-bottom: 14px; }
+.head {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
 
 .head h2 {
     margin: 0;
     color: #0f172a;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.head h2 i {
+    color: #84c341;
+    font-size: 24px;
+}
+
+.head p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.stat-pill {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stat-pill i {
+    font-size: 14px;
+    color: #84c341;
+}
+
+.stat-pill span {
+    color: #64748b;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.stat-pill strong {
+    color: #0f172a;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+/* Desktop Table View */
+.desktop-table {
+    display: block;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
 }
 
 .table-wrap {
@@ -28,95 +92,504 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 850px;
+    min-width: 1000px;
 }
 
 th {
     background: #f8fafc;
     color: #334155;
     font-size: 12px;
-    font-weight: 900;
-    padding: 12px;
+    font-weight: 800;
+    padding: 14px 12px;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
+}
+
+th i {
+    margin-right: 6px;
+    color: #84c341;
 }
 
 td {
     padding: 12px;
     border-bottom: 1px solid #edf2f7;
     font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+td strong {
     font-weight: 800;
 }
 
 .btn {
-    background: #16a34a;
+    background: linear-gradient(135deg, #16a34a, #059669);
     color: white;
     text-decoration: none;
-    border-radius: 12px;
-    padding: 9px 12px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 8px 16px;
+    font-weight: 800;
+    font-size: 12px;
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
 }
 
-.empty {
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.btn i {
+    font-size: 12px;
+}
+
+/* Mobile Card View - Mini Cards (All data preserved) */
+.mobile-cards {
+    display: none;
+}
+
+.mini-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #84c341;
+}
+
+/* Card Header */
+.mini-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.emp-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.emp-name i {
+    color: #84c341;
+    font-size: 13px;
+}
+
+.date-badge {
+    font-size: 10px;
     color: #64748b;
+    background: #f8fafc;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Stats Grid - 3 columns for KM, TA, DA */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.stat-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 6px 4px;
+    text-align: center;
+}
+
+.stat-box span {
+    display: block;
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+}
+
+.stat-box span i {
+    font-size: 8px;
+    margin-right: 2px;
+}
+
+.stat-box strong {
+    display: block;
+    color: #0f172a;
+    font-size: 13px;
     font-weight: 800;
 }
 
-@media(max-width: 650px) {
-    .page { padding: 12px; }
+.stat-box.approved {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-box.approved strong {
+    color: #1d4ed8;
+}
+
+.stat-box.total {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.stat-box.total strong {
+    color: #059669;
+}
+
+/* Vehicle and Manager Row */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eef2f7;
+    border-bottom: 1px solid #eef2f7;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.info-item i {
+    color: #84c341;
+    font-size: 10px;
+}
+
+.info-item strong {
+    color: #0f172a;
+    font-weight: 800;
+}
+
+/* Action Row */
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.total-amount {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.total-amount span {
+    font-size: 9px;
+    font-weight: 800;
+    color: #047857;
+    text-transform: uppercase;
+}
+
+.total-amount strong {
+    font-size: 13px;
+    font-weight: 800;
+    color: #059669;
+}
+
+.mini-btn {
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: white;
+    text-decoration: none;
+    border-radius: 40px;
+    padding: 6px 14px;
+    font-weight: 800;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.mini-btn i {
+    font-size: 10px;
+}
+
+.mini-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+}
+
+.empty {
+    background: white;
+    padding: 48px;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 700;
+    text-align: center;
+}
+
+.empty i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+    color: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .desktop-table {
+        display: none;
+    }
+    
+    .mobile-cards {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    
+    .head {
+        padding: 16px 18px;
+        border-radius: 24px;
+    }
+    
+    .head h2 {
+        font-size: 20px;
+    }
+    
+    .stats-bar {
+        gap: 10px;
+    }
+    
+    .stat-pill {
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 550px) {
+    .page {
+        padding: 12px;
+    }
+    
+    .head {
+        padding: 14px 16px;
+        border-radius: 20px;
+    }
+    
+    .head h2 {
+        font-size: 18px;
+    }
+    
+    .head p {
+        font-size: 12px;
+    }
+    
+    .stats-bar {
+        flex-direction: column;
+    }
+    
+    .stat-pill {
+        justify-content: center;
+    }
+    
+    .mini-card {
+        padding: 10px;
+    }
+    
+    .emp-name {
+        font-size: 13px;
+    }
+    
+    .stats-grid {
+        gap: 6px;
+    }
+    
+    .stat-box {
+        padding: 5px 3px;
+    }
+    
+    .stat-box strong {
+        font-size: 12px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .action-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .total-amount {
+        justify-content: center;
+    }
+    
+    .mini-btn {
+        justify-content: center;
+    }
 }
 </style>
 
 <div class="page">
     <div class="head">
-        <h2>HR Attendance Claims</h2>
+        <h2>
+            <i class="fas fa-users"></i>
+            HR Attendance Claims
+        </h2>
+        <p>
+            <i class="fas fa-check-circle"></i> Review manager-approved attendance claims and forward to accountant
+        </p>
     </div>
 
-    <div class="card">
-        {% if records %}
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Date</th>
-                            <th>Vehicle</th>
-                            <th>Tracked KM</th>
-                            <th>Approved KM</th>
-                            <th>TA</th>
-                            <th>DA</th>
-                            <th>Total</th>
-                            <th>Manager</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+    <div class="stats-bar">
+        <div class="stat-pill">
+            <i class="fas fa-clock"></i>
+            <span>Pending:</span>
+            <strong>{{ records|length }}</strong>
+        </div>
+        <div class="stat-pill">
+            <i class="fas fa-rupee-sign"></i>
+            <span>Total Claims:</span>
+            <strong>₹{{ total_claim_amount|default:"0" }}</strong>
+        </div>
+    </div>
 
-                    <tbody>
-                        {% for record in records %}
-                            <tr>
-                                <td>{{ record.employee.get_full_name|default:record.employee.username }}</td>
-                                <td>{{ record.attendance_date|date:"d M Y" }}</td>
-                                <td>{{ record.get_vehicle_type_display }}</td>
-                                <td>{{ record.system_distance_km }} KM</td>
-                                <td>{{ record.manager_approved_km }} KM</td>
-                                <td>₹{{ record.ta_amount }}</td>
-                                <td>₹{{ record.da_amount }}</td>
-                                <td>₹{{ record.total_claim_amount }}</td>
-                                <td>{{ record.manager_approved_by.get_full_name|default:record.manager_approved_by.username }}</td>
-                                <td>
-                                    <a href="{% url 'hr_approve_attendance' record.id %}" class="btn">
-                                        HR Approve
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <!-- Desktop Table View -->
+    <div class="desktop-table">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Employee</th>
+                        <th><i class="fas fa-calendar"></i> Date</th>
+                        <th><i class="fas fa-car"></i> Vehicle</th>
+                        <th><i class="fas fa-road"></i> Tracked KM</th>
+                        <th><i class="fas fa-check"></i> Approved KM</th>
+                        <th><i class="fas fa-rupee-sign"></i> TA</th>
+                        <th><i class="fas fa-coffee"></i> DA</th>
+                        <th><i class="fas fa-calculator"></i> Total</th>
+                        <th><i class="fas fa-user-tie"></i> Manager</th>
+                        <th><i class="fas fa-cog"></i> Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for record in records %}
+                        <tr>
+                            <td><strong>{{ record.employee.get_full_name|default:record.employee.username }}</strong></td>
+                            <td>{{ record.attendance_date|date:"d M Y" }}</td>
+                            <td>{{ record.get_vehicle_type_display }}</td>
+                            <td>{{ record.system_distance_km|floatformat:1 }} KM</td>
+                            <td>{{ record.manager_approved_km|floatformat:1 }} KM</td>
+                            <td>₹{{ record.ta_amount|floatformat:0 }}</td>
+                            <td>₹{{ record.da_amount|floatformat:0 }}</td>
+                            <td><strong>₹{{ record.total_claim_amount|floatformat:0 }}</strong></td>
+                            <td>{{ record.manager_approved_by.get_full_name|default:record.manager_approved_by.username }}</td>
+                            <td>
+                                <a href="{% url 'hr_approve_attendance' record.id %}" class="btn">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Mini Card View (All Data Preserved) -->
+    <div class="mobile-cards">
+        {% for record in records %}
+            <div class="mini-card">
+                <!-- Header: Employee Name + Date -->
+                <div class="mini-card-header">
+                    <div class="emp-name">
+                        <i class="fas fa-user-circle"></i>
+                        {{ record.employee.get_full_name|default:record.employee.username }}
+                    </div>
+                    <span class="date-badge">
+                        <i class="fas fa-calendar-alt"></i> {{ record.attendance_date|date:"d M Y" }}
+                    </span>
+                </div>
+
+                <!-- Stats Grid: Tracked KM, Approved KM, TA, DA -->
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span><i class="fas fa-road"></i> Tracked</span>
+                        <strong>{{ record.system_distance_km|floatformat:1 }} KM</strong>
+                    </div>
+                    <div class="stat-box approved">
+                        <span><i class="fas fa-check"></i> Approved</span>
+                        <strong>{{ record.manager_approved_km|floatformat:1 }} KM</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span><i class="fas fa-rupee-sign"></i> TA</span>
+                        <strong>₹{{ record.ta_amount|floatformat:0 }}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span><i class="fas fa-coffee"></i> DA</span>
+                        <strong>₹{{ record.da_amount|floatformat:0 }}</strong>
+                    </div>
+                    <div class="stat-box total">
+                        <span><i class="fas fa-calculator"></i> Total</span>
+                        <strong>₹{{ record.total_claim_amount|floatformat:0 }}</strong>
+                    </div>
+                </div>
+
+                <!-- Vehicle and Manager Info -->
+                <div class="info-row">
+                    <div class="info-item">
+                        <i class="fas fa-car"></i>
+                        Vehicle: <strong>{{ record.get_vehicle_type_display }}</strong>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user-tie"></i>
+                        Manager: <strong>{{ record.manager_approved_by.get_full_name|default:record.manager_approved_by.username }}</strong>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="action-row">
+                    <a href="{% url 'hr_approve_attendance' record.id %}" class="mini-btn">
+                        <i class="fas fa-check-circle"></i> HR Approve
+                    </a>
+                </div>
             </div>
-        {% else %}
-            <div class="empty">No claims pending for HR approval.</div>
-        {% endif %}
+        {% empty %}
+            <div class="empty">
+                <i class="fas fa-check-circle"></i>
+                No claims pending for HR approval.
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

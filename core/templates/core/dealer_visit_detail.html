@@ -3,67 +3,108 @@
 
 <style>
 .visit-detail-page {
-    padding: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
 }
 
 .visit-wrap {
-    max-width: 1180px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .visit-hero {
-    background:
-        radial-gradient(circle at top right, rgba(37,99,235,.18), transparent 34%),
-        linear-gradient(135deg, #0f172a, #1d4ed8);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
     color: white;
-    border-radius: 26px;
-    padding: 18px;
-    margin-bottom: 16px;
-    box-shadow: 0 18px 42px rgba(15,23,42,.20);
+    border-radius: 28px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 14px;
+    gap: 20px;
     flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.visit-hero::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.1) 50%, 
+        transparent 70%);
+    animation: heroShine 8s infinite;
+    transform: rotate(45deg);
+}
+
+@keyframes heroShine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
 }
 
 .visit-hero h2 {
     margin: 0;
-    font-size: 26px;
-    font-weight: 1000;
-    letter-spacing: -.4px;
+    font-size: 28px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.visit-hero h2 i {
+    color: #fbbf24;
+    font-size: 32px;
 }
 
 .visit-hero p {
-    margin: 6px 0 0;
-    color: #dbeafe;
-    font-size: 13px;
-    font-weight: 850;
+    margin: 8px 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 600;
     line-height: 1.5;
+    position: relative;
+    z-index: 2;
 }
 
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
 }
 
 .btn {
     border: none;
-    border-radius: 14px;
-    padding: 11px 15px;
-    font-weight: 900;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-weight: 800;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
 }
 
-.btn svg {
-    width: 18px;
-    height: 18px;
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .btn-light {
@@ -71,9 +112,17 @@
     color: #0f172a;
 }
 
+.btn-light:hover {
+    background: #f8fafc;
+}
+
 .btn-dark {
     background: #0f172a;
     color: white;
+}
+
+.btn-dark:hover {
+    background: #1e293b;
 }
 
 .btn-blue {
@@ -81,123 +130,414 @@
     color: white;
 }
 
+.btn-blue:hover {
+    background: #1d4ed8;
+}
+
 .btn-green {
     background: #059669;
     color: white;
 }
 
+.btn-green:hover {
+    background: #047857;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+.btn-outline:hover {
+    background: white;
+    color: #0f172a;
+}
+
+/* Main Card */
 .main-card {
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 26px;
+    border-radius: 28px;
     overflow: hidden;
-    box-shadow: 0 14px 34px rgba(15,23,42,.09);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Image Container - 9:16 Aspect Ratio */
+.image-container {
+    background: linear-gradient(135deg, #1e1e2f, #2d2d44);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .image-box {
-    background: #020617;
-    padding: 12px;
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    aspect-ratio: 9 / 16;
+    background: #0f172a;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.image-box::after {
+    content: "\f030";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.image-box:hover::after {
+    opacity: 1;
 }
 
 .visit-img {
     width: 100%;
-    max-height: 760px;
+    height: 100%;
     object-fit: contain;
     display: block;
-    border-radius: 18px;
-    background: #020617;
+    background: #0f172a;
+    transition: transform 0.3s;
+}
+
+.visit-img:hover {
+    transform: scale(1.02);
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e1e2f, #2d2d44);
+    color: #64748b;
+}
+
+.image-placeholder i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    color: #475569;
+}
+
+.image-placeholder p {
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .body {
-    padding: 18px;
+    padding: 24px;
 }
 
+/* Info Grid */
 .info-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .info {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 14px;
-    color: #334155;
-    font-weight: 850;
-    line-height: 1.55;
+    border-radius: 20px;
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.info:hover {
+    transform: translateY(-2px);
+    border-color: #84c341;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .info-title {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: #0f172a;
     font-size: 15px;
-    font-weight: 1000;
-    margin-bottom: 8px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
 }
 
-.info-title svg {
-    width: 20px;
-    height: 20px;
-    color: #2563eb;
+.info-title i {
+    font-size: 18px;
+    color: #84c341;
 }
 
-.info b {
+.info p {
+    margin: 8px 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.info strong {
     color: #0f172a;
+    font-weight: 800;
+}
+
+.info i {
+    width: 20px;
+    color: #84c341;
+    margin-right: 6px;
 }
 
 .note-box {
-    margin-top: 12px;
-    background: #ecfdf5;
-    border: 1px solid #bbf7d0;
-    color: #047857;
-    border-radius: 18px;
-    padding: 14px;
-    font-weight: 900;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 20px;
+    padding: 16px;
+    font-weight: 700;
     line-height: 1.5;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.note-box i {
+    font-size: 24px;
 }
 
 .footer-actions {
-    margin-top: 16px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.footer-actions-left {
+    display: flex;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
-@media(max-width: 760px) {
+.footer-actions-right {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}
+
+@media (max-width: 768px) {
     .visit-detail-page {
-        padding: 10px;
+        padding: 16px;
     }
-
+    
     .visit-hero {
-        border-radius: 22px;
+        padding: 20px;
+        border-radius: 24px;
+        flex-direction: column;
+        text-align: center;
     }
-
+    
     .visit-hero h2 {
         font-size: 22px;
+        justify-content: center;
     }
-
+    
+    .visit-hero h2 i {
+        font-size: 26px;
+    }
+    
+    .btn-row {
+        width: 100%;
+        justify-content: center;
+    }
+    
     .info-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
-
-    .btn,
-    .btn-row,
+    
+    .body {
+        padding: 18px;
+    }
+    
+    .info {
+        padding: 14px;
+    }
+    
     .footer-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .footer-actions-left,
+    .footer-actions-right {
+        justify-content: center;
+    }
+    
+    .btn {
         width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
     }
-
-    .btn-row,
-    .footer-actions {
-        display: grid;
-        grid-template-columns: 1fr;
+    
+    .image-container {
+        padding: 16px;
     }
+    
+    .image-box {
+        max-width: 350px;
+    }
+    
+    .note-box {
+        font-size: 12px;
+        padding: 12px;
+    }
+    
+    .note-box i {
+        font-size: 20px;
+    }
+}
 
+@media (max-width: 550px) {
+    .image-box {
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .visit-detail-page {
+        padding: 12px;
+    }
+    
+    .visit-hero {
+        padding: 16px;
+        border-radius: 20px;
+    }
+    
+    .visit-hero h2 {
+        font-size: 18px;
+    }
+    
+    .visit-hero h2 i {
+        font-size: 22px;
+    }
+    
+    .visit-hero p {
+        font-size: 12px;
+    }
+    
     .body {
         padding: 14px;
     }
+    
+    .info {
+        padding: 12px;
+    }
+    
+    .info-title {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .info-title i {
+        font-size: 16px;
+    }
+    
+    .info p {
+        font-size: 11px;
+        margin: 6px 0;
+    }
+    
+    .btn {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+    
+    .btn i {
+        font-size: 12px;
+    }
+    
+    .image-container {
+        padding: 12px;
+    }
+    
+    .image-box {
+        max-width: 240px;
+    }
+    
+    .image-placeholder i {
+        font-size: 48px;
+    }
+    
+    .image-placeholder p {
+        font-size: 12px;
+    }
+}
+
+/* Image Modal for fullscreen view */
+.image-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.image-modal.active {
+    display: flex;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    background: none;
+    border: none;
+}
+
+.modal-close:hover {
+    opacity: 0.7;
 }
 </style>
 
@@ -206,56 +546,46 @@
 
         <div class="visit-hero">
             <div>
-                <h2>{{ visit.dealer.firm_name }}</h2>
+                <h2>
+                    <i class="fas fa-store"></i>
+                    {{ visit.dealer.firm_name }}
+                </h2>
                 <p>
-                    Dealer visit proof with photo, GPS location, date, reason and sales officer details.
+                    <i class="fas fa-camera"></i> Dealer visit proof with photo, GPS location, date, reason and sales officer details.
                 </p>
             </div>
 
             <div class="btn-row">
-                {% if visit.stamped_image %}
-                    <a href="{{ visit.stamped_image.url }}" target="_blank" class="btn btn-light">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M15 10l4.5-4.5M19.5 5.5H15M19.5 5.5V10"/>
-                            <path stroke-width="2" d="M14 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8"/>
-                        </svg>
-                        Open Photo
-                    </a>
-                {% elif visit.visit_image %}
-                    <a href="{{ visit.visit_image.url }}" target="_blank" class="btn btn-light">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M15 10l4.5-4.5M19.5 5.5H15M19.5 5.5V10"/>
-                            <path stroke-width="2" d="M14 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8"/>
-                        </svg>
-                        Open Photo
-                    </a>
+                {% if visit.stamped_image or visit.visit_image %}
+                    <button onclick="openImageModal()" class="btn btn-light">
+                        <i class="fas fa-expand"></i> View Full Image
+                    </button>
                 {% endif %}
 
                 {% if visit.latitude and visit.longitude %}
                     <a href="https://www.google.com/maps?q={{ visit.latitude }},{{ visit.longitude }}"
                        target="_blank"
                        class="btn btn-green">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
-                            <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
-                        </svg>
-                        View Map
+                        <i class="fas fa-map-marker-alt"></i> View Map
                     </a>
                 {% endif %}
             </div>
         </div>
 
         <div class="main-card">
-            <div class="image-box">
-                {% if visit.stamped_image %}
-                    <img src="{{ visit.stamped_image.url }}" class="visit-img" alt="Dealer Visit Stamped Photo">
-                {% elif visit.visit_image %}
-                    <img src="{{ visit.visit_image.url }}" class="visit-img" alt="Dealer Visit Photo">
-                {% else %}
-                    <div style="color:white;text-align:center;padding:60px;font-weight:900;">
-                        No visit image available.
-                    </div>
-                {% endif %}
+            <div class="image-container">
+                <div class="image-box" onclick="openImageModal()">
+                    {% if visit.stamped_image %}
+                        <img src="{{ visit.stamped_image.url }}" class="visit-img" alt="Dealer Visit Stamped Photo" id="mainImage">
+                    {% elif visit.visit_image %}
+                        <img src="{{ visit.visit_image.url }}" class="visit-img" alt="Dealer Visit Photo" id="mainImage">
+                    {% else %}
+                        <div class="image-placeholder">
+                            <i class="fas fa-camera-slash"></i>
+                            <p>No visit image available</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="body">
@@ -263,105 +593,138 @@
 
                     <div class="info">
                         <div class="info-title">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M8 7V3m8 4V3M4 11h16"/>
-                                <path stroke-width="2" d="M5 5h14v16H5z"/>
-                            </svg>
+                            <i class="fas fa-calendar-alt"></i>
                             Visit Details
                         </div>
-
-                        Date: <b>{{ visit.visit_date|date:"d M Y" }}</b><br>
-                        Time: <b>{{ visit.visit_time|time:"h:i A" }}</b><br>
-                        Reason: <b>{{ visit.get_reason_display }}</b><br>
-                        Note: <b>{{ visit.note|default:"-" }}</b>
+                        <p><i class="fas fa-calendar-day"></i> <strong>Date:</strong> {{ visit.visit_date|date:"d M Y" }}</p>
+                        <p><i class="fas fa-clock"></i> <strong>Time:</strong> {{ visit.visit_time|time:"h:i A" }}</p>
+                        <p><i class="fas fa-tag"></i> <strong>Reason:</strong> {{ visit.get_reason_display }}</p>
+                        {% if visit.note %}
+                            <p><i class="fas fa-sticky-note"></i> <strong>Note:</strong> {{ visit.note }}</p>
+                        {% endif %}
                     </div>
 
                     <div class="info">
                         <div class="info-title">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                                <path stroke-width="2" d="M4 20a8 8 0 0116 0"/>
-                            </svg>
+                            <i class="fas fa-user-tie"></i>
                             Sales Officer
                         </div>
-
-                        Name:
-                        <b>{{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}</b><br>
-
-                        Role:
-                        <b>
+                        <p><i class="fas fa-user"></i> <strong>Name:</strong> {{ visit.sales_officer.get_full_name|default:visit.sales_officer.username }}</p>
+                        <p><i class="fas fa-briefcase"></i> <strong>Role:</strong>
                             {% if visit.sales_officer.profile %}
                                 {{ visit.sales_officer.profile.get_role_display }}
                             {% else %}
                                 -
                             {% endif %}
-                        </b><br>
-
-                        Email:
-                        <b>{{ visit.sales_officer.email|default:"-" }}</b>
+                        </p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ visit.sales_officer.email|default:"-" }}</p>
                     </div>
 
                     <div class="info">
                         <div class="info-title">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M3 21h18"/>
-                                <path stroke-width="2" d="M5 21V7l7-4 7 4v14"/>
-                                <path stroke-width="2" d="M9 21v-6h6v6"/>
-                            </svg>
+                            <i class="fas fa-building"></i>
                             Dealer Details
                         </div>
-
-                        Firm: <b>{{ visit.dealer.firm_name }}</b><br>
-                        Owner: <b>{{ visit.dealer.owner_name }}</b><br>
-                        Phone: <b>{{ visit.dealer.phone }}</b><br>
-                        GST: <b>{{ visit.dealer.gst_number|default:"-" }}</b>
+                        <p><i class="fas fa-store"></i> <strong>Firm:</strong> {{ visit.dealer.firm_name }}</p>
+                        <p><i class="fas fa-user"></i> <strong>Owner:</strong> {{ visit.dealer.owner_name|default:"-" }}</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ visit.dealer.phone|default:"-" }}</p>
+                        <p><i class="fas fa-file-invoice"></i> <strong>GST:</strong> {{ visit.dealer.gst_number|default:"-" }}</p>
                     </div>
 
                     <div class="info">
                         <div class="info-title">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
-                                <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
-                            </svg>
-                            Location
+                            <i class="fas fa-location-dot"></i>
+                            GPS Location
                         </div>
-
-                        Latitude: <b>{{ visit.latitude }}</b><br>
-                        Longitude: <b>{{ visit.longitude }}</b><br>
-                        Address:
-                        <b>{{ visit.dealer.firm_address|default:visit.dealer.owner_address|default:"-" }}</b>
+                        <p><i class="fas fa-arrow-up"></i> <strong>Latitude:</strong> {{ visit.latitude|default:"-" }}</p>
+                        <p><i class="fas fa-arrow-right"></i> <strong>Longitude:</strong> {{ visit.longitude|default:"-" }}</p>
+                        <p><i class="fas fa-map-pin"></i> <strong>Address:</strong> {{ visit.dealer.firm_address|default:visit.dealer.owner_address|default:"-" }}</p>
+                        {% if visit.distance_from_dealer_meters %}
+                            <p><i class="fas fa-road"></i> <strong>Distance from Dealer:</strong> {{ visit.distance_from_dealer_meters|floatformat:2 }} meters</p>
+                        {% endif %}
+                        {% if visit.gps_accuracy_meters %}
+                            <p><i class="fas fa-chart-line"></i> <strong>GPS Accuracy:</strong> {{ visit.gps_accuracy_meters|floatformat:2 }} meters</p>
+                        {% endif %}
                     </div>
 
                 </div>
 
                 <div class="note-box">
-                    This visit proof is saved with dealer details, location and captured photo for verification.
+                    <i class="fas fa-check-circle"></i>
+                    <span>This visit proof is saved with dealer details, location and captured photo for verification. Location verified within allowed radius.</span>
                 </div>
 
                 <div class="footer-actions">
-                    <a href="{% url 'dealer_visit_list' %}" class="btn btn-dark">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2.4" d="M15 18l-6-6 6-6"/>
-                        </svg>
-                        Back to Visits
-                    </a>
-
-                    {% if visit.latitude and visit.longitude %}
-                        <a href="https://www.google.com/maps?q={{ visit.latitude }},{{ visit.longitude }}"
-                           target="_blank"
-                           class="btn btn-blue">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-width="2" d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"/>
-                                <circle cx="12" cy="10" r="2.5" stroke-width="2"/>
-                            </svg>
-                            Open GPS Location
+                    <div class="footer-actions-left">
+                        <a href="{% url 'dealer_visit_list' %}" class="btn btn-dark">
+                            <i class="fas fa-arrow-left"></i> Back to Visits
                         </a>
-                    {% endif %}
+                    </div>
+
+                    <div class="footer-actions-right">
+                        {% if visit.latitude and visit.longitude %}
+                            <a href="https://www.google.com/maps?q={{ visit.latitude }},{{ visit.longitude }}"
+                               target="_blank"
+                               class="btn btn-blue">
+                                <i class="fas fa-map-marked-alt"></i> Open GPS Location
+                            </a>
+                        {% endif %}
+
+                        {% if visit.stamped_image or visit.visit_image %}
+                            <button onclick="openImageModal()" class="btn btn-outline">
+                                <i class="fas fa-image"></i> View Full Image
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <button class="modal-close" onclick="closeImageModal()">&times;</button>
+    <img id="modalImage" src="" alt="Full Size Image">
+</div>
+
+<script>
+function openImageModal() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const mainImg = document.getElementById('mainImage');
+    
+    if (mainImg && mainImg.src) {
+        modalImg.src = mainImg.src;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+
+// Make images clickable to open modal
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImg = document.getElementById('mainImage');
+    if (mainImg && mainImg.src) {
+        const imageBox = document.querySelector('.image-box');
+        if (imageBox) {
+            imageBox.style.cursor = 'pointer';
+        }
+    }
+});
+</script>
 
 {% endblock %}

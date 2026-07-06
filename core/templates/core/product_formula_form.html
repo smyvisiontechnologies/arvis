@@ -1,0 +1,674 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+.ff-page{padding:16px;max-width:1300px;margin:0 auto}
+.ff-hero{background:linear-gradient(135deg,#07120d,#123020);color:white;border-radius:26px;padding:24px;margin-bottom:16px}
+.ff-hero h2{margin:0;font-size:28px;font-weight:900}
+.ff-card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.ff-title{margin:0 0 14px;color:#0f172a;font-size:18px;font-weight:900;border-bottom:1px solid #e5e7eb;padding-bottom:10px}
+.ff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.ff-row{background:#f8fafc;border:1px solid #e5e7eb;border-radius:16px;padding:12px;margin-bottom:10px}
+.ff-row-grid{display:grid;grid-template-columns:1.6fr .7fr .6fr .3fr;gap:10px;align-items:end}
+.ff-row-grid.pack{grid-template-columns:1.2fr 1.3fr .8fr .6fr .5fr .3fr}
+.ff-field label{display:block;font-size:13px;font-weight:900;color:#334155;margin-bottom:7px}
+.form-control{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:800;background:white}
+.ff-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.ff-btn{border:0;text-decoration:none;border-radius:14px;padding:11px 14px;font-weight:900;background:#07120d;color:white;cursor:pointer}
+.ff-btn.green{background:#16a34a}
+.ff-btn.blue{background:#2563eb}
+.ff-btn.light{background:#f1f5f9;color:#0f172a}
+.ff-btn.red{background:#fee2e2;color:#b91c1c}
+.ff-error-box{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:14px;padding:10px 12px;margin:10px 0;font-weight:800;font-size:13px}
+
+.quick-pack-box{
+    background:linear-gradient(135deg,#f0fdf4,#eff6ff);
+    border:1px solid #bbf7d0;
+    border-radius:20px;
+    padding:14px;
+    margin-bottom:16px;
+}
+.quick-pack-head{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
+}
+.quick-pack-head h4{margin:0;color:#0f172a;font-size:16px;font-weight:900}
+.quick-pack-head p{margin:4px 0 0;color:#64748b;font-size:13px;font-weight:800}
+.quick-pack-grid{display:grid;grid-template-columns:180px 180px;gap:10px;margin-bottom:12px}
+.quick-material-title{font-size:13px;font-weight:900;color:#0f172a;margin-bottom:8px}
+.quick-material-list{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.quick-material-card{
+    background:white;
+    border:1px solid #cbd5e1;
+    border-radius:15px;
+    padding:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:900;
+    color:#0f172a;
+}
+.quick-material-card input{width:18px;height:18px}
+
+.search-select-wrap{position:relative}
+.native-search-select{display:none!important}
+.search-select-input{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;font-weight:900}
+.search-select-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:white;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 18px 45px rgba(15,23,42,.18);max-height:260px;overflow:auto;z-index:9999;padding:6px}
+.search-select-list.show{display:block}
+.search-select-option{padding:10px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:900}
+.search-select-option:hover{background:#ecfdf5;color:#047857}
+
+@media(max-width:900px){
+    .ff-grid,.ff-row-grid,.ff-row-grid.pack,.quick-pack-grid,.quick-material-list{grid-template-columns:1fr}
+    .ff-actions{display:grid}
+    .ff-btn{width:100%}
+    .quick-pack-head{display:grid}
+}
+</style>
+
+<div class="ff-page">
+    <div class="ff-hero">
+        <h2>{{ title }}</h2>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="ff-card">
+            <h3 class="ff-title">Product Formula Details</h3>
+
+            {% if form.non_field_errors %}
+                <div class="ff-error-box">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="ff-grid">
+                <div class="ff-field">
+                    <label>Product</label>
+                    {{ form.product }}
+                    {{ form.product.errors }}
+                </div>
+
+                <div class="ff-field">
+                    <label>Base Output Qty</label>
+                    {{ form.base_output_qty }}
+                    {{ form.base_output_qty.errors }}
+                </div>
+
+                <div class="ff-field">
+                    <label>Base Output Unit</label>
+                    {{ form.base_output_unit }}
+                    {{ form.base_output_unit.errors }}
+                </div>
+
+                <div class="ff-field">
+                    <label>Active</label>
+                    {{ form.is_active }}
+                    {{ form.is_active.errors }}
+                </div>
+
+                <div class="ff-field" style="grid-column:1/-1;">
+                    <label>Note</label>
+                    {{ form.note }}
+                    {{ form.note.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="ff-card">
+            <h3 class="ff-title">Raw Material Required For Base Output</h3>
+            {{ raw_formset.management_form }}
+
+            {% if raw_formset.non_form_errors %}
+                <div class="ff-error-box">{{ raw_formset.non_form_errors }}</div>
+            {% endif %}
+
+            <div id="rawRows">
+                {% for rf in raw_formset %}
+                    <div class="ff-row raw-row">
+                        {% if rf.errors %}
+                            <div class="ff-error-box">{{ rf.errors }}</div>
+                        {% endif %}
+
+                        <div class="ff-row-grid">
+                            <div class="ff-field">
+                                <label>Raw Material</label>
+                                {{ rf.inventory_item }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Qty</label>
+                                {{ rf.quantity_required }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Unit</label>
+                                {{ rf.unit }}
+                            </div>
+
+                            <div class="ff-field">
+                                <button type="button" class="ff-btn red" onclick="removeFormulaRow(this)">X</button>
+                            </div>
+                        </div>
+
+                        <div style="display:none;">{{ rf.DELETE }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="rawEmpty" style="display:none;">
+                <div class="ff-row raw-row">
+                    <div class="ff-row-grid">
+                        <div class="ff-field">
+                            <label>Raw Material</label>
+                            {{ raw_formset.empty_form.inventory_item }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Qty</label>
+                            {{ raw_formset.empty_form.quantity_required }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Unit</label>
+                            {{ raw_formset.empty_form.unit }}
+                        </div>
+
+                        <div class="ff-field">
+                            <button type="button" class="ff-btn red" onclick="removeFormulaRow(this)">X</button>
+                        </div>
+                    </div>
+
+                    <div style="display:none;">{{ raw_formset.empty_form.DELETE }}</div>
+                </div>
+            </div>
+
+            <button type="button" class="ff-btn blue" onclick="addFormulaRow('raw')">+ Add Raw Material</button>
+        </div>
+
+        <div class="ff-card">
+            <h3 class="ff-title">Packing Material Based On Pack Size</h3>
+
+            <div class="quick-pack-box">
+                <div class="quick-pack-head">
+                    <div>
+                        <h4>Quick Generate Packing Rows</h4>
+                        <p>Select packing materials once. It will create rows for every product pack size automatically.</p>
+                    </div>
+
+                    <button type="button" class="ff-btn green" onclick="generatePackingRowsForAllPacks()">
+                        Generate For All Pack Sizes
+                    </button>
+                </div>
+
+                <div class="quick-pack-grid">
+                    <div class="ff-field">
+                        <label>Default Qty</label>
+                        <input type="number" id="quickPackQty" class="form-control" value="1.000" step="0.001">
+                    </div>
+
+                    <div class="ff-field">
+                        <label>Default Unit</label>
+                        <select id="quickPackUnit" class="form-control"></select>
+                    </div>
+                </div>
+
+                <div class="quick-material-title">Tick Packing Materials</div>
+
+                <div id="quickPackingMaterials" class="quick-material-list">
+                    {% for item in packing_materials %}
+                        <label class="quick-material-card">
+                            <input
+                                type="checkbox"
+                                value="{{ item.id }}"
+                                data-text="{{ item.name }} | Stock: {{ item.stock_quantity }} {{ item.stock_unit }}"
+                            >
+                            <span>{{ item.name }}</span>
+                        </label>
+                    {% empty %}
+                        <div class="ff-error-box">
+                            No packing material found. Create inventory item with Item Type = PACKING_MATERIAL.
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <select id="allPackingMaterialOptions" style="display:none;">
+                    {% for item in packing_materials %}
+                        <option
+                            value="{{ item.id }}"
+                            data-text="{{ item.name }} | Stock: {{ item.stock_quantity }} {{ item.stock_unit }}"
+                        >
+                            {{ item.name }} | Stock: {{ item.stock_quantity }} {{ item.stock_unit }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {{ pack_formset.management_form }}
+
+            {% if pack_formset.non_form_errors %}
+                <div class="ff-error-box">{{ pack_formset.non_form_errors }}</div>
+            {% endif %}
+
+            <div id="packRows">
+                {% for pf in pack_formset %}
+                    <div class="ff-row pack-row">
+                        {% if pf.errors %}
+                            <div class="ff-error-box">{{ pf.errors }}</div>
+                        {% endif %}
+
+                        <div class="ff-row-grid pack">
+                            <div class="ff-field">
+                                <label>Product Pack</label>
+                                {{ pf.product_pack }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Packing Material</label>
+                                {{ pf.inventory_item }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Usage</label>
+                                {{ pf.usage_basis }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Qty</label>
+                                {{ pf.quantity_required }}
+                            </div>
+
+                            <div class="ff-field">
+                                <label>Unit</label>
+                                {{ pf.unit }}
+                            </div>
+
+                            <div class="ff-field">
+                                <button type="button" class="ff-btn red" onclick="removeFormulaRow(this)">X</button>
+                            </div>
+                        </div>
+
+                        <div style="display:none;">{{ pf.DELETE }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="packEmpty" style="display:none;">
+                <div class="ff-row pack-row">
+                    <div class="ff-row-grid pack">
+                        <div class="ff-field">
+                            <label>Product Pack</label>
+                            {{ pack_formset.empty_form.product_pack }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Packing Material</label>
+                            {{ pack_formset.empty_form.inventory_item }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Usage</label>
+                            {{ pack_formset.empty_form.usage_basis }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Qty</label>
+                            {{ pack_formset.empty_form.quantity_required }}
+                        </div>
+
+                        <div class="ff-field">
+                            <label>Unit</label>
+                            {{ pack_formset.empty_form.unit }}
+                        </div>
+
+                        <div class="ff-field">
+                            <button type="button" class="ff-btn red" onclick="removeFormulaRow(this)">X</button>
+                        </div>
+                    </div>
+
+                    <div style="display:none;">{{ pack_formset.empty_form.DELETE }}</div>
+                </div>
+            </div>
+
+            <button type="button" class="ff-btn blue" onclick="addFormulaRow('pack')">+ Add Packing Material</button>
+        </div>
+
+        <div class="ff-actions">
+            <button type="submit" class="ff-btn green">Save Formula</button>
+            <a href="{% url 'product_formula_list' %}" class="ff-btn light">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+const IS_EDIT_FORM = {% if formula %}true{% else %}false{% endif %};
+
+function makeSearchableSelect(select){
+    if(!select || select.dataset.searchReady==="1") return;
+
+    select.dataset.searchReady="1";
+    select.classList.add("native-search-select");
+
+    const wrap=document.createElement("div");
+    wrap.className="search-select-wrap";
+
+    const input=document.createElement("input");
+    input.type="text";
+    input.className="search-select-input";
+    input.placeholder="Search...";
+
+    const list=document.createElement("div");
+    list.className="search-select-list";
+
+    select.parentNode.insertBefore(wrap,select);
+    wrap.appendChild(input);
+    wrap.appendChild(list);
+    wrap.appendChild(select);
+
+    function selectedText(){
+        const opt=select.options[select.selectedIndex];
+        return opt && opt.value ? opt.text.trim() : "";
+    }
+
+    function render(q){
+        const text=(q||"").toLowerCase();
+        list.innerHTML="";
+
+        Array.from(select.options).forEach(function(opt){
+            if(!opt.value) return;
+            if(text && !(opt.text+" "+opt.value).toLowerCase().includes(text)) return;
+
+            const div=document.createElement("div");
+            div.className="search-select-option";
+            div.textContent=opt.text;
+
+            div.onclick=function(){
+                select.value=opt.value;
+                input.value=opt.text;
+                list.classList.remove("show");
+                select.dispatchEvent(new Event("change",{bubbles:true}));
+            };
+
+            list.appendChild(div);
+        });
+    }
+
+    input.value=selectedText();
+
+    input.addEventListener("focus",function(){
+        render("");
+        list.classList.add("show");
+        input.select();
+    });
+
+    input.addEventListener("input",function(){
+        render(input.value);
+        list.classList.add("show");
+    });
+
+    document.addEventListener("click",function(e){
+        if(!wrap.contains(e.target)){
+            list.classList.remove("show");
+            input.value=selectedText();
+        }
+    });
+}
+
+function initSearch(root){
+    (root || document).querySelectorAll("select").forEach(function(s){
+        if(s.id === "allPackingMaterialOptions"){
+            return;
+        }
+
+        makeSearchableSelect(s);
+    });
+}
+
+function cleanTemplate(html){
+    const div=document.createElement("div");
+    div.innerHTML=html;
+
+    div.querySelectorAll(".search-select-wrap").forEach(function(wrap){
+        const select=wrap.querySelector("select");
+
+        if(select){
+            select.classList.remove("native-search-select");
+            select.removeAttribute("data-search-ready");
+            wrap.parentNode.insertBefore(select,wrap);
+        }
+
+        wrap.remove();
+    });
+
+    return div.innerHTML;
+}
+
+function addFormulaRow(type){
+    const total=document.getElementById(type==="raw" ? "id_raw-TOTAL_FORMS" : "id_pack-TOTAL_FORMS");
+    const index=parseInt(total.value || "0");
+
+    const empty=document.getElementById(type==="raw" ? "rawEmpty" : "packEmpty");
+    const target=document.getElementById(type==="raw" ? "rawRows" : "packRows");
+
+    let html=cleanTemplate(empty.innerHTML).replaceAll("__prefix__",index);
+
+    target.insertAdjacentHTML("beforeend",html);
+    total.value=index+1;
+
+    const newRow=target.lastElementChild;
+    initSearch(newRow);
+
+    return newRow;
+}
+
+function removeFormulaRow(btn){
+    const row=btn.closest(".ff-row");
+    const del=row.querySelector("input[type='checkbox'][name$='-DELETE']");
+
+    if(del){
+        del.checked=true;
+        row.style.display="none";
+    }else{
+        row.remove();
+    }
+}
+
+function getTemplateSelect(fieldName){
+    return document.querySelector(`#packEmpty select[name$='-${fieldName}']`) ||
+           document.querySelector(`#packRows select[name$='-${fieldName}']`);
+}
+
+function getAllPackOptions(){
+    const source=getTemplateSelect("product_pack");
+    if(!source) return [];
+
+    return Array.from(source.options).filter(function(opt){
+        return opt.value;
+    });
+}
+
+function fillQuickUnitDropdown(){
+    const source=getTemplateSelect("unit");
+    const target=document.getElementById("quickPackUnit");
+
+    if(!source || !target) return;
+
+    target.innerHTML="";
+
+    Array.from(source.options).forEach(function(opt){
+        target.appendChild(opt.cloneNode(true));
+    });
+
+    Array.from(target.options).forEach(function(opt){
+        const text=(opt.text || "").toLowerCase();
+        const value=(opt.value || "").toLowerCase();
+
+        if(text.includes("piece") || value.includes("piece") || value.includes("pcs")){
+            target.value=opt.value;
+        }
+    });
+}
+
+function hideAllPackRowsAsDeleted(){
+    document.querySelectorAll("#packRows .pack-row").forEach(function(row){
+        const del=row.querySelector("input[type='checkbox'][name$='-DELETE']");
+
+        if(del){
+            del.checked=true;
+            row.style.display="none";
+        }else{
+            row.remove();
+        }
+    });
+}
+
+function updateSearchableInput(field){
+    if(!field || field.tagName !== "SELECT") return;
+
+    const wrap=field.closest(".search-select-wrap");
+    if(!wrap) return;
+
+    const input=wrap.querySelector(".search-select-input");
+    const opt=field.options[field.selectedIndex];
+
+    if(input && opt){
+        input.value=opt.value ? opt.text.trim() : "";
+    }
+}
+
+function getPackingMaterialOptionText(value){
+    const hiddenSelect=document.getElementById("allPackingMaterialOptions");
+    if(!hiddenSelect) return "";
+
+    const opt=hiddenSelect.querySelector(`option[value="${value}"]`);
+    if(!opt) return "";
+
+    return opt.textContent.trim();
+}
+
+function ensureSelectHasOption(select,value,text){
+    if(!select || !value) return;
+
+    const exists=Array.from(select.options).some(function(opt){
+        return String(opt.value) === String(value);
+    });
+
+    if(!exists){
+        const opt=document.createElement("option");
+        opt.value=value;
+        opt.textContent=text || value;
+        select.appendChild(opt);
+    }
+}
+
+function setRowField(row,fieldName,value,text){
+    const field=row.querySelector(`[name$='-${fieldName}']`);
+    if(!field) return;
+
+    if(fieldName === "inventory_item"){
+        const optionText=text || getPackingMaterialOptionText(value);
+        ensureSelectHasOption(field,value,optionText);
+    }
+
+    field.value=value;
+    field.dispatchEvent(new Event("change",{bubbles:true}));
+    updateSearchableInput(field);
+}
+
+function findUsageValueForMaterial(materialText){
+    const source=getTemplateSelect("usage_basis");
+    if(!source) return "";
+
+    const text=(materialText || "").toLowerCase();
+    let wanted="unit";
+
+    if(text.includes("outer") || text.includes("carton") || text.includes("box")){
+        wanted="box";
+    }
+
+    let matched="";
+
+    Array.from(source.options).forEach(function(opt){
+        const optionText=((opt.text || "") + " " + (opt.value || "")).toLowerCase();
+
+        if(!matched && wanted==="box" && (optionText.includes("box") || optionText.includes("carton"))){
+            matched=opt.value;
+        }
+
+        if(!matched && wanted==="unit" && (optionText.includes("bottle") || optionText.includes("label") || optionText.includes("pouch") || optionText.includes("unit"))){
+            matched=opt.value;
+        }
+    });
+
+    return matched || source.value || (source.options[1] ? source.options[1].value : "");
+}
+
+function generatePackingRowsForAllPacks(){
+    const selectedMaterials=Array.from(
+        document.querySelectorAll("#quickPackingMaterials input[type='checkbox']:checked")
+    );
+
+    const packs=getAllPackOptions();
+    const qty=document.getElementById("quickPackQty").value;
+    const unit=document.getElementById("quickPackUnit").value;
+
+    if(!packs.length){
+        alert("No product pack sizes found. Please select product first.");
+        return;
+    }
+
+    if(!selectedMaterials.length){
+        alert("Please tick at least one packing material.");
+        return;
+    }
+
+    if(!qty || parseFloat(qty) <= 0){
+        alert("Please enter valid quantity.");
+        return;
+    }
+
+    if(!confirm("This will replace current packing rows. Continue?")){
+        return;
+    }
+
+    hideAllPackRowsAsDeleted();
+
+    packs.forEach(function(packOpt){
+        selectedMaterials.forEach(function(material){
+            const row=addFormulaRow("pack");
+
+            setRowField(row,"product_pack",packOpt.value);
+            setRowField(row,"inventory_item",material.value,material.dataset.text);
+            setRowField(row,"usage_basis",findUsageValueForMaterial(material.dataset.text));
+            setRowField(row,"quantity_required",qty);
+            setRowField(row,"unit",unit);
+        });
+    });
+
+    alert("Packing rows generated successfully.");
+}
+
+function setupProductChangeReload(){
+    const productSelect=document.getElementById("id_product");
+
+    if(!productSelect || IS_EDIT_FORM) return;
+
+    productSelect.addEventListener("change",function(){
+        if(this.value){
+            window.location.href=window.location.pathname + "?product_id=" + encodeURIComponent(this.value);
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+    initSearch(document);
+    fillQuickUnitDropdown();
+    setupProductChangeReload();
+});
+</script>
+
+{% endblock %}
